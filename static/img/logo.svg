@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="MskProd Computing robot cat logo">
+  <defs>
+    <linearGradient id="lgHead" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6BC4CA"/><stop offset="1" stop-color="#03969D"/>
+    </linearGradient>
+    <linearGradient id="lgCrown" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#E6D8EC"/><stop offset="1" stop-color="#CAABD5"/>
+    </linearGradient>
+    <linearGradient id="lgEye" x1="0.3" y1="0" x2="0.7" y2="1">
+      <stop offset="0" stop-color="#E6D8EC"/><stop offset="0.55" stop-color="#CAABD5"/><stop offset="1" stop-color="#83749F"/>
+    </linearGradient>
+  </defs>
+  <!-- ears -->
+  <path d="M17.5 21.5 L19.6 7.4 Q20.1 5.2 22.0 6.5 L32.4 14.2 Z" fill="#03969D"/>
+  <path d="M21.0 18.6 L22.3 10.6 L28.4 15.1 Z" fill="#CAABD5"/>
+  <path d="M46.5 21.5 L44.4 7.4 Q43.9 5.2 42.0 6.5 L31.6 14.2 Z" fill="#03969D"/>
+  <path d="M43.0 18.6 L41.7 10.6 L35.6 15.1 Z" fill="#CAABD5"/>
+  <!-- headphones -->
+  <rect x="4.4" y="27" width="9.6" height="17" rx="4.8" fill="#83749F"/>
+  <rect x="6.6" y="30.2" width="5.2" height="10.6" rx="2.6" fill="#CAABD5"/>
+  <rect x="50" y="27" width="9.6" height="17" rx="4.8" fill="#83749F"/>
+  <rect x="52.2" y="30.2" width="5.2" height="10.6" rx="2.6" fill="#CAABD5"/>
+  <!-- head -->
+  <rect x="11.5" y="13.5" width="41" height="39" rx="17.5" fill="url(#lgHead)"/>
+  <path d="M11.5 25.2 A17.5 17.5 0 0 1 29 13.5 h6 A17.5 17.5 0 0 1 52.5 25.2 Z" fill="url(#lgCrown)"/>
+  <rect x="11.5" y="24.4" width="41" height="1.8" fill="#035C58" opacity="0.28"/>
+  <!-- eyes -->
+  <ellipse cx="24.2" cy="35.4" rx="6.4" ry="7.1" fill="#035C58" opacity="0.22"/>
+  <ellipse cx="24" cy="35" rx="6.4" ry="7.1" fill="url(#lgEye)"/>
+  <ellipse cx="22.1" cy="32.5" rx="2.1" ry="2.4" fill="#FFFFFF" opacity="0.9"/>
+  <ellipse cx="40.2" cy="35.4" rx="6.4" ry="7.1" fill="#035C58" opacity="0.22"/>
+  <ellipse cx="40" cy="35" rx="6.4" ry="7.1" fill="url(#lgEye)"/>
+  <ellipse cx="38.1" cy="32.5" rx="2.1" ry="2.4" fill="#FFFFFF" opacity="0.9"/>
+  <!-- muzzle -->
+  <path d="M32 43.4 l-2.6-2.1 h5.2 Z" fill="#035C58"/>
+  <path d="M32 43.4 v2.2 M32 45.6 q-2.6 2.4 -4.6 0 M32 45.6 q2.6 2.4 4.6 0"
+        fill="none" stroke="#035C58" stroke-width="1.5" stroke-linecap="round" opacity="0.75"/>
+  <!-- cheek vents -->
+  <circle cx="17.4" cy="42.6" r="1.15" fill="#035C58" opacity="0.3"/>
+  <circle cx="46.6" cy="42.6" r="1.15" fill="#035C58" opacity="0.3"/>
+</svg>
