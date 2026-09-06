@@ -120,15 +120,17 @@ def build_home():
     <div>
       <span class="eyebrow">%s Free UK computing revision</span>
       <h1>Revise computing properly.<br><span class="gradient-text">Then go and get the top grade.</span></h1>
-      <p class="lead">Key Stage 3, GCSE and A Level, written to the OCR specifications. Every topic explained
-      in full, then a ten question check and five exam-style questions marked against the real mark scheme.
-      No account, no adverts, no tracking. Just the work.</p>
+      <p class="lead">Key Stage 3, GCSE and A Level, written board by board for OCR, AQA and Edexcel.
+      Every topic explained in full, then a ten question check and exam-style questions marked against
+      the real mark scheme. No account, no adverts, no tracking. Just the work.</p>
       <div class="btn-row" style="margin-top:1.8rem">
         <a class="btn btn-primary" href="/ks4/computer-science/">%s Start GCSE Computer Science</a>
         <a class="btn btn-secondary" href="/how-to-revise/">%s How to revise properly</a>
       </div>
       <div class="pill-row" style="margin-top:1.6rem">
         <span class="pill">%s OCR J277</span>
+        <span class="pill">%s AQA 8525</span>
+        <span class="pill">%s Edexcel 1CP2</span>
         <span class="pill">%s OCR H446</span>
         <span class="pill">%s OCR J834 iMedia</span>
         <span class="pill">%s KS3 Years 7 to 9</span>
@@ -217,7 +219,8 @@ def build_home():
   </div>
 </section>""" % (
         ico("i-sparkle"), ico("i-play"), ico("i-bulb"),
-        ico("i-cpu"), ico("i-brain"), ico("i-palette"), ico("i-layers"),
+        ico("i-cpu"), ico("i-cpu"), ico("i-cpu"), ico("i-brain"),
+        ico("i-palette"), ico("i-layers"),
         total_topics, total_quiz, total_marks,
         "".join(cards),
         ico("i-book"), ico("i-list"), ico("i-check-circle"), ico("i-paper"),
