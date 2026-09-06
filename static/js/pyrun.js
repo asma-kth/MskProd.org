@@ -7,7 +7,8 @@
      first and fall back to the older one rather than failing silently. */
   var SOURCES = [
     "https://cdn.jsdelivr.net/pyodide/v314.0.6/full/pyodide.js",
-    "https://cdn.jsdelivr.net/pyodide/v0.28.3/full/pyodide.js"
+    "https://cdn.jsdelivr.net/pyodide/v0.28.3/full/pyodide.js",
+    "https://cdn.jsdelivr.net/npm/pyodide/pyodide.js"
   ];
 
   var RUNNER = [
