@@ -3492,3 +3492,2492 @@ This topic separates students more than any other on Paper 1, because it is mark
            command="Explain"),
     ],
 )
+
+# ================================================= 2.1.1 Computational thinking
+
+T_COMPTHINK = Topic(
+    slug="computational-thinking",
+    title="Computational Thinking",
+    spec="2.1.1",
+    icon="i-brain",
+    minutes=20,
+    blurb="Abstraction, decomposition and algorithmic thinking, explained with examples that actually show what each one does rather than just naming it.",
+    fact="The London Underground map is one of the most famous pieces of abstraction ever made. It removes real distances, real directions and everything above ground, keeping only what a passenger needs: the order of stations and where lines meet.",
+    sections=[
+        Section("Abstraction", """
+**Abstraction** is removing unnecessary detail from a problem so you can focus on what matters.
+
+The skill is deciding what is unnecessary. A detail that is irrelevant to one problem may be essential to another.
+
+### Example: a satnav
+
+- **Keeps**: roads, junctions, distances, speed limits, one way systems
+- **Removes**: what the buildings look like, the weather, who lives there, the colour of the road markings
+
+None of the removed detail helps you find a route, and including it would make the problem enormous and slow.
+
+### Example: a chess program
+
+- **Keeps**: the position of each piece, whose turn it is, the legal moves
+- **Removes**: what the pieces are made of, how heavy they are, the design of the board
+
+!key Why abstraction matters :: It makes a problem simpler and quicker to solve, and it makes the solution more general, because a program built on the essentials works for many different situations rather than one.
+
+!warn Abstraction is not just 'simplifying' :: Say what is removed **and why it does not matter**. That second half is where the mark is.
+"""),
+        Section("Decomposition", """
+**Decomposition** is breaking a large complex problem down into smaller sub problems that are easier to solve.
+
+Each sub problem can then be solved separately, and the solutions combined.
+
+### Example: writing a quiz game
+
+Decomposed into:
+
+1. Load the questions from a file
+2. Display a question and its options
+3. Accept and validate the user's answer
+4. Check whether the answer is correct
+5. Keep and update the score
+6. Move to the next question
+7. Display the final result
+
+Each of these is small enough to write and test on its own.
+
+### Why decomposition helps
+
+- Each part is **easier to understand** than the whole
+- Parts can be **worked on by different people at the same time**
+- Each part can be **tested independently**, so bugs are easier to find
+- Parts can be **reused** in other programs, for example the validation routine
+- Progress is easier to measure
+
+!exam The exam phrasing :: Decomposition breaks a problem into smaller sub problems that are easier to solve, test and maintain, and which can be worked on separately or by different people.
+"""),
+        Section("Algorithmic thinking", """
+**Algorithmic thinking** is identifying the steps needed to solve a problem, and putting them in the correct order.
+
+It is what turns a decomposed problem into something a computer can actually run.
+
+An algorithm must be:
+
+- **Unambiguous.** Every step has exactly one meaning.
+- **Correctly ordered.** Steps that depend on earlier results must come after them.
+- **Complete.** No missing steps.
+- **Finite.** It must eventually stop.
+
+### Example: making a hot drink as an algorithm
+
+    1. Fill the kettle with water
+    2. Switch the kettle on
+    3. Put a teabag in a mug
+    4. WAIT until the kettle boils
+    5. Pour the water into the mug
+    6. WAIT 3 minutes
+    7. Remove the teabag
+    8. Add milk if wanted
+    9. Stir
+
+Step 4 must come before step 5. Step 7 must come after step 6. Order is not decoration, it is the algorithm.
+
+### How the three work together
+
+| Stage | What you do |
+| Decomposition | Break the problem into parts |
+| Abstraction | Strip each part down to what matters |
+| Algorithmic thinking | Work out the ordered steps to solve each part |
+
+Then the parts are combined into a working program.
+"""),
+    ],
+    keyterms=[
+        ("Computational thinking", "Approaching a problem in a way that allows a computer to solve it, using abstraction, decomposition and algorithmic thinking."),
+        ("Abstraction", "Removing unnecessary detail from a problem so that only what matters is considered."),
+        ("Decomposition", "Breaking a large problem into smaller sub problems that are easier to solve."),
+        ("Algorithmic thinking", "Identifying the individual steps needed to solve a problem and placing them in the correct order."),
+        ("Sub problem", "One of the smaller parts a problem has been broken into."),
+    ],
+    grade="""
+The trap on this topic is that the definitions are easy, so students give a definition when the question asked for an application.
+
+**Read the command word carefully.** "Describe how abstraction could be used in this program" is not asking for a definition. It is asking you to name specific details that would be removed from **that scenario** and say why they do not matter.
+
+**Use the scenario's own words.** If the question is about a train timetable app, your answer should mention platforms, departure times and station names, not generic phrases about removing detail.
+
+**Show decomposition as a numbered list.** Four or five clearly separate sub problems, each of which sounds like something you could write as a subroutine.
+
++ Apply abstraction to any given scenario, naming what is kept and what is removed
++ Decompose any described program into at least five sensible sub problems
++ Explain three benefits of decomposition
++ Explain why the order of steps in an algorithm matters, with an example
+""",
+    mistakes=[
+        "Defining abstraction as 'making something simpler' without saying what detail is removed or why.",
+        "Giving decomposition sub problems that are too vague, such as 'make the game work'.",
+        "Confusing abstraction and decomposition. Abstraction removes detail, decomposition splits the problem up.",
+        "Answering with a definition when the question asked you to apply the idea to a scenario.",
+    ],
+    quiz=[
+        Q("What is abstraction?",
+          ["Removing unnecessary detail so only what matters is considered",
+           "Breaking a problem into smaller parts",
+           "Putting steps into the correct order",
+           "Testing a program with different data"], 0,
+          "Abstraction is about what you leave out. Deciding what is unnecessary for the specific problem is the skill."),
+        Q("A programmer splits a game into separate parts for movement, scoring and collision detection. This is:",
+          ["Decomposition", "Abstraction", "Validation", "Iteration"], 0,
+          "The whole problem has been broken into smaller sub problems that can be solved and tested separately."),
+        Q("Which detail would most sensibly be removed by abstraction in a bus timetable app?",
+          ["The colour of each bus", "The departure time",
+           "The stops on the route", "The route number"], 0,
+          "Knowing what colour a bus is does not help a passenger plan a journey, so it can be removed without affecting the solution."),
+        Q("Which is a benefit of decomposition?",
+          ["Different people can work on different parts at the same time",
+           "The program will always run faster",
+           "The program needs less memory",
+           "No testing is required"], 0,
+          "Independent sub problems allow parallel work, independent testing and reuse of components in other projects."),
+        Q("An algorithm must be finite. This means:",
+          ["It must eventually stop", "It must be short",
+           "It must use only whole numbers", "It must have no more than ten steps"], 0,
+          "Finite means it terminates. An algorithm that never ends has not solved the problem."),
+        Q("Why does the order of steps in an algorithm matter?",
+          ["Steps that depend on earlier results must come after them",
+           "Computers can only read instructions alphabetically",
+           "Order affects how much memory is needed",
+           "It does not matter, computers work it out"], 0,
+          "You cannot pour boiling water before boiling it. Dependencies force an order."),
+        Q("A weather app ignores the historical rainfall of a region when showing today's forecast. This is an example of:",
+          ["Abstraction", "Decomposition", "Iteration", "Compression"], 0,
+          "Detail not needed for the immediate problem has been deliberately removed."),
+        Q("Which of these is the best example of a sub problem from decomposing an online shop?",
+          ["Calculate the total cost of the basket", "Make the shop work well",
+           "Be user friendly", "Sell more products"], 0,
+          "A good sub problem is specific and solvable, and sounds like something you could write as one subroutine."),
+        Q("Algorithmic thinking is best described as:",
+          ["Identifying the steps needed to solve a problem and ordering them correctly",
+           "Removing unnecessary detail",
+           "Writing a program in Python",
+           "Testing a program with boundary data"], 0,
+          "It is about the sequence of operations, independent of any particular programming language."),
+        Q("Which of the three techniques is being used when a programmer decides that a chess program does not need to know what the pieces are made of?",
+          ["Abstraction", "Decomposition", "Algorithmic thinking", "Validation"], 0,
+          "The material of the pieces has no effect on legal moves or the outcome, so it is removed as irrelevant detail."),
+    ],
+    exam=[
+        EQ("Define the term abstraction.", 2, [
+            MP("Removing or hiding unnecessary detail", ["removing", "hiding", "unnecessary", "irrelevant", "not needed"]),
+            MP("So that only the information relevant to solving the problem remains", ["relevant", "important", "focus", "what matters", "key details"]),
+        ], "Abstraction is the process of removing or hiding detail that is not necessary for solving a particular problem, so that only the information which is actually relevant remains. This makes the problem simpler to understand and to solve, and often makes the resulting solution more widely applicable.",
+           command="Define"),
+        EQ("A company is writing a program to manage a car park. Describe how decomposition could be used when developing this program.", 4, [
+            MP("The problem is broken into smaller sub problems", ["broken", "split", "smaller", "sub problems", "parts", "divided"]),
+            MP("Gives a valid sub problem such as recording vehicles entering", ["entering", "arrival", "number plate", "record", "detect", "barrier"]),
+            MP("Gives a second valid sub problem such as calculating the charge", ["charge", "cost", "payment", "fee", "calculate", "time"]),
+            MP("Explains a benefit such as each part can be written and tested separately or by different people", ["separately", "different people", "tested", "easier", "independently", "reuse"]),
+        ], "Decomposition would be used to break the overall car park system into smaller sub problems that can each be solved on their own. For example, one sub problem would be recording vehicles entering, which involves reading the number plate and logging the arrival time and raising the barrier. A second would be calculating the charge when a vehicle leaves, which involves finding the arrival record, working out the duration and applying the tariff. Further sub problems would include processing payment, tracking how many spaces remain free, and producing reports for the owner. Breaking the problem down this way means each part is small enough to be understood fully, different programmers can work on separate parts at the same time, and each part can be tested independently so that faults are much easier to locate.",
+           command="Describe"),
+        EQ("Explain how abstraction would be used in a program that finds the shortest route between two railway stations.", 3, [
+            MP("Unnecessary details are removed", ["removed", "ignored", "not included", "left out", "hidden"]),
+            MP("Gives examples of removed detail such as scenery, station architecture or the type of train", ["scenery", "buildings", "architecture", "colour", "type of train", "weather", "passengers"]),
+            MP("Retains only the relevant information such as stations, connections and journey times", ["stations", "connections", "journey time", "distance", "links", "relevant"]),
+        ], "Abstraction would be used to strip the real railway network down to only the information needed to find a shortest route. Details such as what the stations look like, the type of train used on each service, the scenery along the route and the number of passengers travelling would all be removed, because none of them affect which sequence of connections is quickest. What would be retained is the set of stations, which stations are directly connected to which others, and the journey time or distance for each connection. This turns a very complex real world system into a simple network of points and weighted links, which a routing algorithm can then process quickly.",
+           command="Explain"),
+        EQ("State two benefits of using decomposition when developing a large program.", 2, [
+            MP("Each smaller part is easier to understand and solve", ["easier", "simpler", "understand", "manageable", "less complex"]),
+            MP("Parts can be developed or tested independently, or by different people", ["different people", "independently", "tested separately", "at the same time", "team", "reused"]),
+        ], "Each sub problem is much smaller than the original problem, so it is easier to understand and to solve correctly. In addition, the sub problems can be allocated to different programmers who can work on them at the same time, and each part can be tested independently, which means errors are located much more quickly than in a single large program.",
+           command="State"),
+        EQ("Explain why the order of the steps in an algorithm is important, using an example.", 3, [
+            MP("Some steps depend on the result of earlier steps", ["depend", "result", "needs", "requires", "after", "before"]),
+            MP("If the order is wrong the algorithm produces an incorrect result or fails", ["wrong", "incorrect", "fails", "error", "does not work", "wrong output"]),
+            MP("Gives a valid example demonstrating a dependency", ["example", "input before", "boil", "read before", "calculate", "cannot"]),
+        ], "The order of steps matters because many steps depend on values or conditions produced by earlier steps, so carrying them out in the wrong sequence produces an incorrect result or causes the algorithm to fail completely. For example, in an algorithm that calculates the average of a set of numbers, the total must be calculated before it is divided by the count. If the division were carried out first, the program would divide an empty or partial total and produce a meaningless answer. Similarly, a program cannot validate a user's input before it has asked for that input, so the input step must come first.",
+           command="Explain"),
+    ],
+)
+
+# ======================================= 2.1.2 Designing, creating and refining
+
+T_ALGDESIGN = Topic(
+    slug="designing-algorithms",
+    title="Designing, Creating and Refining Algorithms",
+    spec="2.1.2",
+    icon="i-flow",
+    minutes=32,
+    blurb="Pseudocode, flowcharts, trace tables and finding errors in someone else's algorithm, which is the skill Paper 2 tests most heavily.",
+    fact="Flowchart symbols were standardised by ANSI in the 1960s, and the shapes have barely changed since. The diamond for a decision is so recognisable that it still appears in road signs, business diagrams and video game design documents.",
+    sections=[
+        Section("Flowcharts", """
+A **flowchart** is a diagram showing an algorithm as a series of connected symbols.
+
+| Symbol | Shape | Meaning |
+| Terminal | Rounded rectangle | Start or stop |
+| Process | Rectangle | A calculation or assignment |
+| Input or output | Parallelogram | Reading input or displaying output |
+| Decision | Diamond | A question with yes and no branches |
+| Sub program | Rectangle with double side bars | A call to a subroutine |
+| Flow line | Arrow | The direction of flow |
+
+### Reading a flowchart
+
+The rule is simple: follow the arrows. At a diamond there are always exactly two ways out, one for yes and one for no, and they must be labelled.
+
+A loop appears as an arrow that goes back to an earlier point in the diagram.
+
+!warn Every decision needs both branches labelled :: An unlabelled diamond is ambiguous, and in the exam it loses the mark.
+"""),
+        Section("Pseudocode and the OCR reference language", """
+**Pseudocode** describes an algorithm in structured English, without the strict syntax of a real language. OCR provides its own **reference language**, and you should use it in written answers because the mark schemes are written around it.
+
+### The core constructs
+
+```pseudo
+// Variables and assignment
+name = "Sam"
+score = 0
+global highScore = 0
+
+// Input and output
+name = input("What is your name?")
+print("Hello " + name)
+
+// Selection
+if score > 50 then
+    print("Pass")
+elseif score = 50 then
+    print("Borderline")
+else
+    print("Fail")
+endif
+
+// Case selection
+switch grade:
+    case "A":
+        print("Excellent")
+    case "B":
+        print("Good")
+    default:
+        print("See teacher")
+endswitch
+
+// Count controlled loop
+for i = 0 to 9
+    print(i)
+next i
+
+// Condition controlled loops
+while answer != "quit"
+    answer = input("Enter a command")
+endwhile
+
+do
+    guess = input("Guess the number")
+until guess == 7
+```
+
+### Subroutines
+
+```pseudo
+function addTax(amount)
+    return amount * 1.2
+endfunction
+
+procedure greet(name)
+    print("Hello " + name)
+endprocedure
+
+total = addTax(100)
+greet("Sam")
+```
+
+A **function returns a value**. A **procedure does not**. This distinction is examined regularly.
+
+### Arrays and strings
+
+```pseudo
+array scores[5]
+scores[0] = 42
+print(scores[0])
+
+array board[3,3]        // 2D array
+board[1,2] = "X"
+
+name = "Computer"
+print(name.length)              // 8
+print(name.substring(0,4))      // Comp
+print(name.upper)               // COMPUTER
+```
+
+!key Arrays start at 0 :: An array declared with 5 elements has indexes 0, 1, 2, 3 and 4. There is no index 5. This is the single most common source of errors in exam answers.
+
+### File handling
+
+```pseudo
+myFile = open("scores.txt")
+line = myFile.readLine()
+myFile.writeLine("New score")
+myFile.close()
+```
+"""),
+        Section("Trace tables", """
+A **trace table** records the value of every variable after each step of an algorithm. It is how you work out what an algorithm actually does, rather than what you assume it does.
+
+### How to complete one
+
+1. Draw a column for **every variable** and one for **any output**.
+2. Work through the algorithm **one line at a time**.
+3. Write a **new row every time a value changes**.
+4. Do not skip iterations of a loop. Errors hide in the second and third pass.
+
+### Worked example
+
+```pseudo
+total = 0
+for i = 1 to 4
+    total = total + i
+    if total > 5 then
+        print(total)
+    endif
+next i
+```
+
+| i | total | Output |
+| 1 | 1 | |
+| 2 | 3 | |
+| 3 | 6 | 6 |
+| 4 | 10 | 10 |
+
+!exam Marks are given for the table, not just the final answer :: Fill in every row even if you can see the answer. A correct final value with an empty table often scores less than a complete table with one arithmetic slip.
+"""),
+        Section("Finding and correcting errors", """
+Paper 2 regularly gives you an algorithm containing deliberate errors and asks you to find and fix them. Work through this checklist.
+
+### The checklist
+
+1. **Off by one in loops.** `for i = 1 to 10` runs ten times starting at 1. `for i = 0 to 10` runs eleven times. Check against what the question requires.
+2. **Array index out of range.** An array of size n has indexes 0 to n-1.
+3. **Assignment against comparison.** `=` assigns in most pseudocode, `==` compares. In OCR reference language both are used, so read carefully.
+4. **Wrong comparison operator.** `>` instead of `>=` changes behaviour exactly at the boundary, which is where exam questions target.
+5. **Variable used before it is initialised**, for example adding to a total that was never set to 0.
+6. **Infinite loop**, where the condition can never become false because the variable inside the loop is never changed.
+7. **Wrong data type**, for example comparing the string "5" with the integer 5.
+8. **Logic in the wrong order**, such as printing the average before calculating it.
+
+### Refining an algorithm
+
+Making an algorithm **more efficient** or **more robust**:
+
+- Replace repeated code with a loop or a subroutine
+- Stop searching as soon as the item is found rather than checking the whole list
+- Validate input before it is used, rather than letting the program crash
+- Remove calculations from inside a loop when the value never changes
+- Use a more efficient algorithm, for example binary search instead of linear search on sorted data
+
+!key Efficiency means fewer steps :: A more efficient algorithm produces the same output using fewer operations, less memory, or both. Say which of the two you have improved.
+"""),
+    ],
+    keyterms=[
+        ("Algorithm", "A sequence of unambiguous, ordered steps that solves a problem or completes a task."),
+        ("Pseudocode", "A structured description of an algorithm in English-like statements, independent of any programming language."),
+        ("Flowchart", "A diagram representing an algorithm using standard symbols connected by arrows."),
+        ("Trace table", "A table recording the value of each variable after every step of an algorithm."),
+        ("Function", "A subroutine that returns a value to the code that called it."),
+        ("Procedure", "A subroutine that carries out a task but does not return a value."),
+        ("Efficiency", "How well an algorithm uses resources, usually measured in the number of steps or the memory required."),
+        ("Off by one error", "A mistake where a loop runs one time too many or too few, or an array index is one out."),
+    ],
+    grade="""
+Paper 2 is dominated by this topic, and the difference between grades is almost entirely **discipline**.
+
+**Fill in the whole trace table.** Every row, every iteration. Method marks are real marks.
+
+**Use OCR reference language, not Python, in written answers.** Both are accepted, but the mark schemes are written in reference language, so matching it removes any chance of ambiguity. Whichever you choose, be consistent within one answer.
+
+**When correcting an error, say three things**: where it is, what is wrong, and what it should be. "Line 4 uses `>` but should use `>=`, because a score of exactly 50 should count as a pass."
+
+**Check boundaries automatically.** If a condition involves a number, ask what happens when the value is exactly that number. That is where the examiner has put the error.
+
++ Complete a trace table for a nested loop without losing track
++ Convert a flowchart into pseudocode and back
++ Write a function and a procedure correctly and explain the difference
++ Find three deliberate errors in a twelve line algorithm in under five minutes
+""",
+    mistakes=[
+        "Leaving a trace table half filled because you spotted the answer early.",
+        "Assuming arrays start at 1. In OCR reference language, and in Python, they start at 0.",
+        "Forgetting that a for loop from 1 to 5 includes 5, so it runs five times.",
+        "Writing a function that prints instead of returning, or a procedure with a return statement.",
+        "Not labelling the yes and no branches of a decision diamond in a flowchart.",
+        "Correcting an error without saying which line it is on.",
+    ],
+    quiz=[
+        Q("Which flowchart symbol represents a decision?",
+          ["A diamond", "A rectangle", "A parallelogram", "A rounded rectangle"], 0,
+          "A diamond has exactly two exits, one labelled yes and one labelled no."),
+        Q("What is the difference between a function and a procedure?",
+          ["A function returns a value, a procedure does not",
+           "A procedure returns a value, a function does not",
+           "Functions can only be used once",
+           "There is no difference"], 0,
+          "This is a very common exam question. Return value is the defining difference."),
+        Q("An array is declared as `array scores[6]`. What is the highest valid index?",
+          ["5", "6", "7", "0"], 0,
+          "Six elements with indexes starting at 0 means the valid range is 0 to 5."),
+        Q("What is the purpose of a trace table?",
+          ["To record the value of each variable as an algorithm executes",
+           "To design the user interface",
+           "To compress the size of a program",
+           "To convert pseudocode into machine code"], 0,
+          "It lets you follow exactly what happens step by step, which is how logic errors are found."),
+        Q("How many times does `for i = 3 to 7` execute?",
+          ["5", "4", "7", "3"], 0,
+          "The loop runs for i equal to 3, 4, 5, 6 and 7, which is five iterations."),
+        Q("Which is most likely to cause an infinite loop?",
+          ["The variable in the loop condition is never changed inside the loop",
+           "The loop uses a for statement",
+           "The loop contains an if statement",
+           "The loop counter starts at 0"], 0,
+          "If nothing inside the loop can make the condition false, it never ends."),
+        Q("An algorithm should award a pass for a score of 50 or more, but uses `if score > 50`. What kind of error is this?",
+          ["A logic error at the boundary", "A syntax error",
+           "A runtime error", "A type error"], 0,
+          "The program runs perfectly but produces the wrong result for exactly 50, which is why boundary testing exists."),
+        Q("In OCR reference language, which keyword ends a count controlled loop?",
+          ["next", "endwhile", "until", "endfor"], 0,
+          "A for loop is closed with `next` followed by the counter variable name."),
+        Q("Which change would make a linear search of a list more efficient?",
+          ["Stopping as soon as the item is found rather than checking every element",
+           "Printing each element as it is checked",
+           "Converting the list to a string first",
+           "Repeating the search twice to confirm"], 0,
+          "Exiting early avoids unnecessary comparisons, which is fewer operations for the same result."),
+        Q("A trace table for the code `x = 5` then `x = x + 3` then `print(x)` would show which output?",
+          ["8", "5", "3", "53"], 0,
+          "x becomes 5, then 5 + 3 which is 8, and 8 is printed."),
+    ],
+    exam=[
+        EQ("State two differences between a function and a procedure.", 2, [
+            MP("A function returns a value to the calling code", ["returns", "return value", "gives back", "sends back"]),
+            MP("A procedure carries out a task without returning a value", ["does not return", "no value", "just performs", "carries out"]),
+        ], "A function returns a value to the part of the program that called it, so its result can be assigned to a variable or used in an expression. A procedure performs a task, such as displaying a menu, but does not return any value to the calling code.",
+           command="State"),
+        EQ("Complete a trace table for the following algorithm and state the final output.\n\ntotal = 0, then for i = 1 to 5: if i MOD 2 == 0 then total = total + i, next i, then print(total)", 4, [
+            MP("Identifies that the condition selects even values of i", ["even", "mod 2", "divisible by 2", "2 4"]),
+            MP("Shows total updating to 2 when i is 2", ["2", "total = 2"]),
+            MP("Shows total updating to 6 when i is 4", ["6", "total = 6"]),
+            MP("States the final output is 6", ["output 6", "final 6", "prints 6", "answer is 6"]),
+        ], "The loop runs with i taking the values 1, 2, 3, 4 and 5. The condition i MOD 2 equals 0 is only true when i is even, so total is only updated on those iterations. When i is 1 the condition is false and total stays 0. When i is 2 the condition is true so total becomes 0 plus 2, which is 2. When i is 3 the condition is false and total stays 2. When i is 4 the condition is true so total becomes 2 plus 4, which is 6. When i is 5 the condition is false and total stays 6. The final output is therefore 6.",
+           command="Complete"),
+        EQ("A student writes an algorithm to find the largest number in an array of 10 values, but it always outputs 0. The line `largest = 0` is used before the loop and the array contains negative numbers. Identify the error and describe how to correct it.", 3, [
+            MP("The error is initialising largest to 0", ["initialise", "set to 0", "starts at 0", "largest = 0"]),
+            MP("All the values are negative, so none is greater than 0 and largest is never replaced", ["negative", "less than 0", "never greater", "not updated", "never replaced"]),
+            MP("Correct by initialising largest to the first element of the array", ["first element", "array[0]", "first value", "lowest possible", "initialise to the first"]),
+        ], "The error is that largest is initialised to 0 before the loop begins. Because every value in the array is negative, no element is ever greater than 0, so the comparison inside the loop is never true and largest is never updated, which is why 0 is always output. The correction is to initialise largest to the first element of the array, using largest = numbers[0], and then loop from the second element onwards. This guarantees that largest always holds a value that actually appears in the array, so the algorithm works correctly regardless of whether the values are positive or negative.",
+           command="Identify"),
+        EQ("Write an algorithm, using pseudocode, that asks the user for 5 numbers, stores them in an array, and then outputs the average.", 6, [
+            MP("Declares an array to hold 5 values", ["array", "declare", "list", "numbers[5]"]),
+            MP("Uses a count controlled loop to run 5 times", ["for", "loop", "0 to 4", "1 to 5", "repeat 5"]),
+            MP("Takes input inside the loop and stores it in the array", ["input", "array[i]", "store", "assign"]),
+            MP("Maintains a running total", ["total", "sum", "total = total +", "running"]),
+            MP("Divides the total by 5 to find the average", ["divide", "/ 5", "average", "mean"]),
+            MP("Outputs the average", ["print", "output", "display", "show"]),
+        ], "array numbers[5]\ntotal = 0\nfor i = 0 to 4\n    numbers[i] = input(\"Enter a number\")\n    total = total + numbers[i]\nnext i\naverage = total / 5\nprint(\"The average is \" + average)\n\nThe array is declared with five elements, which have indexes 0 to 4. A count controlled loop runs five times, taking a number from the user on each pass, storing it at the current index and adding it to a running total. After the loop finishes, the total is divided by 5 to give the average, which is then output.",
+           command="Write"),
+        EQ("Explain what is meant by making an algorithm more efficient, and give two ways an algorithm could be made more efficient.", 4, [
+            MP("Efficiency means producing the same result using fewer steps or less memory", ["fewer steps", "less memory", "same result", "fewer operations", "resources"]),
+            MP("First method such as exiting a search early when the item is found", ["exit early", "stop when found", "break", "search"]),
+            MP("Second method such as moving a calculation outside a loop when the value does not change", ["outside the loop", "calculation", "repeated", "only once", "unchanged"]),
+            MP("Or using a more efficient algorithm such as binary search instead of linear search", ["binary search", "better algorithm", "more efficient algorithm", "merge sort", "different algorithm"]),
+        ], "Making an algorithm more efficient means changing it so that it produces exactly the same correct result while using fewer steps, less memory, or both. One way is to exit a loop as soon as the work is complete: a linear search that stops the moment the target value is found avoids checking every remaining element, which on average halves the number of comparisons. A second way is to move any calculation whose result does not change out of a loop and perform it once before the loop starts, since repeating an identical calculation on every iteration is wasted work. A third and often much more significant improvement is to select a fundamentally better algorithm, for example replacing a linear search with a binary search on sorted data, which reduces the number of comparisons on a list of a million items from up to a million down to about twenty.",
+           command="Explain"),
+    ],
+)
+
+# ==================================================== 2.1.3 Searching and sorting
+
+T_SEARCHSORT = Topic(
+    slug="searching-and-sorting",
+    title="Searching and Sorting Algorithms",
+    spec="2.1.3",
+    icon="i-shuffle",
+    minutes=38,
+    blurb="Linear and binary search, bubble, merge and insertion sort. How each one works step by step, and exactly when to choose which.",
+    fact="Binary search finds an item in a sorted list of one million entries in at most twenty comparisons. Linear search would need up to a million. That gap is why sorting data first is often worth the effort.",
+    sections=[
+        Section("Linear search", """
+**Linear search** checks each item in turn from the start until it finds what it is looking for or reaches the end.
+
+```pseudo
+function linearSearch(list, target)
+    for i = 0 to list.length - 1
+        if list[i] == target then
+            return i
+        endif
+    next i
+    return -1
+endfunction
+```
+
+### Characteristics
+
+- Works on **any list**, sorted or unsorted
+- Simple to write and understand
+- **Slow on large lists**: in the worst case it checks every item
+- On a list of n items, the worst case is n comparisons
+
+### When to use it
+
+- The list is unsorted, and sorting it first would cost more than the search saves
+- The list is small
+- You only need to search once
+"""),
+        Section("Binary search", """
+**Binary search** repeatedly halves the search area. It requires the list to be **sorted**.
+
+1. Find the **middle** item.
+2. If it is the target, stop.
+3. If the target is **smaller**, discard the whole upper half and repeat on the lower half.
+4. If the target is **larger**, discard the lower half and repeat on the upper half.
+5. Repeat until found, or until there are no items left.
+
+```pseudo
+function binarySearch(list, target)
+    low = 0
+    high = list.length - 1
+    while low <= high
+        mid = (low + high) DIV 2
+        if list[mid] == target then
+            return mid
+        elseif list[mid] < target then
+            low = mid + 1
+        else
+            high = mid - 1
+        endif
+    endwhile
+    return -1
+endfunction
+```
+
+### Worked example
+
+Find 23 in `[4, 8, 15, 16, 23, 42, 50]`
+
+| Step | Range | Middle | Compare | Action |
+| 1 | 4 to 50 | 16 | 23 > 16 | Discard lower half |
+| 2 | 23 to 50 | 42 | 23 < 42 | Discard upper half |
+| 3 | 23 | 23 | Found | Stop |
+
+Three comparisons instead of five.
+
+### Characteristics
+
+- **Much faster** on large lists, because each comparison removes half the remaining items
+- **Requires a sorted list**, which is a real cost if the data is not already sorted
+- More complex to implement than linear search
+
+!key The comparison examiners want :: Binary search is far more efficient than linear search on large sorted lists because each comparison eliminates half of the remaining items, whereas linear search eliminates only one. However, binary search can only be used if the list is already sorted.
+"""),
+        Section("Bubble sort", """
+**Bubble sort** repeatedly steps through the list, comparing each pair of adjacent items and swapping them if they are in the wrong order. After each full pass, the largest remaining value has moved to its correct position at the end.
+
+```pseudo
+procedure bubbleSort(list)
+    swapped = true
+    while swapped == true
+        swapped = false
+        for i = 0 to list.length - 2
+            if list[i] > list[i+1] then
+                temp = list[i]
+                list[i] = list[i+1]
+                list[i+1] = temp
+                swapped = true
+            endif
+        next i
+    endwhile
+endprocedure
+```
+
+### Worked pass
+
+Starting list: `[5, 3, 8, 1]`
+
+**Pass 1**
+
+- Compare 5 and 3, swap: `[3, 5, 8, 1]`
+- Compare 5 and 8, no swap: `[3, 5, 8, 1]`
+- Compare 8 and 1, swap: `[3, 5, 1, 8]`
+
+8 is now in its final position.
+
+**Pass 2**: `[3, 1, 5, 8]`
+**Pass 3**: `[1, 3, 5, 8]`
+**Pass 4**: no swaps made, so the list is sorted and the algorithm stops.
+
+### Characteristics
+
+- Very **simple to understand and write**
+- Uses **very little extra memory**, because it sorts in place
+- **Very slow on large lists**, since it may need to pass through the list many times
+- Good for small lists or nearly sorted lists
+"""),
+        Section("Merge sort", """
+**Merge sort** uses divide and conquer. It splits the list in half repeatedly until every list contains one item, then merges pairs of lists back together in order.
+
+### The two phases
+
+**Divide**: split the list in half, then split each half in half, and continue until each sub list has exactly one item. A list of one item is by definition sorted.
+
+**Merge**: repeatedly merge pairs of sub lists. To merge two sorted lists, compare the first item of each, take the smaller, and repeat until both are empty.
+
+### Worked example
+
+Sort `[6, 2, 8, 4, 1]`
+
+    Divide:  [6, 2, 8, 4, 1]
+             [6, 2]      [8, 4, 1]
+             [6] [2]     [8]  [4, 1]
+                              [4] [1]
+
+    Merge:   [2, 6]      [1, 4]  then  [1, 4, 8]
+             [1, 2, 4, 6, 8]
+
+### Characteristics
+
+- **Much faster than bubble sort on large lists**, and its performance is consistent
+- Efficient regardless of how disordered the starting list is
+- **Uses more memory**, because the sub lists must be stored separately
+- More complex to implement
+
+!warn The memory point is worth a mark :: Merge sort is faster but not free. It requires additional memory to hold the sub lists, whereas bubble and insertion sort work in place.
+"""),
+        Section("Insertion sort", """
+**Insertion sort** builds a sorted section at the start of the list. It takes the next unsorted item and inserts it into the correct position within the sorted section, shifting larger items along to make room.
+
+This is exactly how most people sort a hand of playing cards.
+
+```pseudo
+procedure insertionSort(list)
+    for i = 1 to list.length - 1
+        current = list[i]
+        j = i - 1
+        while j >= 0 AND list[j] > current
+            list[j+1] = list[j]
+            j = j - 1
+        endwhile
+        list[j+1] = current
+    next i
+endprocedure
+```
+
+### Worked example
+
+`[5, 2, 9, 1]`
+
+- Take 2, insert before 5: `[2, 5, 9, 1]`
+- Take 9, already in place: `[2, 5, 9, 1]`
+- Take 1, insert at the front: `[1, 2, 5, 9]`
+
+### Characteristics
+
+- Simple, and sorts **in place** so uses very little extra memory
+- **Very efficient on nearly sorted lists**, because most items need almost no movement
+- Slow on large disordered lists
+- Can sort data as it arrives, without needing the whole list first
+"""),
+        Section("Choosing an algorithm", """
+| Algorithm | Speed on large lists | Memory used | Needs sorted data | Best for |
+| Linear search | Slow | Very little | No | Small or unsorted lists |
+| Binary search | Fast | Very little | Yes | Large sorted lists |
+| Bubble sort | Very slow | Very little | n/a | Small lists, teaching |
+| Insertion sort | Slow | Very little | n/a | Small or nearly sorted lists |
+| Merge sort | Fast | More | n/a | Large lists |
+
+### How exam questions phrase it
+
+- "A list of 2 million sorted records" points to **binary search**.
+- "An unsorted list that is searched once" points to **linear search**.
+- "Sorting a very large dataset" points to **merge sort**, and mention the memory cost.
+- "A device with very limited memory" points to **bubble or insertion sort**.
+- "Data that is almost in order already" points to **insertion sort**.
+
+!exam Always justify with the property of the data :: The mark is not for naming the algorithm. It is for linking the choice to whether the data is sorted, how large it is, how disordered it is, and how much memory is available.
+"""),
+    ],
+    keyterms=[
+        ("Linear search", "Checking each item in a list in turn until the target is found or the end is reached."),
+        ("Binary search", "Repeatedly halving a sorted list by comparing the target with the middle item."),
+        ("Bubble sort", "Repeatedly comparing adjacent items and swapping them if they are in the wrong order."),
+        ("Merge sort", "Splitting a list into single items then repeatedly merging sorted sub lists back together."),
+        ("Insertion sort", "Building a sorted section by inserting each next item into its correct position within it."),
+        ("Divide and conquer", "Solving a problem by breaking it into smaller instances of the same problem."),
+        ("In place", "An algorithm that sorts using only a small constant amount of extra memory."),
+        ("Pass", "One complete run through a list during a sorting algorithm."),
+    ],
+    grade="""
+The examinable skills here are **tracing** and **justifying**.
+
+**Tracing.** You will be asked to show the state of a list after one or two passes of a sort. Write the list out after every single comparison during a bubble sort pass, and after every insertion during an insertion sort. Do not do it in your head.
+
+**Justifying.** When choosing an algorithm, name the property of the data that drives the choice.
+
+Weak: "Binary search is better because it is faster."
+Strong: "Binary search is more suitable because the list of 50,000 records is already sorted, and each comparison eliminates half of the remaining records, so at most about 16 comparisons are needed instead of up to 50,000."
+
+**Know the trade offs, not just the speeds.** Merge sort is faster but needs more memory. Bubble sort is slow but needs almost none. Binary search is faster but demands sorted data.
+
++ Trace one full pass of bubble sort on a five item list, writing the list after every swap
++ Show every step of a binary search including which half is discarded and why
++ Explain why merge sort uses more memory than bubble sort
++ Choose and justify an algorithm for any scenario, naming the property of the data
+""",
+    mistakes=[
+        "Using binary search on an unsorted list. It gives wrong answers, and saying so is worth a mark.",
+        "Saying merge sort is 'always better'. It uses more memory, which matters on constrained devices.",
+        "Confusing bubble sort with insertion sort. Bubble compares adjacent pairs, insertion places each item into a sorted section.",
+        "Only writing the final sorted list when asked to show one pass. Show the intermediate states.",
+        "Saying an algorithm is faster without saying why, in terms of the number of comparisons.",
+    ],
+    quiz=[
+        Q("Which search algorithm requires the list to be sorted?",
+          ["Binary search", "Linear search", "Both of them", "Neither of them"], 0,
+          "Binary search relies on being able to discard half the list based on a comparison, which only works if the data is in order."),
+        Q("A list of 1000 sorted items is searched. What is the approximate maximum number of comparisons for a binary search?",
+          ["10", "500", "1000", "100"], 0,
+          "Each comparison halves the remaining items, and 2 to the power 10 is 1024, so about ten comparisons suffice."),
+        Q("In one full pass of bubble sort, what is guaranteed to happen?",
+          ["The largest remaining unsorted value moves to its correct position",
+           "The list becomes fully sorted",
+           "The smallest value moves to the front",
+           "Exactly one swap is made"], 0,
+          "Each pass bubbles the largest remaining value to the end, which is where the algorithm gets its name."),
+        Q("Which sorting algorithm uses divide and conquer?",
+          ["Merge sort", "Bubble sort", "Insertion sort", "Linear sort"], 0,
+          "Merge sort splits the problem into smaller instances of itself, solves those, then combines the results."),
+        Q("What is the main disadvantage of merge sort compared with bubble sort?",
+          ["It uses more memory because sub lists must be stored",
+           "It is slower on large lists",
+           "It cannot sort numbers",
+           "It requires the list to be sorted first"], 0,
+          "Merge sort is much faster but not in place, so it needs additional space to hold the sub lists during merging."),
+        Q("After the first pass of bubble sort on [7, 3, 9, 2], the list is:",
+          ["[3, 7, 2, 9]", "[2, 3, 7, 9]", "[3, 9, 7, 2]", "[7, 3, 2, 9]"], 0,
+          "Compare 7 and 3, swap to give [3,7,9,2]. Compare 7 and 9, no swap. Compare 9 and 2, swap to give [3,7,2,9]."),
+        Q("Which algorithm is most efficient on a list that is already nearly sorted?",
+          ["Insertion sort", "Merge sort", "Bubble sort with no early exit", "Binary search"], 0,
+          "Insertion sort does very little work when items are already close to their correct positions."),
+        Q("Binary search on the sorted list [2, 5, 9, 14, 20, 31, 44] looking for 5 first compares against:",
+          ["14", "5", "2", "20"], 0,
+          "The middle element of a seven item list is at index 3, which is 14."),
+        Q("Why is linear search sometimes preferred over binary search?",
+          ["It works on unsorted data, so the list does not need sorting first",
+           "It is faster on large lists",
+           "It uses less memory than binary search",
+           "It never returns a wrong answer"], 0,
+          "If the data is unsorted and only searched once, sorting it first would cost more time than the faster search saves."),
+        Q("Insertion sort works by:",
+          ["Taking each unsorted item and placing it in the correct position within a sorted section",
+           "Repeatedly swapping adjacent items",
+           "Splitting the list in half repeatedly",
+           "Comparing the middle item with the target"], 0,
+          "It is the way most people sort a hand of playing cards, building the sorted section one card at a time."),
+    ],
+    exam=[
+        EQ("Describe how a binary search finds an item in a sorted list.", 4, [
+            MP("The middle item of the list is examined", ["middle", "midpoint", "centre", "middle item"]),
+            MP("If it matches the target the search stops", ["matches", "found", "equal", "stop"]),
+            MP("If the target is smaller the upper half is discarded, if larger the lower half is discarded", ["smaller", "larger", "discard", "half", "lower", "upper", "eliminate"]),
+            MP("The process repeats on the remaining half until the item is found or no items remain", ["repeats", "until", "remaining", "no items left", "continues"]),
+        ], "Binary search begins by examining the item in the middle of the sorted list. If that item is the one being searched for, the search stops and the position is returned. If the target is smaller than the middle item then it cannot be in the upper half, so the entire upper half including the middle item is discarded. If the target is larger then the lower half is discarded instead. The process then repeats on whichever half remains, examining its middle item and discarding half again, and continues until either the item is found or the remaining range is empty, in which case the item is not in the list.",
+           command="Describe"),
+        EQ("Show the state of the list [8, 4, 6, 2] after each pass of a bubble sort.", 4, [
+            MP("After pass 1 the list is [4, 6, 2, 8]", ["4, 6, 2, 8", "4 6 2 8"]),
+            MP("After pass 2 the list is [4, 2, 6, 8]", ["4, 2, 6, 8", "4 2 6 8"]),
+            MP("After pass 3 the list is [2, 4, 6, 8]", ["2, 4, 6, 8", "2 4 6 8"]),
+            MP("Shows that a final pass with no swaps confirms the list is sorted", ["no swaps", "final pass", "sorted", "confirms", "fourth pass"]),
+        ], "Pass 1: comparing 8 and 4 gives a swap to [4, 8, 6, 2]; comparing 8 and 6 gives a swap to [4, 6, 8, 2]; comparing 8 and 2 gives a swap to [4, 6, 2, 8]. Pass 2: comparing 4 and 6 gives no swap; comparing 6 and 2 gives a swap to [4, 2, 6, 8]; comparing 6 and 8 gives no swap. Pass 3: comparing 4 and 2 gives a swap to [2, 4, 6, 8]; the remaining comparisons give no swaps. A fourth pass makes no swaps at all, which tells the algorithm that the list is fully sorted and it stops.",
+           command="Show"),
+        EQ("Compare bubble sort and merge sort in terms of speed and memory use.", 4, [
+            MP("Merge sort is much faster on large lists", ["merge sort faster", "quicker", "more efficient", "fewer comparisons"]),
+            MP("Bubble sort may pass through the list many times, making it very slow on large data", ["many passes", "repeatedly", "slow", "inefficient", "every pair"]),
+            MP("Bubble sort sorts in place, using very little extra memory", ["in place", "little memory", "no extra", "same list"]),
+            MP("Merge sort needs additional memory to store the sub lists during merging", ["extra memory", "sub lists", "more memory", "additional space", "copies"]),
+        ], "In terms of speed, merge sort is substantially faster than bubble sort on large lists. Bubble sort compares every adjacent pair on each pass and may need to pass through the whole list many times, so the number of comparisons grows very steeply as the list gets longer. Merge sort repeatedly halves the problem and then merges sorted sub lists, which keeps the number of operations far lower and, importantly, gives consistent performance regardless of how disordered the original list is. The trade off is memory. Bubble sort operates in place, swapping items within the original list and needing only a single temporary variable, so its memory requirement is tiny. Merge sort has to create and hold the sub lists it produces while dividing and merging, so it requires additional memory roughly proportional to the size of the list, which can matter on devices where memory is limited.",
+           command="Compare"),
+        EQ("A company stores 5 million customer records in a sorted list. Explain which search algorithm they should use and why.", 4, [
+            MP("Recommends binary search", ["binary search", "binary"]),
+            MP("The list is already sorted, which binary search requires", ["already sorted", "sorted", "in order", "requirement"]),
+            MP("Each comparison eliminates half the remaining records", ["half", "halves", "eliminates", "discards"]),
+            MP("Only around 23 comparisons are needed instead of up to 5 million", ["23", "twenty", "far fewer", "5 million", "much quicker", "handful"]),
+        ], "The company should use a binary search. The essential precondition is already met, because the records are stored in sorted order, and binary search cannot be used on unsorted data. Each comparison in a binary search eliminates half of the records still under consideration, so the number of items to check falls from 5 million to 2.5 million to 1.25 million and so on. This means the target is found in roughly 23 comparisons at most, since 2 to the power 23 is over 8 million. A linear search on the same data would examine records one at a time and could require up to 5 million comparisons, so the binary search is several hundred thousand times faster in the worst case, which matters enormously if searches are performed frequently.",
+           command="Explain"),
+        EQ("Explain why an insertion sort may be a better choice than a merge sort for a small embedded device with very limited memory.", 3, [
+            MP("Insertion sort works in place and requires very little extra memory", ["in place", "little memory", "no extra", "minimal"]),
+            MP("Merge sort requires additional memory to hold sub lists", ["extra memory", "sub lists", "additional", "copies", "more memory"]),
+            MP("On a device with limited memory, saving memory outweighs the speed advantage, especially for small lists", ["limited memory", "outweighs", "small list", "not enough memory", "more important"]),
+        ], "An insertion sort operates entirely within the original list, moving items along to make space and using only a single temporary variable, so its additional memory requirement is effectively constant no matter how large the list is. A merge sort, by contrast, must create and store the sub lists it produces while dividing and merging, which requires extra memory roughly proportional to the size of the data. On an embedded device with very limited memory that extra allocation may simply not be available, and attempting it could cause the program to fail. Since embedded systems also tend to handle relatively small quantities of data, where the speed advantage of merge sort is small in absolute terms, the memory saving of insertion sort is the more important consideration.",
+           command="Explain"),
+    ],
+)
+
+# ================================================ 2.2.1 Programming fundamentals
+
+T_PROGFUND = Topic(
+    slug="programming-fundamentals",
+    title="Programming Fundamentals",
+    spec="2.2.1",
+    icon="i-code",
+    minutes=34,
+    blurb="Variables, constants, the three programming constructs, operators and how to write code that an examiner can follow and award marks to.",
+    fact="Every program ever written, from a calculator to an operating system, is built from just three structures: sequence, selection and iteration. This was proved mathematically in 1966 and is called the structured program theorem.",
+    sections=[
+        Section("Variables and constants", """
+A **variable** is a named location in memory that holds a value which **can change** while the program runs.
+
+A **constant** is a named value that is **fixed** and cannot be changed once set.
+
+```python
+score = 0            # variable, will change
+lives = 3            # variable
+VAT_RATE = 0.20      # constant by convention in Python
+PI = 3.14159         # constant
+```
+
+### Why use constants
+
+- The value appears **once**, so changing it means editing one line rather than hunting through the program
+- The name explains what the number means, so `VAT_RATE` is far clearer than `0.2`
+- The value **cannot be changed accidentally**, which prevents a whole class of bugs
+
+!key Naming matters for marks :: Use meaningful names. `totalPrice` is better than `t` in every possible way, and examiners note it as good practice.
+"""),
+        Section("The three constructs", """
+### Sequence
+
+Instructions are carried out **one after another, in order**.
+
+```python
+name = input("What is your name? ")
+greeting = "Hello " + name
+print(greeting)
+```
+
+### Selection
+
+The program **chooses between different paths** based on a condition.
+
+```python
+mark = int(input("Enter the mark: "))
+
+if mark >= 70:
+    print("Distinction")
+elif mark >= 50:
+    print("Pass")
+else:
+    print("Fail")
+```
+
+Note the order. If the first condition were `mark >= 50`, then a mark of 80 would print "Pass" and never reach the distinction branch. **Order the conditions from most restrictive to least.**
+
+### Iteration
+
+Instructions are **repeated**.
+
+**Count controlled** loops repeat a known number of times.
+
+```python
+for i in range(5):
+    print("Line", i)
+```
+
+**Condition controlled** loops repeat until a condition changes.
+
+```python
+password = ""
+while password != "opensesame":
+    password = input("Enter the password: ")
+print("Access granted")
+```
+
+!warn range(5) gives 0, 1, 2, 3, 4 :: It runs five times but never reaches 5. `range(1, 6)` gives 1 to 5. This is where most off by one errors come from.
+
+### Nested constructs
+
+Constructs can be placed inside each other.
+
+```python
+for row in range(3):
+    for col in range(3):
+        if row == col:
+            print("X", end=" ")
+        else:
+            print(".", end=" ")
+    print()
+```
+
+The inner loop completes entirely for each single iteration of the outer loop, so this runs nine times in total.
+"""),
+        Section("Operators", """
+### Arithmetic
+
+| Operator | Meaning | Example | Result |
+| `+` | Addition | `7 + 3` | 10 |
+| `-` | Subtraction | `7 - 3` | 4 |
+| `*` | Multiplication | `7 * 3` | 21 |
+| `/` | Division | `7 / 2` | 3.5 |
+| `MOD` or `%` | Remainder | `7 % 2` | 1 |
+| `DIV` or `//` | Integer division | `7 // 2` | 3 |
+| `^` or `**` | Exponent | `2 ** 3` | 8 |
+
+**MOD is extremely useful.** `number % 2 == 0` tests whether a number is even. `seconds % 60` gives the seconds part of a time.
+
+### Comparison
+
+| Operator | Meaning |
+| `==` | Equal to |
+| `!=` | Not equal to |
+| `<` | Less than |
+| `<=` | Less than or equal to |
+| `>` | Greater than |
+| `>=` | Greater than or equal to |
+
+!warn One equals sign assigns, two compare :: `x = 5` puts 5 into x. `x == 5` asks whether x is 5. Mixing these up is the single most common beginner error.
+
+### Boolean
+
+- `AND` is true only when **both** conditions are true
+- `OR` is true when **at least one** is true
+- `NOT` reverses a condition
+
+```python
+if age >= 13 and age <= 19:
+    print("Teenager")
+
+if day == "Saturday" or day == "Sunday":
+    print("Weekend")
+
+if not logged_in:
+    print("Please sign in")
+```
+"""),
+        Section("Writing code the exam can mark", """
+Paper 2 asks you to write code in Python, in OCR reference language, or in another high level language. Whichever you choose, a few habits make a large difference.
+
+### Habits that earn marks
+
+1. **Indent consistently.** In Python, indentation is the structure. In reference language it makes your logic readable.
+2. **Use meaningful variable names.** `numberOfGuesses` beats `n`.
+3. **Convert input types.** `input()` always returns a string, so use `int()` or `float()` when you need a number.
+4. **Comment anything non obvious**, briefly.
+5. **Close every structure.** In reference language, every `if` needs an `endif` and every `while` needs an `endwhile`.
+6. **Read the question for the exact requirements.** If it says validate the input, a program without validation cannot get full marks however elegant it is.
+
+### A complete example
+
+```python
+# Ask for 5 marks, then report the average and the highest
+
+TOTAL_STUDENTS = 5
+marks = []
+
+for i in range(TOTAL_STUDENTS):
+    valid = False
+    while not valid:
+        entry = input("Enter mark " + str(i + 1) + ": ")
+        if entry.isdigit() and 0 <= int(entry) <= 100:
+            valid = True
+        else:
+            print("Please enter a whole number between 0 and 100.")
+    marks.append(int(entry))
+
+average = sum(marks) / TOTAL_STUDENTS
+highest = max(marks)
+
+print("Average:", round(average, 1))
+print("Highest:", highest)
+```
+
+Notice: a constant for the fixed value, validation before use, meaningful names, and clear output.
+"""),
+    ],
+    keyterms=[
+        ("Variable", "A named location in memory holding a value that can change while the program runs."),
+        ("Constant", "A named value that is fixed and cannot be changed once it has been set."),
+        ("Sequence", "Instructions carried out one after another in the order written."),
+        ("Selection", "Choosing between different paths through a program based on a condition."),
+        ("Iteration", "Repeating a block of instructions, either a set number of times or until a condition is met."),
+        ("Count controlled loop", "A loop that repeats a known, fixed number of times."),
+        ("Condition controlled loop", "A loop that repeats until a condition becomes true or false."),
+        ("MOD", "The modulus operator, which returns the remainder after division."),
+        ("DIV", "Integer division, which returns the whole number part of a division."),
+        ("Nested loop", "A loop placed inside another loop."),
+    ],
+    grade="""
+Programming marks are won by **completeness**, not cleverness.
+
+**Answer exactly what is asked.** If the question requires input, validation, a calculation and an output, the mark scheme has a mark for each. A brilliant program missing the validation loses that mark regardless.
+
+**Choose the right loop.** A known number of repetitions means a for loop. An unknown number, such as repeating until the user types quit, means a while loop. Choosing wrongly is often penalised.
+
+**Order your conditions correctly.** With overlapping ranges, put the most restrictive first. `if mark >= 70` must come before `elif mark >= 50`.
+
+**Handle the input type.** In Python, `input()` returns a string. Comparing that string with a number will never behave as intended.
+
++ Write a validated input loop from memory
++ Trace a nested loop and state exactly how many times the inner body runs
++ Use MOD to test for even numbers and to extract digits
++ Explain the difference between a variable and a constant, with a reason for using each
+""",
+    mistakes=[
+        "Using a single equals sign in a condition instead of a double equals.",
+        "Forgetting to convert input to an integer before doing arithmetic or a numeric comparison.",
+        "Assuming range(5) includes 5. It gives 0 to 4.",
+        "Ordering elif conditions from least restrictive to most, so higher values never reach the correct branch.",
+        "Writing a while loop where nothing inside can ever change the condition, creating an infinite loop.",
+        "Using single letter variable names throughout, which makes the code hard to follow and hard to mark.",
+    ],
+    quiz=[
+        Q("What is the difference between a variable and a constant?",
+          ["A variable's value can change during execution, a constant's cannot",
+           "A constant can change but a variable cannot",
+           "Variables are stored in ROM and constants in RAM",
+           "There is no difference"], 0,
+          "Constants are fixed once set, which protects important values from being changed accidentally."),
+        Q("What does 17 MOD 5 evaluate to?",
+          ["2", "3", "3.4", "85"], 0,
+          "MOD gives the remainder. 17 divided by 5 is 3 remainder 2, so the answer is 2."),
+        Q("How many times does `for i in range(3)` execute the loop body?",
+          ["3", "2", "4", "0"], 0,
+          "range(3) produces 0, 1 and 2, so the body runs three times."),
+        Q("Which loop should be used when the number of repetitions is not known in advance?",
+          ["A condition controlled loop such as while",
+           "A count controlled loop such as for",
+           "A nested for loop",
+           "No loop, use selection instead"], 0,
+          "A while loop repeats until its condition changes, which is exactly the case when the number of iterations is unknown."),
+        Q("What does 17 DIV 5 evaluate to?",
+          ["3", "2", "3.4", "12"], 0,
+          "DIV is integer division, giving only the whole number part, so 17 DIV 5 is 3."),
+        Q("Which condition correctly tests whether a number stored in n is even?",
+          ["n % 2 == 0", "n / 2 == 0", "n % 2 == 1", "n == 2"], 0,
+          "An even number leaves no remainder when divided by 2, so the modulus is 0."),
+        Q("What is wrong with `if score = 100:` in Python?",
+          ["A single equals sign assigns a value, a comparison needs two",
+           "Score cannot be compared with a number",
+           "The colon should be a semicolon",
+           "Nothing is wrong"], 0,
+          "One equals sign is assignment. Comparison requires the double equals operator."),
+        Q("In a nested loop where the outer runs 4 times and the inner runs 5 times, how many times does the inner body execute in total?",
+          ["20", "9", "5", "4"], 0,
+          "The inner loop completes fully on each outer iteration, so 4 multiplied by 5 gives 20."),
+        Q("Which expression is true when age is 15?",
+          ["age >= 13 and age <= 19", "age > 15 and age < 13",
+           "age == 13 or age == 19", "not (age > 10)"], 0,
+          "15 is greater than or equal to 13 and less than or equal to 19, so both parts of the AND are true."),
+        Q("Why should a program use a constant for a VAT rate rather than typing 0.2 throughout?",
+          ["If the rate changes, only one line needs editing and the name explains the value",
+           "Constants make the program run faster",
+           "Constants use less memory than variables",
+           "The compiler requires it"], 0,
+          "Single point of change and self documenting code are the two real benefits, and both reduce bugs."),
+    ],
+    exam=[
+        EQ("State the difference between a variable and a constant, and give one reason a programmer would use a constant.", 3, [
+            MP("A variable can change value while the program runs", ["variable", "can change", "changes", "varies"]),
+            MP("A constant cannot be changed once set", ["constant", "cannot change", "fixed", "unchanged", "same"]),
+            MP("Reason such as preventing accidental change, or only needing to edit one line if the value changes", ["accidental", "one place", "single", "easier to update", "clarity", "readable", "meaningful"]),
+        ], "A variable is a named memory location whose value can be changed at any point while the program is running, whereas a constant is given a value once and that value cannot be changed afterwards. A programmer would use a constant for a value such as a VAT rate or the maximum number of players, because it prevents the value being altered accidentally elsewhere in the program, and if the value ever does need updating it appears in only one place, so only one line has to be edited.",
+           command="State"),
+        EQ("Explain the difference between a count controlled loop and a condition controlled loop, giving an example use for each.", 4, [
+            MP("A count controlled loop repeats a known fixed number of times", ["known", "fixed number", "set number", "specific number of times"]),
+            MP("Example such as processing every item in an array of known length", ["array", "every item", "list", "10 times", "each element"]),
+            MP("A condition controlled loop repeats until a condition is met, and the number of repetitions is not known in advance", ["condition", "until", "not known", "unknown", "while"]),
+            MP("Example such as repeatedly asking for input until it is valid", ["input", "valid", "password", "until the user", "quit", "correct"]),
+        ], "A count controlled loop repeats a known, fixed number of times, which is decided before the loop begins. It would be used, for example, to work through every element of an array of 20 marks, because the number of iterations required is known to be 20. A condition controlled loop repeats for as long as, or until, a particular condition holds, and the number of repetitions is not known when the loop starts. It would be used, for example, to keep asking the user to enter a password until they type the correct one, since there is no way to know in advance how many attempts they will need.",
+           command="Explain"),
+        EQ("Write a program that asks the user to enter numbers repeatedly until they enter 0, then outputs how many numbers were entered and their total.", 6, [
+            MP("Initialises a counter and a total to zero", ["count = 0", "total = 0", "initialise", "set to 0"]),
+            MP("Uses a condition controlled loop", ["while", "loop", "repeat", "until"]),
+            MP("Takes input inside the loop and converts it to a number", ["input", "int(", "convert", "number"]),
+            MP("Stops the loop when 0 is entered", ["== 0", "!= 0", "zero", "stop", "break"]),
+            MP("Adds each valid number to the total and increments the counter", ["total = total +", "total +=", "count = count + 1", "count +=", "increment"]),
+            MP("Outputs both the count and the total after the loop", ["print", "output", "display", "count", "total"]),
+        ], "count = 0\ntotal = 0\nnumber = int(input(\"Enter a number, or 0 to finish: \"))\n\nwhile number != 0:\n    total = total + number\n    count = count + 1\n    number = int(input(\"Enter a number, or 0 to finish: \"))\n\nprint(\"You entered\", count, \"numbers\")\nprint(\"Their total is\", total)\n\nThe counter and total are initialised to zero before the loop. The first number is read before the loop so that the condition can be tested. The while loop continues for as long as the number entered is not 0, adding each value to the running total, increasing the counter and then reading the next number. When 0 is entered the loop ends without counting the 0 itself, and the count and total are output.",
+           command="Write"),
+        EQ("A program contains the following selection statement, which is intended to award grades. Explain why a mark of 85 would be given the wrong grade.\n\nif mark >= 40 then print(\"Pass\") elseif mark >= 70 then print(\"Distinction\") endif", 3, [
+            MP("The conditions are tested in order from the top", ["order", "in turn", "first", "top", "sequence"]),
+            MP("85 satisfies the first condition mark >= 40, so Pass is printed", ["85", "greater than 40", "first condition", "true", "pass"]),
+            MP("The elseif is never reached, so the fix is to test the most restrictive condition first", ["never reached", "not tested", "reorder", "most restrictive", "70 first", "swap"]),
+        ], "Selection statements are evaluated from the top downwards, and as soon as one condition is found to be true its block runs and the remaining branches are skipped entirely. A mark of 85 satisfies the first condition, because 85 is greater than or equal to 40, so the program prints Pass and the elseif testing for 70 or above is never reached. The fix is to reorder the conditions so that the most restrictive is tested first: check whether the mark is at least 70 and award Distinction, and only then check whether it is at least 40 and award Pass.",
+           command="Explain"),
+        EQ("Explain what the MOD operator does and give two situations where it would be useful in a program.", 4, [
+            MP("MOD returns the remainder after a division", ["remainder", "left over", "modulus"]),
+            MP("Gives a correct example of its value, such as 17 MOD 5 being 2", ["17 mod 5", "remainder is", "example", "2"]),
+            MP("First use such as testing whether a number is even or odd", ["even", "odd", "divisible", "mod 2"]),
+            MP("Second use such as extracting units of time, or cycling through a fixed set of values", ["seconds", "minutes", "time", "cycle", "wrap", "60", "digits"]),
+        ], "The MOD operator carries out a division and returns the remainder rather than the quotient, so 17 MOD 5 gives 2 because 5 goes into 17 three times with 2 left over. One useful application is testing whether a number is even or odd: if a number MOD 2 equals 0 then it divides exactly by two and is therefore even, which is a very common requirement in filtering and alternating logic. A second application is breaking a value into units, for example converting a total number of seconds into minutes and seconds, where the total DIV 60 gives the number of whole minutes and the total MOD 60 gives the seconds left over. MOD is also used to cycle a value within a fixed range, such as wrapping a player position around the edge of a game board.",
+           command="Explain"),
+    ],
+)
+
+# ============================================================= 2.2.2 Data types
+
+T_DATATYPES = Topic(
+    slug="data-types-and-casting",
+    title="Data Types and Casting",
+    spec="2.2.2",
+    icon="i-list",
+    minutes=20,
+    blurb="The five data types you must know, why choosing the right one saves memory, and why casting is the fix for the most common bug in beginner programs.",
+    fact="Storing a whole number as a real wastes memory and can also lose accuracy. Some decimal fractions cannot be represented exactly in binary, which is why 0.1 plus 0.2 does not quite equal 0.3 in most programming languages.",
+    sections=[
+        Section("The five data types", """
+| Data type | Holds | Examples |
+| **Integer** | A whole number, positive or negative | `42`, `-7`, `0` |
+| **Real** or float | A number with a decimal part | `3.14`, `-0.5`, `2.0` |
+| **Boolean** | One of two values only | `True`, `False` |
+| **Character** | A single character | `"A"`, `"7"`, `"?"` |
+| **String** | A sequence of characters | `"Hello"`, `"CS123"`, `""` |
+
+### Choosing correctly
+
+Ask what the data actually is and what you will do with it.
+
+- A person's **age**: integer, since ages are whole numbers
+- A **price**: real, since it needs pence
+- Whether a user is **logged in**: Boolean, only two states
+- A **phone number**: string, not integer, because it may start with 0 and you never do arithmetic on it
+- A **postcode**: string, because it contains letters
+
+!warn Phone numbers are strings :: Store 07700 900123 as an integer and the leading zero disappears. Any number you never perform arithmetic on should be a string.
+
+### Why the right type matters
+
+1. **Memory.** An integer uses less memory than a real. Across a database of millions of records the difference is substantial.
+2. **Correct operations.** You cannot multiply strings, and you cannot concatenate integers. Using the wrong type causes errors.
+3. **Validation.** Declaring a value as an integer means non numeric input is rejected automatically in many languages.
+4. **Accuracy.** Reals are stored as approximations, so money is sometimes stored as an integer number of pence to avoid rounding errors.
+"""),
+        Section("Casting", """
+**Casting** is converting a value from one data type to another.
+
+```python
+age_text = input("How old are you? ")   # this is a STRING, always
+age = int(age_text)                      # now it is an integer
+
+price = float("19.99")                   # string to real
+label = str(42)                          # integer to string
+flag  = bool(1)                          # 1 becomes True
+```
+
+### Why casting is needed
+
+`input()` always returns a **string**, even when the user types a number. Without casting:
+
+```python
+age = input("Age: ")     # user types 20, age is the string "20"
+if age > 18:             # ERROR: cannot compare a string with a number
+    print("Adult")
+```
+
+And this:
+
+```python
+a = input("First number: ")   # user types 5
+b = input("Second number: ")  # user types 3
+print(a + b)                  # prints 53, not 8
+```
+
+The `+` operator joins strings together. Both values must be cast to integers first.
+
+```python
+a = int(input("First number: "))
+b = int(input("Second number: "))
+print(a + b)                  # prints 8
+```
+
+### Casting the other way
+
+When printing a number joined to text in Python you must cast to string:
+
+```python
+score = 42
+print("Your score is " + str(score))   # correct
+```
+
+!key The rule to remember :: `input()` gives a string. Cast to `int()` or `float()` before doing arithmetic or numeric comparison. Cast to `str()` before joining a number to text with `+`.
+"""),
+    ],
+    keyterms=[
+        ("Integer", "A whole number data type, with no fractional part."),
+        ("Real", "A data type for numbers with a decimal part. Also called float."),
+        ("Boolean", "A data type with only two possible values, true and false."),
+        ("Character", "A data type holding a single character."),
+        ("String", "A data type holding a sequence of characters."),
+        ("Casting", "Converting a value from one data type into another."),
+        ("Concatenation", "Joining two strings together to form one longer string."),
+    ],
+    grade="""
+The knowledge here is short, so precision earns the marks.
+
+**Justify a data type by what you will do with the value.** Not "a phone number is a string because it has numbers in it", but "a phone number is stored as a string because it may begin with a zero, which an integer would discard, and because no arithmetic is ever performed on it".
+
+**Be exact about why casting is needed.** The reason is that `input()` always returns a string, and the `+` operator concatenates strings rather than adding them, so the program produces "53" instead of 8.
+
+**Know the memory argument.** Choosing the smallest suitable type reduces memory use, which is significant across large datasets and important on constrained devices.
+
++ Choose and justify a data type for any given piece of data
++ Explain exactly what goes wrong when input is not cast, with the actual output
++ Give three reasons why choosing the right data type matters
+""",
+    mistakes=[
+        "Storing a phone number or a postcode as an integer.",
+        "Saying casting 'changes the variable name'. It converts the value's type.",
+        "Forgetting that input() returns a string even when the user types digits.",
+        "Using a real for a value that is always whole, wasting memory.",
+        "Saying a Boolean can hold yes, no or maybe. It has exactly two values.",
+    ],
+    quiz=[
+        Q("Which data type should be used to store whether a light is switched on?",
+          ["Boolean", "Integer", "String", "Real"], 0,
+          "There are exactly two possible states, which is precisely what a Boolean represents."),
+        Q("Why should a phone number be stored as a string rather than an integer?",
+          ["Leading zeros would be lost and no arithmetic is performed on it",
+           "Phone numbers are too long for an integer",
+           "Strings use less memory",
+           "Integers cannot store more than four digits"], 0,
+          "Storing 07700 900123 as an integer removes the leading zero, and you never add or multiply phone numbers."),
+        Q("What does `int(\"57\")` produce?",
+          ["The integer 57", "The string \"57\"", "An error", "The real 57.0"], 0,
+          "int() casts a string containing digits into an integer value that can be used in arithmetic."),
+        Q("A program uses `a = input()` and `b = input()`, then `print(a + b)`. The user types 4 and 6. What is printed?",
+          ["46", "10", "24", "An error"], 0,
+          "Both values are strings, so + concatenates them rather than adding. Casting with int() would give 10."),
+        Q("Which data type is most suitable for a product price of 9.99?",
+          ["Real", "Integer", "Boolean", "Character"], 0,
+          "A price needs a fractional part, which only a real can represent. Some systems store pence as an integer instead to avoid rounding errors."),
+        Q("What is casting?",
+          ["Converting a value from one data type to another",
+           "Declaring a variable for the first time",
+           "Copying a value into a new variable",
+           "Removing a variable from memory"], 0,
+          "Casting changes the type of a value, for example turning the string \"20\" into the integer 20."),
+        Q("Which is a valid reason for choosing the correct data type?",
+          ["It reduces memory use and ensures the right operations can be performed",
+           "It makes the program run at a higher clock speed",
+           "It removes the need for validation",
+           "It converts the program into machine code"], 0,
+          "Memory efficiency and operation validity are the two main reasons, along with helping catch invalid input."),
+        Q("How many possible values can a Boolean hold?",
+          ["2", "1", "8", "256"], 0,
+          "True and false, and nothing else."),
+        Q("In Python, what is needed to print `\"Score: \" + score` where score is an integer?",
+          ["Cast score to a string using str()", "Cast score to a float",
+           "Nothing, it works as written", "Remove the quotation marks"], 0,
+          "The + operator cannot join a string to an integer, so the integer must be cast to a string first."),
+        Q("A student's exam mark out of 100 with no decimals should be stored as:",
+          ["An integer", "A real", "A string", "A Boolean"], 0,
+          "Whole numbers only, and arithmetic will be performed on them, so integer is correct and uses less memory than a real."),
+    ],
+    exam=[
+        EQ("State the most appropriate data type for each of the following and justify one of your choices: a customer's surname, whether an order has been dispatched, the total price of an order.", 4, [
+            MP("Surname is a string", ["surname string", "string", "text"]),
+            MP("Dispatched is a Boolean", ["boolean", "bool", "true or false"]),
+            MP("Total price is a real", ["real", "float", "decimal"]),
+            MP("Gives a valid justification for one choice", ["because", "two values", "decimal", "pence", "letters", "arithmetic"]),
+        ], "A customer's surname should be stored as a string, because it is a sequence of characters and no arithmetic is ever performed on it. Whether an order has been dispatched should be stored as a Boolean, because there are only two possible states, dispatched or not dispatched, and a Boolean uses the least memory of any type while making the meaning of the value completely clear. The total price of an order should be stored as a real, because prices include pence and therefore require a fractional part that an integer could not represent.",
+           command="State"),
+        EQ("A program asks the user for two numbers and adds them together, but when the user enters 12 and 5 the program outputs 125. Explain why this happens and how the programmer could correct it.", 3, [
+            MP("The input function returns a string", ["string", "text", "input returns"]),
+            MP("The plus operator concatenates strings rather than adding numbers", ["concatenate", "joins", "sticks together", "not adding", "combines"]),
+            MP("Cast the inputs to integers using int() before adding", ["int(", "cast", "convert", "integer", "casting"]),
+        ], "The problem is that the input function always returns a string, even when the user types digits, so the variables hold the strings \"12\" and \"5\" rather than the numbers 12 and 5. When the plus operator is applied to two strings it concatenates them, joining them end to end, which produces \"125\" rather than performing addition. The programmer should cast each input to an integer as it is read, for example using number1 = int(input(...)), so that the values are stored as integers and the plus operator then performs numerical addition, producing 17.",
+           command="Explain"),
+        EQ("Explain two reasons why choosing an appropriate data type is important when writing a program.", 4, [
+            MP("Different types use different amounts of memory", ["memory", "storage", "space", "bytes"]),
+            MP("Choosing the smallest suitable type saves memory, which matters across large amounts of data", ["saves", "efficient", "large", "millions", "less memory"]),
+            MP("The data type determines which operations are valid", ["operations", "arithmetic", "cannot multiply", "valid", "what can be done"]),
+            MP("Using the wrong type causes errors or incorrect results", ["error", "incorrect", "wrong result", "crash", "unexpected"]),
+        ], "The first reason is memory efficiency. Different data types require different amounts of storage, with a Boolean needing very little and a real needing considerably more than an integer, so choosing the smallest type that can hold the data reduces the memory the program uses. Across a database holding millions of records, or on an embedded device with very limited memory, that difference is significant. The second reason is that the data type determines which operations can validly be carried out on a value. Arithmetic can be performed on integers and reals but not on strings, and concatenation applies to strings but not to numbers, so storing a value with the wrong type either causes the program to raise an error or, worse, produces a plausible but incorrect result, such as two numbers being joined together instead of added.",
+           command="Explain"),
+        EQ("Define the term casting and give an example of when it would be needed.", 3, [
+            MP("Casting is converting a value from one data type to another", ["converting", "changing", "one type to another", "convert"]),
+            MP("Gives a valid example such as converting user input to an integer", ["input", "int(", "string to integer", "convert input"]),
+            MP("Explains why it is needed in that example", ["arithmetic", "compare", "add", "because input returns a string", "otherwise"]),
+        ], "Casting is the process of converting a value from one data type into another, for example turning the string \"25\" into the integer 25. It is needed whenever a value is held as one type but must be used as another. A common example is reading a number from the user: the input function returns a string, so before the program can perform any arithmetic or numerical comparison on that value it must be cast using int() or float(), otherwise the program will either produce an error or treat the value as text and concatenate it rather than adding it.",
+           command="Define"),
+        EQ("A programmer stores a student's ID number, which always begins with a zero, as an integer. Explain the problem this causes and state what should be used instead.", 3, [
+            MP("An integer does not preserve leading zeros", ["leading zero", "zero is lost", "removed", "dropped", "not stored"]),
+            MP("The ID would be stored or displayed incorrectly", ["incorrect", "wrong", "different", "changes", "not match"]),
+            MP("A string should be used instead", ["string", "text", "store as a string"]),
+        ], "Storing the ID as an integer causes the leading zero to be lost, because numerically 0451 and 451 are the same value and an integer stores only the numeric value with no record of how it was written. This means the ID would be displayed and stored as 451, which does not match the student's actual ID and would cause lookups against records held elsewhere to fail. The ID should be stored as a string instead, which preserves every character exactly as entered, and this is appropriate because no arithmetic is ever performed on an ID number.",
+           command="Explain"),
+    ],
+)
+
+# ================================== 2.2.3 Additional programming techniques
+
+T_ADVTECH = Topic(
+    slug="additional-programming-techniques",
+    title="Additional Programming Techniques",
+    spec="2.2.3",
+    icon="i-layers",
+    minutes=34,
+    blurb="Strings, arrays, file handling, SQL, subroutines and random numbers. This is the widest single topic on Paper 2 and the one with the most easy marks available.",
+    fact="Almost every real program spends most of its time manipulating strings and reading files. The glamorous algorithms get the attention, but text processing is what software actually does all day.",
+    sections=[
+        Section("String manipulation", """
+| Operation | OCR reference language | Python |
+| Length | `name.length` | `len(name)` |
+| Substring | `name.substring(2,3)` | `name[2:5]` |
+| Uppercase | `name.upper` | `name.upper()` |
+| Lowercase | `name.lower` | `name.lower()` |
+| Left characters | `name.left(3)` | `name[:3]` |
+| Right characters | `name.right(3)` | `name[-3:]` |
+| Join | `first + " " + last` | `first + " " + last` |
+
+!warn OCR substring takes a start and a LENGTH :: `"Computing".substring(3,4)` starts at index 3 and takes 4 characters, giving `puti`. Python slicing takes a start and an END index, so `"Computing"[3:7]` also gives `puti`. Read the question carefully to see which is being used.
+
+### Common patterns
+
+```python
+# Build a username from a name
+first = "Aisha"
+last = "Khan"
+username = (first[0] + last).lower()      # akhan
+
+# Count the vowels in a word
+word = input("Enter a word: ")
+count = 0
+for letter in word.lower():
+    if letter in "aeiou":
+        count = count + 1
+print("Vowels:", count)
+
+# Reverse a string
+print(word[::-1])
+
+# Check a palindrome
+clean = word.lower().replace(" ", "")
+if clean == clean[::-1]:
+    print("Palindrome")
+```
+"""),
+        Section("Arrays and lists", """
+An **array** stores many values of the same type under one name, accessed by an **index** starting at 0.
+
+```python
+scores = [12, 45, 3, 78, 20]
+
+print(scores[0])        # 12, the first item
+print(scores[4])        # 20, the last item
+print(len(scores))      # 5
+
+scores[2] = 99          # change the third item
+scores.append(60)       # add to the end
+```
+
+### Working through an array
+
+```python
+total = 0
+highest = scores[0]
+
+for value in scores:
+    total = total + value
+    if value > highest:
+        highest = value
+
+print("Total:", total)
+print("Average:", total / len(scores))
+print("Highest:", highest)
+```
+
+Notice `highest` is initialised to the **first element**, not to 0. Initialising to 0 breaks if all the values are negative.
+
+### Two dimensional arrays
+
+A 2D array is a grid, accessed with two indexes: row then column.
+
+```python
+board = [["X", "O", "X"],
+         ["O", "X", "O"],
+         ["X", "O", "X"]]
+
+print(board[1][2])      # row 1, column 2, which is "O"
+
+for row in board:
+    for cell in row:
+        print(cell, end=" ")
+    print()
+```
+
+!key Row first, then column :: `board[1][2]` means row 1, column 2. Getting these the wrong way round is a classic exam error, especially in non square grids.
+"""),
+        Section("File handling", """
+Programs need to store data between runs, and that means reading from and writing to files.
+
+```python
+# Writing to a file
+file = open("scores.txt", "w")      # "w" overwrites the whole file
+file.write("Aisha,42\n")
+file.write("Ben,37\n")
+file.close()
+
+# Appending, which adds without deleting what is there
+file = open("scores.txt", "a")
+file.write("Chris,55\n")
+file.close()
+
+# Reading the whole file line by line
+file = open("scores.txt", "r")
+for line in file:
+    parts = line.strip().split(",")
+    name = parts[0]
+    score = int(parts[1])
+    print(name, "scored", score)
+file.close()
+```
+
+### The three modes
+
+| Mode | Meaning |
+| `"r"` | Read. Fails if the file does not exist. |
+| `"w"` | Write. Creates the file, and **erases everything already in it**. |
+| `"a"` | Append. Creates the file if needed, and adds to the end. |
+
+!warn Opening in "w" mode destroys the file contents :: If a question asks you to add a record without losing existing data, you must use append mode. This is a common mark.
+
+Always **close** the file when finished, so that data is properly written and the file is released.
+
+### OCR reference language
+
+```pseudo
+myFile = open("scores.txt")
+while NOT myFile.endOfFile()
+    print(myFile.readLine())
+endwhile
+myFile.close()
+```
+"""),
+        Section("SQL", """
+**SQL**, Structured Query Language, is used to search and manipulate data in a database. J277 requires `SELECT`, `FROM` and `WHERE`.
+
+    SELECT  which columns you want
+    FROM    which table
+    WHERE   which rows to include
+
+### Examples
+
+Given a table called `Students`:
+
+| StudentID | Name | Year | Grade |
+| 1 | Aisha | 11 | 9 |
+| 2 | Ben | 10 | 6 |
+| 3 | Chloe | 11 | 8 |
+
+Select everything:
+
+```sql
+SELECT * FROM Students
+```
+
+Select specific columns:
+
+```sql
+SELECT Name, Grade FROM Students
+```
+
+Select with a condition:
+
+```sql
+SELECT Name FROM Students WHERE Year = 11
+```
+
+Multiple conditions:
+
+```sql
+SELECT Name FROM Students WHERE Year = 11 AND Grade >= 8
+```
+
+Text values need quotation marks, numbers do not:
+
+```sql
+SELECT * FROM Students WHERE Name = 'Aisha'
+```
+
+!exam The asterisk means all columns :: `SELECT *` returns every column. If the question asks only for names, use `SELECT Name` or you may lose the mark for precision.
+"""),
+        Section("Subroutines and random numbers", """
+### Subroutines
+
+A **subroutine** is a named block of code that performs a specific task and can be called from anywhere in a program.
+
+```python
+def calculate_area(width, height):
+    return width * height          # a FUNCTION, it returns a value
+
+def show_welcome(name):
+    print("Welcome,", name)        # a PROCEDURE, it returns nothing
+
+area = calculate_area(5, 3)        # area is 15
+show_welcome("Aisha")
+```
+
+**Parameters** are the variables listed in the definition. **Arguments** are the actual values passed in when it is called.
+
+### Why subroutines matter
+
+- **Avoid repetition.** Write the code once and call it many times.
+- **Easier to test.** Each subroutine can be tested on its own.
+- **Easier to maintain.** Fix a bug in one place rather than in ten copies.
+- **Reusable** in other programs.
+- **Support decomposition**, since each sub problem becomes a subroutine.
+- **Improve readability**, because a well named call explains itself.
+
+### Local and global variables
+
+A **local** variable exists only inside the subroutine where it is created. A **global** variable is available throughout the whole program.
+
+Local variables are preferred because they cannot be changed accidentally by other parts of the program, and their memory is freed when the subroutine finishes.
+
+### Random numbers
+
+```python
+import random
+
+dice = random.randint(1, 6)          # a whole number from 1 to 6 inclusive
+card = random.choice(["A", "K", "Q"]) # a random item from a list
+```
+
+```pseudo
+dice = random(1, 6)
+```
+
+Random numbers are used in games, simulations, shuffling, sampling and generating test data.
+"""),
+    ],
+    keyterms=[
+        ("Array", "A data structure holding many values of the same type under one name, accessed by index."),
+        ("Index", "The position of an item within an array, counting from 0."),
+        ("2D array", "An array of arrays, forming a grid accessed by row and column."),
+        ("Subroutine", "A named block of code that performs a specific task and can be called from elsewhere."),
+        ("Parameter", "A variable listed in a subroutine definition that receives a value when it is called."),
+        ("Argument", "The actual value passed into a subroutine when it is called."),
+        ("Local variable", "A variable that only exists within the subroutine in which it is declared."),
+        ("Global variable", "A variable available to every part of the program."),
+        ("Concatenation", "Joining strings together end to end."),
+        ("SQL", "Structured Query Language, used to search and manipulate data in a database."),
+        ("Append mode", "Opening a file so that new data is added to the end without erasing existing content."),
+    ],
+    grade="""
+This topic covers a lot of ground, so target the marks that are most reliably available.
+
+**SQL is nearly free marks.** Three keywords, one structure. Learn `SELECT ... FROM ... WHERE ...` and practise ten queries. Quote text values, do not quote numbers, and only select the columns you were asked for.
+
+**File modes matter.** If the question says add a record without losing existing data, the answer is append mode. Write mode erases the file.
+
+**Explain subroutines by benefit, not definition.** "A subroutine avoids repeating the same code, so if the calculation changes it only has to be edited in one place, which reduces the chance of introducing errors."
+
+**Initialise from the data, not from zero.** When finding a maximum or minimum in an array, start from the first element. This is a favourite exam trap.
+
++ Write a SELECT query with a WHERE clause for any given table
++ Read a file line by line and split each line into fields
++ Write a function and call it, and explain why it is a function not a procedure
++ Loop through a 2D array using row and column indexes in the right order
+""",
+    mistakes=[
+        "Opening a file in write mode when the question requires existing data to be kept.",
+        "Forgetting to close a file after use.",
+        "Using SELECT * when the question asked for specific columns.",
+        "Putting quotation marks around a number in an SQL WHERE clause.",
+        "Getting row and column the wrong way round in a 2D array.",
+        "Initialising a maximum to 0 rather than to the first element of the array.",
+        "Forgetting that array indexes start at 0, so the last index is length minus 1.",
+    ],
+    quiz=[
+        Q("What does `\"Programming\"[0:4]` produce in Python?",
+          ["Prog", "rogr", "Progr", "gram"], 0,
+          "Python slicing takes characters from the start index up to but not including the end index, so indexes 0, 1, 2 and 3."),
+        Q("An array `data` has 8 elements. What is the index of the last element?",
+          ["7", "8", "9", "0"], 0,
+          "Indexes start at 0, so eight elements occupy indexes 0 to 7."),
+        Q("Which file mode adds data to the end of a file without deleting what is already there?",
+          ["Append", "Write", "Read", "Overwrite"], 0,
+          "Append mode preserves the existing content. Write mode erases the file before writing."),
+        Q("Which SQL query returns only the names of students in Year 11?",
+          ["SELECT Name FROM Students WHERE Year = 11",
+           "SELECT * FROM Students WHERE Year = 11",
+           "SELECT Students FROM Name WHERE Year = 11",
+           "SELECT Name WHERE Year = 11 FROM Students"], 0,
+          "SELECT names the columns, FROM names the table, WHERE gives the condition, and that order is fixed."),
+        Q("What is the difference between a parameter and an argument?",
+          ["A parameter is in the definition, an argument is the value passed in when called",
+           "An argument is in the definition, a parameter is passed in",
+           "They are the same thing",
+           "Parameters are only used in procedures"], 0,
+          "The definition lists parameters. The call supplies arguments that fill those parameters."),
+        Q("In the 2D array `grid`, how would you access the item in row 2, column 0?",
+          ["grid[2][0]", "grid[0][2]", "grid(2,0)", "grid[2,0][0]"], 0,
+          "Row index comes first, then column index, each in its own set of square brackets."),
+        Q("Why are local variables generally preferred to global variables?",
+          ["They cannot be accidentally changed by other parts of the program",
+           "They are faster to access than any other variable",
+           "They can hold more data",
+           "They are automatically saved to a file"], 0,
+          "Restricting scope prevents unintended interactions, and the memory is released when the subroutine ends."),
+        Q("What does `random.randint(1, 6)` return?",
+          ["A whole number from 1 to 6 inclusive", "A whole number from 1 to 5",
+           "A decimal between 1 and 6", "The number 6 every time"], 0,
+          "randint includes both endpoints, which makes it ideal for simulating a dice roll."),
+        Q("Which is a benefit of using subroutines?",
+          ["Code is written once and can be called many times, so it is easier to maintain",
+           "Programs always run faster",
+           "Variables become global automatically",
+           "Files do not need to be closed"], 0,
+          "Avoiding duplication means a fix or change is made in one place rather than in every copy."),
+        Q("A program needs to find the largest value in an array that may contain negative numbers. How should the variable holding the maximum be initialised?",
+          ["To the first element of the array", "To 0",
+           "To 1", "To the length of the array"], 0,
+          "Initialising to 0 fails when every value is negative, because no element is ever greater than 0."),
+    ],
+    exam=[
+        EQ("Write an SQL query to return the Name and Grade of all students in the table Students who have a Grade of 7 or higher.", 3, [
+            MP("Uses SELECT with the correct columns Name and Grade", ["select name", "name, grade", "select"]),
+            MP("Uses FROM with the correct table name", ["from students", "from"]),
+            MP("Uses WHERE with the correct condition", ["where grade", ">= 7", "greater than or equal"]),
+        ], "SELECT Name, Grade FROM Students WHERE Grade >= 7\n\nThe SELECT clause names the two columns required rather than using an asterisk, FROM names the table being queried, and WHERE restricts the rows returned to those where the Grade column holds a value of 7 or above. No quotation marks are used around 7 because it is a number, not text.",
+           command="Write"),
+        EQ("Explain two benefits of using subroutines in a program.", 4, [
+            MP("Code that is needed in several places is written only once", ["once", "repeat", "reuse", "duplication", "not repeated"]),
+            MP("If a change is needed it is made in one place, reducing errors", ["one place", "easier to maintain", "single", "change once", "fewer errors"]),
+            MP("Each subroutine can be tested independently", ["test", "tested separately", "independently", "debug"]),
+            MP("Programs are easier to read and understand, and subroutines support decomposition", ["readable", "understand", "decomposition", "clearer", "organised"]),
+        ], "The first benefit is the removal of duplication. Code that is needed in several parts of a program can be written once as a subroutine and then called wherever it is needed, which makes the program shorter. More importantly, if that code ever needs correcting or updating, the change only has to be made in one place, rather than finding and editing every copy, which greatly reduces the risk of leaving an old version behind and introducing a bug. The second benefit is that subroutines make a program much easier to develop and test. Each subroutine handles one clearly defined task, so it can be tested on its own with a range of inputs until it is known to work correctly, and different programmers can develop different subroutines at the same time. This also makes the main program far easier to read, because a well named call such as calculateTotalCost explains what is happening without the reader needing to see the detail.",
+           command="Explain"),
+        EQ("A program stores high scores in a text file. Explain why the file should be opened in append mode rather than write mode when a new score is added.", 3, [
+            MP("Write mode erases the existing contents of the file", ["erase", "delete", "overwrite", "removes", "clears", "lost"]),
+            MP("All previous high scores would therefore be lost", ["previous", "existing", "old scores", "lost", "gone"]),
+            MP("Append mode adds the new score to the end while keeping existing data", ["end", "keeps", "adds", "preserves", "retains", "existing data"]),
+        ], "Opening a file in write mode causes the existing contents of that file to be erased before anything new is written, so every high score already stored would be permanently lost as soon as a single new score was saved. Append mode instead opens the file so that anything written is added to the end, leaving all the existing content untouched. Since the purpose of a high score table is to accumulate results over time, append mode is the correct choice.",
+           command="Explain"),
+        EQ("Write a program that reads a list of names from a file called names.txt and outputs only those names that begin with the letter A.", 5, [
+            MP("Opens the file for reading", ["open", "read", "\"r\"", "file"]),
+            MP("Uses a loop to process each line", ["for", "while", "loop", "each line"]),
+            MP("Removes the newline character or otherwise cleans the line", ["strip", "trim", "replace", "clean", "rstrip"]),
+            MP("Tests whether the first character is A", ["[0]", "starts with", "first character", "== \"a\"", "left(1)"]),
+            MP("Outputs matching names and closes the file", ["print", "output", "close"]),
+        ], "file = open(\"names.txt\", \"r\")\n\nfor line in file:\n    name = line.strip()\n    if name[0].upper() == \"A\":\n        print(name)\n\nfile.close()\n\nThe file is opened in read mode and each line is processed in turn. The strip method removes the newline character from the end of each line so that the name is clean. The first character of the name is converted to uppercase and compared with A, so that names beginning with either a capital or a lowercase a are matched, and matching names are printed. The file is closed once every line has been processed.",
+           command="Write"),
+        EQ("Explain the difference between a local variable and a global variable, and state one reason why local variables are usually preferred.", 4, [
+            MP("A local variable only exists inside the subroutine where it is declared", ["local", "inside", "only within", "subroutine", "cannot be accessed outside"]),
+            MP("A global variable is accessible throughout the whole program", ["global", "whole program", "anywhere", "everywhere", "all parts"]),
+            MP("Local variables cannot be changed accidentally by other parts of the program", ["accidentally", "cannot be changed", "protected", "side effects", "unintended"]),
+            MP("Memory used by a local variable is freed when the subroutine ends", ["memory", "freed", "released", "deleted", "when it finishes"]),
+        ], "A local variable is declared inside a subroutine and only exists while that subroutine is running, so it cannot be seen or changed by any code outside it. A global variable is declared outside all subroutines and is accessible from anywhere in the program, so any part of the code can read or modify it. Local variables are usually preferred because their limited scope prevents them being altered accidentally by unrelated parts of the program, which removes a very common and hard to trace source of bugs, and it also means two subroutines can safely use the same variable name without interfering with each other. In addition, the memory a local variable occupies is released as soon as the subroutine finishes, whereas a global variable takes up memory for the entire time the program runs.",
+           command="Explain"),
+    ],
+)
+
+# ================================================ 2.3.1 and 2.3.2 Robust programs
+
+T_ROBUST = Topic(
+    slug="producing-robust-programs",
+    title="Producing Robust Programs",
+    spec="2.3",
+    icon="i-bug",
+    minutes=30,
+    blurb="Defensive design, validation, authentication, maintainability, and how to design a test plan that actually finds the bugs rather than confirming what you already believe.",
+    fact="A robust program assumes the user will do the worst possible thing at the worst possible moment. This is not pessimism, it is professionalism. The most expensive bugs in history were all inputs that nobody thought anyone would ever enter.",
+    sections=[
+        Section("Defensive design", """
+**Defensive design** means writing a program that continues to work correctly even when things go wrong: bad input, unexpected use, or a missing file.
+
+### Anticipating misuse
+
+Ask what a user might do that you did not intend:
+
+- Typing letters where a number is expected
+- Entering a date of birth in the future
+- Leaving a field blank
+- Entering an enormous number
+- Pressing buttons in an unexpected order
+- Entering SQL or script code into a text field
+
+### Input validation
+
+**Validation** checks that input is **sensible and in the expected format** before the program uses it.
+
+| Check | What it does | Example |
+| **Range check** | Value falls between limits | Age between 0 and 120 |
+| **Type check** | Data is the expected type | Age is a whole number |
+| **Presence check** | Something has been entered | Surname is not blank |
+| **Length check** | Right number of characters | Password at least 8 characters |
+| **Format check** | Matches a required pattern | Email contains an at sign |
+| **Look up check** | Value is one of a permitted list | Year group is 7, 8, 9, 10 or 11 |
+
+```python
+age = input("Enter your age: ")
+
+while not age.isdigit() or int(age) < 0 or int(age) > 120:
+    print("Please enter a whole number between 0 and 120.")
+    age = input("Enter your age: ")
+
+age = int(age)
+```
+
+This performs a type check and a range check, and loops until the input is acceptable rather than crashing.
+
+!warn Validation is not verification :: Validation checks that data is **sensible**. Verification checks that it was **entered correctly**, for example by asking for a password twice or by asking the user to confirm. A date of birth of 01/01/1900 is valid but may not be correct.
+
+### Authentication
+
+**Authentication** confirms the user is who they claim to be.
+
+- Usernames and passwords
+- Two factor authentication, where a code is sent to a separate device
+- Biometrics such as fingerprint or face recognition
+- Security questions
+
+Passwords should be stored **hashed**, not in plain text, so a stolen database does not reveal them.
+
+### Maintainability
+
+Code that is easy to understand and change later.
+
+- **Meaningful identifiers.** `totalPrice` not `tp`
+- **Comments** explaining why something is done, not restating what the line obviously does
+- **Indentation** showing structure clearly
+- **Subroutines** so each task is separated
+- **Constants** instead of unexplained numbers scattered through the code
+- **White space** grouping related lines
+
+!key Why maintainability matters :: Programs are read far more often than they are written, and are usually maintained by someone other than the original author. Code that cannot be understood cannot safely be changed.
+"""),
+        Section("Testing", """
+### The two kinds of testing
+
+**Iterative testing** happens **during** development. Each part is tested as it is written, and corrected before moving on. Problems are found early, when they are cheap to fix.
+
+**Final testing**, sometimes called terminal testing, happens when development is **complete**. The whole program is tested against the original requirements to confirm it does everything it was supposed to.
+
+### The three kinds of error
+
+| Error | What it is | Example |
+| **Syntax error** | The code breaks the rules of the language, so it will not run at all | Missing colon, misspelled keyword, unclosed bracket |
+| **Logic error** | The program runs, but produces the wrong result | Using `+` where `*` was intended, or `>` where `>=` was needed |
+| **Runtime error** | The program crashes while running | Dividing by zero, opening a file that does not exist |
+
+!key Syntax errors are the easy ones :: The computer finds them for you. Logic errors are dangerous precisely because the program runs perfectly and quietly gives the wrong answer.
+
+### Test data
+
+You must be able to choose test data of each type and say what it proves.
+
+| Type | Meaning | Example for ages 11 to 18 |
+| **Normal** | Typical values that should be accepted | 14 |
+| **Boundary** | Values at the very edge of what is allowed | 11 and 18, and also 10 and 19 |
+| **Invalid** or erroneous | Values of the right type but outside the allowed range | 25 |
+| **Erroneous** | Values of the wrong type entirely | "fourteen", or a blank entry |
+
+**Boundary data is the most valuable**, because it is exactly where the off by one errors live. If the check should be `>= 11` but was written `> 11`, only a test with the value 11 will reveal it.
+
+### Writing a test plan
+
+A test plan is a table:
+
+| Test | Test data | Type | Expected result | Actual result |
+| 1 | 14 | Normal | Accepted | Accepted |
+| 2 | 11 | Boundary | Accepted | Accepted |
+| 3 | 10 | Boundary | Rejected with a message | Rejected |
+| 4 | 25 | Invalid | Rejected with a message | Rejected |
+| 5 | "abc" | Erroneous | Rejected with a message | Program crashed |
+
+The last row is the point of testing. Test 5 has found a real fault.
+
+!exam Always state the expected result :: A test with no expected result proves nothing, because you have no standard to compare against. This is worth a mark in test plan questions.
+"""),
+    ],
+    keyterms=[
+        ("Defensive design", "Designing a program to keep working correctly even when it is given unexpected input or used incorrectly."),
+        ("Validation", "Checking that input data is sensible and in the expected format before it is used."),
+        ("Range check", "A validation check that a value falls between an upper and a lower limit."),
+        ("Presence check", "A validation check that data has actually been entered."),
+        ("Format check", "A validation check that data matches a required pattern."),
+        ("Authentication", "Confirming that a user is who they claim to be."),
+        ("Maintainability", "How easily a program can be understood and changed by another programmer later."),
+        ("Iterative testing", "Testing carried out during development, as each part is written."),
+        ("Final testing", "Testing the complete program against its original requirements once development is finished."),
+        ("Syntax error", "An error that breaks the rules of the programming language so the program will not run."),
+        ("Logic error", "An error where the program runs but produces an incorrect result."),
+        ("Boundary data", "Test data at the very edge of the acceptable range, where errors are most likely."),
+        ("Erroneous data", "Test data of the wrong type entirely, which should be rejected."),
+    ],
+    grade="""
+Two things reliably separate the top answers.
+
+**Name the specific validation check.** Not "check the input is right", but "a range check to confirm the age is between 11 and 18, and a type check to confirm a whole number has been entered".
+
+**Choose boundary data that is actually on the boundary.** For a range of 11 to 18, the boundary values are 10, 11, 18 and 19. Testing 5 and 30 proves far less, because they are nowhere near the point where the logic changes.
+
+**Give every test an expected result.** A test plan without expected results scores badly, because there is nothing to compare the actual result against.
+
+**Be precise about error types.** A syntax error stops the program running at all. A logic error lets it run and produce the wrong answer. Students frequently give a logic error as an example of a syntax error.
+
++ Design a five row test plan with normal, boundary and erroneous data and expected results
++ Write a validation loop that rejects both wrong types and out of range values
++ Explain three ways to make a program maintainable, each with a reason
++ Classify any given error correctly as syntax, logic or runtime
+""",
+    mistakes=[
+        "Giving a logic error as an example of a syntax error. A missing colon is syntax, using plus instead of times is logic.",
+        "Choosing boundary data that is not on the boundary.",
+        "Writing a test plan with no expected results.",
+        "Saying validation checks data is 'correct'. It checks data is sensible. Verification checks it was entered correctly.",
+        "Listing 'use comments' as the only way to improve maintainability, without meaningful names, indentation and subroutines.",
+        "Describing authentication as validation. They are different: authentication confirms identity, validation checks data.",
+    ],
+    quiz=[
+        Q("Which validation check would ensure a password is at least 8 characters?",
+          ["A length check", "A range check", "A presence check", "A type check"], 0,
+          "Length checks count characters. A range check tests numerical bounds."),
+        Q("A program runs but calculates the average incorrectly. This is:",
+          ["A logic error", "A syntax error", "A runtime error", "A validation error"], 0,
+          "The program is valid code and executes fine, but the logic produces a wrong result, which is what makes logic errors dangerous."),
+        Q("For a field accepting values 1 to 10, which is boundary test data?",
+          ["0 and 1", "5 and 6", "100", "\"five\""], 0,
+          "Boundary data sits at the very edge of the allowed range, which is where off by one errors reveal themselves."),
+        Q("What is the difference between validation and verification?",
+          ["Validation checks data is sensible, verification checks it was entered correctly",
+           "Verification checks data is sensible, validation checks it was entered correctly",
+           "They are the same thing",
+           "Validation only applies to numbers"], 0,
+          "A date of birth of 01/01/1900 is valid but may not be correct, which is why both are needed."),
+        Q("Which is an example of a syntax error in Python?",
+          ["Missing a colon at the end of an if statement",
+           "Using minus instead of plus in a calculation",
+           "Dividing by a variable that happens to be zero",
+           "Storing a phone number as an integer"], 0,
+          "Syntax errors break the rules of the language, so the program will not run at all."),
+        Q("Why is boundary test data particularly valuable?",
+          ["It tests exactly where off by one errors in conditions occur",
+           "It is the easiest data to think of",
+           "It takes the least time to test",
+           "It always causes the program to crash"], 0,
+          "The difference between > and >= only shows up at the boundary value itself."),
+        Q("Which of these improves the maintainability of a program?",
+          ["Using meaningful variable names and consistent indentation",
+           "Writing all the code on one line to save space",
+           "Using single letter variable names",
+           "Avoiding subroutines so everything is in one place"], 0,
+          "Readable structure and self explanatory names are what let another programmer safely change the code later."),
+        Q("What is iterative testing?",
+          ["Testing carried out during development as each part is written",
+           "Testing the finished program against its requirements",
+           "Testing only the loops in a program",
+           "Testing carried out by the end user"], 0,
+          "Testing as you go finds problems early, when they are cheapest and easiest to fix."),
+        Q("A program asks for a year group and accepts 7, 8, 9, 10 or 11. Which validation check is most appropriate?",
+          ["A look up check against the permitted list", "A length check",
+           "A presence check only", "A format check for an at sign"], 0,
+          "The valid values are a specific fixed set, so checking membership of that list is the precise check."),
+        Q("Passwords should be stored in a hashed form so that:",
+          ["If the database is stolen the actual passwords are not revealed",
+           "Users can recover forgotten passwords more easily",
+           "The database takes up less storage",
+           "Login is faster"], 0,
+          "Hashing is one way, so an attacker with the database still cannot read the original passwords."),
+    ],
+    exam=[
+        EQ("State two validation checks that could be applied to a field where a user enters their email address.", 2, [
+            MP("A presence check to ensure something has been entered", ["presence", "not blank", "not empty", "something entered"]),
+            MP("A format check to ensure it contains an at sign and a domain", ["format", "at sign", "@", "pattern", "contains", "dot"]),
+        ], "A presence check could be used to ensure that the field has not been left blank. A format check could also be applied, confirming that the entry contains an at sign followed by a domain name with a full stop, since an email address without those parts cannot be valid.",
+           command="State"),
+        EQ("Explain the difference between a syntax error and a logic error, giving an example of each.", 4, [
+            MP("A syntax error breaks the rules of the programming language", ["rules", "grammar", "language", "syntax", "not valid code"]),
+            MP("The program will not run at all until it is corrected", ["will not run", "cannot run", "fails to compile", "does not execute"]),
+            MP("A logic error means the program runs but produces an incorrect result", ["runs", "executes", "wrong result", "incorrect output", "unexpected"]),
+            MP("Gives valid examples of each, such as a missing colon and using the wrong operator", ["missing colon", "bracket", "spelling", "wrong operator", "plus instead", "greater than"]),
+        ], "A syntax error occurs when the code breaks the rules of the programming language, for example a missing colon at the end of an if statement or an unclosed bracket. Because the code is not valid, the program will not run at all until the error is corrected, and the development environment will usually point to the offending line. A logic error is different: the code is completely valid and the program runs without complaint, but the instructions do not do what the programmer intended, so the output is wrong. An example would be writing total = total - price instead of total = total + price when calculating a shopping basket, or using a greater than sign where greater than or equal to was needed. Logic errors are more dangerous because nothing alerts the programmer to them, and they can only be found through careful testing.",
+           command="Explain"),
+        EQ("A program accepts a temperature reading between -50 and 50 degrees. Design a test plan containing four tests, stating the test data, the type of data and the expected result for each.", 6, [
+            MP("Includes normal data within the range", ["normal", "typical", "20", "within range", "0"]),
+            MP("Includes boundary data at the edge of the accepted range", ["boundary", "-50", "50", "edge"]),
+            MP("Includes boundary data just outside the accepted range", ["-51", "51", "just outside", "boundary"]),
+            MP("Includes erroneous data of the wrong type", ["erroneous", "letters", "text", "abc", "blank", "wrong type"]),
+            MP("States the type of each piece of test data", ["type", "normal", "boundary", "erroneous", "invalid"]),
+            MP("States an expected result for every test", ["expected", "accepted", "rejected", "error message"]),
+        ], "Test 1 uses the value 20, which is normal data well within the accepted range, and the expected result is that the value is accepted and processed. Test 2 uses the value 50, which is boundary data at the very top of the accepted range, and the expected result is that it is accepted, since the range is inclusive. Test 3 uses the value 51, which is boundary data just outside the accepted range, and the expected result is that it is rejected with an error message asking the user to try again. Test 4 uses the entry \"hot\", which is erroneous data of the wrong type entirely, and the expected result is that the program rejects it with an error message rather than crashing. A fifth useful test would be -51, checking the lower boundary from the outside, since an error at one end of a range does not guarantee an error at the other.",
+           command="Design"),
+        EQ("Explain three ways in which a programmer can make their code more maintainable.", 6, [
+            MP("Use meaningful variable and subroutine names", ["meaningful", "sensible names", "descriptive", "clear names", "identifiers"]),
+            MP("So that another programmer can understand the purpose without tracing the logic", ["understand", "purpose", "readable", "without tracing", "clear"]),
+            MP("Use comments to explain sections of code", ["comments", "commenting", "annotate", "explain"]),
+            MP("Use consistent indentation to show the structure", ["indentation", "indent", "layout", "white space", "structure"]),
+            MP("Use subroutines so each task is separated and can be located easily", ["subroutine", "function", "procedure", "modular", "separate"]),
+            MP("Use constants rather than unexplained numbers appearing throughout the code", ["constants", "magic numbers", "named value", "one place"]),
+        ], "The first way is to use meaningful identifiers. Naming a variable totalPriceIncludingVat rather than t means another programmer can understand what the value holds immediately, without tracing back through the code to work it out, and the same applies to subroutine names that describe the task they perform. The second way is to use comments and consistent indentation. Comments should explain why something is being done, particularly where the reason is not obvious, rather than restating what the line clearly does, and consistent indentation makes the structure of loops and selection statements visible at a glance so the flow of the program can be followed quickly. The third way is to break the program into subroutines and use named constants. Separating each task into its own subroutine means a programmer looking for a particular piece of behaviour knows exactly where to find it and can change it without risk to the rest of the program, and replacing values such as 0.2 with a named constant like VAT_RATE means the value appears once, is self explanatory, and can be updated in a single place if the rate ever changes.",
+           command="Explain"),
+        EQ("Explain why a program that asks for a user's age should include input validation.", 3, [
+            MP("Users may enter data that is the wrong type or outside a sensible range", ["wrong type", "letters", "negative", "too large", "unexpected", "invalid"]),
+            MP("Without validation the program may crash or produce incorrect results", ["crash", "error", "incorrect", "wrong result", "fails"]),
+            MP("Validation checks the input is sensible before it is used, allowing the program to ask again", ["checks", "sensible", "before", "ask again", "error message", "rejects"]),
+        ], "Input validation is needed because users cannot be relied upon to enter data in the expected form. Someone might type letters instead of digits, enter a negative age, leave the field blank, or enter an impossibly large number, whether by accident or deliberately. Without validation the program would attempt to use that input directly, which could cause it to crash when it tries to convert text into a number, or to continue running and produce meaningless results such as calculating a negative average. Validation checks the input against sensible criteria, such as a type check that a whole number has been entered and a range check that it falls between 0 and 120, and rejects anything that fails with a clear error message so the user can try again. This makes the program robust, meaning it keeps working correctly regardless of what the user does.",
+           command="Explain"),
+    ],
+)
+
+# =========================================================== 2.4 Boolean logic
+
+T_BOOLEAN = Topic(
+    slug="boolean-logic",
+    title="Boolean Logic",
+    spec="2.4",
+    icon="i-logic",
+    minutes=26,
+    blurb="AND, OR and NOT gates, drawing and reading logic diagrams, and completing truth tables for combined circuits without making arithmetic slips.",
+    fact="Boolean algebra was published by George Boole in 1854 as pure mathematics with no practical use in sight. Eighty four years later Claude Shannon realised it described electrical switching circuits exactly, and the entire digital age followed from that connection.",
+    sections=[
+        Section("The three gates", """
+### NOT
+
+**NOT** inverts the input. Output is the opposite of the input.
+
+| A | NOT A |
+| 0 | 1 |
+| 1 | 0 |
+
+Symbol: a triangle with a small circle on the output.
+
+### AND
+
+**AND** outputs 1 only when **both** inputs are 1.
+
+| A | B | A AND B |
+| 0 | 0 | 0 |
+| 0 | 1 | 0 |
+| 1 | 0 | 0 |
+| 1 | 1 | 1 |
+
+Symbol: a D shape.
+
+Think of two switches in series. The light only comes on if both are closed.
+
+### OR
+
+**OR** outputs 1 when **at least one** input is 1.
+
+| A | B | A OR B |
+| 0 | 0 | 0 |
+| 0 | 1 | 1 |
+| 1 | 0 | 1 |
+| 1 | 1 | 1 |
+
+Symbol: a curved shield shape.
+
+Think of two switches in parallel. The light comes on if either one is closed.
+
+!key The one line summary :: AND needs both. OR needs at least one. NOT flips it.
+"""),
+        Section("Truth tables for combined circuits", """
+When gates are combined, build the truth table **one column at a time**.
+
+### Method
+
+1. List **every input combination**. With 2 inputs there are 4 rows, with 3 inputs there are 8 rows.
+2. Add a column for **each intermediate output**, not just the final one.
+3. Work through the circuit in the order the signals flow.
+
+Getting the input combinations in a reliable order matters. For three inputs, count in binary from 000 to 111:
+
+    000, 001, 010, 011, 100, 101, 110, 111
+
+### Worked example
+
+Complete a truth table for `Q = (A AND B) OR (NOT C)`
+
+| A | B | C | A AND B | NOT C | Q |
+| 0 | 0 | 0 | 0 | 1 | 1 |
+| 0 | 0 | 1 | 0 | 0 | 0 |
+| 0 | 1 | 0 | 0 | 1 | 1 |
+| 0 | 1 | 1 | 0 | 0 | 0 |
+| 1 | 0 | 0 | 0 | 1 | 1 |
+| 1 | 0 | 1 | 0 | 0 | 0 |
+| 1 | 1 | 0 | 1 | 1 | 1 |
+| 1 | 1 | 1 | 1 | 0 | 1 |
+
+Notice the intermediate columns. Without them, the last two rows are very easy to get wrong.
+
+!exam Intermediate columns earn method marks :: Even if the final column contains an error, correct intermediate columns show your working and usually score.
+"""),
+        Section("Reading and writing logic diagrams", """
+### From a diagram to an expression
+
+Work from the **inputs towards the output**, naming each intermediate signal as you go.
+
+If A and B both go into an AND gate, and that output goes into an OR gate with C, then:
+
+    Q = (A AND B) OR C
+
+### From an expression to a diagram
+
+Work **inside out**, exactly like brackets in maths.
+
+For `Q = NOT (A OR B)`:
+
+1. Draw an OR gate with inputs A and B.
+2. Feed its output into a NOT gate.
+3. The NOT gate's output is Q.
+
+### Order of operations
+
+Brackets first, then NOT, then AND, then OR.
+
+`A OR B AND C` means `A OR (B AND C)`.
+
+!warn Always use brackets in your answers :: Even where the precedence rules make them unnecessary, brackets remove all ambiguity and cost you nothing.
+"""),
+        Section("Applying logic to real situations", """
+Exam questions often describe a real system and ask for the expression.
+
+### Example 1
+
+*An alarm sounds if the door sensor is triggered AND the system is armed.*
+
+    Alarm = Door AND Armed
+
+### Example 2
+
+*A greenhouse fan turns on if the temperature is too high OR the humidity is too high, but only when the system is switched on.*
+
+    Fan = (Temp OR Humidity) AND SystemOn
+
+### Example 3
+
+*A car will only start if the key is present, the brake is pressed, and the bonnet is NOT open.*
+
+    Start = Key AND Brake AND (NOT Bonnet)
+
+### Reading the wording
+
+| Wording | Gate |
+| both, and, as well as | AND |
+| either, or, at least one | OR |
+| not, unless, without | NOT |
+
+!key Translate the sentence literally :: Underline every and, or and not in the description, then build the expression around them. The wording almost always maps directly.
+"""),
+    ],
+    keyterms=[
+        ("Boolean logic", "A system of logic in which every value is either true or false, represented as 1 or 0."),
+        ("AND gate", "A logic gate whose output is 1 only when all of its inputs are 1."),
+        ("OR gate", "A logic gate whose output is 1 when at least one of its inputs is 1."),
+        ("NOT gate", "A logic gate that inverts its input, also called an inverter."),
+        ("Truth table", "A table showing the output of a logic expression for every possible combination of inputs."),
+        ("Logic diagram", "A drawing showing how logic gates are connected together."),
+        ("Logic gate", "An electronic component that performs a Boolean operation on one or more inputs."),
+    ],
+    grade="""
+Everything on this topic is achievable, so the goal is to get every mark, every time.
+
+**Never do a truth table in your head.** Write out every row and every intermediate column. It costs thirty seconds and prevents the errors that lose whole questions.
+
+**Get the input combinations right.** Count in binary. For three inputs that is 000 through to 111, which gives eight rows in a reliable order with nothing missed.
+
+**Use brackets in every expression you write.** They cost nothing and remove all ambiguity from your answer.
+
+**For scenario questions, underline the logic words** in the description first. Every and, or and not maps almost directly onto a gate.
+
++ Complete an eight row truth table with two intermediate columns in under four minutes
++ Convert any logic diagram into an expression, and any expression into a diagram
++ Write a Boolean expression from a written description of a real system
++ Recall all three gate symbols and all three truth tables from memory
+""",
+    mistakes=[
+        "Missing input combinations in a truth table. Two inputs give four rows, three inputs give eight.",
+        "Skipping intermediate columns, then making an error that could not be spotted or credited.",
+        "Confusing the AND and OR truth tables, particularly the row where both inputs are 1.",
+        "Applying NOT to the wrong part of an expression because brackets were left out.",
+        "Reading 'either' as AND. Either means OR.",
+    ],
+    quiz=[
+        Q("What is the output of `1 AND 0`?", ["0", "1", "Both", "Undefined"], 0,
+          "AND requires every input to be 1. A single 0 makes the output 0."),
+        Q("What is the output of `0 OR 1`?", ["1", "0", "Both", "Undefined"], 0,
+          "OR outputs 1 whenever at least one input is 1."),
+        Q("How many rows does a truth table for three inputs have?",
+          ["8", "6", "3", "4"], 0,
+          "Each input doubles the combinations, so 2 to the power 3 is 8 rows."),
+        Q("What is the output of `NOT (1 AND 1)`?",
+          ["0", "1", "2", "Undefined"], 0,
+          "1 AND 1 gives 1, and NOT 1 gives 0."),
+        Q("Which expression describes: the heater turns on if it is cold AND the system is switched on?",
+          ["Heater = Cold AND SystemOn", "Heater = Cold OR SystemOn",
+           "Heater = NOT Cold AND SystemOn", "Heater = NOT (Cold AND SystemOn)"], 0,
+          "Both conditions must be met, and the word AND in the description maps directly onto an AND gate."),
+        Q("For `Q = (A OR B) AND NOT C`, what is Q when A=0, B=1, C=0?",
+          ["1", "0", "Cannot be determined", "2"], 0,
+          "A OR B gives 0 OR 1 which is 1. NOT C gives NOT 0 which is 1. Then 1 AND 1 gives 1."),
+        Q("Which gate is described as an inverter?",
+          ["NOT", "AND", "OR", "XOR"], 0,
+          "NOT has a single input and outputs the opposite value, inverting the signal."),
+        Q("In `A OR B AND C`, which operation is carried out first?",
+          ["B AND C", "A OR B", "They are done simultaneously", "The order does not matter"], 0,
+          "AND has higher precedence than OR, so the expression means A OR (B AND C)."),
+        Q("A door unlocks if the correct code is entered AND the card is valid, OR if the override switch is on. Which expression is correct?",
+          ["Unlock = (Code AND Card) OR Override",
+           "Unlock = Code AND (Card OR Override)",
+           "Unlock = Code OR Card OR Override",
+           "Unlock = NOT (Code AND Card)"], 0,
+          "The two normal conditions are grouped by AND, and the override is an alternative path joined with OR."),
+        Q("What is the output of `NOT 0 AND NOT 1`?",
+          ["0", "1", "Both", "Undefined"], 0,
+          "NOT 0 gives 1 and NOT 1 gives 0, and 1 AND 0 gives 0."),
+    ],
+    exam=[
+        EQ("Complete a truth table for the expression Q = A AND NOT B, showing all input combinations.", 4, [
+            MP("Includes all four input combinations for A and B", ["four", "00", "01", "10", "11", "all combinations"]),
+            MP("Includes an intermediate column for NOT B", ["not b", "intermediate", "column"]),
+            MP("Q is 1 only when A is 1 and B is 0", ["a is 1", "b is 0", "1 0", "only when"]),
+            MP("Q is 0 for all other combinations", ["0", "otherwise", "all other", "rest"]),
+        ], "With A and B as inputs there are four combinations. When A is 0 and B is 0, NOT B is 1 and Q is 0 AND 1 which is 0. When A is 0 and B is 1, NOT B is 0 and Q is 0. When A is 1 and B is 0, NOT B is 1 and Q is 1 AND 1 which is 1. When A is 1 and B is 1, NOT B is 0 and Q is 1 AND 0 which is 0. So Q is 1 only in the single case where A is 1 and B is 0, and 0 in every other case.",
+           command="Complete"),
+        EQ("A security light switches on when a movement sensor is triggered AND it is dark. Write a Boolean expression for this system.", 2, [
+            MP("Uses AND to combine the two conditions", ["and"]),
+            MP("Correct expression such as Light = Movement AND Dark", ["light = movement and dark", "movement and dark", "sensor and dark", "m and d"]),
+        ], "Light = Movement AND Dark. Both conditions must be satisfied for the light to switch on, so the two inputs are combined with an AND gate: the movement sensor must be triggered and it must also be dark.",
+           command="Write"),
+        EQ("Explain the difference between an AND gate and an OR gate.", 3, [
+            MP("An AND gate outputs 1 only when all inputs are 1", ["and", "all inputs", "both", "only when"]),
+            MP("An OR gate outputs 1 when at least one input is 1", ["or", "at least one", "either", "one or more"]),
+            MP("Refers to the difference in the case where only one input is 1", ["one input", "differ", "single", "differs when"]),
+        ], "An AND gate produces an output of 1 only when every one of its inputs is 1, so with two inputs it outputs 1 in just one of the four possible cases. An OR gate produces an output of 1 whenever at least one of its inputs is 1, so with two inputs it outputs 1 in three of the four cases. The gates therefore differ in exactly those cases where only one input is 1: an AND gate outputs 0 while an OR gate outputs 1. They agree only when both inputs are 0, giving 0, and when both are 1, giving 1.",
+           command="Explain"),
+        EQ("A machine will only operate if the guard is closed AND either the foot pedal is pressed OR the hand button is pressed. Write a Boolean expression and state what the output would be if the guard is open and the foot pedal is pressed.", 4, [
+            MP("Correctly groups the pedal and button with OR", ["pedal or button", "or", "(pedal or"]),
+            MP("Combines that result with the guard using AND", ["and guard", "guard and", "and"]),
+            MP("Full expression such as Operate = Guard AND (Pedal OR Button)", ["guard and (pedal or button)", "operate =", "expression"]),
+            MP("States the output is 0, because the guard is open so the AND cannot be satisfied", ["0", "will not operate", "does not run", "guard open", "and fails"]),
+        ], "Operate = Guard AND (Pedal OR Button). The pedal and the hand button are alternatives, so they are combined with an OR gate, and the result of that must be combined with the guard using AND because the guard must be closed in every case. If the guard is open then Guard is 0, and regardless of whether the pedal or the button is pressed the OR gate output is ANDed with 0, so the final output is 0 and the machine will not operate. This is the correct and intended safety behaviour.",
+           command="Write"),
+        EQ("Complete a truth table for Q = (A OR B) AND NOT C for all eight input combinations.", 6, [
+            MP("Lists all eight combinations of A, B and C", ["eight", "000", "111", "all combinations"]),
+            MP("Includes an intermediate column for A OR B", ["a or b", "intermediate"]),
+            MP("Includes an intermediate column for NOT C", ["not c", "intermediate"]),
+            MP("Q is 0 for every row where C is 1", ["c is 1", "0 when c", "not c is 0"]),
+            MP("Q is 0 when A and B are both 0", ["both 0", "a and b are 0", "or gives 0"]),
+            MP("Q is 1 for the rows 010, 100 and 110", ["010", "100", "110", "three rows", "1 when"]),
+        ], "There are eight input combinations, counting in binary from 000 to 111. The intermediate column A OR B is 0 only when both A and B are 0, and 1 otherwise. The intermediate column NOT C is 1 whenever C is 0 and 0 whenever C is 1. Q is the AND of those two columns, so Q is 1 only when at least one of A and B is 1 and C is 0. That gives Q equal to 1 for the input combinations 010, 100 and 110, and Q equal to 0 for the other five combinations, namely 000, 001, 011, 101 and 111.",
+           command="Complete"),
+    ],
+)
+
+# ============================================ 2.5 Programming languages and IDEs
+
+T_LANGIDE = Topic(
+    slug="languages-and-ides",
+    title="Programming Languages and IDEs",
+    spec="2.5",
+    icon="i-language",
+    minutes=24,
+    blurb="High and low level languages, translators and the exact difference between a compiler and an interpreter, plus the four IDE features you must name.",
+    fact="The first compiler was written by Grace Hopper in 1952, and she had to convince people it was even possible. The prevailing view was that computers could only do arithmetic, and that the idea of a program writing a program was nonsense.",
+    sections=[
+        Section("High and low level languages", """
+### High level languages
+
+Examples: Python, Java, C#, JavaScript, VB.
+
+- **Close to human language**, using words like `if`, `while` and `print`
+- **Easy to read, write and debug**
+- **Portable**, so the same code can run on different types of processor once translated
+- Must be **translated** into machine code before the processor can run it
+- The programmer has **less direct control** over the hardware
+- Code may be **less memory efficient**, because the translator makes general purpose decisions
+
+### Low level languages
+
+**Machine code** is binary instructions the processor executes directly. **Assembly language** uses short mnemonics such as `LDA`, `ADD` and `STO`, with one instruction usually corresponding to one machine code instruction.
+
+- **Difficult to read, write and debug**
+- **Specific to one type of processor**, so not portable
+- Gives **complete control over the hardware**
+- Can be **highly optimised** for speed and memory use
+
+### When each is used
+
+High level for almost everything: applications, websites, games, business systems.
+
+Low level where absolute control or efficiency matters: device drivers, embedded systems with tiny memory, and performance critical sections of operating systems.
+
+!key The trade off :: High level languages are easier and faster to develop in and are portable. Low level languages give precise control over hardware and can be more efficient, at the cost of being far harder to write and processor specific.
+"""),
+        Section("Translators", """
+Processors only execute **machine code**, so any high level program must be translated.
+
+### Assembler
+
+Translates **assembly language** into machine code. The relationship is close to one to one.
+
+### Compiler
+
+Translates the **whole program into machine code in one go**, producing an executable file.
+
+- Translation happens **once**, before the program is distributed or run
+- The resulting executable **runs quickly**, since no translation happens at run time
+- The **source code is not needed** by the end user, which protects the developer's work
+- **All errors are reported together at the end** of compilation, which can be overwhelming
+- Compiled code is **specific to one platform**, so a separate version is needed for each
+
+### Interpreter
+
+Translates and executes the program **one line at a time**, every time it runs.
+
+- **Stops at the first error**, reporting it immediately, which makes debugging much easier
+- **Runs more slowly**, because translation happens every time the program runs
+- The **source code and the interpreter are both needed** to run the program
+- The same source runs on any platform that has a suitable interpreter
+
+| | Compiler | Interpreter |
+| Translation | Whole program at once | One line at a time |
+| When | Before running | While running |
+| Speed of execution | Fast | Slower |
+| Error reporting | All at the end | Stops at the first error |
+| Source code needed to run | No | Yes |
+| Output | An executable file | No separate file produced |
+
+!exam The classic question :: "Give one advantage of using an interpreter during development." The answer is that it stops and reports the first error it finds, making it far easier to locate and fix errors than receiving a long list at the end of compilation.
+"""),
+        Section("Integrated development environments", """
+An **IDE** is software that provides a set of tools for writing, testing and debugging programs in one place. Examples include IDLE, Visual Studio, PyCharm and Thonny.
+
+You must know four features.
+
+### 1. Editor
+
+Where the code is written. Features that help:
+
+- **Syntax highlighting**, colouring keywords, strings and comments so structure is visible and typing errors stand out
+- **Automatic indentation** and bracket matching
+- **Auto complete**, suggesting names and reducing spelling errors
+- **Line numbers**, which matter because error messages refer to them
+
+### 2. Error diagnostics
+
+Reports problems in the code.
+
+- Identifies the **line number** and the **type of error**
+- Often highlights the offending code as you type
+- Suggests likely causes
+
+### 3. Run time environment
+
+Allows the program to be run and tested **within the IDE**, without leaving it or manually invoking a translator, so the write, run, fix cycle is fast.
+
+### 4. Translator
+
+The IDE includes the compiler or interpreter needed to convert the code so it can run, so no separate installation or command is required.
+
+### 5. Debugging tools
+
+- **Breakpoints** pause the program at a chosen line so variables can be inspected
+- **Stepping** runs one line at a time so the flow can be watched
+- **Variable watch** shows values changing live
+
+!key Why an IDE matters :: All the tools needed to write, translate, run and debug a program are in one place, which speeds up development and makes errors far easier to find and fix.
+"""),
+    ],
+    keyterms=[
+        ("High level language", "A programming language close to human language, which must be translated before a processor can run it."),
+        ("Low level language", "Machine code or assembly language, working directly with the processor's own instruction set."),
+        ("Machine code", "Binary instructions that a processor can execute directly."),
+        ("Assembly language", "A low level language using short mnemonics, with roughly one instruction per machine code instruction."),
+        ("Translator", "Software that converts program code from one language into another."),
+        ("Compiler", "A translator that converts an entire program into machine code before it is run, producing an executable."),
+        ("Interpreter", "A translator that converts and executes a program one line at a time, each time it runs."),
+        ("Assembler", "A translator that converts assembly language into machine code."),
+        ("IDE", "Integrated development environment. Software combining an editor, translator, run time environment and debugging tools."),
+        ("Breakpoint", "A marker that pauses a running program at a chosen line so variables can be inspected."),
+    ],
+    grade="""
+This topic is factual, so accuracy is everything.
+
+**Do not say a compiler is 'faster'.** Compiled code executes faster, but compilation itself takes time. Say that the resulting executable runs faster because no translation is needed at run time.
+
+**Be exact about error reporting.** A compiler reports all errors together after attempting to translate the whole program. An interpreter stops at the first error it encounters. The interpreter's behaviour is the advantage during development.
+
+**Link IDE features to a benefit.** Not "it has syntax highlighting", but "syntax highlighting colours keywords and strings differently, so a misspelled keyword or an unclosed quotation mark is immediately visible".
+
+**Know why high level languages are portable.** The same source code can be translated for different processors, whereas assembly and machine code are written for one specific instruction set.
+
++ Give three differences between a compiler and an interpreter
++ Explain why low level languages are used for embedded systems
++ Name four IDE features and give a benefit for each
++ Explain why a program written in a high level language must be translated
+""",
+    mistakes=[
+        "Saying 'compilers are faster than interpreters' without specifying that it is the resulting program that runs faster.",
+        "Saying an interpreter 'finds all the errors'. It stops at the first one.",
+        "Confusing an assembler with a compiler. An assembler translates assembly language specifically.",
+        "Saying a high level language 'runs directly on the processor'. It must be translated to machine code first.",
+        "Listing IDE features without saying what each one does for the programmer.",
+    ],
+    quiz=[
+        Q("Which is a characteristic of a high level language?",
+          ["It is close to human language and must be translated before running",
+           "It runs directly on the processor with no translation",
+           "It is specific to one type of processor",
+           "It uses only binary digits"], 0,
+          "High level languages use English-like keywords and are portable, but they always require translation."),
+        Q("What does a compiler do?",
+          ["Translates the whole program into machine code before it is run",
+           "Translates and executes one line at a time",
+           "Converts machine code back into source code",
+           "Runs the program without translating it"], 0,
+          "Compilation happens once, producing an executable that can then be run without the source or the compiler."),
+        Q("Which is an advantage of an interpreter during program development?",
+          ["It stops at the first error, making it easier to locate and fix",
+           "It produces an executable file that runs faster",
+           "It hides the source code from the user",
+           "It only needs to translate the program once"], 0,
+          "Immediate, one at a time error reporting is far easier to work through than a long list at the end of compilation."),
+        Q("Why is assembly language not portable?",
+          ["It is written for one specific processor instruction set",
+           "It is too long to copy between machines",
+           "It cannot be saved to a file",
+           "It requires an interpreter that only runs on one operating system"], 0,
+          "Assembly mnemonics map onto a particular processor's instructions, so code written for one architecture will not run on another."),
+        Q("Which IDE feature pauses a program at a chosen line so variables can be inspected?",
+          ["A breakpoint", "Syntax highlighting", "Auto complete", "The editor"], 0,
+          "Breakpoints are the core debugging tool, letting you stop execution and examine the program's state."),
+        Q("What does an assembler translate?",
+          ["Assembly language into machine code", "High level code into machine code",
+           "Machine code into assembly language", "Python into Java"], 0,
+          "An assembler handles the near one to one translation from mnemonics to binary instructions."),
+        Q("What is the main benefit of syntax highlighting?",
+          ["Keywords, strings and comments are coloured differently so errors stand out",
+           "The program runs faster",
+           "It automatically fixes logic errors",
+           "It compiles the code"], 0,
+          "Colour makes structure visible, so an unclosed quotation mark or misspelled keyword is obvious immediately."),
+        Q("Why might a developer choose a low level language for an embedded system?",
+          ["It gives precise control over hardware and can be highly optimised for limited memory",
+           "It is much easier to write than a high level language",
+           "It runs on any processor without change",
+           "It does not need to be translated"], 0,
+          "Embedded systems often have very little memory and demanding timing requirements, where direct hardware control matters."),
+        Q("Which statement about a compiled program is correct?",
+          ["The source code is not needed to run the executable",
+           "The source code must be distributed with it",
+           "It is translated every time it runs",
+           "It stops at the first error while running"], 0,
+          "Compilation produces a standalone executable, which is why commercial software can be sold without revealing its source."),
+        Q("Which of these is NOT typically a feature of an IDE?",
+          ["A word processor for writing documentation",
+           "Error diagnostics", "A run time environment", "An editor with syntax highlighting"], 0,
+          "IDEs focus on writing, translating, running and debugging code. Document preparation is a separate kind of tool."),
+    ],
+    exam=[
+        EQ("State two differences between a compiler and an interpreter.", 2, [
+            MP("A compiler translates the whole program at once, an interpreter translates line by line", ["whole program", "one line", "line by line", "all at once"]),
+            MP("A compiler reports all errors at the end, an interpreter stops at the first error", ["all errors", "first error", "stops", "end of translation"]),
+        ], "A compiler translates the entire program into machine code in one operation before it is run, whereas an interpreter translates and executes the program one line at a time each time it is run. In addition, a compiler reports all the errors it has found together once translation is complete, while an interpreter stops as soon as it reaches the first error and reports that one immediately.",
+           command="State"),
+        EQ("Explain one advantage of using an interpreter and one advantage of using a compiler.", 4, [
+            MP("Interpreter advantage: errors are reported one at a time as they are reached", ["first error", "one at a time", "immediately", "stops"]),
+            MP("Which makes it easier to locate and correct errors during development", ["easier", "locate", "debug", "find errors", "development"]),
+            MP("Compiler advantage: the resulting executable runs faster as no translation happens at run time", ["faster", "runs quickly", "no translation", "executable", "already translated"]),
+            MP("Or: the source code does not need to be given to the user, protecting it", ["source code", "not needed", "protects", "hidden", "distribute"]),
+        ], "An advantage of an interpreter is that it stops at the first error it encounters and reports it immediately, along with the line it occurred on. This makes it much easier to develop and debug a program, because the programmer deals with one problem at a time in the context of where it happened, rather than being presented with a long list of errors after attempting to translate the whole program. An advantage of a compiler is that the program is fully translated into machine code before it is distributed, so when it is run there is no translation overhead and the resulting executable runs considerably faster. A further advantage is that only the executable needs to be given to the user, so the developer's source code remains private.",
+           command="Explain"),
+        EQ("Explain why a program written in a high level language must be translated before it can be executed.", 3, [
+            MP("A processor can only execute machine code", ["machine code", "binary", "only understands", "processor executes"]),
+            MP("High level languages use English-like statements the processor cannot execute directly", ["english", "human", "keywords", "cannot understand", "not binary"]),
+            MP("A translator such as a compiler or interpreter converts it into machine code", ["translator", "compiler", "interpreter", "converts", "translates"]),
+        ], "A processor is built to execute only machine code, which consists of binary instructions drawn from its own instruction set. A high level language uses English-like keywords and statements such as if, while and print, which are designed to be readable by people rather than by hardware, and the processor has no way of acting on them directly. A translator, either a compiler or an interpreter, is therefore required to convert the high level source code into the machine code instructions that the processor can actually execute.",
+           command="Explain"),
+        EQ("Describe three features of an integrated development environment and explain how each helps a programmer.", 6, [
+            MP("An editor for writing code", ["editor", "write code", "typing"]),
+            MP("With features such as syntax highlighting and auto indentation that make errors visible", ["syntax highlighting", "colour", "indentation", "auto complete", "line numbers"]),
+            MP("Error diagnostics that identify problems", ["error diagnostics", "errors", "reports", "identifies"]),
+            MP("Giving the line number and type of error so it can be located quickly", ["line number", "type of error", "locate", "quickly", "points to"]),
+            MP("A run time environment allowing the program to be run and tested inside the IDE", ["run time", "run the program", "test", "execute", "within"]),
+            MP("Debugging tools such as breakpoints and variable watches", ["breakpoint", "step", "watch", "debug", "inspect variables"]),
+        ], "The first feature is the editor, which is where the code is written. It provides syntax highlighting, colouring keywords, strings and comments differently so that the structure of the code is immediately visible and a misspelled keyword or an unclosed quotation mark stands out, along with automatic indentation, bracket matching and line numbers that correspond to those quoted in error messages. The second feature is error diagnostics, which identifies problems in the code and reports the line number and the type of error, often highlighting the offending code as it is typed. This lets the programmer locate and fix errors far more quickly than searching manually. The third feature is the run time environment together with debugging tools, which allows the program to be executed and tested from within the IDE without leaving it or invoking a translator manually. Debugging tools such as breakpoints, which pause execution at a chosen line, and variable watches, which show values changing as the program runs, allow the programmer to inspect exactly what the program is doing at the moment a fault occurs, which is the only reliable way to find logic errors.",
+           command="Describe"),
+        EQ("A company is writing software to control a medical device with very limited memory and strict timing requirements. Explain why they might write part of the software in a low level language.", 4, [
+            MP("Low level languages give direct control over the hardware", ["direct control", "hardware", "control over", "registers", "memory locations"]),
+            MP("Code can be optimised to use very little memory", ["optimised", "memory", "efficient", "small", "compact"]),
+            MP("Execution can be made faster and timing more predictable", ["faster", "speed", "timing", "predictable", "precise", "real time"]),
+            MP("Acknowledges the drawback that it is harder to write and not portable", ["harder", "difficult", "not portable", "processor specific", "time consuming", "errors"]),
+        ], "A low level language such as assembly gives the programmer direct control over the processor's registers and memory locations, which is exactly what is needed when a device has very limited memory. The programmer can decide precisely how every byte is used rather than relying on a compiler to make general purpose decisions, so the code can be made far more compact than the equivalent high level program. Timing is the other reason: each assembly instruction corresponds closely to one machine code instruction, so the programmer knows exactly how long a section of code takes to execute, which matters enormously in a medical device that must respond within a guaranteed time. The drawbacks are significant, since low level code is much harder to write, read and debug, and it is specific to one processor so it cannot be reused if the hardware changes. For that reason the company would most likely write the bulk of the software in a high level language and use low level code only for the small, timing critical sections where it is genuinely needed.",
+           command="Explain"),
+    ],
+)
+
+# ================================================================== COURSE
+
+COURSE = Course(
+    slug="ks4/computer-science",
+    title="GCSE Computer Science",
+    short="GCSE Computer Science",
+    stage="KS4",
+    board="OCR",
+    code="J277",
+    goal="Grade 9",
+    icon="i-cpu",
+    accent="var(--teal)",
+    blurb="Everything on the OCR J277 specification, written as a route to a grade 9. Every topic has a full explanation, key terms, a ten question knowledge check and five auto marked exam-style questions with real mark schemes.",
+    intro="",
+    journey=[
+        ("Learn it properly the first time",
+         "Do not skim. Read one topic slowly, close the page, and write down what you remember. The gap between what you read and what you can recall is the only thing that matters, and you can only see it by testing yourself.", ""),
+        ("Pass every knowledge check at 100 per cent",
+         "Ten questions per topic. Anything below full marks means go back to that section. Getting 7 out of 10 and moving on is how students end up with a grade 5 while feeling like they revised.", ""),
+        ("Write the exam answers from memory",
+         "Five written questions per topic, marked against the real mark scheme. Write the answer first, then compare. Reading a model answer teaches you almost nothing until you have tried to produce one yourself.", ""),
+        ("Space it out and come back",
+         "Return to each topic after three days, then after two weeks. Redo only the quiz. Spaced retrieval is the single most effective revision method there is, and it takes ten minutes per topic.", ""),
+        ("Sit full papers against the clock",
+         "Knowing the content is not the same as scoring under time pressure. Do complete papers in 1 hour 30 minutes with no notes, mark them honestly, and keep a list of every mark you dropped.", ""),
+        ("Close the gaps you actually have",
+         "Your mistakes list is your revision plan. Grade 9 students are not the ones who know everything, they are the ones who found out what they did not know and fixed it before May.", ""),
+    ],
+    units=[
+        Unit("systems-architecture", "1.1 Systems Architecture",
+             "How the processor works, what makes one faster than another, and why the computer inside a washing machine is built differently.",
+             [T_CPU, T_PERF, T_EMBED], icon="i-cpu", term="Paper 1"),
+        Unit("memory-and-storage", "1.2 Memory and Storage",
+             "RAM, ROM, virtual memory and secondary storage, then every kind of data represented in binary and how it is compressed.",
+             [T_PRIMARY, T_SECONDARY, T_UNITS, T_NUMBERS, T_CHARS, T_IMAGES, T_SOUND, T_COMPRESS],
+             icon="i-memory", term="Paper 1"),
+        Unit("computer-networks", "1.3 Computer Networks, Connections and Protocols",
+             "How computers are joined together, the hardware that does it, and the protocols that let them understand each other.",
+             [T_NETWORKS, T_PROTOCOLS], icon="i-network", term="Paper 1"),
+        Unit("network-security", "1.4 Network Security",
+             "Every form of attack on the specification, how each one works, and the defence that actually stops it.",
+             [T_SECURITY], icon="i-shield", term="Paper 1"),
+        Unit("systems-software", "1.5 Systems Software",
+             "What the operating system does all day, and the utility programs that keep a computer healthy.",
+             [T_SYSSOFT], icon="i-software", term="Paper 1"),
+        Unit("impacts", "1.6 Ethical, Legal, Cultural and Environmental Impacts",
+             "The four impact categories, the four acts you must name, and how to structure the eight mark answer so it reaches the top level.",
+             [T_IMPACTS], icon="i-scales", term="Paper 1"),
+        Unit("algorithms", "2.1 Algorithms",
+             "Computational thinking, designing and tracing algorithms, and the five searching and sorting algorithms you must be able to trace.",
+             [T_COMPTHINK, T_ALGDESIGN, T_SEARCHSORT], icon="i-flow", term="Paper 2"),
+        Unit("programming-fundamentals", "2.2 Programming Fundamentals",
+             "The three constructs, data types and casting, then strings, arrays, files, SQL and subroutines.",
+             [T_PROGFUND, T_DATATYPES, T_ADVTECH], icon="i-code", term="Paper 2"),
+        Unit("robust-programs", "2.3 Producing Robust Programs",
+             "Defensive design, validation, authentication, maintainability and test plans that find real faults.",
+             [T_ROBUST], icon="i-bug", term="Paper 2"),
+        Unit("boolean-logic", "2.4 Boolean Logic",
+             "AND, OR and NOT, logic diagrams and truth tables done in a way that does not go wrong under pressure.",
+             [T_BOOLEAN], icon="i-logic", term="Paper 2"),
+        Unit("languages-and-ides", "2.5 Programming Languages and IDEs",
+             "High and low level languages, compilers against interpreters, and the features of an IDE.",
+             [T_LANGIDE], icon="i-language", term="Paper 2"),
+    ],
+)
