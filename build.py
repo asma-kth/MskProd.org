@@ -244,7 +244,11 @@ def build_sitemap():
         "description": "Free UK computing revision for KS3, GCSE and A Level.",
         "start_url": "/", "display": "standalone",
         "background_color": "#FBFAFC", "theme_color": "#03969D",
-        "icons": [{"src": "/assets/img/favicon.svg", "sizes": "any", "type": "image/svg+xml"}],
+        "icons": [
+            {"src": "/assets/img/favicon.svg", "sizes": "any", "type": "image/svg+xml"},
+            {"src": "/assets/img/icon-192.png", "sizes": "192x192", "type": "image/png"},
+            {"src": "/assets/img/icon-512.png", "sizes": "512x512", "type": "image/png"},
+        ],
     }
     with open(os.path.join(DIST, "site.webmanifest"), "w", encoding="utf-8") as fh:
         json.dump(manifest, fh)
