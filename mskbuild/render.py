@@ -79,7 +79,9 @@ NAV = [
 def _nav(active: str) -> str:
     out = []
     for label, href, icon in NAV:
-        cur = ' aria-current="page"' if active and href.startswith(active) and active != "/" else ""
+        # Exact match only: both KS4 courses share the /ks4/ prefix, so a
+        # startswith test would highlight two navigation items at once.
+        cur = ' aria-current="page"' if active and href == active else ""
         out.append('<a href="%s"%s>%s<span>%s</span></a>' % (href, cur, ico(icon), esc(label)))
     return "".join(out)
 
@@ -133,7 +135,8 @@ def layout(*, title: str, description: str, path: str, body: str,
 {extra_head}
 {ld_html}
 </head>
-<body{topic_attr}{greet_attr}>
+<body class="no-js"{topic_attr}{greet_attr}>
+<script>document.body.classList.remove("no-js");</script>
 <a class="skip-link" href="#main">Skip to content</a>
 {icons}
 {progress}
@@ -542,7 +545,7 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
              % topic.title)
     return path, layout(title="%s | %s revision" % (topic.title, course.short),
                         description=desc, path=path, body=body,
-                        active="/%s/" % course.slug.split("/")[0],
+                        active="/%s/" % course.slug,
                         topic_id=topic.slug, greeting=greet, jsonld=ld,
                         scripts=["/assets/js/quiz.js"], show_progress=True)
 
@@ -635,7 +638,7 @@ def course_page(course: Course) -> tuple:
     greet = ("This is the whole %s course mapped out. Start at the top and work down, it is ordered the way it is taught."
              % course.short)
     return path, layout(title=course.title, description=course.blurb, path=path,
-                        body=body, active="/%s/" % course.slug.split("/")[0],
+                        body=body, active="/%s/" % course.slug,
                         greeting=greet, jsonld=ld)
 
 
