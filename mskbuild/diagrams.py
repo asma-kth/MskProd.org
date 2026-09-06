@@ -158,14 +158,13 @@ def _cpu():
 def _hier():
     b = []
     rows = [
-        ("Registers", "a few bytes", "fastest, most expensive", 300, 46, TEAL),
-        ("Cache", "KB to MB", "very fast", 220, 96, TEAL),
-        ("RAM", "GB", "fast, volatile", 140, 146, LILAC),
-        ("Secondary storage", "GB to TB", "slow, non volatile", 60, 196, MUTED),
+        ("Registers", "a few bytes", "fastest, most expensive", 150, 46, TEAL),
+        ("Cache", "KB to MB", "very fast", 240, 96, TEAL),
+        ("RAM", "GB", "fast, volatile", 330, 146, LILAC),
+        ("Secondary storage", "GB to TB", "slow, non volatile", 420, 196, MUTED),
     ]
-    cx = 300
-    for label, size, note, indent, y, col in rows:
-        w = 760 - 2 * indent - 220
+    cx = 290
+    for label, size, note, w, y, col in rows:
         x = cx - w / 2
         b.append(box(x, y, w, 42, None, fill=FILL, stroke=col, r=6))
         b.append(text(cx, y + 20, label, 12, 620))
@@ -341,8 +340,8 @@ def _stack():
         b.append(text(46, y + 24, name, 12, 700, anchor="start", fill=col))
         b.append(text(46, y + 42, note, 9, 450, anchor="start", fill=MUTED))
 
-    b.append(path("M16 52 L16 328", stroke=TEAL, w=2, arrow=True, marker="ah-accent"))
-    b.append(text(12, 190, "sending", 9, 620, anchor="middle", fill=TEAL))
+    b.append(path("M20 62 L20 330", stroke=TEAL, w=2, arrow=True, marker="ah-accent"))
+    b.append(text(22, 48, "sending", 9, 700, anchor="middle", fill=TEAL))
 
     seg_h = 30
     rows = [
@@ -582,8 +581,7 @@ def _merge():
     b = []
     b.append(text(380, 22, "DIVIDE: split in half until every list holds one item",
                   11, 700, fill=TEAL))
-    b.append(text(380, 216, "MERGE: rebuild in pairs, always taking the smaller front item",
-                  11, 700, fill=LILAC))
+
 
     def rowdraw(y, groups, col, soft):
         k = len(groups)
@@ -635,7 +633,9 @@ def _merge():
             "The pairs become 27, 38 and 3, 43 and 9, 82 and 1, 10. Those merge into 3, "
             "27, 38, 43 and 1, 9, 10, 82. Those merge into the final sorted list 1, 3, 9, "
             "10, 27, 38, 43, 82.")
-    return figure("merge", 760, 366, "".join(b),
+    b.append(text(380, 362, "MERGE: rebuild in pairs, always taking the smaller "
+                  "front item", 11, 700, fill=LILAC))
+    return figure("merge", 760, 380, "".join(b),
                   "Merge sort: the divide phase and the merge phase", desc,
                   "Merge sort always takes about n log n comparisons, whatever order the "
                   "list starts in, but it needs extra memory to hold the part lists.")
@@ -656,7 +656,7 @@ def _bsearch():
     ]
     x0, w, gap = 41, 58, 4
     for r, (lo, hi, mid, note) in enumerate(steps):
-        y = 62 + r * 76
+        y = 66 + r * 94
         for i, v in enumerate(vals):
             x = x0 + i * (w + gap)
             inside = lo <= i <= hi
@@ -674,7 +674,7 @@ def _bsearch():
                 b.append(text(x + w / 2.0, y - 6, "high", 9, 700, fill=LILAC))
             if i == mid:
                 b.append(text(x + w / 2.0, y + 48, "mid", 9, 700, fill=TEAL))
-        b.append(text(41, y + 66, note, 10, 500, anchor="start", fill=MUTED))
+        b.append(text(41, y + 70, note, 10, 500, anchor="start", fill=MUTED))
     desc = ("Binary search looking for 12 in the sorted list 2, 5, 8, 12, 16, 23, 38, 56, "
             "72, 91, 100. Step one sets low to the first item and high to the last, giving "
             "a midpoint of 23. The target 12 is smaller than 23, so the whole right half "
@@ -683,7 +683,7 @@ def _bsearch():
             "discarded. Step three searches 12 and 16 with a midpoint of 12, which is the "
             "target, so the search succeeds after three comparisons rather than the four "
             "a linear search would need.")
-    return figure("bsearch", 760, 300, "".join(b),
+    return figure("bsearch", 760, 344, "".join(b),
                   "Binary search halving the list three times", desc,
                   "Binary search only works on a sorted list. Doubling the list length "
                   "adds just one extra comparison, which is why it scales so well.")
@@ -751,9 +751,10 @@ def _lla():
         b.append(box(x, 42, w, 44, v, fill=FILL, stroke=TEAL, r=6, label_size=12))
         b.append(text(x + w / 2.0, 100, "index %d" % i, 9, 620, fill=MUTED))
         b.append(text(x + w / 2.0, 114, "address %d" % (400 + i * 4), 9, 450, fill=MUTED))
-    b.append(text(20, 140, "To reach index 3 the computer works out 400 + 3 x 4 and jumps "
-                  "straight there. Inserting in the middle means shifting everything after it.",
-                  10, 500, anchor="start", fill=MUTED))
+    b.append(_lines(20, 140, [
+        "To reach index 3 the computer works out 400 + 3 x 4 and jumps straight there.",
+        "Inserting in the middle means shifting every item after it along by one.",
+    ], size=10, gap=16, fill=MUTED))
 
     b.append(text(20, 186, "LINKED LIST", 12, 700, anchor="start", fill=LILAC))
     b.append(text(112, 186, "scattered nodes, each holding a pointer to the next",
@@ -772,10 +773,10 @@ def _lla():
         if nxt:
             b.append(line(x + 148, 228, x + 174, 228, stroke=LILAC, w=1.6, arrow=True,
                           marker="ah-alt"))
-    b.append(text(20, 286, "To reach the fourth item you must start at the head and follow "
-                  "three pointers. Inserting in the middle only changes two pointers, and "
-                  "the list can grow as long as memory allows.",
-                  10, 500, anchor="start", fill=MUTED))
+    b.append(_lines(20, 288, [
+        "To reach the fourth item you must start at the head and follow three pointers.",
+        "Inserting in the middle changes two pointers, and the list can grow at any time.",
+    ], size=10, gap=16, fill=MUTED))
 
     desc = ("Two data structures compared. An array holds Ada, Bob, Cai, Dee and Eve in "
             "one continuous block of memory at addresses 400, 404, 408, 412 and 416, "
@@ -789,7 +790,7 @@ def _lla():
             "end. Reaching the fourth item means following three pointers from the head, "
             "but inserting in the middle only changes two pointers and the list can grow "
             "as long as there is free memory.")
-    return figure("lla", 760, 312, "".join(b),
+    return figure("lla", 760, 322, "".join(b),
                   "An array compared with a linked list", desc,
                   "Arrays win on reading a known position. Linked lists win on inserting "
                   "and deleting, and on not needing to know the size in advance.")
@@ -830,9 +831,10 @@ def _packets():
     b.append(chip(300, 40, "packet 1", TEAL_SOFT, TEAL, TEAL))
     b.append(chip(300, 262, "packet 2", LILAC_SOFT, LILAC, LILAC))
     b.append(chip(430, 200, "packet 3", WARN_SOFT, WARN, WARN))
-    b.append(text(380, 300, "Packets take whatever route is free, so they can arrive out "
-                  "of order. Each carries a sequence number so the receiver can rebuild "
-                  "the message.", 10, 500, fill=MUTED))
+    b.append(text(380, 296, "Packets take whatever route is free, so they can arrive "
+                  "out of order.", 10, 500, fill=MUTED))
+    b.append(text(380, 312, "Each one carries a sequence number, so the receiver can "
+                  "rebuild the message in order.", 10, 500, fill=MUTED))
     desc = ("A message travelling across a packet switched network. The sender on the left "
             "splits the message into numbered packets. Five routers, R1 to R5, sit between "
             "the sender and the receiver, joined by several possible links. Packet 1 "
@@ -843,7 +845,7 @@ def _packets():
             "were sent in. Every packet carries a sequence number, so the receiver on the "
             "right can put them back into the right order and rebuild the message, and can "
             "request any packet that never arrived.")
-    return figure("packets", 760, 316, "".join(b),
+    return figure("packets", 760, 328, "".join(b),
                   "Packet switching across a network", desc,
                   "The exam answer is: split into packets, each routed independently by "
                   "the fastest free path, reassembled in sequence number order at the end.")
@@ -1027,7 +1029,7 @@ def _sound():
     b.append(line(ox, oy, ox, oy + h, stroke=LINE, w=1.4))
     b.append(text(ox - 12, oy + 10, "loud", 9, 620, anchor="end", fill=MUTED))
     b.append(text(ox - 12, oy + h, "quiet", 9, 620, anchor="end", fill=MUTED))
-    b.append(text(ox + w / 2.0, oy + h + 46, "time", 9, 620, fill=MUTED))
+    b.append(text(ox + w / 2.0, oy + h + 22, "time", 9, 620, fill=MUTED))
 
     def wave(t):
         return mid - (math.sin(t * 2 * math.pi * 1.6) * 0.36
@@ -1053,19 +1055,19 @@ def _sound():
         prev = (x, q)
     b.append(line(prev[0], prev[1], ox + w, prev[1], stroke=TEAL, w=1.6))
 
-    b.append(box(70, 262, 300, 62, None, fill=TEAL_SOFT, stroke=TEAL, r=8))
-    b.append(text(86, 282, "Sample rate", 11, 700, anchor="start", fill=TEAL))
-    b.append(text(86, 300, "how many samples per second, in hertz.", 10, 450,
+    b.append(box(70, 276, 300, 62, None, fill=TEAL_SOFT, stroke=TEAL, r=8))
+    b.append(text(86, 296, "Sample rate", 11, 700, anchor="start", fill=TEAL))
+    b.append(text(86, 314, "how many samples per second, in hertz.", 10, 450,
                   anchor="start", fill=MUTED))
-    b.append(text(86, 316, "More samples means more detail across time.", 10, 450,
+    b.append(text(86, 330, "More samples means more detail across time.", 10, 450,
                   anchor="start", fill=MUTED))
-    b.append(box(390, 262, 300, 62, None, fill=LILAC_SOFT, stroke=LILAC, r=8))
-    b.append(text(406, 282, "Bit depth", 11, 700, anchor="start", fill=LILAC))
-    b.append(text(406, 300, "bits stored per sample, so 8 bits gives 256 levels.",
+    b.append(box(390, 276, 300, 62, None, fill=LILAC_SOFT, stroke=LILAC, r=8))
+    b.append(text(406, 296, "Bit depth", 11, 700, anchor="start", fill=LILAC))
+    b.append(text(406, 314, "bits stored per sample, so 8 bits gives 256 levels.",
                   10, 450, anchor="start", fill=MUTED))
-    b.append(text(406, 316, "More bits means each height is recorded more exactly.",
+    b.append(text(406, 330, "More bits means each height is recorded more exactly.",
                   10, 450, anchor="start", fill=MUTED))
-    b.append(text(380, 344, "file size in bits = sample rate x bit depth x seconds x channels",
+    b.append(text(380, 360, "file size in bits = sample rate x bit depth x seconds x channels",
                   11, 700, fill=TEAL))
 
     desc = ("A smooth analogue sound wave drawn as a continuous curve, with sampling shown "
@@ -1080,7 +1082,7 @@ def _sound():
             "step lands closer to the true height. Both improvements make the recording "
             "closer to the original and both make the file bigger. File size in bits equals "
             "sample rate times bit depth times length in seconds times number of channels.")
-    return figure("sound", 760, 360, "".join(b),
+    return figure("sound", 760, 376, "".join(b),
                   "Sampling an analogue sound wave into digital data", desc,
                   "Sample rate is how often you measure. Bit depth is how precisely you "
                   "record each measurement. Examiners want both named, not just one.")
@@ -1172,7 +1174,7 @@ def _addition():
     cw = 42
     ox = 232
     rows = [
-        ("carry", "  1 1 1 1     ", MUTED, None),
+        ("carry", "1 1 1 1 1       ", MUTED, None),
         ("", "0 1 1 0 1 1 0 1", "var(--dg-text)", "109"),
         ("+", "0 0 1 1 0 1 1 0", "var(--dg-text)", "54"),
         ("=", "1 0 1 0 0 0 1 1", TEAL, "163"),

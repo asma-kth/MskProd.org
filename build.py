@@ -16,11 +16,13 @@ from mskbuild import render
 from mskbuild.render import (SITE_URL, SITE_NAME, DIST, ROOT, layout, crumbs,
                              crumbs_ld, ico, esc, write, logo_svg)
 from mskbuild import markup
+from mskbuild import placements
 
 COURSES = []
 PAGES = []          # (path, priority, changefreq)
 SEARCH = []         # {t, u, s, k}
 MANIFEST = []       # course records for the progress dashboard
+PLACED = set()      # placement keys that matched a real topic
 
 
 def register(path, priority=0.7, freq="monthly"):
@@ -34,6 +36,7 @@ def add_search(title, url, subtitle, keywords=""):
 # ---------------------------------------------------------------- courses
 
 def build_course(course):
+    PLACED.update(placements.apply(course))
     path, html = render.course_page(course)
     write(path, html)
     register(path, 0.9, "weekly")
@@ -353,6 +356,14 @@ def main():
 
     from content import progress_page
     progress_page.build(register, add_search)
+
+    from content import worksheets
+    worksheets.build(register, add_search, COURSES)
+
+    from content import assign_page
+    assign_page.build(register, add_search)
+
+    placements.check(PLACED)
 
     build_home()
     copy_static()
