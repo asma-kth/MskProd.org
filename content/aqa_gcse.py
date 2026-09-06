@@ -764,7 +764,7 @@ ENDSUBROUTINE
 - **Good**: very simple to write and understand, and it needs almost no extra memory because items are swapped inside the original list.
 - **Bad**: slow on large lists. Sorting n items takes roughly n squared comparisons, so ten times more data means about a hundred times more work.
 """),
-        Section("Merge sort", """
+        Section("Merge sort", r"""
 A **merge sort** repeatedly splits the list in half until every sub list contains one item, then merges the sub lists back together in order.
 
 A list of one item is by definition already sorted, which is what makes the strategy work. All the actual sorting happens during the merging.
