@@ -105,6 +105,14 @@ def layout(*, title: str, description: str, path: str, body: str,
     if 'data-tool="' in body:
         extra_head += '<link rel="stylesheet" href="/assets/css/tools.css">'
         scripts.append("/assets/js/tools.js")
+
+    # Runnable Python. The marker goes on <main>, and pyrun.js finds the Python
+    # code blocks inside it. Pyodide itself is fetched only when a Run button is
+    # pressed, so a page that is merely read costs nothing extra.
+    py_attr = ""
+    if '<span class="code-label">Python</span>' in body:
+        py_attr = " data-pyrun"
+        scripts.append("/assets/js/pyrun.js")
     ld_html = "".join(
         '<script type="application/ld+json">%s</script>' % json.dumps(x, separators=(",", ":"))
         for x in ld)
@@ -163,7 +171,7 @@ def layout(*, title: str, description: str, path: str, body: str,
     </div>
   </div>
 </header>
-<main id="main">
+<main id="main"{py_attr}>
 {body}
 </main>
 {footer}
@@ -193,6 +201,7 @@ def layout(*, title: str, description: str, path: str, body: str,
         moon=ico("i-moon"),
         menu=ico("i-menu"),
         body=body,
+        py_attr=py_attr,
         footer=footer(),
         search_shell=search_shell(),
         mascot=mascot(),
@@ -249,6 +258,9 @@ def footer() -> str:
         <h4>Practise</h4>
         <ul>
           <li><a href="/exam-papers/">Practice exam papers</a></li>
+          <li><a href="/tools/">Interactive tools</a></li>
+          <li><a href="/worksheets/">Printable worksheets</a></li>
+          <li><a href="/progress/">Your progress</a></li>
           <li><a href="/how-to-revise/">How to revise properly</a></li>
           <li><a href="/glossary/">Computing glossary</a></li>
           <li><a href="/sitemap.xml">Sitemap</a></li>
@@ -257,6 +269,7 @@ def footer() -> str:
       <div>
         <h4>Site</h4>
         <ul>
+          <li><a href="/assign/">Set an assignment</a></li>
           <li><a href="/about/">About</a></li>
           <li><a href="/privacy/">Privacy policy</a></li>
           <li><a href="/accessibility/">Accessibility</a></li>
@@ -427,6 +440,11 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
     # Progress is keyed by course and topic together: two courses can legitimately
     # use the same topic slug, and an unqualified key would merge their scores.
     tid = "%s/%s" % (course.slug, topic.slug)
+    worksheet_link = (
+        '<a class="btn btn-secondary" style="width:100%%;justify-content:center" '
+        'href="/%s/%s/worksheet/">%s Printable worksheet</a>'
+        % (course.slug, topic.slug, ico("i-paper"))
+        if (topic.quiz or topic.exam) else "")
     trail = [("Home", "/"), (course.short, "/%s/" % course.slug),
              (unit.title, "/%s/#%s" % (course.slug, unit.slug)), (topic.title, None)]
 
@@ -511,7 +529,8 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
       %s
       <div class="card" style="padding:1.1rem">
         <h4 style="font-size:.76rem;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-muted);margin-bottom:.6rem">Study order</h4>
-        <p style="font-size:.87rem;margin:0;color:var(--ink-3);line-height:1.6">Read the explanation, do the ten question check, then write the five exam answers from memory. Come back in three days and redo the quiz only.</p>
+        <p style="font-size:.87rem;margin:0 0 .9rem;color:var(--ink-3);line-height:1.6">Read the explanation, do the ten question check, then write the five exam answers from memory. Come back in three days and redo the quiz only.</p>
+        %s
       </div>
     </aside>
   </div>
@@ -519,7 +538,7 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
              "\n".join(sec_html), fact,
              render_quiz(tid, topic.quiz),
              render_exam(tid, topic.exam),
-             nav_html, toc_html)
+             nav_html, toc_html, worksheet_link)
 
     desc = topic.blurb if len(topic.blurb) > 70 else topic.blurb + " Full explanation, a ten question check and five auto marked exam-style questions."
     ld = [crumbs_ld(trail), {
