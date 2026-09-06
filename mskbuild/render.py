@@ -248,7 +248,9 @@ def footer() -> str:
         <h4>Revise</h4>
         <ul>
           <li><a href="/ks3/">Key Stage 3</a></li>
-          <li><a href="/ks4/computer-science/">GCSE Computer Science</a></li>
+          <li><a href="/ks4/computer-science/">GCSE Computer Science, OCR</a></li>
+          <li><a href="/ks4/aqa-computer-science/">GCSE Computer Science, AQA</a></li>
+          <li><a href="/ks4/edexcel-computer-science/">GCSE Computer Science, Edexcel</a></li>
           <li><a href="/ks4/imedia/">Creative iMedia</a></li>
           <li><a href="/ks5/">A Level Computer Science</a></li>
           <li><a href="/python/">Python from scratch</a></li>

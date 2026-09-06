@@ -79,7 +79,8 @@ PY_BUILTIN = ("print input int str float bool list dict tuple set len range open
 PSEUDO_KW = ("if then else elseif endif for to next while endwhile do until switch case default "
              "endswitch function endfunction procedure endprocedure return global array "
              "print input and or not div mod byRef byVal new class inherits public private "
-             "true false").split()
+             "true false endfor subroutine endsubroutine constant output userinput len "
+             "position substring send receive display keyboard set").split()
 
 
 def _highlight(code: str, lang: str) -> str:

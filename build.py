@@ -88,6 +88,10 @@ def build_home():
                 "Years 7, 8 and 9. Build the foundation that makes GCSE feel easy instead of sudden."),
         "ks4/computer-science": ("GCSE Computer Science", "/ks4/computer-science/", "i-cpu", "var(--teal)",
                                  "OCR J277. Every topic on both papers, written as a route to grade 9."),
+        "ks4/aqa-computer-science": ("AQA GCSE Computer Science", "/ks4/aqa-computer-science/", "i-cpu", "var(--purple-deep)",
+                                     "AQA 8525. Every section of the specification, written to AQA's own pseudo-code, units and topics."),
+        "ks4/edexcel-computer-science": ("Edexcel GCSE Computer Science", "/ks4/edexcel-computer-science/", "i-cpu", "var(--lilac-deep)",
+                                         "Pearson Edexcel 1CP2. Paper 1 principles in full, plus the programming Paper 2 sits on screen."),
         "ks4/imedia": ("Creative iMedia", "/ks4/imedia/", "i-palette", "var(--purple)",
                        "OCR J834. The R093 exam unit in full, plus coursework guidance for R094 and R097."),
         "ks5": ("A Level Computer Science", "/ks5/", "i-brain", "var(--deep)",
@@ -329,7 +333,8 @@ def main():
 
     from content import ks4_cs
     modules = [ks4_cs]
-    for name in ("ks3", "ks4_imedia", "ks5", "python_course"):
+    for name in ("aqa_gcse", "edexcel_gcse", "ks3", "ks4_imedia", "ks5",
+                 "python_course"):
         try:
             mod = __import__("content." + name, fromlist=["COURSE"])
             modules.append(mod)

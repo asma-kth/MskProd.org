@@ -388,3 +388,195 @@ Y8_SUMMER = Paper(
         ], "A wired connection is faster and far more consistent, because the data travels along a cable that nothing else is sharing, and it is more reliable since the signal is not weakened by distance, walls or interference from other equipment. It is also more secure, because an attacker would have to get into the room and physically plug in rather than simply being close enough to pick up a signal travelling through the air. Wireless has real advantages too. It is much cheaper and quicker to install because no cables have to be run through walls and floors, and it lets tablets and laptops be moved around the room or taken to another part of the school. For a room of fixed desktop computers that never move, the school should use wired connections, because speed, reliability and security matter more than mobility and the machines are staying where they are. A wireless access point should be added as well, so that visiting laptops and tablets can still connect.", "Compare"),
     ],
 )
+
+
+# ============================================================ Year 9 Autumn
+
+Y9_AUTUMN = Paper(
+    slug="ks3-year-9-autumn",
+    title="Year 9 Computing: Autumn Assessment",
+    course="Key Stage 3",
+    board="MskProd",
+    code="Year 9 Autumn",
+    minutes=0,
+    marks=0,
+    accent="var(--lilac-deep)",
+    blurb="Covers the law and your data, binary and hexadecimal, binary addition, units of storage, and how text, images and sound are represented. This is the first assessment that looks and feels like a GCSE paper.",
+    advice="Read the command word before you start writing. State needs a fact. Describe needs a fact plus a detail. Explain needs a reason, usually a sentence containing the word because. Show your working in every conversion, because method marks are available even when the final answer is wrong.",
+    calculator="No calculator is permitted.",
+    questions=[
+        EQ("State what is meant by personal data.", 1, [
+            MP("Information that can be used to identify a living person", ["identify", "identifiable", "about a person", "who someone is", "living individual"]),
+        ], "Personal data is any information that can be used to identify a living person, such as a name together with an address, a date of birth, a photograph or an email address.", "State"),
+
+        EQ("The Data Protection Act gives you the right to see the data an organisation holds about you. State two other rights it gives you.", 2, [
+            MP("The right to have inaccurate data corrected", ["corrected", "rectified", "put right", "fixed", "accurate"]),
+            MP("The right to have your data deleted, or to object to how it is used", ["deleted", "erased", "removed", "forgotten", "object", "withdraw consent", "stop them using"]),
+        ], "You have the right to have data corrected if it is wrong, and the right to have your data deleted when there is no longer a good reason for the organisation to keep it. You can also object to your data being used for particular purposes, such as marketing.", "State"),
+
+        EQ("Convert the denary number 173 into 8 bit binary. Show your working.", 2, [
+            MP("Shows a correct method, for example place values or repeated division", ["128", "place value", "64 32 16", "divide", "remainder", "subtract"]),
+            MP("Gives the answer 10101101", ["10101101"]),
+        ], "Writing the place values 128, 64, 32, 16, 8, 4, 2, 1 above the columns: 128 fits into 173 leaving 45, 64 does not fit, 32 fits leaving 13, 16 does not fit, 8 fits leaving 5, 4 fits leaving 1, 2 does not fit and 1 fits leaving 0. Reading the columns gives 10101101.", "Convert"),
+
+        EQ("Convert the binary number 11010110 into hexadecimal. Show your working.", 2, [
+            MP("Splits the binary into two groups of four bits, 1101 and 0110", ["1101", "0110", "groups of four", "nibbles", "split"]),
+            MP("Gives the answer D6", ["D6", "d6"]),
+        ], "Split the eight bits into two groups of four, giving 1101 and 0110. The group 1101 is 8 + 4 + 1, which is 13, and 13 is written as D in hexadecimal. The group 0110 is 4 + 2, which is 6. So the answer is D6.", "Convert"),
+
+        EQ("Add the binary numbers 01101100 and 00110101. Give your answer in binary.", 3, [
+            MP("Shows column addition with carries", ["carry", "column", "working", "1 + 1"]),
+            MP("Gives the answer 10100001", ["10100001"]),
+            MP("Answer is exactly 8 bits with no overflow", ["8 bits", "eight bits", "no overflow", "fits"]),
+        ], "Adding from the right: 0 plus 1 is 1, 0 plus 0 is 0, 1 plus 1 is 0 carry 1, 1 plus 0 plus the carry is 0 carry 1, 0 plus 1 plus the carry is 0 carry 1, 1 plus 1 plus the carry is 1 carry 1, 1 plus 0 plus the carry is 0 carry 1, and 0 plus 0 plus the carry is 1. The answer is 10100001, which is 161 in denary, and 108 plus 53 does equal 161. It fits into eight bits, so there is no overflow.", "Add"),
+
+        EQ("Explain what is meant by overflow in binary addition.", 2, [
+            MP("The result of the addition needs more bits than are available", ["too big", "more bits", "does not fit", "exceeds", "beyond"]),
+            MP("A carry comes out of the leftmost column and is lost, so the stored answer is wrong", ["carry", "leftmost", "lost", "wrong answer", "incorrect", "ninth bit"]),
+        ], "Overflow happens when the answer to an addition is too large to fit into the number of bits available. A carry is produced out of the leftmost column, but with only eight bits there is no ninth bit to hold it, so the carry is lost and the value that gets stored is not the correct answer.", "Explain"),
+
+        EQ("A photograph is 800 pixels wide and 600 pixels high and uses a colour depth of 8 bits. Calculate the file size in kilobytes. Show your working.", 3, [
+            MP("Multiplies width by height by colour depth", ["800 x 600", "480000", "x 8", "width x height"]),
+            MP("Converts bits to bytes by dividing by 8", ["divide by 8", "/ 8", "bytes", "480000 bytes"]),
+            MP("Gives 480 KB", ["480", "480 kb", "480 kilobytes"]),
+        ], "The number of pixels is 800 multiplied by 600, which is 480000. Each pixel needs 8 bits, so the image data is 480000 multiplied by 8, which is 3840000 bits. Dividing by 8 gives 480000 bytes, and dividing by 1000 gives 480 kilobytes.", "Calculate"),
+
+        EQ("Explain why increasing the colour depth of an image increases its file size.", 3, [
+            MP("Colour depth is the number of bits used to store each pixel", ["bits per pixel", "each pixel", "number of bits"]),
+            MP("Every pixel in the image needs those extra bits, not just some of them", ["every pixel", "all pixels", "each one", "whole image"]),
+            MP("So the total number of bits, and therefore the file size, goes up", ["total bits", "file size", "larger", "bigger", "more storage"]),
+        ], "Colour depth is the number of bits stored for each individual pixel, so it decides how many different colours a pixel can be. Increasing the colour depth adds bits to every single pixel in the image, not just to a few of them, so an image with a million pixels gains a million extra bits for each extra bit of colour depth. The total number of bits is width times height times colour depth, so raising the colour depth raises the file size in direct proportion.", "Explain"),
+
+        EQ("Describe how a computer stores the character 'K' using a character set.", 3, [
+            MP("A character set gives every character a unique binary code", ["character set", "unique", "code", "number for each", "ascii"]),
+            MP("The computer stores the binary code, not the shape of the letter", ["stores the code", "binary", "not the shape", "number", "just a number"]),
+            MP("Software uses the same character set to turn the code back into the letter when displaying it", ["same character set", "converts back", "displays", "looks up", "decodes"]),
+        ], "A character set such as ASCII gives every character a unique number, and K is 75. The computer converts that number into binary, 01001011, and stores those eight bits. The shape of the letter is never stored: only the code is. When the character needs to be shown on screen, software looks the code up in the same character set and draws the matching symbol, which is why both machines have to agree on the character set for text to appear correctly.", "Describe"),
+
+        EQ("Explain why hexadecimal is used instead of binary when programmers write down memory addresses.", 3, [
+            MP("One hexadecimal digit represents exactly four bits", ["four bits", "one digit four", "nibble", "16 is 2 to the 4"]),
+            MP("So a value is written in a quarter of the characters", ["shorter", "quarter", "fewer digits", "briefer", "compact"]),
+            MP("Shorter values are easier to read and less likely to be mistyped or misread", ["easier to read", "fewer errors", "mistakes", "misread", "mistype", "remember"]),
+        ], "Sixteen is two to the power of four, so one hexadecimal digit stands for exactly four bits and a whole byte becomes just two hexadecimal digits. A memory address written as eight ones and zeros is easy to lose your place in, and a single misread digit gives a completely different address. Written in hexadecimal the same value takes a quarter of the characters, so it is far quicker to read aloud, write down and compare, and far harder to get wrong.", "Explain"),
+
+        EQ("A sound file is recorded at a sample rate of 44100 Hz with a bit depth of 16, in mono, for 30 seconds. Calculate the file size in megabytes. Show your working.", 4, [
+            MP("Multiplies sample rate by bit depth", ["44100 x 16", "705600"]),
+            MP("Multiplies by the number of seconds", ["x 30", "30 seconds", "21168000"]),
+            MP("Divides by 8 to get bytes", ["divide by 8", "/ 8", "2646000"]),
+            MP("Gives approximately 2.6 MB", ["2.6", "2646", "2.65", "2.646"]),
+        ], "The formula is sample rate times bit depth times seconds times channels. That gives 44100 times 16 times 30 times 1, which is 21168000 bits. Dividing by 8 gives 2646000 bytes, dividing by 1000 gives 2646 kilobytes, and dividing by 1000 again gives approximately 2.6 megabytes.", "Calculate"),
+
+        EQ("Describe two effects of increasing the sample rate when recording sound.", 4, [
+            MP("More samples are taken every second", ["more samples", "measured more often", "higher rate", "more measurements"]),
+            MP("The digital recording is a closer match to the original analogue sound", ["closer", "more accurate", "better quality", "more like the original", "truer"]),
+            MP("The file size increases", ["bigger", "larger", "more storage", "file size goes up"]),
+            MP("More processing power or bandwidth is needed to play or send it", ["processing", "bandwidth", "slower", "more work", "streaming"]),
+        ], "Increasing the sample rate means the height of the wave is measured more often, so the steps of the digital version are narrower and the recording follows the shape of the original analogue wave far more closely, which improves the sound quality. The cost is size. Every extra sample is another set of bits to store, so the file grows in direct proportion to the sample rate, and a larger file takes longer to send over a network and needs more processing to play back.", "Describe"),
+
+        EQ("A student says that all files should be stored in the highest possible quality. Discuss whether this is a good idea, giving reasons for and against.", 6, [
+            MP("Higher quality means more detail is kept, which matters for editing and for professional use", ["more detail", "quality", "editing", "professional", "better"]),
+            MP("Higher quality files are much larger", ["larger", "bigger", "more storage", "file size"]),
+            MP("Large files fill storage quickly and cost more to store", ["fills storage", "runs out", "cost", "expensive", "space"]),
+            MP("Large files take longer to send, upload or stream, especially on a slow connection", ["slower", "longer to send", "upload", "stream", "bandwidth", "buffering"]),
+            MP("Most uses do not need the extra quality, as people cannot tell the difference on a phone screen or through earphones", ["cannot tell", "no difference", "not needed", "small screen", "earphones", "waste"]),
+            MP("Reaches a reasoned conclusion, for example match the quality to the purpose", ["depends", "purpose", "match", "conclusion", "therefore", "should"]),
+        ], "There is a real argument for high quality. Keeping more detail matters when a file is going to be edited, printed large or used professionally, because quality lost at the point of capture can never be recovered afterwards. Against that, quality costs size, and the cost is not small: doubling the sample rate or the colour depth roughly doubles the file. Large files fill storage quickly, which either means paying for more or deleting things, and they take much longer to upload, download or stream, which is a serious problem on a slow or metered connection. There is also the question of whether anybody notices. On a phone screen or through cheap earphones, most people genuinely cannot tell a very high quality file from a moderate one, so the extra bits buy nothing. The sensible conclusion is to match the quality to the purpose: capture and archive at high quality when the file will be edited or printed, and store or share a smaller version for everyday use.", "Discuss"),
+    ],
+)
+
+
+# ============================================================ Year 9 Summer
+
+Y9_SUMMER = Paper(
+    slug="ks3-year-9-summer",
+    title="Year 9 Computing: Summer Assessment",
+    course="Key Stage 3",
+    board="MskProd",
+    code="Year 9 Summer",
+    minutes=0,
+    marks=0,
+    accent="var(--lilac-deep)",
+    blurb="The last assessment before GCSE. It covers the whole of Year 9: data representation, Python programming, app design, artificial intelligence and 3D modelling, and it is written in GCSE style throughout.",
+    advice="This paper is deliberately set at the level you will meet in Year 10. Answer in full sentences, use the correct technical vocabulary, and make one clear point for each mark available. If a question asks you to justify or evaluate, you must reach a conclusion and say why.",
+    calculator="No calculator is permitted.",
+    questions=[
+        EQ("State what is meant by an algorithm.", 1, [
+            MP("A sequence of steps followed to complete a task or solve a problem", ["sequence of steps", "set of steps", "instructions", "series of steps", "method"]),
+        ], "An algorithm is a sequence of steps that can be followed in order to complete a task or solve a problem.", "State"),
+
+        EQ("A program contains the line total = total + price. Explain what this line does.", 2, [
+            MP("The expression on the right is worked out first", ["right first", "works out", "evaluated", "calculates"]),
+            MP("The result is then stored back into the variable total, replacing its old value", ["stored", "assigned", "replaces", "back into total", "new value"]),
+        ], "The computer first works out the value on the right hand side, adding the current contents of total to the current contents of price. That result is then assigned to the variable total, replacing whatever total held before. The equals sign here means assignment, not equality.", "Explain"),
+
+        EQ("Describe the difference between a for loop and a while loop, and give one situation where each is the better choice.", 4, [
+            MP("A for loop repeats a known, fixed number of times", ["known number", "fixed", "set number", "count controlled", "how many times"]),
+            MP("A while loop repeats until a condition stops being true, and may run any number of times", ["condition", "until", "unknown number", "condition controlled", "as long as"]),
+            MP("Gives a sensible use for a for loop, such as working through every item in a list", ["every item", "list", "ten times", "each of", "known length"]),
+            MP("Gives a sensible use for a while loop, such as asking for input until it is valid", ["until valid", "input", "password", "keeps asking", "not known"]),
+        ], "A for loop repeats a set number of times that is known before the loop starts, so it is count controlled. A while loop keeps repeating for as long as a condition is true, and nothing decides in advance how many times that will be, so it is condition controlled. A for loop is the right choice for working through every item in a list of forty names, because the number of repeats is known. A while loop is the right choice for asking a user to enter a password until they get it right, because you cannot know in advance how many attempts they will need.", "Describe"),
+
+        EQ("A program uses a list called scores. Explain why a list is a better choice than creating a separate variable for each score.", 3, [
+            MP("A list holds many values under one identifier", ["one name", "one identifier", "many values", "single variable", "together"]),
+            MP("A loop can work through every item, so the code is much shorter", ["loop", "shorter", "iterate", "each item", "less code"]),
+            MP("The number of items can change without rewriting the program", ["any number", "change", "grow", "flexible", "not fixed"]),
+        ], "A list stores many values under a single identifier and gives each one an index, so a program can hold thirty scores in one place instead of thirty separately named variables. That means a loop can work through every score with two or three lines of code, where separate variables would need thirty lines that all say almost the same thing. It also means the program still works when the number of scores changes, because nothing in the code depends on there being exactly thirty of them.", "Explain"),
+
+        EQ("Describe two things a designer should do before writing any code for a new app.", 4, [
+            MP("Identify who the users are and what they need the app to do", ["users", "audience", "requirements", "what they need", "purpose"]),
+            MP("Break the problem down into smaller parts, or write the algorithm out first", ["decompose", "break down", "smaller parts", "algorithm", "plan", "flowchart"]),
+            MP("Sketch the interface, for example as wireframes or a storyboard", ["wireframe", "sketch", "storyboard", "layout", "design the screens", "mock up"]),
+            MP("Decide how the app will be tested and what success would look like", ["testing", "test plan", "success criteria", "how to check", "evaluate"]),
+        ], "First, work out who is going to use the app and what they actually need it to do, and write those needs down as success criteria, because everything afterwards is judged against them. Second, sketch the interface before coding it, as wireframes or a storyboard showing each screen and how the user moves between them. Sketching is fast and changing a sketch costs nothing, whereas changing a built screen costs hours. Planning the algorithm and the test plan at this stage matters for the same reason: mistakes found on paper are cheap and mistakes found in code are not.", "Describe"),
+
+        EQ("Explain what is meant by machine learning.", 3, [
+            MP("A system is trained on data rather than being given explicit rules", ["trained", "training data", "examples", "not programmed with rules", "learns from data"]),
+            MP("It finds patterns in the data", ["patterns", "relationships", "spots", "identifies"]),
+            MP("It uses those patterns to make predictions or decisions about new, unseen data", ["predict", "new data", "unseen", "decisions", "classify"]),
+        ], "Machine learning is an approach in which a system is trained on a large quantity of example data rather than being given a set of rules written by a programmer. During training it finds statistical patterns in that data, and it then applies those patterns to make predictions or decisions about new data it has never seen before. Nobody writes a rule saying what a cat looks like: the system is shown many labelled pictures and works out the pattern itself.", "Explain"),
+
+        EQ("An artificial intelligence system used to shortlist job applicants was found to favour male candidates. Explain how this could have happened.", 4, [
+            MP("The system was trained on historic data from the organisation", ["training data", "historic", "past", "previous hires", "old data"]),
+            MP("That data reflected past decisions that were themselves biased", ["biased data", "past bias", "mostly men", "reflected", "unfair decisions"]),
+            MP("The system learned the pattern in the data rather than judging fairness", ["learns the pattern", "copies", "repeats", "no understanding", "does not know"]),
+            MP("So the bias in the training data is reproduced and applied at scale", ["reproduces", "repeats it", "at scale", "amplifies", "carries on"]),
+        ], "A shortlisting system is trained on data about who the organisation has hired and promoted in the past. If most of those people were men, then the pattern in the data is that successful candidates look like the men already there, and that is precisely the pattern the system learns. The system has no concept of fairness and no way of knowing that the historic decisions were themselves biased: it simply finds the statistical relationship in what it was shown and applies it. The result is that a bias which used to be one interviewer's is now applied consistently to every single application, which makes it both harder to spot and much larger in effect.", "Explain"),
+
+        EQ("Describe the difference between a bitmap image and a vector image.", 3, [
+            MP("A bitmap is stored as a grid of pixels, each with its own colour value", ["pixels", "grid", "each pixel", "colour value", "map of bits"]),
+            MP("A vector is stored as instructions or coordinates describing shapes", ["instructions", "coordinates", "shapes", "maths", "equations", "objects"]),
+            MP("A vector can be scaled without losing quality, a bitmap becomes blocky", ["scale", "resize", "blocky", "pixelated", "no quality loss", "any size"]),
+        ], "A bitmap image is stored as a grid of pixels with a colour value recorded for every single pixel, which is why photographs are bitmaps. A vector image is stored instead as a set of instructions describing the shapes it contains, such as the coordinates of a line's endpoints and the thickness and colour to draw it in. Because a vector is redrawn from those instructions at whatever size is needed, it stays perfectly sharp at any scale, while enlarging a bitmap simply makes each pixel bigger and the image looks blocky.", "Describe"),
+
+        EQ("Describe how a 3D model is built from vertices, edges and faces.", 3, [
+            MP("A vertex is a single point in 3D space, defined by x, y and z coordinates", ["vertex", "point", "coordinates", "x y z", "position"]),
+            MP("An edge is a straight line joining two vertices", ["edge", "line", "joins", "between two", "connects"]),
+            MP("A face is a flat surface enclosed by edges, and many faces form the mesh of the model", ["face", "surface", "enclosed", "polygon", "mesh", "makes the shape"]),
+        ], "A vertex is a single point in three dimensional space, fixed by its x, y and z coordinates. An edge is a straight line joining two vertices together. A face is a flat surface bounded by three or more edges, usually a triangle. The complete set of faces is called the mesh, and the mesh is what gives the model its shape, which is why a model with more faces can show finer detail but takes longer to render.", "Describe"),
+
+        EQ("Explain why rendering a 3D animation takes so much processing power.", 3, [
+            MP("Every frame has to be calculated separately", ["each frame", "every frame", "frame by frame", "many frames"]),
+            MP("An animation needs a large number of frames, typically 24 or more each second", ["24", "25", "30", "frames per second", "per second", "thousands of frames"]),
+            MP("Each frame requires calculating lighting, shadows, textures and reflections for every visible surface", ["lighting", "shadows", "textures", "reflections", "every surface", "each pixel"]),
+        ], "Rendering means calculating the final image from the model, and it has to be done separately for every frame. An animation runs at around 24 to 30 frames every second, so even a two minute sequence is several thousand complete images. Each of those images requires the computer to work out, for every visible surface, how light falls on it, what shadows are cast, how the texture appears at that angle and what is reflected in it. Multiplying that amount of calculation by thousands of frames is why studios render on large farms of machines rather than on one computer.", "Explain"),
+
+        EQ("Evaluate the use of artificial intelligence to mark students' written exam answers.", 6, [
+            MP("AI can mark very quickly and at a very large scale", ["fast", "quickly", "scale", "thousands", "instant"]),
+            MP("It applies the same standard to every script, so it is consistent", ["consistent", "same standard", "no tiredness", "not subjective", "fair in that sense"]),
+            MP("It is cheaper than employing human examiners", ["cheaper", "cost", "less expensive", "saves money"]),
+            MP("It may not understand an unusual but correct answer", ["unusual", "creative", "different wording", "valid but", "does not understand", "misses"]),
+            MP("Bias in the training data could disadvantage particular groups of students", ["bias", "unfair", "disadvantage", "training data", "certain groups"]),
+            MP("Reaches a justified conclusion, for example AI marking with human moderation", ["conclusion", "therefore", "should", "combination", "human check", "moderation", "alongside"]),
+        ], "The case for it is strong on practicalities. An automated marker can process thousands of scripts in the time a human takes to mark a handful, it applies exactly the same standard to the first script and the four hundredth, and it does not get tired or distracted, which removes a genuine source of unfairness in human marking. It is also far cheaper, and results could be returned much sooner. The case against rests on what marking actually is. A written answer can be correct in a way the mark scheme did not anticipate, and a system trained to recognise expected phrasing may not credit an unusual but valid response, which penalises exactly the strongest candidates. There is also a risk of bias: if the training data under represents certain groups of students, their writing may be systematically marked lower, and because the same system marks everything, that bias applies at national scale. The most defensible position is not to choose one or the other. Automated marking is reasonable for short, factual responses where the mark scheme is closed, but extended answers should still be marked or at least moderated by humans, with a sample checked every session and a clear route for a student to have a script looked at by a person.", "Evaluate"),
+    ],
+)
+
+
+ALL_KS3_PAPERS = [Y7_AUTUMN, Y7_SUMMER, Y8_AUTUMN, Y8_SUMMER, Y9_AUTUMN, Y9_SUMMER]
+
+# Key Stage 3 assessments are not timed to a real board specification, so mark
+# totals come from the questions themselves and the time allowance uses one and
+# a half minutes per mark, which is the pace these papers were written for.
+for _p in ALL_KS3_PAPERS:
+    _p.marks = sum(q.marks for q in _p.questions)
+    _p.minutes = int(round(_p.marks * 1.5 / 5.0) * 5)

@@ -56,6 +56,90 @@ PLACEMENTS = {
         "Trace tables": ["!tool trace-table"],
     },
 
+    # ------------------------------------------------------- AQA GCSE 8525
+    ("ks4/aqa-computer-science", "searching-algorithms"): {
+        "Binary search": ["!diagram binary-search"],
+    },
+    ("ks4/aqa-computer-science", "sorting-algorithms"): {
+        "Bubble sort": ["!diagram bubble-sort"],
+        "Merge sort": ["!diagram merge-sort", "!tool sort-visualiser"],
+    },
+    ("ks4/aqa-computer-science", "number-bases-and-units"): {
+        "Converting between the bases": ["!diagram binary-place-values",
+                                         "!tool base-converter"],
+        "Units of information": ["!tool file-size"],
+    },
+    ("ks4/aqa-computer-science", "binary-arithmetic-and-shifts"): {
+        "Binary addition": ["!diagram binary-addition"],
+    },
+    ("ks4/aqa-computer-science", "representing-images"): {
+        "Bitmap images": ["!diagram image-representation"],
+        "Calculating image file size": ["!tool file-size"],
+    },
+    ("ks4/aqa-computer-science", "representing-sound"): {
+        "From analogue to digital": ["!diagram sound-sampling"],
+        "Calculating sound file size": ["!tool file-size"],
+    },
+    ("ks4/aqa-computer-science", "boolean-logic"): {
+        "The four gates": ["!diagram logic-gates"],
+        "Truth tables for combined circuits": ["!diagram logic-circuit",
+                                               "!tool logic-simulator"],
+    },
+    ("ks4/aqa-computer-science", "systems-architecture"): {
+        "Registers and the fetch execute cycle": ["!diagram fetch-decode-execute"],
+        "CPU performance and embedded systems": ["!diagram cpu-components"],
+    },
+    ("ks4/aqa-computer-science", "computer-networks"): {
+        "Star and bus topologies": ["!diagram network-topologies"],
+    },
+    ("ks4/aqa-computer-science", "protocols-and-layers"): {
+        "Layers": ["!diagram tcp-ip-stack"],
+    },
+    ("ks4/aqa-computer-science", "representing-algorithms"): {
+        "Trace tables": ["!tool trace-table"],
+    },
+
+    # --------------------------------------------------- Edexcel GCSE 1CP2
+    ("ks4/edexcel-computer-science", "searching-and-sorting-algorithms"): {
+        "Linear search and binary search": ["!diagram binary-search"],
+        "Bubble sort": ["!diagram bubble-sort"],
+        "Merge sort": ["!diagram merge-sort"],
+        "Choosing and comparing": ["!tool sort-visualiser"],
+    },
+    ("ks4/edexcel-computer-science", "binary-and-hexadecimal"): {
+        "Converting between denary and binary": ["!diagram binary-place-values",
+                                                 "!tool base-converter"],
+    },
+    ("ks4/edexcel-computer-science", "truth-tables-and-logic"): {
+        "The three logical operators": ["!diagram logic-gates"],
+        "Building a truth table that is right": ["!diagram logic-circuit",
+                                                 "!tool logic-simulator"],
+    },
+    ("ks4/edexcel-computer-science", "algorithms-flowcharts-and-pseudocode"): {
+        "Trace tables": ["!tool trace-table"],
+    },
+    ("ks4/edexcel-computer-science", "representing-text-images-and-sound"): {
+        "Representing images": ["!diagram image-representation"],
+        "Representing sound": ["!diagram sound-sampling", "!tool file-size"],
+    },
+    ("ks4/edexcel-computer-science", "data-storage-and-compression"): {
+        "Units of storage": ["!tool base-converter"],
+        "Secondary storage": ["!diagram memory-hierarchy"],
+    },
+    ("ks4/edexcel-computer-science", "hardware-and-the-processor"): {
+        "Inside the CPU": ["!diagram cpu-components", "!diagram fetch-decode-execute"],
+    },
+    ("ks4/edexcel-computer-science", "networks-and-network-security"): {
+        "Networks and topologies": ["!diagram network-topologies"],
+        "Protocols and layers": ["!diagram tcp-ip-stack"],
+    },
+    ("ks4/edexcel-computer-science", "lists-strings-and-files-in-python"): {
+        "Lists": ["!diagram linked-list-vs-array"],
+    },
+    ("ks4/edexcel-computer-science", "developing-and-testing-programs"): {
+        "Validation, authentication and testing": ["!tool trace-table"],
+    },
+
     # ------------------------------------------------------------- A Level
     ("ks5", "structure-and-function-of-the-processor"): {
         "Components and registers": ["!diagram cpu-components"],
@@ -115,10 +199,11 @@ def apply(course):
     used = set()
     for unit in course.units:
         for topic in unit.topics:
-            plan = PLACEMENTS.get((course.slug, topic.slug))
-            if not plan:
+            key = (course.slug, topic.slug)
+            if key not in PLACEMENTS:
                 continue
-            used.add((course.slug, topic.slug))
+            plan = PLACEMENTS[key]
+            used.add(key)
             titles = {s.title: s for s in topic.sections}
             for title, directives in plan.items():
                 if title not in titles:
