@@ -242,7 +242,7 @@ def footer() -> str:
     <div class="footer-grid">
       <div>
         <div class="footer-brand">%s<span>MskProd Computing</span></div>
-        <p>Free computing revision for UK students at Key Stage 3, GCSE and A Level. Written to the OCR specifications, structured as a journey to the top grade, and completely free to use with no account and no tracking.</p>
+        <p>Free computing revision for UK students at Key Stage 3, GCSE and A Level. Written board by board for OCR, AQA and Edexcel, structured as a journey to the top grade, and completely free to use with no account and no tracking.</p>
       </div>
       <div>
         <h4>Revise</h4>

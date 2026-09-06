@@ -268,7 +268,7 @@ def build(register, add_search, courses):
     total_topics = sum(len(u.topics) for c in courses for u in c.units)
     total_quiz = sum(len(t.quiz) for c in courses for u in c.units for t in u.topics)
     about = """
-MskProd Computing is a free revision site for UK students studying computing at Key Stage 3, GCSE and A Level. There are **%d topics**, **%d knowledge check questions** and several hundred auto marked exam-style questions, all written to the OCR specifications and sequenced in the order the subject is actually taught in school.
+MskProd Computing is a free revision site for UK students studying computing at Key Stage 3, GCSE and A Level. There are **%d topics**, **%d knowledge check questions** and several hundred auto marked exam-style questions, written board by board for OCR, AQA and Edexcel and sequenced in the order the subject is actually taught in school.
 
 Everything on the site is free. There is no account to create, no adverts, no subscription and no tracking.
 
@@ -310,7 +310,7 @@ Corrections are genuinely welcome. If something on this site is wrong, unclear o
 """
     path, html = _page(
         "/about/", "About MskProd Computing",
-        "A free revision site for UK computing students at Key Stage 3, GCSE and A Level, written to the OCR specifications with no accounts, adverts or tracking.",
+        "A free revision site for UK computing students at Key Stage 3, GCSE and A Level, covering OCR, AQA and Edexcel, with no accounts, adverts or tracking.",
         "About", about % (total_topics, total_quiz),
         extra='<div class="center" style="max-width:220px;margin:var(--sp-6) auto 0">%s</div>' % mascot_svg(),
         greeting="I am Pixel. I live in the corner of every page, and I run entirely on your own device. Nothing you do here is sent anywhere.",
