@@ -131,7 +131,7 @@ def build(register, add_search, courses):
                 write(path, html)
                 register(path, 0.5, "monthly")
                 add_search("%s worksheet" % topic.title, path,
-                           "Printable worksheet and mark scheme",
+                           "%s, printable worksheet and mark scheme" % course.short,
                            ("worksheet printable print %s %s mark scheme questions"
                             % (topic.title, course.short)).lower())
                 rows.append(

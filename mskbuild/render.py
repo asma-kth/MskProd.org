@@ -635,6 +635,7 @@ def course_page(course: Course) -> tuple:
       <div class="btn-row" style="margin-top:1.6rem">
         <a class="btn btn-primary" href="/%s/%s/">%s Start the first topic</a>
         <a class="btn btn-secondary" href="/exam-papers/">%s Practice papers</a>
+        <a class="btn btn-ghost" href="/worksheets/">%s Printable worksheets</a>
       </div>
     </div>
     <div class="stat-row">
@@ -652,7 +653,7 @@ def course_page(course: Course) -> tuple:
         esc(" %s %s" % (course.board, course.code)).strip() or " Revision course",
         esc(course.title), markup.inline(course.blurb),
         course.slug, course.units[0].topics[0].slug if course.units and course.units[0].topics else "",
-        ico("i-play"), ico("i-paper"),
+        ico("i-play"), ico("i-paper"), ico("i-list"),
         total_topics, total_quiz, total_marks, esc(course.goal or "Top"),
         journey, units_html)
 
