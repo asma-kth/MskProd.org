@@ -68,11 +68,13 @@ def slugify(s: str) -> str:
 
 NAV = [
     ("KS3", "/ks3/", "i-layers"),
-    ("GCSE Computer Science", "/ks4/computer-science/", "i-cpu"),
-    ("Creative iMedia", "/ks4/imedia/", "i-palette"),
+    ("GCSE CS", "/ks4/computer-science/", "i-cpu"),
+    ("iMedia", "/ks4/imedia/", "i-palette"),
     ("A Level", "/ks5/", "i-brain"),
     ("Python", "/python/", "i-python"),
-    ("Exam papers", "/exam-papers/", "i-paper"),
+    ("Papers", "/exam-papers/", "i-paper"),
+    ("Tools", "/tools/", "i-tools"),
+    ("Progress", "/progress/", "i-target"),
 ]
 
 
@@ -95,8 +97,14 @@ def layout(*, title: str, description: str, path: str, body: str,
     """Wrap page body in the full site chrome."""
     canonical = SITE_URL + path
     full_title = title if title.endswith(SITE_NAME) else "%s | %s" % (title, SITE_NAME)
-    scripts = scripts or []
+    scripts = list(scripts or [])
     ld = jsonld or []
+
+    # Interactive tools ship as one bundle, pulled in only by pages that mount
+    # one, so a topic with no tool on it downloads nothing extra.
+    if 'data-tool="' in body:
+        extra_head += '<link rel="stylesheet" href="/assets/css/tools.css">'
+        scripts.append("/assets/js/tools.js")
     ld_html = "".join(
         '<script type="application/ld+json">%s</script>' % json.dumps(x, separators=(",", ":"))
         for x in ld)
@@ -416,6 +424,9 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
                prev_link=None, next_link=None) -> tuple:
     """Return (path, html) for one topic page."""
     path = "/%s/%s/" % (course.slug, topic.slug)
+    # Progress is keyed by course and topic together: two courses can legitimately
+    # use the same topic slug, and an unqualified key would merge their scores.
+    tid = "%s/%s" % (course.slug, topic.slug)
     trail = [("Home", "/"), (course.short, "/%s/" % course.slug),
              (unit.title, "/%s/#%s" % (course.slug, unit.slug)), (topic.title, None)]
 
@@ -506,8 +517,8 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
   </div>
 </div>""" % (crumbs(trail), "".join(badges), esc(topic.title), markup.inline(topic.blurb),
              "\n".join(sec_html), fact,
-             render_quiz(topic.slug, topic.quiz),
-             render_exam(topic.slug, topic.exam),
+             render_quiz(tid, topic.quiz),
+             render_exam(tid, topic.exam),
              nav_html, toc_html)
 
     desc = topic.blurb if len(topic.blurb) > 70 else topic.blurb + " Full explanation, a ten question check and five auto marked exam-style questions."
@@ -546,7 +557,7 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
     return path, layout(title="%s | %s revision" % (topic.title, course.short),
                         description=desc, path=path, body=body,
                         active="/%s/" % course.slug,
-                        topic_id=topic.slug, greeting=greet, jsonld=ld,
+                        topic_id=tid, greeting=greet, jsonld=ld,
                         scripts=["/assets/js/quiz.js"], show_progress=True)
 
 
@@ -558,7 +569,8 @@ def unit_block(course: Course, unit: Unit) -> str:
             '<span class="unit-num">%s</span>'
             '<span><b>%s</b><small>%s</small></span>'
             '<span data-done-slot>%s</span></a>'
-            % (course.slug, t.slug, esc(t.slug), esc(t.spec or str(i + 1)),
+            % (course.slug, t.slug, esc("%s/%s" % (course.slug, t.slug)),
+               esc(t.spec or str(i + 1)),
                esc(t.title), esc(t.blurb), ico("i-arrow-right")))
     return """<section class="section" id="%s">
   <div class="section-head">

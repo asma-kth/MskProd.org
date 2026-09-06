@@ -1,0 +1,29 @@
+.tool[data-tool="trace-table"] .tt-split {
+  display: grid; gap: 1rem; margin-top: .9rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+}
+.tool[data-tool="trace-table"] .tt-left,
+.tool[data-tool="trace-table"] .tt-right { min-width: 0; }
+.tool[data-tool="trace-table"] .tt-code {
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--r-s); padding: .7rem .85rem; overflow-x: auto;
+}
+.tool[data-tool="trace-table"] .tt-code pre { margin: 0; }
+.tool[data-tool="trace-table"] .tt-code code {
+  font-family: var(--font-mono); font-size: .84rem; line-height: 1.85;
+  color: var(--ink-2); background: none; padding: 0; border: 0; white-space: pre;
+}
+.tool[data-tool="trace-table"] .tt-num {
+  display: inline-block; width: 2.2em; color: var(--ink-muted); user-select: none;
+}
+.tool[data-tool="trace-table"] .tt-cell {
+  width: 100%; min-width: 3.4rem; border: 0; background: none; text-align: center;
+  padding: .3rem .2rem; font-size: .88rem; color: var(--ink); border-radius: 4px;
+}
+.tool[data-tool="trace-table"] .tt-cell.is-good { background: var(--ok-bg); color: var(--ok); font-weight: 640; }
+.tool[data-tool="trace-table"] .tt-cell.is-bad { background: var(--bad-bg); color: var(--bad); font-weight: 640; }
+.tool[data-tool="trace-table"] td { padding: 0; }
+.tool[data-tool="trace-table"] .tt-given td {
+  background: var(--surface-2); color: var(--ink-muted); font-family: var(--font-mono);
+  font-size: .85rem; padding: .35rem .4rem;
+}

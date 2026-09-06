@@ -1,0 +1,47 @@
+.tool[data-tool="logic-simulator"] .ls-canvas {
+  display: block; width: 100%; height: auto; touch-action: none;
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--r-s);
+}
+.tool[data-tool="logic-simulator"] .ls-gate {
+  fill: var(--surface); stroke: var(--ink-3); stroke-width: 1.6; cursor: grab;
+}
+.tool[data-tool="logic-simulator"] .ls-gate-label {
+  fill: var(--ink-muted); font-size: 10px; font-weight: 700; text-anchor: middle;
+  pointer-events: none;
+}
+.tool[data-tool="logic-simulator"] .ls-del {
+  fill: var(--ink-muted); font-size: 12px; font-weight: 700; cursor: pointer;
+  text-anchor: middle;
+}
+.tool[data-tool="logic-simulator"] .ls-del:hover { fill: var(--bad); }
+.tool[data-tool="logic-simulator"] .ls-input,
+.tool[data-tool="logic-simulator"] .ls-output {
+  fill: var(--surface); stroke: var(--border-strong); stroke-width: 1.6; cursor: pointer;
+}
+.tool[data-tool="logic-simulator"] .ls-input.is-on,
+.tool[data-tool="logic-simulator"] .ls-output.is-on {
+  fill: var(--accent-quiet); stroke: var(--accent);
+}
+.tool[data-tool="logic-simulator"] .ls-label {
+  fill: var(--ink); font-size: 14px; font-weight: 700; text-anchor: middle;
+  pointer-events: none;
+}
+.tool[data-tool="logic-simulator"] .ls-value {
+  fill: var(--ink-muted); font-size: 11px; font-weight: 600; text-anchor: middle;
+  pointer-events: none;
+}
+.tool[data-tool="logic-simulator"] .ls-port {
+  fill: var(--surface); stroke: var(--ink-3); stroke-width: 1.5; cursor: crosshair;
+}
+.tool[data-tool="logic-simulator"] .ls-port:hover { fill: var(--accent); stroke: var(--accent); }
+.tool[data-tool="logic-simulator"] .ls-wire {
+  fill: none; stroke: var(--ink-3); stroke-width: 2; pointer-events: none;
+}
+.tool[data-tool="logic-simulator"] .ls-wire.is-on { stroke: var(--accent); stroke-width: 2.6; }
+.tool[data-tool="logic-simulator"] .ls-wire.is-temp { stroke-dasharray: 5 4; }
+.tool[data-tool="logic-simulator"] .ls-wire-hit {
+  fill: none; stroke: transparent; stroke-width: 12; cursor: pointer;
+}
+.tool[data-tool="logic-simulator"] .ls-q.is-on { color: var(--accent-strong); font-weight: 700; }
+.tool[data-tool="logic-simulator"] table { max-width: 26rem; }

@@ -1,0 +1,3 @@
+.tool[data-tool="file-size"] .tool-field { flex: 1 1 10rem; }
+.tool[data-tool="file-size"] .tool-working { line-height: 1.9; white-space: normal; }
+.tool[data-tool="file-size"] .tool-working div { display: flex; gap: .4rem; flex-wrap: wrap; }

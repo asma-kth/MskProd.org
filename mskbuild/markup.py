@@ -14,6 +14,8 @@ Block syntax
     !warn Title :: body             -> common mistake callout
     !exam Title :: body             -> exam technique callout
     !fact Title :: body             -> Pixel fun fact callout
+    !diagram <name>                 -> an inline SVG diagram from mskbuild.diagrams
+    !tool <name>                    -> mount point for an interactive tool
     everything else                 -> paragraph
 
 Inline syntax
@@ -170,6 +172,40 @@ def render(src: str) -> str:
             i += 1
             continue
 
+        # diagram: !diagram <name>
+        m = re.match(r"^!diagram\s+([a-z0-9-]+)\s*$", stripped)
+        if m:
+            from .diagrams import REGISTRY as _DG
+            name = m.group(1)
+            if name not in _DG:
+                raise KeyError("unknown diagram %r (have: %s)"
+                               % (name, ", ".join(sorted(_DG))))
+            out.append(_DG[name]())
+            i += 1
+            continue
+
+        # interactive tool: !tool <name>
+        m = re.match(r"^!tool\s+([a-z0-9-]+)\s*(?:::\s*(.*))?$", stripped)
+        if m:
+            from .tools import TOOLS
+            name = m.group(1)
+            if name not in TOOLS:
+                raise KeyError("unknown tool %r (have: %s)"
+                               % (name, ", ".join(sorted(TOOLS))))
+            meta = TOOLS[name]
+            head = (m.group(2) or "").strip() or meta["title"]
+            out.append(
+                '<div class="tool" data-tool="%s">'
+                '<div class="tool-head"><svg class="icon" aria-hidden="true">'
+                '<use href="#%s"></use></svg><h4>%s</h4></div>'
+                '<div class="tool-body"><p class="tool-fallback">%s '
+                'This tool needs JavaScript, so turn it on to use it. '
+                'Everything you need to answer the exam question is explained '
+                'in the text above.</p></div></div>'
+                % (name, meta["icon"], inline(head), inline(meta["blurb"])))
+            i += 1
+            continue
+
         # callout
         m = re.match(r"^!(\w+)\s+(.*)$", stripped)
         if m and m.group(1) in CALLOUTS:
@@ -254,6 +290,7 @@ def render(src: str) -> str:
 def plain(src: str, limit: int = 220) -> str:
     """Strip markup down to plain text, for meta descriptions and the index."""
     t = re.sub(r"```.*?```", " ", src or "", flags=re.S)
+    t = re.sub(r"^!(diagram|tool)\s+.*$", " ", t, flags=re.M)
     t = re.sub(r"^[!#\-+|>\d.]+\s*", " ", t, flags=re.M)
     t = re.sub(r"[*`\[\]()~^]", "", t)
     t = re.sub(r"::", " ", t)
