@@ -2285,3 +2285,1210 @@ This topic is generous with marks provided you write with precision.
            command="Evaluate"),
     ],
 )
+
+# ================================================== 1.3.1 Networks and topologies
+
+T_NETWORKS = Topic(
+    slug="networks-and-topologies",
+    title="Networks and Topologies",
+    spec="1.3.1",
+    icon="i-network",
+    minutes=30,
+    blurb="LANs and WANs, the hardware that makes a network work, client server against peer to peer, star against mesh, and the factors that decide how fast it all runs.",
+    fact="The first message ever sent over ARPANET, the ancestor of the internet, was meant to be the word LOGIN. The system crashed after two letters, so the first thing ever transmitted across the internet was LO.",
+    sections=[
+        Section("LAN and WAN", """
+A **network** is two or more computers connected together so they can share data and resources.
+
+### LAN, local area network
+
+- Covers a **small geographical area**, such as one building or one site
+- The **hardware is owned by the organisation** that uses it
+- Examples: a school, an office, a home
+
+### WAN, local area network becomes wide area network
+
+- Covers a **large geographical area**, potentially the whole world
+- The organisation **does not own all the infrastructure**, it leases connections from telecommunications companies
+- Examples: the internet, a bank connecting branches in different cities
+
+!key The distinguishing point :: The real difference is ownership as well as size. In a LAN the organisation owns the cabling and hardware. In a WAN it uses third party infrastructure that it does not own.
+
+### Advantages and disadvantages of networking
+
+**Advantages**
+
+- Share files and data easily
+- Share hardware such as printers, saving money
+- Share an internet connection
+- Central backup of all data
+- Central management of user accounts and software updates
+
+**Disadvantages**
+
+- Expensive to set up: cabling, servers and hardware
+- Malware can spread quickly across the network
+- If the server fails, everyone is affected
+- Requires a network manager, which is a staffing cost
+- Increased security risk, since data is accessible from many machines
+"""),
+        Section("Network hardware", """
+| Device | What it does |
+| **NIC** | Network Interface Card. Allows a device to connect to a network, wired or wireless. Each has a unique MAC address. |
+| **Switch** | Connects devices on a LAN. It reads the destination MAC address of each frame and sends it **only to the correct device**, which reduces unnecessary traffic. |
+| **Router** | Connects **different networks** together and directs data between them using IP addresses. Your home router joins your LAN to the internet. |
+| **WAP** | Wireless Access Point. Allows devices to connect to the network wirelessly using radio waves. |
+| **Transmission media** | The cabling or radio waves that carry the data: copper twisted pair, fibre optic, or wireless. |
+
+!warn Switch versus router :: A switch works **inside** one network using MAC addresses. A router works **between** networks using IP addresses. Confusing these two is one of the most common lost marks in this topic.
+
+### Servers and clients
+
+A **server** is a computer that provides services or resources to other computers. Common types include file servers, print servers, web servers and mail servers.
+"""),
+        Section("Client server and peer to peer", """
+### Client server
+
+One or more powerful central **servers** provide resources, and **clients** request them.
+
+**Advantages**
+
+- Central backup, so data is protected in one place
+- Central management of security, updates and user accounts
+- Easier to add new clients
+- Files are stored centrally, so any user can access their work from any machine
+
+**Disadvantages**
+
+- Expensive: servers and specialist staff cost money
+- If the server fails, the whole network loses access
+- The server can become a bottleneck if demand is high
+
+### Peer to peer
+
+Every computer is equal. Each acts as both client and server, sharing files directly with the others.
+
+**Advantages**
+
+- Cheap, no server to buy
+- Easy to set up, needs no specialist knowledge
+- No single point of failure, if one machine goes down the rest continue
+
+**Disadvantages**
+
+- No central backup, so files must be backed up individually
+- Files are spread across machines, so a computer must be switched on for its files to be available
+- Difficult to manage security and updates across many machines
+- Performance drops as more peers join
+
+!exam Choosing between them :: A home with three computers sharing a printer suits peer to peer, because it is cheap and simple. A school with 500 machines needs client server, because central backup, central account management and central security are essential at that scale.
+"""),
+        Section("Star and mesh topologies", """
+A **topology** is the layout of a network: how the devices are physically or logically arranged.
+
+### Star topology
+
+Every device connects to a **central switch or hub**.
+
+**Advantages**
+
+- If one cable fails, only that one device is affected
+- Easy to add or remove devices without disrupting anyone else
+- Very few data collisions, because the switch directs traffic
+- Good performance, since each device has its own dedicated connection
+
+**Disadvantages**
+
+- Requires a lot of cable, so it is expensive to install
+- If the **central switch fails, the entire network fails**
+
+### Mesh topology
+
+Every device connects to **many other devices**, so there are multiple routes for data.
+
+In a **full mesh** every device connects to every other. In a **partial mesh** only some connections exist.
+
+**Advantages**
+
+- Extremely reliable: if one connection fails, data is rerouted another way
+- No single point of failure
+- Data can take the fastest available route
+- Adding devices does not slow the network as much as other topologies
+
+**Disadvantages**
+
+- Very expensive in cabling for a wired mesh
+- Complex to set up and maintain
+
+Wireless mesh networks avoid the cabling cost, which is why mesh is now common in smart home and large scale Wi-Fi systems.
+
+!key The comparison sentence :: A star topology fails completely if the central switch fails, whereas a mesh has no single point of failure because data can be rerouted through alternative paths.
+"""),
+        Section("Factors affecting network performance", """
+Five factors, and you need to be able to explain each.
+
+1. **Bandwidth.** The amount of data that can be carried per second. Higher bandwidth means more data flows at once. Bandwidth on a network is **shared**, so more users each get less.
+
+2. **Number of users.** More devices using the network at once means the available bandwidth is divided further, so each device gets less and everything slows.
+
+3. **Transmission media.** Fibre optic carries far more data over far greater distances than copper, and is immune to electrical interference. Copper is cheaper but slower and degrades over distance.
+
+4. **Error rate and interference.** Wireless signals weaken with distance and are blocked by walls, and can be interfered with by other devices. Errors mean data has to be resent, which reduces effective speed.
+
+5. **Latency.** The delay between sending data and it arriving. Even on a fast connection, high latency makes interactive applications such as video calls and online gaming feel unresponsive.
+
+!warn Bandwidth is not speed :: Bandwidth is capacity, like the number of lanes on a motorway. Latency is delay, like how long the journey takes. A satellite link can have huge bandwidth and terrible latency.
+"""),
+    ],
+    keyterms=[
+        ("LAN", "Local area network. Covers a small geographical area with hardware owned by the organisation."),
+        ("WAN", "Wide area network. Covers a large geographical area using infrastructure the organisation does not own."),
+        ("NIC", "Network interface card. The hardware that allows a device to connect to a network."),
+        ("Switch", "A device that connects computers on a LAN and sends data only to the intended recipient using MAC addresses."),
+        ("Router", "A device that connects different networks together and directs data between them using IP addresses."),
+        ("WAP", "Wireless access point. Allows devices to join a network wirelessly."),
+        ("Client server", "A network model where central servers provide resources to client computers."),
+        ("Peer to peer", "A network model where all computers are equal and share resources directly with each other."),
+        ("Topology", "The layout or arrangement of devices in a network, such as star or mesh."),
+        ("Bandwidth", "The amount of data that can be transmitted over a connection in a given time."),
+        ("Latency", "The delay between data being sent and it arriving at its destination."),
+    ],
+    grade="""
+Three habits separate top answers here.
+
+**Say what fails and what still works.** Reliability questions want specifics. "In a star topology, if one cable fails only the device on that cable is affected, but if the central switch fails the entire network goes down."
+
+**Attach the reason to the recommendation.** Choosing client server for a school is not enough. Say that central backup protects student work, central account management lets any student log in at any machine, and central updates keep 500 machines secure without visiting each one.
+
+**Separate bandwidth from latency and from number of users.** Many students blur all three into "the internet is slow". Bandwidth is capacity, latency is delay, and number of users is what divides the capacity up.
+
++ Explain the difference between a switch and a router without hesitating
++ Give three advantages and three disadvantages each for client server and peer to peer
++ Compare star and mesh on reliability, cost and expandability
++ Explain all five performance factors with a cause and an effect
+""",
+    mistakes=[
+        "Saying a WAN is 'just a bigger LAN'. The ownership of the infrastructure is the key distinction.",
+        "Confusing switches and routers. Switches work within a network using MAC addresses, routers work between networks using IP addresses.",
+        "Saying peer to peer has 'no server'. Every peer acts as both client and server, which is the point.",
+        "Claiming a star topology is more reliable than mesh. Mesh has no single point of failure, a star has one at the central switch.",
+        "Using bandwidth and speed interchangeably. Bandwidth is capacity, latency is delay.",
+    ],
+    quiz=[
+        Q("Which statement best describes a LAN?",
+          ["A network covering a small area where the organisation owns the hardware",
+           "A network covering a large geographical area",
+           "A network that only uses wireless connections",
+           "A network with fewer than ten computers"], 0,
+          "Size and ownership together define a LAN. The organisation owns the cabling and hardware on a single site."),
+        Q("What does a switch use to decide where to send data?",
+          ["The MAC address of the destination device", "The IP address of the destination network",
+           "The name of the file being sent", "The port number only"], 0,
+          "A switch operates within a LAN and reads MAC addresses so that data goes only to the intended recipient."),
+        Q("Which device connects two different networks together?",
+          ["A router", "A switch", "A network interface card", "A wireless access point"], 0,
+          "Routers join networks and direct traffic between them using IP addresses. A switch works within one network."),
+        Q("What is the main disadvantage of a star topology?",
+          ["If the central switch fails, the whole network fails",
+           "A single cable failure brings down all devices",
+           "Data collisions happen constantly",
+           "Devices cannot be added once it is set up"], 0,
+          "The central switch is a single point of failure. Individual cable failures only affect one device, which is a strength."),
+        Q("Which network model is best for a school with 600 computers?",
+          ["Client server, because it provides central backup, security and account management",
+           "Peer to peer, because it is cheaper to set up",
+           "Peer to peer, because there is no single point of failure",
+           "Neither, a school should not use a network"], 0,
+          "At that scale, central management is essential. Managing security and backups across 600 independent peers would be unworkable."),
+        Q("Why is a mesh topology very reliable?",
+          ["If one connection fails, data can be rerouted along an alternative path",
+           "It uses less cable than other topologies",
+           "It requires no switches",
+           "It only allows one device to transmit at a time"], 0,
+          "Multiple routes between devices mean there is no single point of failure."),
+        Q("Which factor describes the delay between sending data and it arriving?",
+          ["Latency", "Bandwidth", "Colour depth", "Topology"], 0,
+          "Latency is delay. Bandwidth is capacity. A link can have high bandwidth and high latency at the same time."),
+        Q("Why does network performance drop when more users connect?",
+          ["The available bandwidth is shared between more devices",
+           "The latency of each cable increases",
+           "The router changes its IP address",
+           "MAC addresses become duplicated"], 0,
+          "Bandwidth is a shared resource. Splitting the same capacity between more devices means less for each."),
+        Q("What is one advantage of fibre optic cable over copper?",
+          ["It carries more data over longer distances without interference",
+           "It is much cheaper to install",
+           "It works without any hardware",
+           "It can only be used indoors"], 0,
+          "Fibre uses light rather than electricity, so it is immune to electromagnetic interference and signals degrade far less over distance."),
+        Q("In a peer to peer network, what happens if one computer is switched off?",
+          ["The files stored on that computer become unavailable to others",
+           "The whole network stops working",
+           "All files are automatically transferred to another peer",
+           "The router shuts down"], 0,
+          "Files live on individual machines, so a peer must be powered on and connected for its files to be reachable."),
+    ],
+    exam=[
+        EQ("State two differences between a LAN and a WAN.", 2, [
+            MP("A LAN covers a small geographical area, a WAN covers a large one", ["small area", "large area", "geographical", "one site", "wide area", "distance"]),
+            MP("LAN hardware is owned by the organisation, WAN infrastructure is often leased from third parties", ["owned", "leased", "rented", "third party", "telecommunications", "does not own"]),
+        ], "A LAN covers a small geographical area such as a single building or site, whereas a WAN covers a large geographical area and may span cities or countries. In addition, the organisation using a LAN owns all of the hardware and cabling itself, whereas a WAN relies on infrastructure leased from telecommunications companies that the organisation does not own.",
+           command="State"),
+        EQ("Explain the difference between the role of a switch and the role of a router.", 4, [
+            MP("A switch connects devices within a single network or LAN", ["within", "same network", "lan", "connects devices", "inside"]),
+            MP("A switch uses MAC addresses to send data only to the intended device", ["mac address", "intended", "correct device", "only to"]),
+            MP("A router connects different networks together", ["different networks", "between networks", "join networks", "connects networks"]),
+            MP("A router uses IP addresses to direct data between networks", ["ip address", "routes", "directs", "between"]),
+        ], "A switch operates inside a single network such as a LAN, connecting the devices on that network to one another. It reads the MAC address in each frame and forwards it only to the port where the intended recipient is connected, which avoids sending unnecessary traffic to every device. A router works at a higher level, connecting entirely different networks together, such as joining a home LAN to the internet. It uses IP addresses to decide which network a packet must be sent towards, and selects the appropriate route to get it there.",
+           command="Explain"),
+        EQ("A small business with six computers is deciding between a peer to peer network and a client server network. Recommend which they should use and justify your answer.", 6, [
+            MP("Recommends peer to peer", ["peer to peer", "p2p"]),
+            MP("Cheaper because no dedicated server hardware needs to be bought", ["cheaper", "cost", "no server", "less expensive", "budget"]),
+            MP("Simple to set up without specialist network staff", ["easy", "simple", "no specialist", "no technician", "straightforward"]),
+            MP("With only six computers the management overhead of client server is not justified", ["six", "small", "few computers", "not needed", "overkill"]),
+            MP("Notes the drawback that there is no central backup", ["backup", "no central", "individually", "back up separately"]),
+            MP("Notes that files are unavailable if a computer is switched off, and suggests a mitigation", ["switched off", "unavailable", "turned off", "must be on", "cloud", "external drive"]),
+        ], "The business should use a peer to peer network. With only six computers, the main advantage is cost: a peer to peer network needs no dedicated server hardware and no server software licences, so the setup cost is far lower than a client server arrangement. It is also simple enough to configure and maintain without employing a network technician, which matters for a business of this size where there is unlikely to be dedicated IT staff. A client server network would bring central backup, central security and central account management, but with six machines the administrative burden those features remove is small, so the extra expense is difficult to justify. The business should be aware of the drawbacks. There is no central backup, so each computer's files must be backed up separately and it would be easy for this to be neglected until data is lost. Files are also only available while the computer holding them is switched on, which can be inconvenient. Both problems can be reduced cheaply by adding a shared network attached storage drive or a cloud storage subscription for important files, which keeps the simplicity of peer to peer while covering its weakest point.",
+           command="Justify"),
+        EQ("Compare a star topology and a mesh topology in terms of reliability and cost.", 4, [
+            MP("Star has a single point of failure at the central switch", ["single point of failure", "central switch", "switch fails", "whole network fails"]),
+            MP("Mesh has multiple paths so data can be rerouted if a connection fails", ["multiple paths", "reroute", "alternative route", "no single point of failure", "redundancy"]),
+            MP("Star uses less cable and is cheaper to install than a full mesh", ["less cable", "cheaper", "cost", "less expensive"]),
+            MP("A wired mesh requires many connections making it expensive and complex", ["expensive", "many cables", "complex", "costly", "lots of connections"]),
+        ], "In terms of reliability, a mesh topology is stronger. Every device in a mesh is connected to several others, so if one link fails the data is simply rerouted along an alternative path and the network continues to function, meaning there is no single point of failure. A star topology is reliable against individual cable faults, because a broken cable only disconnects the one device attached to it, but it depends entirely on the central switch, and if that switch fails then every device loses connectivity. In terms of cost, the star topology wins clearly. It needs only one cable per device running back to the switch, whereas a full wired mesh requires a connection between every pair of devices, so the amount of cabling and the complexity of installation rise very steeply as more devices are added.",
+           command="Compare"),
+        EQ("Explain three factors that can affect the performance of a network.", 6, [
+            MP("Bandwidth is the amount of data that can be carried per second", ["bandwidth", "capacity", "data per second"]),
+            MP("Higher bandwidth allows more data to be transferred, but it is shared between users", ["shared", "more data", "divided", "split between"]),
+            MP("The number of users affects performance because bandwidth is divided between them", ["number of users", "more users", "more devices", "each gets less"]),
+            MP("Transmission media matters, with fibre optic faster and less prone to interference than copper", ["fibre", "copper", "cable", "wireless", "interference", "medium"]),
+            MP("Interference and errors cause data to be resent, reducing effective speed", ["interference", "errors", "resent", "retransmit", "signal strength", "walls", "distance"]),
+            MP("Latency is the delay before data arrives and affects interactive applications", ["latency", "delay", "lag", "response time"]),
+        ], "The first factor is bandwidth, which is the amount of data the connection can carry each second. A higher bandwidth connection can move more data in the same time, but bandwidth is a shared resource, so the capacity available to any one device depends on what everyone else is doing. That leads directly to the second factor, the number of users. As more devices connect and transmit at the same time, the same total bandwidth is divided between more of them, so each device receives a smaller share and everything slows down, which is why school networks feel slowest at the start of a lesson when every student logs on at once. The third factor is the transmission media. Fibre optic cable carries far more data over much greater distances than copper and is immune to electromagnetic interference because it transmits light rather than electricity, whereas copper signals degrade over distance and can be disrupted by nearby electrical equipment. Wireless is more convenient but weakens with distance and is blocked by walls, and when signal quality is poor data has to be retransmitted, which reduces the effective throughput even though the nominal bandwidth has not changed.",
+           command="Explain"),
+    ],
+)
+
+# ============================== 1.3.2 Wired and wireless, protocols and layers
+
+T_PROTOCOLS = Topic(
+    slug="protocols-and-layers",
+    title="Wired and Wireless Networks, Protocols and Layers",
+    spec="1.3.2",
+    icon="i-layers",
+    minutes=30,
+    blurb="Wi-Fi against Ethernet, IP and MAC addressing, every protocol on the specification with what it actually does, and why layering makes the internet possible.",
+    fact="Your MAC address is burned into the network card at the factory and the first half identifies the manufacturer. Given only a MAC address, you can look up who made the device, which is why some phones now randomise it for privacy.",
+    sections=[
+        Section("Wired and wireless", """
+### Wired, usually Ethernet
+
+- **Faster** and more consistent speeds
+- **More secure**, since an attacker needs physical access to the cable
+- **More reliable**, no interference from walls or other devices
+- **Lower latency**, important for gaming and video calls
+- But: devices cannot move, and installing cabling is expensive and disruptive
+
+### Wireless, Wi-Fi or Bluetooth
+
+- **Convenient**, devices can move freely
+- **Cheaper and quicker to install**, no cabling needed
+- **Many devices** can connect easily
+- But: **slower and less reliable**, signal weakens with distance and is blocked by walls
+- **Less secure**, since the signal travels through the air and can be intercepted, so encryption is essential
+
+!key The trade off in one line :: Wired networks offer speed, reliability and security. Wireless offers convenience, mobility and lower installation cost.
+
+**Bluetooth** is short range wireless, typically under 10 metres, designed for connecting a small number of devices directly, such as headphones to a phone. Wi-Fi is longer range and higher bandwidth, designed to connect devices to a network.
+"""),
+        Section("IP addresses and MAC addresses", """
+### IP address
+
+An **IP address** identifies a device **on a network** and is used to route data between networks.
+
+- **IPv4** uses 32 bits, written as four denary numbers 0 to 255, for example `192.168.1.24`
+- **IPv6** uses 128 bits, written as eight groups of hexadecimal, because IPv4 addresses have run out
+- IP addresses are **assigned by the network** and can change, for example each time you join a different Wi-Fi network
+
+### MAC address
+
+A **MAC address**, media access control, identifies a **specific piece of hardware**.
+
+- 48 bits, written as six pairs of hexadecimal digits, for example `00:1B:44:11:3A:B7`
+- **Assigned by the manufacturer** and does not change
+- Used by switches to deliver data **within** a local network
+
+| | IP address | MAC address |
+| Identifies | A device on a network | A specific piece of hardware |
+| Assigned by | The network | The manufacturer |
+| Changes | Yes, can change | No, it is fixed |
+| Used for | Routing between networks | Delivery within a local network |
+| Format | 192.168.1.24 or IPv6 hex | 00:1B:44:11:3A:B7 |
+
+!warn Both are needed :: A common misconception is that one replaces the other. The IP address gets the data to the right network, and the MAC address then gets it to the right device on that network.
+"""),
+        Section("Standards and protocols", """
+A **standard** is an agreed way of doing something, so that hardware and software from different manufacturers can work together.
+
+A **protocol** is a set of rules governing how data is transmitted between devices. Without shared protocols, two computers would be talking different languages.
+
+| Protocol | Full name | What it does |
+| **TCP** | Transmission Control Protocol | Splits data into packets, checks they all arrive, requests any that are missing, and reassembles them in the right order |
+| **IP** | Internet Protocol | Addresses and routes packets across networks so they reach the right destination |
+| **HTTP** | Hypertext Transfer Protocol | Requests and transfers web pages between a browser and a web server |
+| **HTTPS** | HTTP Secure | The same as HTTP but the data is encrypted, protecting it from being read if intercepted |
+| **FTP** | File Transfer Protocol | Sends and receives files between computers, typically uploading to a server |
+| **POP** | Post Office Protocol | Retrieves email from a server and normally **deletes it from the server** |
+| **IMAP** | Internet Message Access Protocol | Retrieves email but **keeps it on the server**, so it syncs across multiple devices |
+| **SMTP** | Simple Mail Transfer Protocol | **Sends** email from a client to a server, and between mail servers |
+
+!exam The email trio :: SMTP sends. POP downloads and removes. IMAP downloads and keeps synced. If a question mentions reading the same emails on a phone and a laptop, the answer is IMAP.
+
+### TCP/IP working together
+
+TCP and IP are almost always used as a pair.
+
+- **TCP** handles the reliability: breaking data into packets, numbering them, checking they arrive and reassembling them.
+- **IP** handles the addressing: making sure each packet is routed to the correct destination.
+"""),
+        Section("Layers", """
+Network protocols are organised into **layers**. Each layer has a specific job and only interacts with the layers directly above and below it.
+
+The four layer TCP/IP model:
+
+| Layer | Job | Example protocols |
+| Application | Provides services to the user's software | HTTP, HTTPS, FTP, SMTP, IMAP |
+| Transport | Splits data into packets and ensures reliable delivery | TCP, UDP |
+| Internet | Adds addresses and routes packets across networks | IP |
+| Link | Handles the physical transmission over the medium | Ethernet, Wi-Fi |
+
+### Why layering is used
+
+- **It breaks a complex problem into manageable parts**, so each layer can be designed and understood separately.
+- **Layers can be changed independently.** Switching from copper to fibre changes only the link layer, and everything above it carries on unchanged.
+- **It allows interoperability**, because manufacturers only need to follow the rules of the layer they are working in.
+- **It makes fault finding easier**, since a problem can be isolated to one layer.
+- **Different protocols can be used at the same layer** without affecting the rest, for example choosing IMAP instead of POP.
+
+!key The exam answer :: Layers divide the complexity of network communication into self contained parts, so each layer can be developed, changed or replaced without affecting the others.
+"""),
+    ],
+    keyterms=[
+        ("Protocol", "A set of rules governing how data is transmitted between devices."),
+        ("Standard", "An agreed specification that allows equipment from different manufacturers to work together."),
+        ("IP address", "An address identifying a device on a network, used to route data between networks."),
+        ("MAC address", "A unique address assigned to network hardware by its manufacturer, used within a local network."),
+        ("TCP", "Transmission Control Protocol. Splits data into packets and guarantees they arrive and are reassembled correctly."),
+        ("IP", "Internet Protocol. Addresses and routes packets across networks."),
+        ("HTTPS", "The encrypted version of HTTP, protecting web traffic from being read if intercepted."),
+        ("SMTP", "The protocol used to send email."),
+        ("POP", "A protocol that retrieves email and normally deletes it from the server."),
+        ("IMAP", "A protocol that retrieves email while keeping it on the server so it syncs across devices."),
+        ("Layer", "A distinct level of network functionality with a defined job, interacting only with adjacent layers."),
+    ],
+    grade="""
+Two things earn the top marks here.
+
+**Never define a protocol as 'a set of rules' and stop.** Every protocol is a set of rules. Say what the rules are for. TCP is the set of rules for splitting data into packets and ensuring they arrive complete and in order.
+
+**On layering, give a consequence not just a description.** The strongest phrasing names a change and says what is unaffected: "Because Wi-Fi and Ethernet both sit at the link layer, a network can switch from cable to wireless without any change to HTTP, TCP or IP above it."
+
+The email protocols come up almost every year, and the discriminator is IMAP against POP. Learn the scenario: multiple devices means IMAP.
+
++ Match all eight protocols to their function without hesitation
++ Explain the IP against MAC distinction using assignment and purpose, not just format
++ Give three benefits of layering, each with a consequence
++ Choose wired or wireless for a scenario and justify with the specific constraint in the question
+""",
+    mistakes=[
+        "Saying HTTPS 'is more secure' with no mechanism. It encrypts the data so that intercepted traffic cannot be read.",
+        "Saying POP and IMAP send email. They retrieve it. SMTP sends.",
+        "Saying a MAC address can be assigned by the network. It is set by the manufacturer.",
+        "Describing layers as 'to make it faster'. Layering is about manageability and interoperability, not speed.",
+        "Giving TCP the job of addressing. TCP handles packets and reliability, IP handles addressing and routing.",
+    ],
+    quiz=[
+        Q("Which protocol is responsible for splitting data into packets and ensuring they all arrive?",
+          ["TCP", "IP", "HTTP", "SMTP"], 0,
+          "TCP handles reliability: numbering packets, checking for missing ones and reassembling them in order. IP handles addressing."),
+        Q("Which protocol is used to send an email?",
+          ["SMTP", "POP", "IMAP", "FTP"], 0,
+          "SMTP sends. POP and IMAP both retrieve mail from a server."),
+        Q("A user reads the same emails on their phone and laptop and wants them to stay in sync. Which protocol should be used?",
+          ["IMAP", "POP", "SMTP", "HTTP"], 0,
+          "IMAP keeps messages on the server, so any device sees the same mailbox state. POP typically downloads and deletes."),
+        Q("Which statement about MAC addresses is correct?",
+          ["They are assigned by the manufacturer and identify specific hardware",
+           "They are assigned by the network and change when you move",
+           "They are used to route data between different networks",
+           "They are 32 bits long"], 0,
+          "A MAC address is burned into the network interface card and is used for delivery within a local network."),
+        Q("What is the main advantage of HTTPS over HTTP?",
+          ["Data is encrypted so it cannot be read if intercepted",
+           "Web pages load faster", "It uses less bandwidth", "It works without an IP address"], 0,
+          "The S is for secure. Encryption means that even if traffic is captured it cannot be understood."),
+        Q("Why are network protocols organised into layers?",
+          ["To break a complex system into parts that can be developed and changed independently",
+           "To make the network transmit data faster",
+           "To reduce the number of protocols needed to one",
+           "To remove the need for IP addresses"], 0,
+          "Layering is about managing complexity and enabling interoperability. Changing one layer does not disturb the others."),
+        Q("Which is an advantage of a wired connection over wireless?",
+          ["Faster and more consistent speeds with lower latency",
+           "Devices can move around freely",
+           "It is cheaper to install in an existing building",
+           "It supports more devices without any hardware"], 0,
+          "Cable gives higher and steadier throughput with less interference. Convenience and mobility are the wireless advantages."),
+        Q("Which protocol is used to transfer files to a web server?",
+          ["FTP", "SMTP", "IMAP", "TCP"], 0,
+          "File Transfer Protocol is designed for uploading and downloading files between computers."),
+        Q("An IPv4 address is how many bits long?",
+          ["32", "48", "128", "16"], 0,
+          "IPv4 is 32 bits, written as four numbers from 0 to 255. IPv6 is 128 bits and MAC addresses are 48 bits."),
+        Q("At which layer would you find HTTP and SMTP?",
+          ["The application layer", "The transport layer", "The internet layer", "The link layer"], 0,
+          "Application layer protocols provide services directly to user software such as browsers and mail clients."),
+    ],
+    exam=[
+        EQ("State what is meant by a protocol.", 2, [
+            MP("A set of rules", ["set of rules", "rules", "agreed standard"]),
+            MP("Governing how data is transmitted or communicated between devices", ["transmitted", "communication", "between devices", "sending data", "format"]),
+        ], "A protocol is an agreed set of rules that governs how data is transmitted and communicated between devices on a network, covering things such as how the data is formatted, how it is addressed and how errors are handled, so that different systems can understand each other.",
+           command="State"),
+        EQ("Explain two differences between an IP address and a MAC address.", 4, [
+            MP("An IP address identifies a device on a network, a MAC address identifies a specific piece of hardware", ["identifies", "device on a network", "hardware", "physical device", "network card"]),
+            MP("IP addresses are assigned by the network, MAC addresses by the manufacturer", ["assigned", "network", "manufacturer", "factory", "built in"]),
+            MP("An IP address can change, a MAC address is fixed", ["change", "changes", "fixed", "permanent", "does not change", "static"]),
+            MP("IP addresses route data between networks, MAC addresses deliver data within a local network", ["between networks", "routing", "within", "local network", "same network", "switch"]),
+        ], "The first difference is what they identify and who assigns them. An IP address identifies a device's position on a network and is assigned by the network itself, which means it can change, for example when a laptop joins a different Wi-Fi network. A MAC address identifies one specific piece of network hardware, is assigned by the manufacturer when the network interface card is made, and does not change. The second difference is their purpose. IP addresses are used to route data between different networks across the internet, whereas MAC addresses are used by switches to deliver data to the correct device within a single local network once it has arrived.",
+           command="Explain"),
+        EQ("Explain why network protocols are organised into layers.", 4, [
+            MP("It breaks a complex process into smaller self contained parts", ["complex", "smaller parts", "manageable", "self contained", "divided", "simpler"]),
+            MP("Each layer has a specific role and only interacts with adjacent layers", ["specific role", "own job", "adjacent", "above and below", "defined"]),
+            MP("A layer can be changed or replaced without affecting the others", ["changed", "replaced", "independently", "without affecting", "swap"]),
+            MP("It allows equipment and software from different manufacturers to work together", ["different manufacturers", "interoperability", "compatible", "work together", "standards"]),
+        ], "Network communication is a very complex process, and layering divides it into smaller self contained parts so that each part can be designed, understood and maintained separately. Each layer is given one specific responsibility and only interacts with the layers immediately above and below it, which means a layer can be changed or replaced entirely without the rest of the stack being affected. For example, a network can switch from Ethernet cabling to Wi-Fi at the link layer while HTTP, TCP and IP continue to work exactly as before. Layering also allows manufacturers to build hardware and software that only has to comply with the rules of one layer, which means equipment from different companies can interoperate, and it makes fault finding easier because a problem can be isolated to a single layer.",
+           command="Explain"),
+        EQ("A hotel is installing a network for its guests. Discuss whether it should use a wired or a wireless network.", 6, [
+            MP("Recommends wireless", ["wireless", "wifi", "wi-fi"]),
+            MP("Guests need mobility and use their own devices in rooms and public areas", ["mobility", "move", "own devices", "phones", "laptops", "anywhere", "rooms"]),
+            MP("Cheaper and less disruptive than running cable to every room", ["cheaper", "cost", "cabling", "disruptive", "no cables", "installation"]),
+            MP("Wireless is slower and less reliable, with signal weakened by walls and distance", ["slower", "less reliable", "walls", "distance", "signal", "interference"]),
+            MP("Wireless is less secure as the signal can be intercepted, so encryption is essential", ["less secure", "intercepted", "encryption", "security", "wpa"]),
+            MP("Reaches a justified conclusion, possibly a hybrid with wired backbone", ["conclusion", "therefore", "overall", "hybrid", "combination", "backbone", "recommend"]),
+        ], "The hotel should provide a wireless network for guests. Guests arrive with their own phones, tablets and laptops and expect to use them in their rooms, in the lobby and in the restaurant, so mobility is essential and a wired connection that ties a device to one socket would not meet that need. Installing wireless access points is also considerably cheaper and far less disruptive than running Ethernet cable to every guest room in an existing building, where floors and walls would have to be opened up. There are real disadvantages. Wireless is slower and less consistent than cable, and the signal is weakened by the thick walls and long corridors typical of hotels, so careful placement of multiple access points is needed to avoid dead spots. It is also less secure, because the signal travels through the air and can be intercepted by anyone in range, so strong encryption such as WPA3 and an isolated guest network are necessary to stop guests seeing each other's traffic or reaching the hotel's own systems. The sensible solution is a hybrid: a wired backbone connecting the access points, the reception computers and the booking system, since those machines never move and benefit from the speed and security of cable, with wireless provided throughout the building for guests. This gives guests the mobility they expect while keeping the hotel's own critical systems on the faster and more secure wired network.",
+           command="Discuss"),
+        EQ("Describe the roles of the TCP and IP protocols and explain why they are used together.", 4, [
+            MP("TCP splits data into packets and numbers them", ["splits", "packets", "divides", "breaks", "numbers"]),
+            MP("TCP checks all packets arrive and reassembles them in the correct order", ["checks", "arrive", "reassemble", "correct order", "missing", "resend"]),
+            MP("IP addresses each packet and routes it to the correct destination", ["address", "routes", "routing", "destination", "directs"]),
+            MP("Together they provide addressing and reliable delivery, which are both needed", ["together", "both", "addressing and reliability", "complete", "combined"]),
+        ], "TCP, the Transmission Control Protocol, takes the data being sent and splits it into numbered packets. At the receiving end it checks that every packet has arrived, requests the retransmission of any that are missing or corrupted, and then reassembles the packets back into the original data in the correct order. IP, the Internet Protocol, is responsible for addressing: it attaches the source and destination IP addresses to each packet and determines the route the packet should take across the networks between them. They are used together because each solves only half the problem. IP can get a packet to the right destination but offers no guarantee that it arrives or that packets arrive in order, while TCP can guarantee complete, correctly ordered delivery but has no mechanism for finding the destination in the first place. Combined as TCP/IP they provide both reliable delivery and correct routing.",
+           command="Describe"),
+    ],
+)
+
+# ========================================================= 1.4 Network security
+
+T_SECURITY = Topic(
+    slug="network-security",
+    title="Network Security: Threats and Prevention",
+    spec="1.4",
+    icon="i-shield",
+    minutes=32,
+    blurb="Every threat on the specification explained by how it actually works, every prevention method, and the reason the biggest weakness in any network is a person.",
+    fact="The most successful phishing emails are not the badly spelled ones. They are the ones that create urgency: a fake message saying your account will be closed in 24 hours defeats careful thinking, because panicking people stop checking details.",
+    sections=[
+        Section("Forms of attack", """
+### Malware
+
+**Malware** is any software written to cause harm. The main types:
+
+- **Virus.** Attaches itself to a file or program and spreads when that file is opened or shared. It needs a host file and a user action.
+- **Worm.** Spreads by itself across a network without any user action, which makes it spread very fast.
+- **Trojan.** Disguises itself as legitimate software. The user installs it willingly, and it then does something harmful.
+- **Ransomware.** Encrypts the victim's files and demands payment for the key.
+- **Spyware.** Secretly records activity, such as keystrokes, and sends it to an attacker.
+
+!warn Virus and worm are not the same :: A virus needs a host file and someone to open it. A worm spreads on its own. Getting this distinction right is worth a mark.
+
+### Social engineering
+
+**Social engineering** is manipulating people rather than attacking technology. The target is human trust, not a software flaw.
+
+- **Phishing.** Fraudulent emails or messages pretending to be from a legitimate organisation, designed to trick the victim into revealing passwords or bank details, or into clicking a malicious link.
+- **Shouldering** or shoulder surfing. Watching someone enter a PIN or password.
+- **Blagging** or pretexting. Inventing a scenario to gain trust, such as phoning an employee while pretending to be from IT support and asking for their password.
+- **Name generator attacks.** Quizzes asking for your first pet and street name, which are common security question answers.
+
+!key Why people are the weak point :: Technical defences can be very strong, but a person can be persuaded to hand over a password, and no firewall can stop an attacker who has been given valid credentials.
+
+### Brute force attack
+
+Trying every possible combination of characters until the correct password is found, usually automated so millions of attempts are made per second.
+
+Defences: strong long passwords, limiting the number of login attempts, and two factor authentication.
+
+### Denial of service attack
+
+A **DoS attack** floods a server with so many requests that it cannot respond to genuine users, so the service becomes unavailable.
+
+A **DDoS**, distributed denial of service, uses many compromised machines at once, which makes it far harder to block because the traffic comes from thousands of different addresses.
+
+### Data interception and theft
+
+Data is captured while travelling across a network, for example by **packet sniffing** on an unencrypted public Wi-Fi network. The attacker reads the traffic and extracts passwords or personal information.
+
+Defence: encryption. Intercepted data is then unreadable.
+
+### SQL injection
+
+A website that builds a database query directly from user input can be attacked by typing SQL code into an input box. If the input is not checked, the database executes the attacker's code, which can reveal, alter or delete data.
+
+Example: entering `' OR '1'='1` into a login box may make the condition always true, granting access without a password.
+
+Defence: **validation** of all input, and parameterised queries that keep data separate from code.
+"""),
+        Section("Preventing attacks", """
+### Penetration testing
+
+Deliberately attacking your own system, with permission, to find weaknesses before a real attacker does. The report identifies vulnerabilities so they can be fixed.
+
+### Anti malware software
+
+Scans files against a database of known malware signatures and monitors behaviour for suspicious activity. It quarantines or removes anything it finds. It must be **kept up to date**, because new malware appears constantly.
+
+### Firewalls
+
+A firewall sits between a network and the outside world and **inspects incoming and outgoing traffic**, blocking anything that does not meet its rules. It can block specific ports, addresses or applications.
+
+### User access levels
+
+Different users are given different permissions, so each person can access only what their role requires. A student cannot see staff files, and a teacher cannot change system settings.
+
+This limits the damage a compromised account can do, and reduces accidental damage too.
+
+### Passwords
+
+Strong passwords are long, mix character types and avoid dictionary words and personal information. Combined with a limit on login attempts, they defeat brute force attacks. Two factor authentication adds a second requirement, so a stolen password alone is not enough.
+
+### Encryption
+
+Data is scrambled using a key so that it is meaningless to anyone without the key.
+
+Encryption does **not** stop data being intercepted. It makes intercepted data useless. That distinction is frequently tested.
+
+### Physical security
+
+Locked server rooms, keycard access, CCTV and alarms. No amount of software security helps if someone can walk out with the server.
+
+!exam Matching defence to threat :: Questions often give a threat and ask for a suitable prevention. Learn the pairs: brute force pairs with strong passwords and attempt limits, interception pairs with encryption, SQL injection pairs with input validation, malware pairs with anti malware and firewalls, social engineering pairs with staff training.
+"""),
+    ],
+    keyterms=[
+        ("Malware", "Software written with the intention of causing harm to a computer system or its data."),
+        ("Virus", "Malware that attaches to a host file and spreads when that file is opened or shared."),
+        ("Worm", "Malware that spreads itself across a network without needing any user action."),
+        ("Trojan", "Malware disguised as legitimate software that the user installs voluntarily."),
+        ("Ransomware", "Malware that encrypts files and demands payment for the decryption key."),
+        ("Social engineering", "Manipulating people into revealing information or performing actions that compromise security."),
+        ("Phishing", "Fraudulent messages imitating a legitimate organisation in order to obtain personal information."),
+        ("Brute force attack", "Systematically trying every possible password combination until the correct one is found."),
+        ("Denial of service", "Flooding a server with requests so that it cannot respond to legitimate users."),
+        ("SQL injection", "Entering SQL code into an input field so that an unprotected database executes it."),
+        ("Penetration testing", "Authorised simulated attacks on a system to identify weaknesses before criminals find them."),
+        ("Firewall", "Hardware or software that inspects network traffic and blocks anything not meeting its rules."),
+        ("Encryption", "Scrambling data using a key so it cannot be understood by anyone who intercepts it."),
+        ("User access level", "A permission setting that controls which files and features a particular user can reach."),
+    ],
+    grade="""
+The marks on this topic are almost entirely about **mechanism** and **matching**.
+
+**Explain how, not what.** A grade 5 answer says "a firewall protects the network". A grade 9 answer says "a firewall examines every packet entering and leaving the network and blocks any that do not match its rule set, for example traffic to a port that should not be in use".
+
+**Match the defence exactly to the threat in the question.** If the scenario is staff being tricked by fake emails, the answer is training and awareness, not a firewall. A firewall does nothing against an employee who types their password into a convincing fake login page.
+
+**Be precise about encryption.** Encryption does not prevent interception. It prevents intercepted data from being understood. Examiners specifically look for this.
+
+**Give the strongest answer on human factors.** Every technical control can be undone by a person, which is why staff training is a genuine security control and not an afterthought.
+
++ Define every threat with its mechanism in one sentence
++ Pair each threat with the most appropriate prevention and say why
++ Explain why a network needs several layers of defence rather than one
++ Explain user access levels in terms of limiting damage, not just restricting access
+""",
+    mistakes=[
+        "Saying encryption stops data being intercepted. It stops it being understood.",
+        "Describing a firewall as 'antivirus'. A firewall filters network traffic, anti malware scans files.",
+        "Saying a virus and a worm are the same. A worm needs no user action and no host file.",
+        "Recommending a technical control against a social engineering attack. Training is the answer there.",
+        "Saying penetration testing 'stops attacks'. It finds weaknesses so they can be fixed before attackers exploit them.",
+        "Giving 'use a strong password' as the answer to everything. Match the control to the specific threat.",
+    ],
+    quiz=[
+        Q("What is the key difference between a virus and a worm?",
+          ["A worm spreads by itself across a network, a virus needs a host file and user action",
+           "A virus spreads by itself, a worm needs a host file",
+           "A worm only affects servers", "There is no difference"], 0,
+          "Self replication without user involvement is what makes worms spread so quickly."),
+        Q("A user receives an email claiming to be from their bank asking them to confirm their password. This is an example of:",
+          ["Phishing", "A denial of service attack", "SQL injection", "A brute force attack"], 0,
+          "Phishing imitates a trusted organisation to trick the victim into handing over information voluntarily."),
+        Q("Which prevention method is most effective against a brute force attack?",
+          ["Limiting the number of login attempts and using long strong passwords",
+           "Installing a firewall", "Encrypting the hard disk", "Using a wired connection"], 0,
+          "Brute force relies on making huge numbers of guesses. Locking the account after a few failures makes that impossible."),
+        Q("What does encryption achieve?",
+          ["Intercepted data cannot be understood without the key",
+           "Data cannot be intercepted at all",
+           "Malware cannot be installed",
+           "Passwords can never be guessed"], 0,
+          "Encryption does not prevent interception. It makes intercepted data meaningless to anyone without the decryption key."),
+        Q("A website allows users to type into a search box which is passed straight into a database query. Which attack does this enable?",
+          ["SQL injection", "Denial of service", "Shouldering", "A worm"], 0,
+          "Unvalidated input passed into a query lets an attacker submit SQL code that the database will execute."),
+        Q("What is the purpose of penetration testing?",
+          ["To find weaknesses in a system before real attackers do",
+           "To remove all malware from a network",
+           "To encrypt data in transit",
+           "To restrict which files a user can open"], 0,
+          "It is a controlled simulated attack carried out with permission, producing a report of vulnerabilities to fix."),
+        Q("How do user access levels improve security?",
+          ["Users can only access what their role requires, limiting the damage from a compromised account",
+           "They encrypt every file on the network",
+           "They block all incoming network traffic",
+           "They prevent phishing emails from arriving"], 0,
+          "If an account is compromised, the attacker only inherits that account's limited permissions rather than full access."),
+        Q("A DDoS attack differs from a DoS attack because:",
+          ["It uses many compromised machines at once, making it harder to block",
+           "It encrypts the victim's files",
+           "It only targets wireless networks",
+           "It requires physical access to the server"], 0,
+          "Distributed attacks come from thousands of addresses simultaneously, so blocking a single source achieves nothing."),
+        Q("Which measure best protects against staff being tricked into revealing passwords?",
+          ["Regular staff training and awareness of social engineering",
+           "A more powerful firewall",
+           "Increasing the server's bandwidth",
+           "Switching to fibre optic cable"], 0,
+          "Social engineering attacks the person, not the technology, so the defence must also address the person."),
+        Q("What does a firewall do?",
+          ["Inspects incoming and outgoing traffic and blocks anything not meeting its rules",
+           "Scans files for known malware signatures",
+           "Encrypts data before transmission",
+           "Backs up files automatically"], 0,
+          "A firewall is a traffic filter. Scanning files is the job of anti malware software."),
+    ],
+    exam=[
+        EQ("Describe what is meant by social engineering and give one example.", 3, [
+            MP("Manipulating or tricking people rather than attacking the technology", ["people", "tricking", "manipulating", "human", "deceiving", "persuading"]),
+            MP("The aim is to obtain confidential information or access", ["information", "passwords", "access", "details", "credentials"]),
+            MP("Gives a valid example such as phishing, blagging or shouldering", ["phishing", "blagging", "shouldering", "pretexting", "shoulder surfing", "fake email", "phone call"]),
+        ], "Social engineering is the practice of manipulating people rather than attacking a system's technology, in order to obtain confidential information such as passwords or to persuade someone to grant access they should not. It works because human trust and helpfulness can be exploited in ways that technical defences cannot prevent. One example is phishing, in which an attacker sends an email that appears to come from a legitimate organisation such as a bank, containing a link to a convincing fake login page, so that the victim enters their username and password and hands them directly to the attacker.",
+           command="Describe"),
+        EQ("Explain the difference between a computer virus and a worm.", 3, [
+            MP("A virus attaches itself to a host file or program", ["attaches", "host file", "program", "file", "embeds"]),
+            MP("A virus requires a user action such as opening the file in order to spread", ["user", "opening", "action", "run", "executed", "shared"]),
+            MP("A worm replicates and spreads across a network on its own without user action", ["on its own", "no user", "automatically", "self replicating", "by itself", "network"]),
+        ], "A virus is malware that attaches itself to a host file or program, and it only spreads when a user carries out an action such as opening that file, running the program or sharing it with somebody else. A worm, by contrast, is self replicating and spreads itself across a network without needing any user action or host file at all, which means it can move between machines far faster and infect a whole network in a very short time.",
+           command="Explain"),
+        EQ("A company's website has a login form. Explain how an SQL injection attack could be carried out against it and describe how the company could prevent this.", 4, [
+            MP("The attacker enters SQL code into an input field instead of normal data", ["sql", "code", "input field", "text box", "types", "enters"]),
+            MP("If the input is not checked it is passed into the database query and executed", ["not checked", "unvalidated", "passed into", "executed", "runs", "query"]),
+            MP("This could allow the attacker to bypass the login or read, change or delete data", ["bypass", "access", "read", "delete", "change", "steal", "log in without"]),
+            MP("Prevention: validate and sanitise all user input, or use parameterised queries", ["validation", "validate", "sanitise", "parameterised", "prepared statement", "check input", "whitelist"]),
+        ], "An SQL injection attack is carried out by typing SQL code into an input field on the login form rather than a normal username or password. If the website builds its database query by inserting that text directly and does not check what has been entered, the attacker's code becomes part of the query and is executed by the database. For example, entering a fragment that makes the condition always evaluate to true could allow the attacker to log in as any user without knowing a password, and further injected statements could read, modify or delete the contents of the customer table. The company can prevent this by validating and sanitising all user input so that characters and keywords used in SQL are rejected or escaped, and more reliably by using parameterised queries, which keep the user's data strictly separate from the SQL code so that it can never be executed as an instruction.",
+           command="Explain"),
+        EQ("A school network has been affected by malware. Describe three measures the school could take to reduce the risk of this happening again.", 6, [
+            MP("Install anti malware software", ["anti malware", "antivirus", "anti virus", "malware scanner"]),
+            MP("Keep it updated so new threats are recognised", ["updated", "up to date", "new threats", "signatures", "latest"]),
+            MP("Use a firewall to filter network traffic", ["firewall", "filter traffic", "block traffic"]),
+            MP("Apply user access levels so students cannot install software", ["access levels", "permissions", "restrict", "cannot install", "rights"]),
+            MP("Train staff and students to recognise suspicious emails and attachments", ["training", "educate", "awareness", "recognise", "suspicious", "not open"]),
+            MP("Keep operating systems and applications patched", ["updates", "patches", "patched", "up to date", "security updates"]),
+        ], "First, the school should install anti malware software on every machine and configure it to update automatically. Anti malware compares files against a database of known malware signatures and monitors for suspicious behaviour, quarantining anything it detects, but new malware appears constantly so the signature database must be kept current or recent threats will pass straight through. Second, the school should use a firewall between its network and the internet. A firewall inspects all incoming and outgoing traffic and blocks anything that does not meet its rules, which prevents malware from communicating with external servers and stops many infections reaching the network in the first place. Third, the school should set user access levels so that students and most staff cannot install software or alter system files. This means that even if a user is tricked into running something malicious, the malware inherits only that account's restricted permissions and cannot spread across the whole system. Alongside these, training staff and students to recognise suspicious emails and attachments addresses the human route that most infections actually take, and keeping operating systems and applications patched closes the software vulnerabilities that malware exploits.",
+           command="Describe"),
+        EQ("Explain why encryption is used when data is transmitted over a public wireless network.", 3, [
+            MP("Data on a wireless network travels through the air and can be intercepted", ["intercepted", "through the air", "captured", "sniffed", "read", "eavesdrop"]),
+            MP("Encryption scrambles the data using a key so it is unreadable", ["scrambles", "unreadable", "key", "cipher", "meaningless", "cannot be understood"]),
+            MP("Without the key an attacker who intercepts the data cannot understand it", ["without the key", "cannot read", "useless", "cannot understand", "decrypt"]),
+        ], "On a public wireless network the data travels through the air as radio waves, and anyone within range with the right software can capture that traffic without the sender being aware, which is known as packet sniffing. Encryption protects against this by scrambling the data using a key before it is transmitted, so that what is actually broadcast is meaningless. Encryption does not prevent the data from being intercepted, but an attacker who captures it has only unreadable ciphertext, and without the decryption key they cannot recover the original information such as passwords or bank details.",
+           command="Explain"),
+    ],
+)
+
+# ======================================================== 1.5 Systems software
+
+T_SYSSOFT = Topic(
+    slug="systems-software",
+    title="Systems Software",
+    spec="1.5",
+    icon="i-software",
+    minutes=28,
+    blurb="What the operating system is really doing while you use a computer, all five of its management jobs, and every utility program on the specification.",
+    fact="When a computer looks like it is running twenty programs at once, it usually is not. A single core switches between them thousands of times per second, giving each a tiny slice of time. The illusion is so convincing that we had to invent a word for it, multitasking.",
+    sections=[
+        Section("What system software is", """
+Software divides into two categories.
+
+- **System software** runs the computer itself: the operating system and utility programs.
+- **Application software** lets the user do a task: a browser, a word processor, a game.
+
+!key The distinguishing question :: Does the user run this to get a job done, or does the computer need it to function? Word processor is application. Disk defragmenter is system.
+"""),
+        Section("The operating system", """
+The **operating system** manages the hardware and software of a computer and provides an environment in which applications can run. Without it, nothing else works.
+
+It has five main jobs on this specification.
+
+### 1. User interface
+
+The operating system provides the way the user interacts with the machine.
+
+- **Graphical user interface (GUI).** Windows, icons, menus and a pointer. Easy for beginners, and it requires more processing power and memory.
+- **Command line interface (CLI).** The user types text commands. Uses very few resources and is far more powerful for experienced users, and it has a steep learning curve because commands must be memorised.
+
+### 2. Memory management and multitasking
+
+The operating system decides which programs and data are held in RAM and where.
+
+- It allocates memory to each program and keeps them separate, so one program cannot overwrite another's data and crash it.
+- It frees memory when a program closes.
+- It manages **virtual memory** when RAM is full.
+
+**Multitasking** is the appearance of several programs running at once. The operating system gives each process a small slice of CPU time and switches between them very rapidly, so quickly that the user perceives them as simultaneous.
+
+### 3. Peripheral management and drivers
+
+The operating system controls communication with input and output devices.
+
+A **device driver** is software that translates operating system instructions into commands a specific piece of hardware understands. Each type of device needs its own driver, which is why plugging in a new printer often installs software.
+
+### 4. User management
+
+The operating system manages accounts.
+
+- Creating and deleting user accounts
+- Authenticating users with usernames and passwords
+- Setting **access rights**, so each user reaches only what their role allows
+- Keeping each user's files and settings separate
+
+### 5. File management
+
+The operating system organises files on secondary storage.
+
+- Naming, saving, opening, moving, copying, renaming and deleting files
+- Maintaining the folder structure
+- Recording where each file is physically stored
+- Managing access permissions on files
+
+!exam A very common question :: "State three tasks of an operating system." Learn the five headings and you can always name three with confidence: user interface, memory management, peripheral management, user management, file management.
+"""),
+        Section("Utility software", """
+**Utility software** performs maintenance tasks that keep a computer running well. It is system software, but it is separate from the operating system itself.
+
+### Encryption software
+
+Scrambles data using a key so it is unreadable without that key. Used for full disk encryption, protecting files and securing communication. If a laptop is stolen, encrypted data is useless to the thief.
+
+### Defragmentation
+
+Over time, files on a **magnetic hard disk** become **fragmented**: parts of the same file end up scattered across the disk because they were saved into whatever gaps were available.
+
+The read write head then has to move to several different places to read one file, which is slow.
+
+**Defragmentation** rearranges the data so that the parts of each file are stored together in contiguous blocks, and gathers the free space into one area. This reduces head movement and speeds up access.
+
+!warn Do not defragment an SSD :: SSDs have no moving parts, so there is no head movement to save and no speed benefit. Worse, defragmentation writes data unnecessarily, and flash memory has a finite number of write cycles, so it shortens the drive's life. This point earns marks in comparison questions.
+
+### Data compression
+
+Reduces file sizes so that more can be stored and files transfer more quickly. Covered in detail in the compression topic.
+
+### Backup
+
+Creates copies of data so it can be restored after loss, corruption, hardware failure, ransomware or accidental deletion.
+
+- **Full backup.** Copies every file. Slow to create and uses a lot of storage, but restoring is quick and simple because everything is in one place.
+- **Incremental backup.** Copies only the files that have changed since the last backup of any type. Very fast to create and uses little storage, but restoring is slower because the last full backup and every incremental backup since must be applied in order.
+
+!key Choosing a backup strategy :: A typical strategy is a full backup weekly with incremental backups daily, which balances the speed of creating backups against the time it takes to restore.
+"""),
+    ],
+    keyterms=[
+        ("System software", "Software that runs and maintains the computer itself, such as the operating system and utilities."),
+        ("Operating system", "System software that manages hardware and software and provides an environment for applications to run."),
+        ("GUI", "Graphical user interface. Interaction through windows, icons, menus and a pointer."),
+        ("CLI", "Command line interface. Interaction by typing text commands."),
+        ("Multitasking", "Rapidly switching the CPU between processes so several programs appear to run at once."),
+        ("Device driver", "Software that translates operating system instructions into commands a specific hardware device understands."),
+        ("Utility software", "Software that performs maintenance tasks such as backup, compression, encryption and defragmentation."),
+        ("Fragmentation", "When parts of the same file are stored in separate locations on a disk, slowing access."),
+        ("Defragmentation", "Reorganising data on a magnetic disk so files are stored in contiguous blocks."),
+        ("Full backup", "A copy of every file, slow to create but quick to restore."),
+        ("Incremental backup", "A copy of only the files changed since the last backup, quick to create but slower to restore."),
+    ],
+    grade="""
+The examiner is looking for **the reason behind the task**, not just the task.
+
+**Memory management** is not "it manages memory". It allocates memory to each program, keeps programs separate so one cannot overwrite another and cause a crash, and frees memory when programs close.
+
+**Multitasking** is not "running several programs at once". The CPU switches between processes extremely rapidly, giving each a slice of time, so they appear to run simultaneously.
+
+**Defragmentation** questions almost always include an SSD trap. Know that defragmenting an SSD gives no benefit and actively wastes write cycles.
+
+**Backup comparison** is a favourite. The trade off is always the same shape: incremental is fast to create and slow to restore, full is slow to create and fast to restore.
+
++ Name all five operating system management jobs from memory
++ Explain multitasking in terms of time slicing, not just simultaneity
++ Explain fragmentation and defragmentation with reference to head movement
++ Compare full and incremental backup on both creation time and restore time
+""",
+    mistakes=[
+        "Listing 'runs programs' as an operating system task without saying it manages memory and CPU time to do so.",
+        "Saying a GUI is 'better' than a CLI. A CLI uses fewer resources and is more powerful for expert users.",
+        "Recommending defragmentation for an SSD. It provides no benefit and consumes write cycles.",
+        "Saying incremental backups are 'better' outright. They are faster to create but slower to restore.",
+        "Confusing utility software with application software. A word processor is an application, a backup tool is a utility.",
+    ],
+    quiz=[
+        Q("Which of these is an example of utility software?",
+          ["A disk defragmenter", "A web browser", "A spreadsheet program", "A video game"], 0,
+          "Utilities maintain the computer. The other three are applications the user runs to do a task."),
+        Q("What does the operating system do during memory management?",
+          ["Allocates memory to programs and keeps them separate so they cannot overwrite each other",
+           "Increases the total amount of RAM installed",
+           "Stores files permanently on the hard disk",
+           "Converts programs into machine code"], 0,
+          "Isolation is the key point. If one program could write into another's memory, it would crash it."),
+        Q("How does an operating system make several programs appear to run at once on a single core?",
+          ["It switches between processes very rapidly, giving each a small slice of CPU time",
+           "It runs each program at a lower clock speed",
+           "It runs them on the graphics card instead",
+           "It compresses each program so they fit together"], 0,
+          "This is time slicing. The switching is far faster than human perception, so it feels simultaneous."),
+        Q("What is a device driver?",
+          ["Software that translates operating system instructions into commands a hardware device understands",
+           "A cable connecting a peripheral to the computer",
+           "The person who installs new hardware",
+           "A utility that defragments a disk"], 0,
+          "Each type of hardware speaks its own language, and the driver is the translator between it and the operating system."),
+        Q("Why does fragmentation slow down a magnetic hard disk?",
+          ["The read write head must move to several locations to read one file",
+           "The disk spins more slowly when fragmented",
+           "Fragmented files take up more space",
+           "The operating system has to decompress each fragment"], 0,
+          "Physical head movement is the slow part of a hard disk. Scattered file parts multiply that movement."),
+        Q("Why should an SSD not be defragmented?",
+          ["There are no moving parts to benefit, and it wastes limited write cycles",
+           "SSDs cannot store fragmented files",
+           "It would delete the data",
+           "SSDs defragment themselves every hour"], 0,
+          "Access time is the same wherever data sits on an SSD, so there is no gain, and unnecessary writes shorten the drive's life."),
+        Q("Which backup type is quickest to create but slowest to restore?",
+          ["Incremental", "Full", "Differential to disk", "Mirror"], 0,
+          "Incremental copies only what changed, so it is fast. Restoring needs the last full backup plus every incremental since, in order."),
+        Q("What is one advantage of a command line interface over a graphical user interface?",
+          ["It uses far fewer system resources", "It is easier for beginners to learn",
+           "It shows previews of files", "It requires no typing"], 0,
+          "A CLI needs very little memory and processing power, which is why servers and embedded systems often use one."),
+        Q("Which is NOT a function of an operating system?",
+          ["Editing a photograph", "Managing files and folders",
+           "Managing user accounts", "Controlling peripherals"], 0,
+          "Editing a photograph is what application software does. The other three are core operating system responsibilities."),
+        Q("User access levels set by the operating system are used to:",
+          ["Control which files and features each user can reach",
+           "Speed up the processor for administrators",
+           "Increase the amount of available RAM",
+           "Encrypt every file automatically"], 0,
+          "Access levels enforce that each account can only reach what its role requires, which limits both accidents and attacks."),
+    ],
+    exam=[
+        EQ("State three tasks carried out by an operating system.", 3, [
+            MP("Manages memory or provides multitasking", ["memory", "multitasking", "ram", "allocates memory", "processor management"]),
+            MP("Manages peripherals and device drivers", ["peripheral", "drivers", "input", "output", "hardware", "devices"]),
+            MP("Manages files, users or provides the user interface", ["file", "user management", "accounts", "user interface", "gui", "permissions"]),
+        ], "An operating system manages memory, allocating it to programs and freeing it when they close as well as handling multitasking. It manages peripherals, using device drivers to communicate with input and output hardware. It also manages files and folders on secondary storage, and provides the user interface through which the user interacts with the computer.",
+           command="State"),
+        EQ("Explain how an operating system uses multitasking to allow several programs to run at the same time.", 3, [
+            MP("Each program or process is given a small slice of CPU time", ["slice", "time", "share", "allocated", "turn"]),
+            MP("The operating system switches rapidly between processes", ["switches", "rapidly", "quickly", "alternates", "scheduler"]),
+            MP("The switching is so fast that the programs appear to run simultaneously", ["appear", "seems", "illusion", "simultaneously", "at the same time", "user does not notice"]),
+        ], "The operating system allocates each running process a very small slice of processor time, and then switches the CPU rapidly from one process to the next according to a scheduling algorithm. Because each switch happens in a fraction of a second, far faster than a person can perceive, every program appears to be making continuous progress, giving the impression that they are all running at the same time even on a single core processor.",
+           command="Explain"),
+        EQ("Explain how defragmentation software improves the performance of a magnetic hard disk drive.", 4, [
+            MP("Over time files become fragmented and stored in separate parts of the disk", ["fragmented", "split", "scattered", "different parts", "not together"]),
+            MP("The read write head must move to several locations to read one file", ["read write head", "head", "move", "several locations", "seek"]),
+            MP("Defragmentation rearranges the data so file parts are stored together", ["together", "contiguous", "next to", "rearranges", "one place", "adjacent"]),
+            MP("Less head movement is required so files are accessed more quickly", ["less movement", "faster", "quicker access", "reduces", "speeds up"]),
+        ], "As files are created, edited and deleted, gaps appear on the disk and new data is written wherever space is available, so parts of the same file end up stored in several separate locations, which is known as fragmentation. Because a magnetic hard disk reads data using a physical head on a moving arm, opening a fragmented file requires the head to move to each of those locations in turn, and this mechanical movement is by far the slowest part of the operation. Defragmentation software reorganises the contents of the disk so that all the parts of each file are placed together in contiguous blocks and the free space is gathered into one area. The head then only needs to move a short distance to read a whole file, so access times fall and the drive performs noticeably better.",
+           command="Explain"),
+        EQ("Compare a full backup and an incremental backup.", 4, [
+            MP("A full backup copies every file", ["every file", "all files", "everything", "complete copy"]),
+            MP("An incremental backup copies only files changed since the last backup", ["changed", "modified", "since the last", "only new"]),
+            MP("Full backups take longer to create and use more storage", ["longer", "slower to create", "more storage", "more space", "time consuming"]),
+            MP("Incremental backups are faster to create but slower to restore because multiple backups must be applied", ["faster to create", "quicker", "slower to restore", "multiple", "each one", "in order", "restore takes longer"]),
+        ], "A full backup makes a complete copy of every file in the selected data, whereas an incremental backup copies only those files that have been created or changed since the previous backup of any kind. This produces opposite strengths. A full backup takes considerably longer to create and requires much more storage space, because the same unchanged files are copied every time, but restoring is fast and simple because everything needed is contained in a single backup set. An incremental backup is very quick to create and uses very little storage, but restoring is slower and more complex, because the most recent full backup must be restored first and then every incremental backup since must be applied in the correct order, and if any one of them is missing or corrupted the restore may fail.",
+           command="Compare"),
+        EQ("A company issues laptops to employees who work while travelling. Explain why encryption software should be installed on these laptops.", 3, [
+            MP("Laptops carried outside the office are at higher risk of loss or theft", ["lost", "stolen", "theft", "travelling", "risk", "left behind"]),
+            MP("Encryption scrambles the data using a key so it cannot be read without that key", ["scrambles", "key", "unreadable", "cannot be read", "cipher", "meaningless"]),
+            MP("If the device is stolen, confidential company or customer data remains protected", ["confidential", "protected", "customer data", "cannot access", "useless", "gdpr", "data protection"]),
+        ], "Laptops that leave the office are at a much higher risk of being lost or stolen, whether left on a train, taken from a hotel room or snatched in a public place. Encryption software protects against this by scrambling all the data on the drive using a key, so that the contents are meaningless to anyone who does not have that key, even if they remove the drive and connect it to another computer. This means that if a laptop is stolen the company loses the hardware but not the confidential business information or the personal data of its customers, which also helps the company meet its legal obligations under data protection law and avoid the penalties and reputational damage that follow a data breach.",
+           command="Explain"),
+    ],
+)
+
+# ================================================== 1.6 Ethical, legal, cultural
+
+T_IMPACTS = Topic(
+    slug="ethical-legal-cultural-environmental",
+    title="Ethical, Legal, Cultural and Environmental Impacts",
+    spec="1.6",
+    icon="i-scales",
+    minutes=32,
+    blurb="The four impact categories, all four pieces of legislation you must name, open source against proprietary software, and how to structure the eight mark essay so it actually scores.",
+    fact="A single large data centre can use as much electricity as a small town. This is why the biggest technology companies now build them next to hydroelectric dams or in the Arctic circle, where the outside air does the cooling for free.",
+    sections=[
+        Section("The four categories", """
+Every impact question fits into one of four categories, and knowing which is which stops you writing the same point twice.
+
+### Ethical
+
+Questions of **right and wrong**, where there is no law forcing an answer.
+
+- Should an employer read employees' emails?
+- Is it acceptable for an algorithm to decide who gets a loan?
+- Should facial recognition be used in public spaces?
+- Is it right that technology jobs replace human ones?
+
+### Legal
+
+What the **law** requires or forbids. This is where the four named acts belong.
+
+### Cultural
+
+How technology changes **how groups of people live, work and interact**.
+
+- The digital divide: those without reliable internet or devices are excluded from services that assume everyone has both
+- Changes to how people socialise, shop, work and access news
+- Online communities forming across national borders
+- Concerns about screen time, misinformation and the effect on young people
+
+### Environmental
+
+The effect on the **planet**.
+
+- Manufacturing devices consumes rare earth metals, and mining causes habitat destruction and pollution
+- Data centres and devices consume enormous amounts of electricity
+- **E-waste**: discarded electronics contain toxic substances such as lead and mercury, and much of it is shipped to countries with weak environmental controls
+- Short replacement cycles worsen all of the above
+- Positives: video conferencing reduces travel, smart systems cut energy use, digital documents reduce paper
+"""),
+        Section("Legislation", """
+Four acts. You must know the name, the year and what it protects.
+
+### Data Protection Act 2018
+
+Controls how organisations use **personal data**. It incorporates GDPR into UK law.
+
+Key principles: data must be used fairly and lawfully, collected for a specified purpose, adequate and not excessive, accurate and up to date, kept no longer than necessary, and kept secure.
+
+Individuals have rights: to see the data held about them, to have errors corrected, and to have data erased in certain circumstances.
+
+### Computer Misuse Act 1990
+
+Created three offences, in increasing seriousness:
+
+1. **Unauthorised access** to computer material, for example guessing a password to read someone's files
+2. **Unauthorised access with intent to commit a further offence**, such as breaking in to commit fraud
+3. **Unauthorised modification** of computer material, such as deleting files or spreading a virus
+
+!warn This act covers hacking, not piracy :: Downloading a film illegally is copyright, not Computer Misuse. Guessing your friend's password is Computer Misuse even if you change nothing.
+
+### Copyright, Designs and Patents Act 1988
+
+Protects the **intellectual property** of creators: software, music, films, books, images and designs. It makes copying, distributing or using work without permission illegal.
+
+This is the act that covers software piracy and illegal downloads.
+
+### Software licences
+
+**Open source software** is distributed with its source code, which anyone may view, modify and redistribute.
+
+- Free to use in most cases
+- Can be adapted to exact needs
+- A large community may fix bugs and add features quickly
+- Weaknesses are visible to everyone, including attackers
+- Support is community based rather than guaranteed
+- Examples: Linux, LibreOffice, Firefox, VLC
+
+**Proprietary software** is distributed as a compiled program only. The source code is kept secret and the licence restricts what users may do.
+
+- Usually paid for, sometimes by subscription
+- Professional support and regular tested updates
+- Cannot be modified or adapted by the user
+- Users depend entirely on the vendor continuing to support it
+- Examples: Microsoft Windows, Adobe Photoshop, Microsoft Office
+"""),
+        Section("Writing the eight mark answer", """
+The impacts question is usually the longest on Paper 1 and it is marked by **levels**, not by counting points. That changes how you should write.
+
+### What the levels reward
+
+| Level | What it looks like |
+| Level 1 | A few relevant points, mostly listed, little development |
+| Level 2 | Several points developed with reasons, some balance |
+| Level 3 | A balanced discussion of several impacts, developed with reasons, reaching a supported conclusion |
+
+### A structure that reaches level 3
+
+1. **Open with the context.** One sentence naming what is being introduced and who it affects.
+2. **Two or three paragraphs, each on a different impact category.** Name the category, make the point, explain the consequence, and identify who is affected.
+3. **Give both sides.** Every paragraph should acknowledge a counterpoint. A one sided answer is capped in the mark scheme.
+4. **Conclude with a judgement.** Say what should happen and why, based on what you have argued.
+
+!exam The single biggest mistake :: Writing eight separate points and stopping. Level 3 requires **development** and a **conclusion**. Four well developed points with a conclusion will beat eight bare assertions every time.
+
+### Worked opening
+
+*A supermarket replaces all its staffed checkouts with self service tills.*
+
+"This change has significant ethical and cultural implications. Ethically, the supermarket has a responsibility towards the staff whose roles are removed, and while the company is not legally obliged to retain them, replacing long serving employees with machines purely to reduce costs raises questions of fairness, particularly where those employees have few alternative opportunities in the local area. Culturally, self service tills also disadvantage certain groups: elderly customers and those with visual impairments may find touchscreens difficult, and for some isolated customers the brief interaction at a checkout is genuine social contact. Against this, self service reduces queueing for the majority and lowers costs, which may keep prices down for all customers..."
+
+Notice: category named, point made, consequence explained, group affected identified, counterpoint given.
+"""),
+    ],
+    keyterms=[
+        ("Ethical issue", "A question of right and wrong where no law dictates the answer."),
+        ("Legal issue", "Something governed by law, such as the use of personal data or unauthorised access."),
+        ("Cultural issue", "The effect of technology on how groups of people live, work and interact."),
+        ("Environmental issue", "The effect of technology on the natural world, including energy use and e-waste."),
+        ("Data Protection Act 2018", "Legislation controlling how organisations collect, store and use personal data."),
+        ("Computer Misuse Act 1990", "Legislation making unauthorised access to and modification of computer material a criminal offence."),
+        ("Copyright, Designs and Patents Act 1988", "Legislation protecting the intellectual property of creators, including software."),
+        ("Open source software", "Software distributed with its source code, which anyone may view, modify and redistribute."),
+        ("Proprietary software", "Software distributed without source code, under a licence restricting how it may be used."),
+        ("Digital divide", "The gap between those with reliable access to technology and the internet and those without."),
+        ("E-waste", "Discarded electronic equipment, often containing toxic materials, much of it exported to developing countries."),
+    ],
+    grade="""
+This topic separates students more than any other on Paper 1, because it is marked by levels.
+
+**Never write a list.** Lists reach level 1. Each point needs: the claim, the reason, the consequence and who is affected.
+
+**Always give both sides.** A one sided answer cannot reach the top level even if every point is correct. Use phrases like "however", "on the other hand" and "against this".
+
+**Name the specific group affected.** Not "people" but "elderly customers", "employees in low skilled roles", "students in households without broadband", "communities near mining sites". Specificity is what makes an answer feel expert.
+
+**Always conclude.** One or two sentences giving your judgement and the reason for it. Answers without a conclusion routinely lose the top mark even when the discussion was strong.
+
+**Learn the four acts precisely.** The name and year are worth a mark on their own, and using the wrong act for a scenario loses marks that are otherwise free.
+
++ Write an eight mark answer in 12 minutes with four developed points and a conclusion
++ Match any given scenario to the correct legislation instantly
++ Give three advantages and three disadvantages of open source
++ Name a specific affected group in every paragraph you write
+""",
+    mistakes=[
+        "Writing a list of impacts with no development or conclusion, which caps the answer at level 1.",
+        "Confusing the Computer Misuse Act with the Copyright Act. Hacking is Misuse, piracy is Copyright.",
+        "Saying open source is 'free' as if that is the only difference. The defining feature is that the source code is available to view and modify.",
+        "Giving only negative environmental impacts. Video conferencing, digital documents and smart energy systems are genuine positives.",
+        "Writing only about one category when the question says impacts, plural.",
+        "Saying 'it affects people' rather than naming the specific group affected.",
+    ],
+    quiz=[
+        Q("Which act makes it illegal to access a computer system without permission?",
+          ["Computer Misuse Act 1990", "Data Protection Act 2018",
+           "Copyright, Designs and Patents Act 1988", "Freedom of Information Act 2000"], 0,
+          "The Computer Misuse Act created the offence of unauthorised access, even where nothing is changed or stolen."),
+        Q("A student illegally downloads a film. Which law has been broken?",
+          ["Copyright, Designs and Patents Act 1988", "Computer Misuse Act 1990",
+           "Data Protection Act 2018", "No law has been broken"], 0,
+          "Copyright protects the creator's intellectual property, and copying or distributing without permission infringes it."),
+        Q("Which is a defining feature of open source software?",
+          ["The source code is available for anyone to view and modify",
+           "It can never be sold", "It has no bugs", "It only runs on Linux"], 0,
+          "Availability of source code is the definition. Many open source projects are commercially supported."),
+        Q("The digital divide refers to:",
+          ["The gap between those with reliable access to technology and those without",
+           "The difference between analogue and digital signals",
+           "The split between hardware and software companies",
+           "The gap between open source and proprietary software"], 0,
+          "It matters because services increasingly assume everyone has a device and a connection, which excludes those who do not."),
+        Q("Which is an environmental impact of computing?",
+          ["E-waste containing toxic materials being exported to developing countries",
+           "Employees having their emails monitored",
+           "Software being copied without permission",
+           "Users being unable to modify proprietary software"], 0,
+          "The others are ethical, legal and licensing issues respectively."),
+        Q("Under the Data Protection Act 2018, an individual has the right to:",
+          ["See the personal data an organisation holds about them",
+           "Copy any software they have purchased",
+           "Access any computer system they choose",
+           "Demand free internet access"], 0,
+          "Subject access is a core right, alongside the right to correction and, in some circumstances, erasure."),
+        Q("Which is a disadvantage of proprietary software?",
+          ["It cannot be modified because the source code is not available",
+           "It never receives updates",
+           "It always contains malware",
+           "It cannot be used commercially"], 0,
+          "Users depend entirely on the vendor for changes, fixes and continued support."),
+        Q("An employer secretly reads staff private messages. This is primarily:",
+          ["An ethical issue about privacy and trust",
+           "An environmental issue",
+           "A cultural issue about the digital divide",
+           "Not an issue of any kind"], 0,
+          "It is a question of what is right rather than only what is legal, which places it in the ethical category."),
+        Q("Which is an advantage of open source software for a school with a limited budget?",
+          ["It is usually free to use and can be installed on any number of machines",
+           "It comes with a guaranteed support contract",
+           "It is always easier to use than proprietary software",
+           "It automatically updates all hardware drivers"], 0,
+          "No per machine licence cost is a substantial saving when deploying to hundreds of computers."),
+        Q("Which statement about e-waste is correct?",
+          ["It often contains toxic substances and is frequently exported to countries with weaker regulations",
+           "It is always safely recycled in the country where it is used",
+           "It contains no valuable materials",
+           "It is not considered an environmental problem"], 0,
+          "Lead, mercury and cadmium are common in electronics, and informal recycling exposes workers and contaminates land and water."),
+    ],
+    exam=[
+        EQ("State the name of the legislation that protects the personal data an organisation holds about individuals.", 1, [
+            MP("Data Protection Act 2018", ["data protection act", "data protection", "gdpr"]),
+        ], "The Data Protection Act 2018, which brings the General Data Protection Regulation into UK law.",
+           command="State"),
+        EQ("Describe two offences created by the Computer Misuse Act 1990.", 4, [
+            MP("Unauthorised access to computer material", ["unauthorised access", "without permission", "gaining access", "hacking"]),
+            MP("Example or explanation of unauthorised access, such as using someone else's password", ["password", "someone else", "log in", "account", "files"]),
+            MP("Unauthorised modification of computer material", ["modification", "modify", "change", "delete", "altering", "virus"]),
+            MP("Unauthorised access with intent to commit a further offence such as fraud", ["intent", "further offence", "fraud", "commit a crime", "in order to"]),
+        ], "The first offence is unauthorised access to computer material, which means gaining access to a computer system or the data on it without permission, for example by guessing or stealing another person's password in order to read their files. This is an offence even if nothing is altered or taken. The second offence is unauthorised modification of computer material, which covers changing or deleting data without permission, including deliberately spreading a virus or ransomware that alters files. The Act also creates the more serious offence of unauthorised access with intent to commit a further offence, such as breaking into a system in order to commit fraud.",
+           command="Describe"),
+        EQ("Explain two advantages of using open source software rather than proprietary software.", 4, [
+            MP("It is usually free of charge, reducing costs", ["free", "no cost", "cheaper", "no licence fee", "saves money"]),
+            MP("The source code can be viewed and modified to suit specific needs", ["source code", "modify", "adapt", "customise", "change it", "tailor"]),
+            MP("A community of developers can fix bugs and add features", ["community", "developers", "bugs fixed", "improvements", "anyone can contribute"]),
+            MP("There is no dependence on a single vendor continuing to support the software", ["vendor", "not dependent", "company", "discontinued", "lock in", "supported"]),
+        ], "The first advantage is cost. Open source software is normally free to download and use with no per machine licence fee, which for an organisation deploying software to hundreds of computers represents a very large saving compared with proprietary licences that must be bought and often renewed annually. The second advantage is that the source code is made available, so the software can be examined and modified. This means an organisation can adapt the program to its own specific requirements rather than working around limitations, and a global community of developers can inspect the code, identify security weaknesses and contribute fixes and new features, often far more quickly than a single company could.",
+           command="Explain"),
+        EQ("A local council is planning to move all of its services online, so that residents must use a website to report problems, pay bills and apply for support. Discuss the impacts of this decision.", 8, [
+            MP("Identifies a cultural impact such as the digital divide", ["digital divide", "access", "internet", "cultural", "excluded"]),
+            MP("Names a specific affected group such as elderly residents or low income households", ["elderly", "older", "low income", "poorer", "disabled", "rural", "no internet"]),
+            MP("Identifies an ethical impact, such as fairness of removing non digital options", ["ethical", "fair", "unfair", "right", "responsibility", "obligation"]),
+            MP("Identifies a legal impact, such as Data Protection Act obligations for personal data", ["data protection", "legal", "gdpr", "personal data", "law", "secure"]),
+            MP("Identifies an environmental impact such as reduced paper and travel, or increased server energy use", ["environmental", "paper", "travel", "energy", "carbon", "servers", "emissions"]),
+            MP("Gives benefits such as lower costs, 24 hour availability and faster service", ["cheaper", "cost", "24 hours", "any time", "faster", "convenient", "efficient"]),
+            MP("Presents both sides rather than only advantages or only disadvantages", ["however", "on the other hand", "although", "but", "balance", "against this"]),
+            MP("Reaches a supported conclusion with a recommendation", ["conclusion", "overall", "therefore", "should", "recommend", "in my opinion"]),
+        ], "Moving all council services online has substantial impacts across several areas. Culturally, the most serious is the digital divide. Not every resident has a reliable internet connection, a suitable device or the confidence to use one, and the groups most likely to be excluded are elderly residents, people on low incomes and those in rural areas with poor broadband. These are also, in many cases, precisely the residents who most need council support, so a digital only service risks making it hardest to reach for the people who depend on it most. Ethically, this raises a genuine question of fairness. The council has a duty to serve all of its residents equally, and while moving online is not unlawful, removing every alternative route to a service effectively withdraws it from a minority of the population who have done nothing wrong. Legally, the council will be handling large volumes of personal data including addresses, financial details and information about vulnerable people, so it is bound by the Data Protection Act 2018 to collect only what is necessary, keep it accurate, store it securely and retain it no longer than needed. A breach would expose residents to fraud and expose the council to significant fines. Environmentally the picture is mixed. Online services remove a great deal of printing, postage and travel to council offices, which reduces paper use and vehicle emissions, but the servers hosting the service consume electricity continuously and the devices residents need in order to use it carry their own manufacturing and disposal costs. There are clear benefits driving the decision. Online services are far cheaper to run than staffed offices, they are available at any hour rather than only during working hours, and requests can be tracked and processed more quickly, which improves the experience for the majority of residents and frees money for other services. Overall, the council is right to move services online, but wrong to make it the only option. The most defensible approach is to develop the digital service fully while retaining a telephone line and a staffed counter for those who cannot use it, and to fund community support to help residents get online. This captures most of the cost savings and convenience without excluding the residents least able to adapt.",
+           command="Discuss"),
+        EQ("Explain one environmental benefit and one environmental drawback of increased use of video conferencing by businesses.", 4, [
+            MP("Benefit: less travel to meetings", ["travel", "flights", "driving", "commute", "journeys"]),
+            MP("Which reduces fuel use and carbon emissions", ["emissions", "carbon", "fuel", "pollution", "co2", "greenhouse"]),
+            MP("Drawback: servers and networks consume electricity continuously", ["servers", "electricity", "energy", "data centres", "power"]),
+            MP("Devices must be manufactured and eventually disposed of, using resources and creating e-waste", ["manufacture", "e-waste", "disposal", "resources", "rare earth", "mining", "devices"]),
+        ], "The environmental benefit is a reduction in travel. Meetings that previously required employees to drive across the country or fly abroad can be held from a desk, which cuts fuel consumption and the carbon emissions associated with road and air travel, and also reduces the demand for large office buildings that must be heated and lit. The drawback is that video conferencing is not free of environmental cost. The data centres that host the service run continuously and consume very large amounts of electricity, both for the servers themselves and for the cooling systems that keep them at a safe temperature, and video is one of the most data intensive services on the internet. In addition, every participant needs a device with a camera and a reliable connection, and manufacturing those devices consumes rare earth metals extracted through environmentally damaging mining, while their eventual disposal adds to the growing volume of electronic waste.",
+           command="Explain"),
+    ],
+)
