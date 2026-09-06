@@ -20,6 +20,7 @@ from mskbuild import markup
 COURSES = []
 PAGES = []          # (path, priority, changefreq)
 SEARCH = []         # {t, u, s, k}
+MANIFEST = []       # course records for the progress dashboard
 
 
 def register(path, priority=0.7, freq="monthly"):
@@ -57,6 +58,21 @@ def build_course(course):
         add_search(topic.title, tpath,
                    "%s %s" % (course.short, ("spec " + topic.spec) if topic.spec else ""),
                    kws)
+    MANIFEST.append({
+        "slug": course.slug,
+        "title": course.short,
+        "url": "/%s/" % course.slug,
+        "stage": course.stage,
+        "topics": [{
+            "id": "%s/%s" % (course.slug, t.slug),
+            "t": t.title,
+            "u": "/%s/%s/" % (course.slug, t.slug),
+            "unit": u.title,
+            "q": len(t.quiz),
+            "e": sum(x.marks for x in t.exam),
+            "m": t.minutes,
+        } for u in course.units for t in u.topics],
+    })
     COURSES.append(course)
 
 
@@ -274,12 +290,33 @@ def build_sitemap():
                         path="/404.html", body=body))
 
 
+def build_manifest():
+    """A list of every course and topic, read by the progress dashboard.
+
+    The dashboard holds no data of its own: it compares this manifest against
+    what the browser has saved locally, so nothing about a student ever leaves
+    their own machine.
+    """
+    out = os.path.join(DIST, "assets", "data")
+    os.makedirs(out, exist_ok=True)
+    with open(os.path.join(out, "progress.json"), "w", encoding="utf-8") as fh:
+        json.dump({"courses": MANIFEST}, fh, separators=(",", ":"))
+
+
 def copy_static():
     src = os.path.join(ROOT, "static")
     dst = os.path.join(DIST, "assets")
     if os.path.exists(dst):
         shutil.rmtree(dst)
     shutil.copytree(src, dst)
+
+    # One bundle for every interactive tool. layout() links it only on pages that
+    # mount a tool, so an ordinary topic page downloads none of it.
+    from mskbuild import tools as tool_reg
+    with open(os.path.join(dst, "js", "tools.js"), "w", encoding="utf-8") as fh:
+        fh.write(tool_reg.bundle(ROOT, "js"))
+    with open(os.path.join(dst, "css", "tools.css"), "w", encoding="utf-8") as fh:
+        fh.write(tool_reg.bundle(ROOT, "css"))
 
 
 def main():
@@ -311,8 +348,15 @@ def main():
     except ImportError:
         pass
 
+    from content import tools_page
+    tools_page.build(register, add_search)
+
+    from content import progress_page
+    progress_page.build(register, add_search)
+
     build_home()
     copy_static()
+    build_manifest()
     build_sitemap()
 
     n_files = sum(len(f) for _, _, f in os.walk(DIST))

@@ -200,6 +200,30 @@
     }
   });
 
+  /* ------------------------------------------------------------ streak
+     One entry per day the site was opened, kept locally and never sent
+     anywhere. A streak is a small thing, but turning up daily is most of
+     what revision is. */
+  (function () {
+    function key(d) {
+      return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0")
+        + "-" + String(d.getDate()).padStart(2, "0");
+    }
+    var now = new Date();
+    var today = key(now);
+    var st = store.get("streak", { last: "", days: 0, best: 0, hist: [] });
+    if (st.last !== today) {
+      var yesterday = key(new Date(now.getTime() - 86400000));
+      st.days = st.last === yesterday ? (st.days || 0) + 1 : 1;
+      st.last = today;
+      if (st.days > (st.best || 0)) st.best = st.days;
+      st.hist = (st.hist || []).filter(function (d) { return d !== today; });
+      st.hist.push(today);
+      if (st.hist.length > 120) st.hist = st.hist.slice(-120);
+      store.set("streak", st);
+    }
+  })();
+
   /* ----------------------------------------------------- topic progress
      Marks a topic as visited so key stage pages can show a done dot. */
   var page = document.body.getAttribute("data-topic");
@@ -221,7 +245,7 @@
     var b = e.target.closest && e.target.closest("[data-reset-progress]");
     if (!b) return;
     if (!window.confirm("This clears every saved score and note stored in this browser. Continue?")) return;
-    ["seen", "quiz", "exam", "theme", "mascot"].forEach(store.del);
+    ["seen", "quiz", "exam", "theme", "mascot", "streak"].forEach(store.del);
     window.location.reload();
   });
 })();
