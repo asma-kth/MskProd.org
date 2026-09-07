@@ -123,14 +123,14 @@ def build(register, add_search):
     for name in ORDER:
         meta = TOOLS[name]
         cards.append(
-            '<a class="tile" href="/tools/%s/" style="--tile-accent:var(--teal)">'
+            '<a class="tile" href="/tools/%s/">'
             '<span class="tile-icon">%s</span><h3>%s</h3><p>%s</p></a>'
             % (name, ico(meta["icon"], "icon"), esc(meta["title"]), esc(meta["blurb"])))
     trail = [("Home", "/"), ("Tools", None)]
     body = """<div class="wrap">
   %s
   <header class="section-head"><h1>Interactive tools</h1><p class="lead">%s</p></header>
-  <div class="grid">%s</div>
+  <div class="grid grid-3">%s</div>
 </div>""" % (crumbs(trail), esc(INTRO), "".join(cards))
     path = "/tools/"
     write(path, layout(title="Interactive Computing Tools",

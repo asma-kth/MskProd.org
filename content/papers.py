@@ -801,10 +801,10 @@ def build(register, add_search, *_):
         add_search(p.title, path, "%s practice paper, %d marks" % (p.board, p.marks),
                    (p.title + " " + p.course + " " + p.blurb).lower())
         (ks3_cards if p.course == "Key Stage 3" else cards).append(
-            '<a class="tile" href="%s" style="--tile-accent:%s">'
+            '<a class="tile" href="%s">'
             '<span class="tile-icon">%s</span><h3>%s</h3><p>%s</p>'
             '<span class="tile-meta"><span>%d marks</span><span>%d minutes</span><span>%s</span></span></a>'
-            % (path, p.accent, ico("i-paper"), esc(p.title), esc(p.blurb),
+            % (path, ico("i-paper"), esc(p.title), esc(p.blurb),
                p.marks, p.minutes, esc(p.board + " " + p.code)))
 
     links = "".join(
@@ -821,7 +821,7 @@ def build(register, add_search, *_):
       a complete mark scheme and a model answer for every question. Doing one properly teaches you more in ninety
       minutes than a week of rereading notes.</p>
     </div>
-    <div class="stat-row" style="grid-template-columns:1fr 1fr">
+    <div class="stat-row">
       <div class="stat"><b>%d</b><span>Papers</span></div>
       <div class="stat"><b>%d</b><span>Questions</span></div>
       <div class="stat"><b>%d</b><span>Marks to practise</span></div>
@@ -849,7 +849,7 @@ def build(register, add_search, *_):
 
 <section class="section section-alt"><div class="wrap">
   <div class="grid grid-2" style="gap:var(--sp-6)">
-    <div class="card">
+    <div class="col-block">
       <h2 style="font-size:var(--step-2)">Why these are original papers</h2>
       <p style="color:var(--ink-3)">Real past papers belong to the exam boards and are protected by copyright, so they
       cannot lawfully be republished on this site. Every paper here is instead written from scratch to match the real
@@ -859,7 +859,7 @@ def build(register, add_search, *_):
       <p style="color:var(--ink-3);margin-bottom:0">Use these alongside the official past papers, not instead of them.
       The official papers are free to download from each board's own website.</p>
     </div>
-    <div class="card">
+    <div class="col-block">
       <h2 style="font-size:var(--step-2)">Official past papers</h2>
       <p style="color:var(--ink-3)">Download the genuine past papers and mark schemes directly from the exam board:</p>
       <ul class="checklist">%s</ul>
