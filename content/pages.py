@@ -270,7 +270,7 @@ def build(register, add_search, courses):
     about = """
 MskProd Computing is a free revision site for UK students studying computing at Key Stage 3, GCSE and A Level. There are **%d topics**, **%d knowledge check questions** and several hundred auto marked exam-style questions, written board by board for OCR, AQA and Edexcel and sequenced in the order the subject is actually taught in school.
 
-Everything on the site is free. There is no account to create, no adverts, no subscription and no tracking.
+Everything on the site is free. There is no account to create and no subscription. The site is paid for by advertising, and how that works is set out in the [privacy policy](/privacy/).
 
 ## Why this site exists
 
@@ -324,16 +324,27 @@ Corrections are genuinely welcome. If something on this site is wrong, unclear o
     privacy = """
 **Last updated: September 2026**
 
-The short version: this website does not collect, store or transmit any personal data about you at all. There is nothing to opt into and nothing to opt out of.
+The short version: the site itself asks nothing of you and keeps your work on your own device. It is paid for by advertising, and those adverts are served by Google, which does set cookies and does collect data about the people who see them. That part is explained in full below.
 
 ## What this site does not do
 
 + There are no user accounts and no sign up. You cannot create one.
-+ There are no analytics or tracking of any kind. No Google Analytics, no pixels, no fingerprinting.
-+ There are no advertising networks and no advertising cookies.
-+ There are no social media trackers or embedded sharing widgets.
-+ No data about you is sold, shared or transferred to anybody, because none is collected.
-+ No cookies are set by this site.
++ The site owner runs no analytics. There is no Google Analytics, no visitor counter and no fingerprinting by this site.
++ Your quiz scores, exam answers and progress are never uploaded. They stay in your browser.
++ Nothing you type into the exam answer boxes is transmitted anywhere or read by anybody.
++ Nothing about you is sold by the site owner.
+
+## Advertising
+
+This site carries adverts supplied by **Google AdSense**, and that is how it stays free to use.
+
+To show adverts, Google receives your IP address, information about your browser and device, and the page you are reading. Google and its partners may store and read cookies or similar identifiers on your device to measure how adverts perform and, where you have agreed to it, to choose adverts based on your interests.
+
+This means the honest position is: **the site owner collects nothing about you, but Google does.** What Google does with it is governed by [Google's own privacy policy](https://policies.google.com/privacy) and by [how Google uses data from sites that use its services](https://policies.google.com/technologies/partner-sites).
+
+If you are in the UK or the EEA, you will be asked on your first visit whether you agree to advertising cookies. You can decline, and you can change your answer later. Declining does not restrict any part of the site: every topic, quiz, exam question and tool works exactly the same either way.
+
+You can also opt out of personalised advertising across the whole web at [Google's Ads Settings](https://adssettings.google.com), and most browsers let you block or delete cookies for individual sites.
 
 ## Data stored on your own device
 
@@ -360,7 +371,11 @@ Pixel, the robot cat, runs entirely in your browser. The facts, tips and message
 
 ## Third party services
 
-The site loads its typefaces from **Google Fonts**. When your browser requests those font files it makes a request to Google's servers, which as with any web request involves your IP address and browser information being visible to Google. This is the only third party request the site makes. If you would prefer to avoid it entirely, most browsers and privacy extensions can block requests to fonts.googleapis.com, and the site remains fully readable and fully functional with a fallback typeface.
+The site loads its typefaces from **Google Fonts**. When your browser requests those font files it makes a request to Google's servers, which as with any web request involves your IP address and browser information being visible to Google. If you would prefer to avoid it, most browsers and privacy extensions can block requests to fonts.googleapis.com, and the site remains fully readable and fully functional with a fallback typeface.
+
+The runnable Python examples download the Python engine from a public code network (jsDelivr) the first time you press Run on a page. That request is only made if you press Run.
+
+Besides these and the advertising described above, the site makes no other third party requests.
 
 Links to external websites, such as the exam board pages in the exam papers section, are clearly marked and open in a new tab. Once you follow such a link, that website's own privacy policy applies and this one does not.
 
@@ -372,15 +387,19 @@ The site is a set of static files served by a hosting provider. Like almost all 
 
 The UK General Data Protection Regulation and the Data Protection Act 2018 give individuals rights over personal data held about them, including the rights of access, rectification and erasure.
 
-Because this site holds no personal data about you whatsoever, there is nothing to request access to, nothing to correct and nothing to erase. The data stored in your browser is under your own control and can be deleted by you at any time using the button above or your browser's settings.
+The site owner holds no personal data about you, so there is nothing held here to request access to, correct or erase. The data stored in your browser is under your own control and can be deleted at any time using the button above or your browser's settings.
+
+For the data Google collects through the adverts, Google is the data controller. Requests about that data should go to Google, using the contacts in [its privacy policy](https://policies.google.com/privacy). You can withdraw your consent to advertising cookies at any time, and doing so does not affect anything else on the site.
 
 ## Children
 
-This site is intended for use by school age students and is designed accordingly. It requires no personal information from anybody, of any age, which is precisely why there is no age gate and no consent mechanism. There is nothing to consent to.
+This site is written for school age students, including Key Stage 3 pupils who may be as young as eleven, and it asks for no personal information from anybody of any age.
+
+Because the site carries advertising, adverts here are served as non-personalised: they are chosen from the content of the page rather than from any profile of the reader, and they are not used to build one. If you are a parent or a teacher and have a question about this, please get in touch through the [about page](/about/).
 
 ## Changes to this policy
 
-If this policy ever changes, the date at the top of this page will be updated. Any change that introduced data collection of any kind would be stated here prominently, but there is no intention to introduce any.
+If this policy ever changes, the date at the top of this page will be updated, and any change that affects what is collected about you will be stated here plainly.
 
 ## Contact
 
@@ -388,15 +407,15 @@ If you have a question about privacy on this site, please get in touch through t
 """
     path, html = _page(
         "/privacy/", "Privacy Policy",
-        "This site collects no personal data, sets no cookies and uses no tracking. Quiz scores are stored on your own device and never transmitted.",
+        "The site owner collects no personal data and your quiz scores never leave your device. The site is funded by Google adverts, which do set cookies. Explained in full here.",
         "Privacy", privacy,
-        greeting="Short version: nothing about you is collected, and your scores never leave your device.",
+        greeting="Short version: your scores never leave your device. The adverts are Google's, and they do use cookies. It is all explained here.",
         ld=[{"@context": "https://schema.org", "@type": "WebPage",
              "name": "Privacy Policy", "url": SITE_URL + "/privacy/"}])
     write(path, html)
     register(path, 0.5, "yearly")
-    add_search("Privacy policy", path, "No data collected, no cookies, no tracking",
-               "privacy policy gdpr data cookies tracking")
+    add_search("Privacy policy", path, "What is stored, what Google collects for adverts, and your rights",
+               "privacy policy gdpr data cookies tracking advertising adsense consent")
 
     # ----------------------------------------------------- accessibility
     access = """

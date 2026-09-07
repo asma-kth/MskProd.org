@@ -33,8 +33,10 @@ var SHELL_URLS = [
 ];
 
 /* Pyodide is tens of megabytes and is fetched only when a student presses Run,
-   so it is deliberately never cached. */
-var NEVER_CACHE = /^https:\/\/cdn\.jsdelivr\.net\//;
+   so it is deliberately never cached. Ad and consent requests must always be
+   live: a cached ad script would serve stale creatives and would keep working
+   after a visitor withdrew consent. */
+var NEVER_CACHE = /^https:\/\/(cdn\.jsdelivr\.net|pagead2\.googlesyndication\.com|googleads\.g\.doubleclick\.net|fundingchoicesmessages\.google\.com|ep[12]\.adtrafficquality\.google)\//;
 var FONT_HOSTS = /^https:\/\/fonts\.(googleapis|gstatic)\.com\//;
 
 self.addEventListener("install", function (e) {
