@@ -111,37 +111,30 @@ def build_home():
             '<span class="tile-meta"><span>%d topics</span><span>%d quiz questions</span></span></a>'
             % (href, ico(icon, "icon"), esc(title), esc(blurb), n_top, n_q))
 
-    total_topics = sum(len(u.topics) for c in COURSES for u in c.units)
-    total_quiz = sum(len(t.quiz) for c in COURSES for u in c.units for t in u.topics)
-    total_marks = sum(q.marks for c in COURSES for u in c.units for t in u.topics for q in t.exam)
-
     body = """<section class="hero">
   <div class="wrap hero-grid">
     <div>
-      <span class="eyebrow">Key Stage 3 &middot; GCSE &middot; A Level</span>
-      <h1>Every topic on the OCR, AQA and Edexcel computing specifications.</h1>
-      <p class="lead">Each one explained in full, then a ten question check, then exam-style questions
-      marked against the real mark scheme. Written board by board so it matches what you are actually
-      taught. No account, no adverts, no tracking.</p>
+      <h1>Revise computing properly.</h1>
+      <p class="lead">Key Stage 3, GCSE and A Level, written board by board for OCR, AQA and Edexcel.
+      Every topic explained in full, then a ten question check and exam-style questions marked against
+      the real mark scheme. No account, no adverts, no tracking. Just the work.</p>
       <div class="btn-row" style="margin-top:1.8rem">
         <a class="btn btn-primary" href="/ks4/computer-science/">%s Start GCSE Computer Science</a>
         <a class="btn btn-secondary" href="/how-to-revise/">%s How to revise properly</a>
       </div>
       <div class="pill-row" style="margin-top:1.6rem">
-        <span class="pill">OCR J277</span>
-        <span class="pill">AQA 8525</span>
-        <span class="pill">Edexcel 1CP2</span>
-        <span class="pill">OCR H446</span>
-        <span class="pill">OCR J834 iMedia</span>
-        <span class="pill">KS3 Years 7 to 9</span>
+        <span class="pill">%s OCR J277</span>
+        <span class="pill">%s AQA 8525</span>
+        <span class="pill">%s Edexcel 1CP2</span>
+        <span class="pill">%s OCR H446</span>
+        <span class="pill">%s OCR J834 iMedia</span>
+        <span class="pill">%s KS3 Years 7 to 9</span>
       </div>
     </div>
-    <div class="stat-row">
-      <div class="stat"><b>%d</b><span>Topics explained</span></div>
-      <div class="stat"><b>%d</b><span>Quiz questions</span></div>
-      <div class="stat"><b>%d</b><span>Exam marks to practise</span></div>
-      <div class="stat"><b>Free</b><span>No sign up, ever</span></div>
-    </div>
+    <figure class="hero-figure">
+      <img src="/assets/img/teaching.jpg" width="1120" height="625" loading="eager" decoding="async"
+           alt="Two teachers at an interactive whiteboard showing a lesson on computing and algorithms, with an algorithm design flowchart and Python code on screen.">
+    </figure>
   </div>
 </section>
 
@@ -161,19 +154,19 @@ def build_home():
       <h2>How every topic is built</h2>
       <p>The same structure every time, because a revision routine only works when you stop having to decide what to do next.</p>
     </div>
-    <div class="journey">
-      <div class="journey-step"><span class="journey-dot">01</span>
-        <div class="journey-body"><h3>Explanation</h3>
-        <p>Written to be understood, not skimmed. Every idea is explained with the reason behind it, because the reason is where the marks are.</p></div></div>
-      <div class="journey-step"><span class="journey-dot">02</span>
-        <div class="journey-body"><h3>Key terms and flashcards</h3>
-        <p>Exam ready definitions, plus flip cards so you can practise recalling them rather than rereading them.</p></div></div>
-      <div class="journey-step"><span class="journey-dot">03</span>
-        <div class="journey-body"><h3>Ten question check</h3>
-        <p>Instant feedback on every answer, right or wrong, explaining why. Anything under ten out of ten means go back.</p></div></div>
-      <div class="journey-step"><span class="journey-dot">04</span>
-        <div class="journey-body"><h3>Auto marked exam questions</h3>
-        <p>Write a full answer and the marker checks it against the mark scheme point by point, then shows you a model answer.</p></div></div>
+    <div class="grid grid-4">
+      <div class="card"><span class="tile-icon">%s</span>
+        <h3 style="font-size:var(--step-1)">Explanation</h3>
+        <p style="color:var(--ink-3);font-size:.94rem;margin:0">Written to be understood, not skimmed. Every idea is explained with the reason behind it, because the reason is where the marks are.</p></div>
+      <div class="card"><span class="tile-icon">%s</span>
+        <h3 style="font-size:var(--step-1)">Key terms and flashcards</h3>
+        <p style="color:var(--ink-3);font-size:.94rem;margin:0">Exam ready definitions, plus flip cards so you can practise recalling them rather than rereading them.</p></div>
+      <div class="card"><span class="tile-icon">%s</span>
+        <h3 style="font-size:var(--step-1)">Ten question check</h3>
+        <p style="color:var(--ink-3);font-size:.94rem;margin:0">Instant feedback on every answer, right or wrong, explaining why. Anything under ten out of ten means go back.</p></div>
+      <div class="card"><span class="tile-icon">%s</span>
+        <h3 style="font-size:var(--step-1)">Auto marked exam questions</h3>
+        <p style="color:var(--ink-3);font-size:.94rem;margin:0">Write a full answer and the marker checks it against the mark scheme point by point, then shows you a model answer.</p></div>
     </div>
   </div>
 </section>
@@ -190,9 +183,9 @@ def build_home():
           <a class="btn btn-primary" href="/exam-papers/">%s Go to exam papers</a>
         </div>
       </div>
-      <div class="note note-exam">
-        <p class="note-title">Why the papers are original</p>
-        <p>Real past papers belong to the exam boards and cannot be
+      <div class="card">
+        <h3 style="font-size:var(--step-1)">Why original papers</h3>
+        <p style="color:var(--ink-3);font-size:.95rem">Real past papers belong to the exam boards and cannot be
         republished here. Every paper on this site is written from scratch to the same structure, question
         style, command words and mark allocation as the real thing, and each comes with a full mark scheme.
         Links to the official past papers on the exam board's own site are provided alongside them.</p>
@@ -206,7 +199,7 @@ def build_home():
     <div class="grid grid-2" style="align-items:center;gap:var(--sp-6)">
       <div class="center">%s</div>
       <div>
-        <span class="eyebrow">Meet Pixel</span>
+        <span class="eyebrow">%s Meet Pixel</span>
         <h2>You are not doing this alone</h2>
         <p class="lead">Pixel is the small robot cat in the corner of every page. Tap for a fun fact, a
         revision tip that is actually backed by evidence, or a reminder that finding this hard is normal and
@@ -217,10 +210,13 @@ def build_home():
   </div>
 </section>""" % (
         ico("i-play"), ico("i-bulb"),
-        total_topics, total_quiz, total_marks,
+        ico("i-cpu"), ico("i-cpu"), ico("i-cpu"), ico("i-brain"),
+        ico("i-palette"), ico("i-layers"),
         "".join(cards),
+        ico("i-book"), ico("i-list"), ico("i-check-circle"), ico("i-paper"),
         ico("i-arrow-right"),
-        render.mascot_svg().replace('<svg ', '<svg style="max-width:230px;margin:0 auto" ', 1),
+        render.mascot_svg().replace('<svg ', '<svg style="max-width:260px;margin:0 auto" ', 1),
+        ico("i-sparkle"),
     )
 
     ld = [{
