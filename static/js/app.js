@@ -18,24 +18,14 @@
   window.MskStore = store;
 
   /* ------------------------------------------------------------ theme */
+  // No manual toggle: the theme follows the reader's own system setting.
   var root = document.documentElement;
-  function applyTheme(t) {
-    root.setAttribute("data-theme", t);
-    var btn = document.getElementById("themeBtn");
-    if (btn) {
-      btn.setAttribute("aria-label", t === "dark" ? "Switch to light theme" : "Switch to dark theme");
-      var u = btn.querySelector("use");
-      if (u) u.setAttribute("href", t === "dark" ? "#i-sun" : "#i-moon");
-    }
+  var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
+  function applyTheme() {
+    root.setAttribute("data-theme", prefersDark && prefersDark.matches ? "dark" : "light");
   }
-  var saved = store.get("theme", null);
-  applyTheme(saved || (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
-  document.addEventListener("click", function (e) {
-    var b = e.target.closest && e.target.closest("#themeBtn");
-    if (!b) return;
-    var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-    applyTheme(next); store.set("theme", next);
-  });
+  applyTheme();
+  if (prefersDark && prefersDark.addEventListener) prefersDark.addEventListener("change", applyTheme);
 
   /* -------------------------------------------------------------- nav */
   var navBtn = document.getElementById("navToggle");
