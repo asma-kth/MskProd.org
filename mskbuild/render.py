@@ -146,6 +146,9 @@ def layout(*, title: str, description: str, path: str, body: str,
 <link rel="sitemap" type="application/xml" href="/sitemap.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6941224638209377"
+     crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
 <link rel="stylesheet" href="/assets/css/site.css">
 {extra_head}
@@ -240,7 +243,7 @@ def footer() -> str:
     <div class="footer-grid">
       <div>
         <div class="footer-brand">%s<span>MskProd Computing</span></div>
-        <p>Free computing revision for UK students at Key Stage 3, GCSE and A Level. Written board by board for OCR, AQA and Edexcel, structured as a journey to the top grade, and completely free to use with no account and no tracking.</p>
+        <p>Free computing revision for UK students at Key Stage 3, GCSE and A Level. Written board by board for OCR, AQA and Edexcel, structured as a journey to the top grade, and completely free to use with no account and no subscription.</p>
       </div>
       <div>
         <h4>Revise</h4>

@@ -120,7 +120,7 @@ def build_home():
       <h1>Revise computing properly.</h1>
       <p class="lead">Key Stage 3, GCSE and A Level, written board by board for OCR, AQA and Edexcel.
       Every topic explained in full, then a ten question check and exam-style questions marked against
-      the real mark scheme. No account, no adverts, no tracking. Just the work.</p>
+      the real mark scheme. No account, no subscription, no paywall. Just the work.</p>
       <div class="btn-row" style="margin-top:1.8rem">
         <a class="btn btn-primary" href="/ks4/computer-science/">%s Start GCSE Computer Science</a>
         <a class="btn btn-secondary" href="/how-to-revise/">%s How to revise properly</a>
@@ -207,7 +207,7 @@ def build_home():
         <p class="lead">Pixel is the small robot cat in the corner of every page. Tap for a fun fact, a
         revision tip that is actually backed by evidence, or a reminder that finding this hard is normal and
         not a sign that you cannot do it.</p>
-        <p class="muted" style="font-size:.9rem">Pixel runs entirely on your own device. Nothing you do on this site is sent anywhere.</p>
+        <p class="muted" style="font-size:.9rem">Pixel runs entirely on your own device. Your scores and answers never leave your browser.</p>
       </div>
     </div>
   </div>

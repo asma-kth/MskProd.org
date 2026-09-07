@@ -5,7 +5,7 @@ from mskbuild.render import (layout, crumbs, crumbs_ld, ico, esc, write)
 
 INTRO = ("Reading about a truth table is not the same as building one. These tools let "
          "you do the thing itself, get it wrong, and see immediately why. Everything "
-         "runs in your browser, nothing is sent anywhere, and none of it needs an "
+         "runs in your browser, nothing you type is sent anywhere, and none of it needs an "
          "account.")
 
 # Extra teaching that sits above each tool on its own page.
