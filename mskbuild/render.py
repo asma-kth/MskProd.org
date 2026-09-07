@@ -84,7 +84,7 @@ def _nav(active: str) -> str:
         # Exact match only: both KS4 courses share the /ks4/ prefix, so a
         # startswith test would highlight two navigation items at once.
         cur = ' aria-current="page"' if active and href == active else ""
-        out.append('<a href="%s"%s>%s<span>%s</span></a>' % (href, cur, ico(icon), esc(label)))
+        out.append('<a href="%s"%s><span>%s</span></a>' % (href, cur, esc(label)))
     return "".join(out)
 
 
@@ -127,8 +127,8 @@ def layout(*, title: str, description: str, path: str, body: str,
 <link rel="canonical" href="{canonical}">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <meta name="author" content="MskProd Computing">
-<meta name="theme-color" content="#03969D" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#035C58" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FCFBF8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#15161A" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="{site}">
 <meta property="og:title" content="{ogtitle}">
@@ -146,7 +146,7 @@ def layout(*, title: str, description: str, path: str, body: str,
 <link rel="sitemap" type="application/xml" href="/sitemap.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;450;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="/assets/css/site.css">
 {extra_head}
 {ld_html}
@@ -529,9 +529,9 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
     </article>
     <aside class="topic-aside">
       %s
-      <div class="card" style="padding:1.1rem">
-        <h4 style="font-size:.76rem;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-muted);margin-bottom:.6rem">Study order</h4>
-        <p style="font-size:.87rem;margin:0 0 .9rem;color:var(--ink-3);line-height:1.6">Read the explanation, do the ten question check, then write the five exam answers from memory. Come back in three days and redo the quiz only.</p>
+      <div class="aside-block">
+        <h4>Study order</h4>
+        <p>Read the explanation, do the ten question check, then write the five exam answers from memory. Come back in three days and redo the quiz only.</p>
         %s
       </div>
     </aside>
@@ -615,7 +615,7 @@ def course_page(course: Course) -> tuple:
     journey = ""
     if course.journey:
         steps = "".join(
-            '<div class="journey-step"><div class="journey-dot">%d</div>'
+            '<div class="journey-step"><div class="journey-dot">%02d</div>'
             '<div class="journey-body"><h3>%s</h3><p>%s</p></div></div>'
             % (i + 1, esc(a), markup.inline(b)) for i, (a, b, _c) in enumerate(course.journey))
         journey = """<section class="section section-alt"><div class="wrap">

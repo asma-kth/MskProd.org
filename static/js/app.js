@@ -40,15 +40,23 @@
   /* -------------------------------------------------------------- nav */
   var navBtn = document.getElementById("navToggle");
   var nav = document.getElementById("primaryNav");
-  function closeNav() { if (nav && window.innerWidth <= 940) { nav.hidden = true; navBtn.setAttribute("aria-expanded", "false"); } }
-  function syncNav() { if (!nav) return; if (window.innerWidth > 940) { nav.hidden = false; } else if (navBtn.getAttribute("aria-expanded") !== "true") { nav.hidden = true; } }
+  // One source of truth for the breakpoint: the same query the stylesheet
+  // uses to switch the nav to its fixed overlay. Reading window.innerWidth
+  // against a separate number lets the two disagree, which leaves the overlay
+  // open across every width between them.
+  var navCompact = window.matchMedia("(max-width: 1100px)");
+  function closeNav() { if (nav && navCompact.matches) { nav.hidden = true; navBtn.setAttribute("aria-expanded", "false"); } }
+  function syncNav() { if (!nav) return; if (!navCompact.matches) { nav.hidden = false; } else if (navBtn.getAttribute("aria-expanded") !== "true") { nav.hidden = true; } }
   if (navBtn && nav) {
     navBtn.addEventListener("click", function () {
       var open = navBtn.getAttribute("aria-expanded") === "true";
       navBtn.setAttribute("aria-expanded", String(!open));
       nav.hidden = open;
     });
-    window.addEventListener("resize", syncNav);
+    navCompact.addEventListener("change", function () {
+      navBtn.setAttribute("aria-expanded", "false");
+      syncNav();
+    });
     syncNav();
     nav.addEventListener("click", function (e) { if (e.target.closest("a")) closeNav(); });
   }
