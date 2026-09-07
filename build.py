@@ -4,6 +4,7 @@
 Everything is plain HTML with the content rendered server side, so the site is
 fully crawlable and works without JavaScript. Run with: python3 build.py
 """
+import hashlib
 import json
 import os
 import shutil
@@ -17,6 +18,8 @@ from mskbuild.render import (SITE_URL, SITE_NAME, DIST, ROOT, layout, crumbs,
                              crumbs_ld, ico, esc, write, logo_svg)
 from mskbuild import markup
 from mskbuild import placements
+
+TWA_PACKAGE = "org.mskprod.computing"
 
 COURSES = []
 PAGES = []          # (path, priority, changefreq)
@@ -240,6 +243,76 @@ def build_home():
     register("/", 1.0, "weekly")
 
 
+# --------------------------------------------------------------- offline
+
+def build_pwa():
+    """Write the service worker, the offline fallback page and assetlinks.
+
+    The worker has to sit at the site root to control every URL, so it cannot
+    live under static/ (which is published at /assets/). Its cache names carry
+    a hash of the built shell, so a deploy that changes the CSS or JS lands in
+    fresh caches and the stale ones are dropped on activate.
+    """
+    write("/offline/", layout(
+        title="Offline",
+        description="You are offline and this page has not been saved to this device yet.",
+        path="/offline/",
+        body="""<div class="wrap" style="padding:var(--sp-8) 0;max-width:44rem">
+  <h1>You are offline</h1>
+  <p class="lead">This page has not been opened on this device before, so there is no saved
+  copy to show you.</p>
+  <p>Anything you have already read stays available offline. Open the menu and pick a topic
+  you have visited before, or reconnect and try again.</p>
+  <div class="btn-row" style="margin-top:var(--sp-5)">
+    <a class="btn btn-primary" href="/">Go to the home page</a>
+  </div>
+</div>"""))
+    register("/offline/", 0.1, "yearly")
+
+    shell = []
+    for rel in ("css/site.css", "js/app.js", "js/mascot.js", "js/tools.js"):
+        f = os.path.join(DIST, "assets", rel)
+        if os.path.exists(f):
+            with open(f, "rb") as fh:
+                shell.append(fh.read())
+    build_id = hashlib.sha256(b"".join(shell)).hexdigest()[:12]
+
+    with open(os.path.join(ROOT, "sw.js"), encoding="utf-8") as fh:
+        sw = fh.read().replace("__BUILD_ID__", build_id)
+    with open(os.path.join(DIST, "sw.js"), "w", encoding="utf-8") as fh:
+        fh.write(sw)
+
+    # Digital Asset Links proves to Android that this site and the Play app are
+    # the same owner, which is what removes the URL bar from the TWA. It needs
+    # the SHA-256 of the signing certificate, which only exists once the app has
+    # been uploaded, so the file is written only when that fingerprint is known.
+    fp_file = os.path.join(ROOT, "twa", "sha256.txt")
+    fingerprints = []
+    if os.path.exists(fp_file):
+        with open(fp_file, encoding="utf-8") as fh:
+            for line in fh:
+                line = line.strip().upper()
+                if line and not line.startswith("#"):
+                    fingerprints.append(line)
+    if fingerprints:
+        wk = os.path.join(DIST, ".well-known")
+        os.makedirs(wk, exist_ok=True)
+        links = [{
+            "relation": ["delegate_permission/common.handle_all_urls"],
+            "target": {"namespace": "android_app",
+                       "package_name": TWA_PACKAGE,
+                       "sha256_cert_fingerprints": fingerprints},
+        }]
+        with open(os.path.join(wk, "assetlinks.json"), "w", encoding="utf-8") as fh:
+            json.dump(links, fh, indent=2)
+        print("Wrote .well-known/assetlinks.json (%d fingerprint(s))" % len(fingerprints))
+    else:
+        print("No twa/sha256.txt: skipping assetlinks.json "
+              "(the Android app will show a URL bar until it exists)")
+    print("Service worker build id: %s" % build_id)
+
+
+
 # -------------------------------------------------------------- site meta
 
 def build_sitemap():
@@ -256,14 +329,24 @@ def build_sitemap():
         fh.write("User-agent: *\nAllow: /\n\nSitemap: %s/sitemap.xml\n" % SITE_URL)
 
     manifest = {
-        "name": SITE_NAME, "short_name": "MskProd",
+        "id": "/", "name": SITE_NAME, "short_name": "MskProd",
         "description": "Free UK computing revision for KS3, GCSE and A Level.",
-        "start_url": "/", "display": "standalone",
-        "background_color": "#FBFAFC", "theme_color": "#03969D",
+        "start_url": "/", "scope": "/", "display": "standalone",
+        "lang": "en-GB", "dir": "ltr", "orientation": "any",
+        "categories": ["education"],
+        # Matches the frosted header and the top of the page gradient, so the
+        # Android status bar and splash screen line up with the site.
+        "theme_color": "#E8FBFB", "background_color": "#CBF0F2",
         "icons": [
             {"src": "/assets/img/favicon.svg", "sizes": "any", "type": "image/svg+xml"},
-            {"src": "/assets/img/icon-192.png", "sizes": "192x192", "type": "image/png"},
-            {"src": "/assets/img/icon-512.png", "sizes": "512x512", "type": "image/png"},
+            {"src": "/assets/img/icon-192.png", "sizes": "192x192", "type": "image/png",
+             "purpose": "any"},
+            {"src": "/assets/img/icon-512.png", "sizes": "512x512", "type": "image/png",
+             "purpose": "any"},
+            # Android crops launcher icons; this one keeps the logo inside the
+            # safe circle so it is not clipped.
+            {"src": "/assets/img/icon-maskable-512.png", "sizes": "512x512",
+             "type": "image/png", "purpose": "maskable"},
         ],
     }
     with open(os.path.join(DIST, "site.webmanifest"), "w", encoding="utf-8") as fh:
@@ -271,6 +354,12 @@ def build_sitemap():
 
     with open(os.path.join(DIST, "search-index.json"), "w", encoding="utf-8") as fh:
         json.dump(SEARCH, fh, separators=(",", ":"))
+
+    # GitHub Pages runs Jekyll unless told not to, and Jekyll drops paths that
+    # begin with a dot, which would silently remove /.well-known/assetlinks.json
+    # and leave the Android app showing a URL bar.
+    with open(os.path.join(DIST, ".nojekyll"), "w", encoding="utf-8") as fh:
+        fh.write("")
 
     with open(os.path.join(DIST, "CNAME"), "w", encoding="utf-8") as fh:
         fh.write("mskprod.org\n")
@@ -365,6 +454,7 @@ def main():
 
     build_home()
     copy_static()
+    build_pwa()
     build_manifest()
     build_sitemap()
 

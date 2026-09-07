@@ -1,0 +1,57 @@
+{
+  "packageId": "org.mskprod.computing",
+  "host": "mskprod.org",
+  "name": "MskProd Computing",
+  "launcherName": "MskProd",
+  "display": "standalone",
+  "orientation": "default",
+  "themeColor": "#E8FBFB",
+  "themeColorDark": "#0C2B2E",
+  "navigationColor": "#E8FBFB",
+  "navigationColorDark": "#0C2B2E",
+  "navigationDividerColor": "#CBF0F2",
+  "navigationDividerColorDark": "#0C2B2E",
+  "backgroundColor": "#CBF0F2",
+  "enableNotifications": false,
+  "startUrl": "/",
+  "iconUrl": "https://mskprod.org/assets/img/icon-512.png",
+  "maskableIconUrl": "https://mskprod.org/assets/img/icon-maskable-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "./android.keystore",
+    "alias": "mskprod"
+  },
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [
+    {
+      "name": "GCSE Computer Science",
+      "shortName": "GCSE CS",
+      "url": "/ks4/computer-science/",
+      "chosenIconUrl": "https://mskprod.org/assets/img/icon-192.png"
+    },
+    {
+      "name": "Practice papers",
+      "shortName": "Papers",
+      "url": "/exam-papers/",
+      "chosenIconUrl": "https://mskprod.org/assets/img/icon-192.png"
+    },
+    {
+      "name": "Interactive tools",
+      "shortName": "Tools",
+      "url": "/tools/",
+      "chosenIconUrl": "https://mskprod.org/assets/img/icon-192.png"
+    }
+  ],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://mskprod.org/site.webmanifest",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": { "enabled": false },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://mskprod.org/",
+  "minSdkVersion": 21,
+  "appVersion": "1.0.0"
+}

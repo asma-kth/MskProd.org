@@ -2,3 +2,9 @@ __pycache__/
 *.pyc
 .DS_Store
 dist/
+
+# Android signing material must never be committed
+*.keystore
+*.jks
+twa/app-release*
+twa/android/

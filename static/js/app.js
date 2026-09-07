@@ -246,4 +246,14 @@
     ["seen", "quiz", "exam", "theme", "mascot", "streak"].forEach(store.del);
     window.location.reload();
   });
+
+  /* ----------------------------------------------------- offline support
+     Registered after load so it never competes with the page's own requests.
+     A failure here is not worth surfacing: the site works exactly as before
+     without it, only without offline reading. */
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("/sw.js").catch(function () {});
+    });
+  }
 })();

@@ -127,8 +127,8 @@ def layout(*, title: str, description: str, path: str, body: str,
 <link rel="canonical" href="{canonical}">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <meta name="author" content="MskProd Computing">
-<meta name="theme-color" content="#63C8CE" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0A2226" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#E8FBFB" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0C2B2E" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="{site}">
 <meta property="og:title" content="{ogtitle}">
