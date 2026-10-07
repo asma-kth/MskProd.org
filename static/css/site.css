@@ -101,7 +101,9 @@
 
 [data-theme="dark"] {
   --grad-page: linear-gradient(135deg, #0C2B2E 0%, #0A2226 48%, #101A22 100%);
-  --grad-brand: linear-gradient(135deg, var(--aqua), var(--teal));
+  /* The dark end of this ramp left the dark button label at roughly 4.4:1,
+     just under AA. Lifting it keeps the gradient while clearing the bar. */
+  --grad-brand: linear-gradient(135deg, var(--aqua), #2BB5BC);
   --grad-lilac: linear-gradient(135deg, var(--lilac), var(--purple));
   --grad-soft:  linear-gradient(135deg, #16333A, #241F33);
 

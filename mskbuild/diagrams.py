@@ -1422,3 +1422,349 @@ def _charset():
                         "A character set is only a lookup table from characters to "
                         "numbers. Everything else follows from that one idea.",
                         labels=L)
+
+
+# ================================================ 25. Pre-production documents
+
+@diagram("imedia-pre-production")
+def _imedia_preprod():
+    """The four documents students most often confuse, actually drawn.
+
+    Describing a wireframe in words sounds exactly like describing a
+    visualisation diagram. Seeing one of each, side by side, is the only
+    reliable way to stop the two being swapped in an exam.
+    """
+    base = [text(380, 30, "The four planning documents, and what each one looks like",
+                 12, 650, fill=MUTED)]
+
+    def frame(x, y, w, h, label, accent=TEAL):
+        return (box(x, y, w, h, None, fill=FILL, stroke=accent, r=6)
+                + text(x + w / 2, y + h + 16, label, 10, 550, fill=MUTED))
+
+    # 1. Visualisation diagram: one static page, annotated.
+    vis = [box(250, 60, 190, 170, None, fill=FILL, stroke=TEAL, r=8),
+           box(268, 76, 154, 54, None, fill=TEAL_SOFT, stroke=TEAL, r=4),
+           text(345, 107, "MASTHEAD", 11, 650, fill=TEAL),
+           box(268, 140, 70, 54, None, fill="var(--dg-fill-2)", stroke=LINE, r=4),
+           text(303, 171, "image", 10, 500, fill=MUTED)]
+    for i in range(4):
+        vis.append(line(350, 148 + i * 13, 420, 148 + i * 13, stroke=LINE, w=2))
+    vis += [line(440, 103, 492, 103, stroke=LILAC, w=1.2, dash="3 3"),
+            text(498, 107, "colour, font, size", 10, 500, anchor="start", fill=LILAC),
+            line(250, 167, 198, 167, stroke=LILAC, w=1.2, dash="3 3"),
+            text(192, 171, "image source", 10, 500, anchor="end", fill=LILAC),
+            text(345, 248, "ONE static page, annotated", 11, 650, fill=TEAL)]
+
+    # 2. Storyboard: a sequence of frames, in time order.
+    sb = []
+    shots = [("WS", "pan left"), ("MS", "cut"), ("CU", "2 sec"), ("WS", "fade out")]
+    for i, (shot, note) in enumerate(shots):
+        x = 60 + i * 168
+        sb.append(box(x, 70, 140, 92, None, fill=FILL, stroke=LILAC, r=6))
+        sb.append(text(x + 70, 108, shot, 15, 700, fill=LILAC))
+        sb.append(text(x + 70, 128, note, 10, 500, fill=MUTED))
+        sb.append(text(x + 70, 180, "frame %d" % (i + 1), 10, 550, fill=MUTED))
+        if i < 3:
+            sb.append(line(x + 146, 116, x + 162, 116, stroke=LINE, arrow=True))
+    sb.append(text(380, 232, "A SEQUENCE of shots in time order", 11, 650, fill=LILAC))
+    sb.append(text(380, 250, "each frame annotated with shot type, movement and duration",
+                   10, 500, fill=MUTED))
+
+    # 3. Wireframe: screen layout, no styling at all.
+    wf = [box(232, 60, 226, 170, None, fill=FILL, stroke=TEAL, r=8),
+          box(244, 72, 202, 26, None, fill="var(--dg-fill-2)", stroke=LINE, r=3),
+          text(345, 89, "nav", 10, 550, fill=MUTED),
+          box(244, 106, 128, 70, None, fill="var(--dg-fill-2)", stroke=LINE, r=3),
+          text(308, 145, "hero image", 10, 550, fill=MUTED),
+          box(380, 106, 66, 70, None, fill="var(--dg-fill-2)", stroke=LINE, r=3),
+          text(413, 145, "text", 10, 550, fill=MUTED),
+          box(244, 184, 202, 34, None, fill="var(--dg-fill-2)", stroke=LINE, r=3),
+          text(345, 205, "footer", 10, 550, fill=MUTED),
+          text(345, 248, "ONE screen's layout, with NO styling", 11, 650, fill=TEAL),
+          text(345, 266, "grey boxes on purpose: colour and font come later", 10, 500, fill=MUTED)]
+
+    # 4. Navigation diagram: how the screens connect.
+    nav = [box(320, 62, 120, 38, "Home", fill=TEAL_SOFT, stroke=TEAL, r=6, label_size=12)]
+    kids = [("Gallery", 150), ("About", 320), ("Contact", 490)]
+    for label, x in kids:
+        nav.append(box(x, 142, 120, 38, label, fill=FILL, stroke=LILAC, r=6, label_size=12))
+        nav.append(path("M380 100 L380 122 L%d 122 L%d 140" % (x + 60, x + 60),
+                        stroke=LINE, arrow=True))
+    nav += [box(150, 212, 120, 36, "Image page", fill=FILL, stroke=LINE, r=6, label_size=11),
+            line(210, 180, 210, 210, stroke=LINE, arrow=True),
+            text(380, 272, "EVERY screen and how they connect", 11, 650, fill=TEAL)]
+
+    L = [
+        "Visualisation diagram: one static product, sketched and annotated.",
+        "Storyboard: a sequence of shots in time order, for anything that moves.",
+        "Wireframe: the layout of a single screen, deliberately with no styling.",
+        "Navigation diagram: every screen in the product and the routes between them.",
+    ]
+    steps = [step(1, "".join(vis), L[0]), step(2, "".join(sb), L[1]),
+             step(3, "".join(wf), L[2]), step(4, "".join(nav), L[3])]
+    desc = ("Four pre-production documents compared. A visualisation diagram is a sketch "
+            "of one static product such as a poster or magazine page, annotated with "
+            "colours, fonts, sizes and image sources. A storyboard is a sequence of "
+            "frames showing shots in time order, each annotated with the shot type, "
+            "camera movement and duration, and is used for anything that moves. A "
+            "wireframe shows the layout of a single screen with no styling at all, which "
+            "is why its boxes are plain grey: the colour and typography are decided "
+            "later. A navigation diagram shows every screen in the product and the routes "
+            "between them, so a home screen might lead to a gallery, an about page and a "
+            "contact page, with the gallery leading on to individual image pages.")
+    return figure_steps("imedia-pre", 760, 290, "".join(base), steps,
+                        "Visualisation diagram, storyboard, wireframe and navigation diagram", desc,
+                        "The three most swapped answers in the whole course. A "
+                        "visualisation diagram is one static page, a storyboard is a "
+                        "sequence over time, and a wireframe is one screen's layout with "
+                        "the styling deliberately left out.",
+                        labels=L)
+
+
+# =================================================== 26. Production pipeline
+
+@diagram("imedia-production-pipeline")
+def _imedia_pipeline():
+    """Who does what, and in which phase."""
+    base = [
+        text(380, 28, "One product, three phases, and the roles in each", 12, 650, fill=MUTED),
+        box(40, 48, 220, 34, "PRE-PRODUCTION", fill="var(--dg-fill-2)", stroke=LINE, r=8, label_size=11),
+        box(270, 48, 220, 34, "PRODUCTION", fill="var(--dg-fill-2)", stroke=LINE, r=8, label_size=11),
+        box(500, 48, 220, 34, "POST-PRODUCTION", fill="var(--dg-fill-2)", stroke=LINE, r=8, label_size=11),
+        line(262, 65, 268, 65, stroke=LINE, arrow=True),
+        line(492, 65, 498, 65, stroke=LINE, arrow=True),
+    ]
+    phases = [
+        (40, TEAL, TEAL_SOFT, "Plan it",
+         ["Client sets the brief", "Producer plans budget", "Scriptwriter writes", "Storyboard artist draws"]),
+        (270, LILAC, LILAC_SOFT, "Make it",
+         ["Director decides", "Camera operator shoots", "Sound engineer records", "Designer builds assets"]),
+        (500, TEAL, TEAL_SOFT, "Finish it",
+         ["Video editor assembles", "Sound editor mixes", "VFX artist composites", "QA tester finds faults"]),
+    ]
+    L = ["Pre-production: everything decided before anything is made.",
+         "Production: the assets are actually captured or built.",
+         "Post-production: the pieces are assembled, polished and tested."]
+    steps = []
+    for n, (x, accent, soft, head, roles) in enumerate(phases, start=1):
+        body = [box(x, 96, 220, 164, None, fill=FILL, stroke=accent, r=10),
+                box(x, 96, 220, 30, None, fill=soft, stroke=accent, r=10),
+                text(x + 110, 116, head, 12, 700, fill=accent),
+                _lines(x + 14, 150, roles, size=11, gap=26)]
+        steps.append(step(n, "".join(body), L[n - 1]))
+    desc = ("A media product moves through three phases. In pre-production everything is "
+            "decided before anything is made: the client sets the brief, the producer "
+            "plans the budget and schedule, the scriptwriter writes and the storyboard "
+            "artist draws the planned shots. In production the assets are actually "
+            "captured or built: the director makes the creative decisions, the camera "
+            "operator shoots, the sound engineer records and the graphic designer builds "
+            "the visual assets. In post-production the pieces are brought together: the "
+            "video editor assembles the footage, the sound editor mixes the audio, the "
+            "visual effects artist composites, and the quality assurance tester finds "
+            "faults before release.")
+    return figure_steps("imedia-pipe", 760, 278, "".join(base), steps,
+                        "The three phases of production and the roles in each", desc,
+                        "Questions on job roles almost always ask which phase a role "
+                        "belongs to. Learn the roles by phase rather than as one list.",
+                        labels=L)
+
+
+# ======================================================= 27. Choosing a format
+
+@diagram("imedia-file-formats")
+def _imedia_formats():
+    """Lossy, lossless and vector, then the format the question actually wants."""
+    base = [text(380, 28, "Which format, and why", 12, 650, fill=MUTED)]
+    L = [
+        "Lossy throws data away permanently to make the file small.",
+        "Lossless keeps every bit, so the file is larger but nothing is lost.",
+        "Vector stores shapes as maths, so it scales to any size with no loss.",
+        "Pick the format from the purpose, and keep the master lossless until export.",
+    ]
+    def card(x, title, accent, soft, lines, formats):
+        o = [box(x, 60, 226, 150, None, fill=FILL, stroke=accent, r=10),
+             box(x, 60, 226, 32, None, fill=soft, stroke=accent, r=10),
+             text(x + 113, 81, title, 12, 700, fill=accent),
+             _lines(x + 14, 114, lines, size=11, gap=22)]
+        o.append(text(x + 113, 196, formats, 11, 650, fill=accent))
+        return "".join(o)
+    steps = [
+        step(1, card(24, "LOSSY", TEAL, TEAL_SOFT,
+                     ["Data is permanently removed", "Much smaller files",
+                      "Quality drops each re-save"], "JPG   MP3   MP4")
+             + text(380, 240, "Use for the final export, never for the master",
+                    11, 600, fill=MUTED), L[0]),
+        step(2, card(267, "LOSSLESS", LILAC, LILAC_SOFT,
+                     ["Every bit is kept", "Larger files",
+                      "Re-saving costs nothing"], "PNG   WAV   TIFF")
+             + text(380, 240, "Use while you are still working on it", 11, 600, fill=MUTED), L[1]),
+        step(3, card(510, "VECTOR", TEAL, TEAL_SOFT,
+                     ["Shapes stored as maths", "Scales to any size",
+                      "Tiny files for flat graphics"], "SVG   AI   EPS")
+             + text(380, 240, "Use for logos and anything that must resize",
+                    11, 600, fill=MUTED), L[2]),
+        step(4, _ttable(96, 56, ["Purpose", "Format", "Why"], [
+                 ["Photo on a web page", "JPG", "Small, no transparency needed"],
+                 ["Logo on a colour", "PNG or SVG", "Transparency, scales cleanly"],
+                 ["Print poster", "PDF, CMYK, 300dpi", "Layout and fonts preserved"],
+                 ["Social media video", "MP4 H.264", "Supported everywhere"],
+                 ["Master recording", "WAV", "Lossless until the final export"],
+             ], cw=190, rh=26), L[3]),
+    ]
+    desc = ("Three kinds of file format and how to choose between them. Lossy formats "
+            "such as JPG, MP3 and MP4 permanently discard data to make files much "
+            "smaller, and quality drops a little more every time the file is re-saved, "
+            "so they belong at the final export and never as the working master. "
+            "Lossless formats such as PNG, WAV and TIFF keep every bit, so files are "
+            "larger but re-saving costs nothing, which is what you want while still "
+            "working. Vector formats such as SVG store shapes as mathematics rather "
+            "than pixels, so they scale to any size with no loss and stay tiny for flat "
+            "graphics, which is why logos are vector. Choosing in an exam means reading "
+            "the purpose: a photograph on a web page is JPG, a logo over a colour is PNG "
+            "or SVG for the transparency, a print poster is a PDF in CMYK at 300 dots "
+            "per inch, a social media video is MP4 using H.264, and a master audio "
+            "recording is WAV.")
+    return figure_steps("imedia-fmt", 760, 258, "".join(base), steps,
+                        "Lossy, lossless and vector, and choosing a format by purpose", desc,
+                        "Format questions are really purpose questions. Say what the "
+                        "product has to do, then name the format that does it.",
+                        labels=L)
+
+
+# ===================================================== 28. Visual identity
+
+@diagram("imedia-visual-identity")
+def _imedia_identity():
+    """The components of an identity, and the justification that earns the marks."""
+    base = [text(380, 28, "What a visual identity is made of", 12, 650, fill=MUTED)]
+    L = [
+        "A logo: the single mark that has to work everywhere, at any size.",
+        "A colour palette: chosen for what the colours mean to the audience.",
+        "Typography: a type pairing that carries the same tone as the brand.",
+        "Tone and consistency: the same rules applied across every product.",
+        "The marks come from justifying each choice against the client brief.",
+    ]
+    def panel(title, accent, soft, body_items, art):
+        o = [box(70, 56, 620, 164, None, fill=FILL, stroke=accent, r=12),
+             box(70, 56, 620, 34, None, fill=soft, stroke=accent, r=12),
+             text(380, 79, title, 12, 700, fill=accent),
+             _lines(104, 124, body_items, size=12, gap=26)]
+        return "".join(o) + art
+    swatches = "".join(
+        box(400 + i * 54, 112, 44, 44, None, fill=c, stroke=LINE, r=6)
+        for i, c in enumerate([TEAL, LILAC, "var(--dg-fill-2)", "var(--dg-warn)"]))
+    steps = [
+        step(1, panel("LOGO", TEAL, TEAL_SOFT,
+                      ["Works at any size", "Works in one colour", "Recognisable in a second"],
+                      circle(500, 134, 30, fill=TEAL_SOFT, stroke=TEAL)
+                      + text(500, 140, "M", 24, 700, fill=TEAL)
+                      + box(556, 118, 32, 32, None, fill=TEAL_SOFT, stroke=TEAL, r=6)
+                      + text(572, 140, "M", 15, 700, fill=TEAL)
+                      + text(536, 190, "same mark, any size", 10, 500, fill=MUTED)), L[0]),
+        step(2, panel("COLOUR PALETTE", LILAC, LILAC_SOFT,
+                      ["Chosen for association", "Blue reads as trust",
+                       "Checked for contrast"], swatches), L[1]),
+        step(3, panel("TYPOGRAPHY", TEAL, TEAL_SOFT,
+                      ["One display face", "One readable body face",
+                       "Tone must match the brand"],
+                      text(500, 128, "Headline", 22, 700, fill=TEAL)
+                      + text(500, 156, "and the body text beneath it", 12, 400,
+                             fill="var(--dg-text)")), L[2]),
+        step(4, panel("TONE AND CONSISTENCY", LILAC, LILAC_SOFT,
+                      ["The same rules everywhere", "Poster, web, social, print",
+                       "One identity, many products"],
+                      "".join(box(430 + i * 62, 112, 52, 44, None, fill="var(--dg-fill-2)",
+                                  stroke=LILAC, r=5) for i in range(4))
+                      + text(524, 190, "one identity across every product", 10, 500, fill=MUTED)), L[3]),
+        step(5, box(70, 56, 620, 164, None, fill=FILL, stroke=WARN, r=12)
+             + box(70, 56, 620, 34, None, fill=WARN_SOFT, stroke=WARN, r=12)
+             + text(380, 79, "WHERE THE MARKS ARE", 12, 700, fill=WARN)
+             + text(380, 124, '"I chose blue because I like it"', 13, 500, fill=MUTED)
+             + text(380, 148, "scores nothing", 11, 600, fill=MUTED)
+             + line(140, 164, 620, 164, stroke="var(--dg-line-soft)", w=1)
+             + text(380, 188, '"Blue because the brief asks for a trustworthy, professional feel"',
+                    12, 650, fill=WARN)
+             + text(380, 208, "justification against the brief is the whole difference",
+                    10, 500, fill=MUTED), L[4]),
+    ]
+    desc = ("A visual identity has four components and one thing that earns the marks. "
+            "The logo is the single mark that must work at any size, in one colour, and "
+            "be recognisable in a second. The colour palette is chosen for what the "
+            "colours mean to the audience, so blue reads as trust and stability, and it "
+            "must be checked for contrast. Typography is usually one display face and one "
+            "readable body face, chosen so the tone matches the brand. Tone and "
+            "consistency mean the same rules are applied across every product, from "
+            "poster to website to social media. What separates a high band answer is "
+            "justification against the brief: saying a colour was chosen because you like "
+            "it scores nothing, while saying blue was chosen because the brief asks for a "
+            "trustworthy and professional feel is the whole difference.")
+    return figure_steps("imedia-vi", 760, 236, "".join(base), steps,
+                        "The components of a visual identity", desc,
+                        "R094 is marked on justification. Every choice you make needs a "
+                        "sentence tying it back to the client brief.",
+                        labels=L)
+
+
+# ============================================== 29. Navigation structures
+
+@diagram("imedia-navigation-structures")
+def _imedia_nav():
+    """The shapes a navigation diagram can take, and when each fits."""
+    base = [text(380, 28, "How the screens of an interactive product connect",
+                 12, 650, fill=MUTED)]
+    L = [
+        "Linear: one route, start to finish. A guided tour or a quiz.",
+        "Hierarchical: a home screen branching into sections. Most websites and apps.",
+        "Non-linear: any screen reaches any other. A reference product or a menu hub.",
+    ]
+    def node(x, y, label, accent=TEAL, soft=None, w=104, h=34):
+        return box(x, y, w, h, label, fill=soft or FILL, stroke=accent, r=6, label_size=11)
+    lin = []
+    for i, nm in enumerate(["Start", "Step 1", "Step 2", "End"]):
+        x = 60 + i * 168
+        lin.append(node(x, 110, nm, TEAL, TEAL_SOFT if i in (0, 3) else None))
+        if i < 3:
+            lin.append(line(x + 110, 127, x + 162, 127, stroke=LINE, arrow=True))
+    lin.append(text(380, 196, "one route, no way to skip ahead", 11, 600, fill=MUTED))
+
+    hier = [node(328, 66, "Home", TEAL, TEAL_SOFT)]
+    for i, nm in enumerate(["Section A", "Section B", "Section C"]):
+        x = 150 + i * 178
+        hier.append(node(x, 142, nm, LILAC))
+        hier.append(path("M380 100 L380 122 L%d 122 L%d 140" % (x + 52, x + 52),
+                         stroke=LINE, arrow=True))
+    for i, x in enumerate([116, 222]):
+        hier.append(node(x, 206, "Page %d" % (i + 1), LINE, w=92, h=30))
+        hier.append(path("M202 176 L202 192 L%d 192 L%d 204" % (x + 46, x + 46),
+                         stroke=LINE, arrow=True))
+    hier.append(text(380, 254, "a clear top level, then depth below it", 11, 600, fill=MUTED))
+
+    pts = [(380, 70), (240, 150), (520, 150), (380, 212)]
+    nonlin = []
+    for i in range(len(pts)):
+        for j in range(i + 1, len(pts)):
+            nonlin.append(line(pts[i][0], pts[i][1] + 17, pts[j][0], pts[j][1] + 17,
+                               stroke="var(--dg-line-soft)", w=1.2))
+    for i, (x, y) in enumerate(pts):
+        nonlin.append(node(x - 52, y, "Screen %d" % (i + 1), TEAL if i == 0 else LILAC,
+                           TEAL_SOFT if i == 0 else None))
+    nonlin.append(text(380, 266, "every screen reaches every other", 11, 600, fill=MUTED))
+
+    steps = [step(1, "".join(lin), L[0]), step(2, "".join(hier), L[1]),
+             step(3, "".join(nonlin), L[2])]
+    desc = ("Three shapes a navigation diagram can take. A linear structure gives one "
+            "route from start to finish with no way to skip ahead, which suits a guided "
+            "tour, a tutorial or a quiz. A hierarchical structure has a home screen "
+            "branching into sections, with further pages below each section, and is what "
+            "most websites and apps use because it gives a clear top level and depth "
+            "underneath. A non-linear structure lets any screen reach any other, which "
+            "suits a reference product or a menu hub where the user decides the order. "
+            "The navigation diagram is the single most important planning document for "
+            "an interactive product, because it is what proves every screen is reachable "
+            "and every route returns.")
+    return figure_steps("imedia-nav", 760, 286, "".join(base), steps,
+                        "Linear, hierarchical and non-linear navigation", desc,
+                        "Name the structure and say why it suits the product. "
+                        "A quiz is linear, an app is hierarchical, a reference "
+                        "product is non-linear.",
+                        labels=L)

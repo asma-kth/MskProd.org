@@ -227,6 +227,32 @@ PLACEMENTS = {
     ("ks5", "legal-moral-and-ethical-issues"): {
         "Legislation": ["!diagram uk-computing-law"],
     },
+    # ------------------------------------------------------- Creative iMedia
+    # Every R093, R094 and R097 topic now carries a worked figure. The
+    # pre-production one is deliberately on three topics: the visualisation
+    # diagram, storyboard and wireframe are the most frequently swapped answers
+    # in the course, and all three units examine them.
+    ("ks4/imedia", "the-media-industry"): {
+        "Job roles": ["!diagram imedia-production-pipeline"],
+    },
+    ("ks4/imedia", "factors-influencing-product-design"): {
+        "Style, content, layout and media codes": ["!diagram imedia-visual-identity"],
+    },
+    ("ks4/imedia", "pre-production-planning"): {
+        "Pre-production documents": ["!diagram imedia-pre-production"],
+        "Work planning, legislation and file management": ["!diagram imedia-file-formats"],
+    },
+    ("ks4/imedia", "distribution-considerations"): {
+        "File properties and compression": ["!diagram imedia-file-formats"],
+    },
+    ("ks4/imedia", "visual-identity-and-digital-graphics"): {
+        "Developing visual identity": ["!diagram imedia-visual-identity"],
+        "Planning and creating digital graphics": ["!diagram imedia-pre-production"],
+    },
+    ("ks4/imedia", "interactive-digital-media"): {
+        "Planning an interactive product": ["!diagram imedia-navigation-structures"],
+        "Creating and reviewing": ["!diagram imedia-pre-production"],
+    },
 }
 
 
