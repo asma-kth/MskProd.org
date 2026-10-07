@@ -184,9 +184,6 @@ PLACEMENTS = {
     ("ks3", "networks-and-cyber-security"): {
         "Networks": ["!diagram network-topologies"],
     },
-    ("ks3", "computational-thinking"): {
-        "Pseudocode and testing": ["!tool trace-table"],
-    },
     # ------------------------------- computational thinking, law, character sets
     # Every course that teaches these now has a worked picture rather than three
     # abstract nouns. Section titles below are the real ones; apply() raises at
@@ -217,6 +214,7 @@ PLACEMENTS = {
     },
     ("ks3", "computational-thinking"): {
         "The four techniques": ["!diagram computational-thinking"],
+        "Pseudocode and testing": ["!tool trace-table"],
     },
     ("ks3", "digital-literacy-and-the-law"): {
         "The four laws": ["!diagram uk-computing-law"],
@@ -227,6 +225,46 @@ PLACEMENTS = {
     ("ks5", "legal-moral-and-ethical-issues"): {
         "Legislation": ["!diagram uk-computing-law"],
     },
+    # ------------------------------------------- Key Stage 3 unit diagrams
+    # Every KS3 topic now carries a figure. The three programming topics get the
+    # idea drawn before the syntax, which is the order Year 7 to 9 need it in.
+    ("ks3", "using-computers"): {
+        "Hardware and software": ["!diagram ks3-input-process-output"],
+    },
+    ("ks3", "programming-in-scratch"): {
+        "Iteration and events": ["!diagram ks3-scratch-constructs"],
+    },
+    ("ks3", "introduction-to-python"): {
+        "Input and data types": ["!diagram ks3-python-variables"],
+    },
+    ("ks3", "vector-graphics"): {
+        "Bitmap against vector": ["!diagram ks3-bitmap-vector"],
+    },
+    ("ks3", "digital-literacy"): {
+        "Your digital footprint": ["!diagram ks3-digital-footprint"],
+    },
+    ("ks3", "python-loops-and-lists"): {
+        "Loops": ["!diagram ks3-python-loop-trace"],
+    },
+    ("ks3", "spreadsheets"): {
+        "Absolute and relative references": ["!diagram ks3-cell-references"],
+    },
+    ("ks3", "web-development"): {
+        "CSS: style": ["!diagram ks3-html-css-render"],
+    },
+    ("ks3", "python-programming"): {
+        "Lists, 2D lists and dictionaries": ["!diagram ks3-list-vs-dict"],
+    },
+    ("ks3", "app-development"): {
+        "Designing before building": ["!diagram ks3-design-cycle"],
+    },
+    ("ks3", "artificial-intelligence"): {
+        "What AI actually is": ["!diagram ks3-how-ai-learns"],
+    },
+    ("ks3", "3d-modelling-and-animation"): {
+        "How 3D models are built": ["!diagram ks3-3d-pipeline"],
+    },
+
     # ------------------------------------------------------- Creative iMedia
     # Every R093, R094 and R097 topic now carries a worked figure. The
     # pre-production one is deliberately on three topics: the visualisation

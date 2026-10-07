@@ -1768,3 +1768,1086 @@ def _imedia_nav():
                         "A quiz is linear, an app is hierarchical, a reference "
                         "product is non-linear.",
                         labels=L)
+
+
+# ================================================= 30. Input, process, output
+
+@diagram("ks3-input-process-output")
+def _ks3_ipo():
+    """Hardware by the job it does, and where software sits."""
+    base = [text(380, 28, "Every computer does the same four jobs", 12, 650, fill=MUTED)]
+    L = ["Input: hardware that gets data into the computer.",
+         "Process: the CPU does the actual work.",
+         "Output: hardware that gets the results back out to you.",
+         "Storage: keeps your files when the power is off.",
+         "Software is the instructions. Hardware is the parts you could drop on your foot."]
+    def stage(x, title, accent, soft, items, on):
+        o = [box(x, 76, 160, 118, None, fill=soft if on else FILL,
+                 stroke=accent if on else "var(--dg-line-soft)", r=10),
+             text(x + 80, 102, title, 12, 700, fill=accent if on else MUTED)]
+        o.append(_lines(x + 16, 130, items, size=11, gap=22,
+                        fill="var(--dg-text)" if on else MUTED))
+        return "".join(o)
+    cfg = [(26, "INPUT", TEAL, TEAL_SOFT, ["Keyboard", "Mouse", "Microphone"]),
+           (212, "PROCESS", LILAC, LILAC_SOFT, ["CPU", "RAM", "the thinking"]),
+           (398, "OUTPUT", TEAL, TEAL_SOFT, ["Screen", "Speakers", "Printer"]),
+           (584, "STORAGE", LILAC, LILAC_SOFT, ["Hard drive", "SSD", "USB stick"])]
+    arrows = (line(190, 135, 208, 135, stroke=LINE, arrow=True)
+              + line(376, 135, 394, 135, stroke=LINE, arrow=True)
+              + path("M292 194 L292 216 L664 216 L664 198", stroke=LINE, dash="4 4", arrow=True))
+    steps = []
+    for n in range(4):
+        body = arrows + "".join(stage(x, t, a, s, i, on=(k == n))
+                                for k, (x, t, a, s, i) in enumerate(cfg))
+        steps.append(step(n + 1, body, L[n]))
+    # Final stage: hardware vs software.
+    sw = [box(60, 72, 290, 128, None, fill=FILL, stroke=TEAL, r=10),
+          text(205, 98, "HARDWARE", 12, 700, fill=TEAL),
+          _lines(90, 128, ["The physical parts", "You can touch them",
+                           "Keyboard, CPU, screen"], size=11, gap=22),
+          box(410, 72, 290, 128, None, fill=FILL, stroke=LILAC, r=10),
+          text(555, 98, "SOFTWARE", 12, 700, fill=LILAC),
+          _lines(440, 128, ["The instructions", "You cannot touch them",
+                            "Games, browser, Windows"], size=11, gap=22),
+          text(380, 228, "Software tells the hardware what to do", 11, 600, fill=MUTED)]
+    steps.append(step(5, "".join(sw), L[4]))
+    desc = ("Every computer does four jobs. Input hardware gets data in, such as a "
+            "keyboard, mouse or microphone. The processor does the actual work, helped by "
+            "RAM. Output hardware gets results back to you through a screen, speakers or "
+            "a printer. Storage such as a hard drive, solid state drive or USB stick "
+            "keeps your files when the power is off, which is the difference between it "
+            "and RAM. Hardware means the physical parts you can touch, while software "
+            "means the instructions that tell that hardware what to do.")
+    return figure_steps("ks3-ipo", 760, 246, "".join(base), steps,
+                        "Input, process, output and storage", desc,
+                        "If you are asked to classify a device, ask what job it does: "
+                        "does it bring data in, work on it, send it out, or keep it?",
+                        labels=L)
+
+
+# ===================================================== 31. Scratch constructs
+
+@diagram("ks3-scratch-constructs")
+def _ks3_scratch():
+    """The three programming constructs, drawn as blocks."""
+    base = [text(380, 28, "The three things every program is built from", 12, 650, fill=MUTED)]
+    L = ["Sequence: instructions run in order, top to bottom.",
+         "Selection: the program chooses a path using IF.",
+         "Iteration: a block of instructions repeats."]
+
+    def blk(x, y, label, accent=TEAL, soft=TEAL_SOFT, w=250, h=34, notch=True):
+        o = [box(x, y, w, h, None, fill=soft, stroke=accent, r=6),
+             text(x + 14, y + h / 2 + 4.5, label, 12, 600, anchor="start", fill="var(--dg-text)")]
+        if notch:
+            o.append(box(x + 18, y + h - 3, 22, 7, None, fill=soft, stroke=accent, r=3))
+        return "".join(o)
+
+    seq = [blk(255, 66, "when green flag clicked", LILAC, LILAC_SOFT),
+           blk(255, 108, "say  Hello!"), blk(255, 150, "move 10 steps"),
+           blk(255, 192, "turn 15 degrees"),
+           path("M240 83 L240 226", stroke=LINE, w=2, dash="4 4", arrow=True),
+           text(190, 160, "runs in", 11, 600, anchor="end", fill=MUTED),
+           text(190, 178, "this order", 11, 600, anchor="end", fill=MUTED)]
+
+    sel = [blk(230, 62, "if  touching edge?  then", LILAC, LILAC_SOFT, w=300),
+           box(230, 96, 300, 86, None, fill="none", stroke=LILAC, r=6, dash="4 3"),
+           blk(254, 108, "turn 180 degrees", TEAL, TEAL_SOFT, w=252),
+           blk(254, 146, "say  Ouch!", TEAL, TEAL_SOFT, w=252),
+           blk(230, 190, "else", LILAC, LILAC_SOFT, w=300, notch=False),
+           blk(254, 226, "move 10 steps", TEAL, TEAL_SOFT, w=252, notch=False),
+           text(560, 140, "only one", 11, 600, anchor="start", fill=MUTED),
+           text(560, 158, "branch runs", 11, 600, anchor="start", fill=MUTED)]
+
+    it = [blk(230, 70, "repeat  10", WARN, WARN_SOFT, w=300),
+          box(230, 104, 300, 92, None, fill="none", stroke=WARN, r=6, dash="4 3"),
+          blk(254, 116, "move 10 steps", TEAL, TEAL_SOFT, w=252),
+          blk(254, 154, "turn 36 degrees", TEAL, TEAL_SOFT, w=252),
+          path("M224 196 L196 196 L196 88 L224 88", stroke=WARN, w=2.2, arrow=True,
+               marker="ah"),
+          text(560, 146, "these two run", 11, 600, anchor="start", fill=MUTED),
+          text(560, 164, "ten times", 11, 600, anchor="start", fill=MUTED),
+          text(380, 232, "ten moves and ten turns of 36 degrees draws a circle",
+               11, 500, fill=MUTED)]
+
+    steps = [step(1, "".join(seq), L[0]), step(2, "".join(sel), L[1]),
+             step(3, "".join(it), L[2])]
+    desc = ("Every program is built from three constructs. Sequence means the "
+            "instructions run in order from top to bottom, so a script might say hello, "
+            "move ten steps and then turn fifteen degrees. Selection means the program "
+            "chooses between paths using if and else, so if the sprite is touching the "
+            "edge it turns around and says ouch, and otherwise it keeps moving, with "
+            "only one branch ever running. Iteration means a block of instructions "
+            "repeats, so repeat ten times around a move of ten steps and a turn of "
+            "thirty six degrees draws a complete circle.")
+    return figure_steps("ks3-scratch", 760, 270, "".join(base), steps,
+                        "Sequence, selection and iteration as Scratch blocks", desc,
+                        "These three ideas are the whole of programming. Everything you "
+                        "write later in Python is still only these, in different words.",
+                        labels=L)
+
+
+# ================================================== 32. Bitmap against vector
+
+@diagram("ks3-bitmap-vector")
+def _ks3_bitmap_vector():
+    """Why one goes blocky and the other does not, by zooming in on both."""
+    base = [text(380, 26, "What happens when you make an image bigger", 12, 650, fill=MUTED)]
+    L = ["A bitmap is a grid of coloured pixels. The file stores every single one.",
+         "Enlarge a bitmap and the pixels get bigger, so the edges turn into steps.",
+         "A vector stores instructions, not pixels: a circle, this big, this colour.",
+         "Enlarge a vector and it is simply redrawn, so the edge stays perfectly smooth.",
+    ]
+    def grid(ox, oy, cell, n, filled):
+        o = []
+        for r in range(n):
+            for c in range(n):
+                on = (r, c) in filled
+                o.append(box(ox + c * cell, oy + r * cell, cell, cell, None,
+                             fill=TEAL if on else FILL,
+                             stroke="var(--dg-line-soft)", r=0))
+        return "".join(o)
+    # A crude circle on an 8x8 grid.
+    disc = {(r, c) for r in range(8) for c in range(8)
+            if (r - 3.5) ** 2 + (c - 3.5) ** 2 <= 11}
+    steps = [
+        step(1, grid(290, 56, 22, 8, disc)
+             + text(380, 254, "8 x 8 = 64 pixels, each one stored in the file",
+                    11, 600, fill=MUTED), L[0]),
+        step(2, grid(120, 54, 22, 8, disc)
+             + text(208, 250, "normal size", 11, 600, fill=MUTED)
+             + line(300, 142, 340, 142, stroke=LINE, arrow=True)
+             + text(320, 130, "zoom", 10, 600, fill=MUTED)
+             + grid(372, 54, 48, 4, {(r, c) for r in range(4) for c in range(4)
+                                     if (r - 1.5) ** 2 + (c - 1.5) ** 2 <= 3.2})
+             + text(468, 250, "enlarged: blocky steps", 11, 650, fill=WARN), L[1]),
+        step(3, circle(380, 150, 86, fill=TEAL_SOFT, stroke=TEAL, w=2)
+             + text(380, 156, "circle", 13, 650, fill=TEAL)
+             + _lines(120, 118, ["The file says:", "  a circle", "  centre here",
+                                 "  radius 86", "  filled teal"], size=11, gap=22)
+             + text(380, 262, "five instructions, not sixty four pixels", 11, 600, fill=MUTED), L[2]),
+        step(4, circle(190, 150, 56, fill=TEAL_SOFT, stroke=TEAL, w=2)
+             + text(190, 234, "normal size", 11, 600, fill=MUTED)
+             + line(260, 150, 300, 150, stroke=LINE, arrow=True)
+             + text(280, 138, "zoom", 10, 600, fill=MUTED)
+             + circle(470, 150, 94, fill=TEAL_SOFT, stroke=TEAL, w=2)
+             + text(470, 262, "enlarged: still perfectly smooth", 11, 650, fill=TEAL), L[3]),
+    ]
+    desc = ("Why a bitmap goes blocky and a vector does not. A bitmap, also called a "
+            "raster image, is a grid of coloured pixels, and the file stores every single "
+            "one, so an eight by eight image is sixty four stored values. Enlarging it "
+            "cannot invent detail that was never recorded, so each pixel simply becomes "
+            "bigger and curved edges turn into visible steps. A vector file stores "
+            "instructions rather than pixels: it says there is a circle, with this centre, "
+            "this radius and this fill colour. Enlarging it just means redrawing those "
+            "instructions at the new size, so the edge stays perfectly smooth however big "
+            "it gets. That is why photographs are bitmaps and logos are vectors.")
+    return figure_steps("ks3-bv", 760, 282, "".join(base), steps,
+                        "Why a bitmap goes blocky and a vector stays sharp", desc,
+                        "A vector file does not store a picture. It stores the "
+                        "instructions for drawing one, and instructions work at any size.",
+                        labels=L)
+
+
+# ==================================================== 33. Digital footprint
+
+@diagram("ks3-digital-footprint")
+def _ks3_footprint():
+    """What you post, what is taken, and where both end up."""
+    base = [text(380, 26, "The trail you leave behind online", 12, 650, fill=MUTED)]
+    L = ["Active footprint: everything you deliberately post.",
+         "Passive footprint: data collected while you did nothing at all.",
+         "Both end up in the same place, and the copies outlive the original.",
+         "You can shrink a footprint. You cannot delete one."]
+
+    def source(title, accent, soft, items, dash, note):
+        return "".join([
+            circle(100, 148, 44, fill=soft, stroke=accent, w=2),
+            text(100, 154, "YOU", 13, 700, fill=accent),
+            line(148, 148, 204, 148, stroke=accent, arrow=True,
+                 marker="ah-accent" if accent == TEAL else "ah-alt", dash=dash),
+            box(212, 68, 268, 160, None, fill=soft, stroke=accent, r=10),
+            text(346, 94, title, 12, 700, fill=accent),
+            _lines(234, 124, items, size=11, gap=24),
+            line(488, 148, 544, 148, stroke=accent, arrow=True,
+                 marker="ah-accent" if accent == TEAL else "ah-alt", dash=dash),
+            box(550, 68, 186, 160, None, fill=FILL, stroke=LINE, r=10),
+            text(643, 94, "YOUR FOOTPRINT", 11, 700, fill=MUTED),
+            text(643, 134, "stored", 12, 600),
+            text(643, 160, "copied", 12, 600),
+            text(643, 186, "searchable", 12, 600),
+            text(380, 262, note, 11, 650, fill=MUTED)])
+
+    s1 = source("ACTIVE", TEAL, TEAL_SOFT,
+                ["Photos and videos you post", "Comments and messages",
+                 "Your profile and your bio", "Likes, follows, reviews"], None,
+                "You chose to put all of this online")
+    s2 = source("PASSIVE", LILAC, LILAC_SOFT,
+                ["Pages you visit, and for how long", "Every search you type",
+                 "Your location and your device", "Who you are connected to"], "5 4",
+                "Nobody asked you. It was collected anyway.")
+
+    s3 = "".join([
+        box(286, 56, 188, 64, None, fill=FILL, stroke=LINE, r=10),
+        text(380, 80, "YOUR FOOTPRINT", 11, 700, fill=MUTED),
+        text(380, 102, "active and passive together", 10, 450, fill=MUTED),
+        path("M380 120 L380 142 L142 142 L142 166", stroke=LINE, arrow=True),
+        path("M380 120 L380 166", stroke=LINE, arrow=True),
+        path("M380 120 L380 142 L618 142 L618 166", stroke=LINE, arrow=True),
+        box(34, 168, 216, 66, "ADVERTISERS", "profiled and targeted",
+            fill=FILL, stroke=LINE, label_size=11),
+        box(272, 168, 216, 66, "EMPLOYERS AND UNIS", "they really do look",
+            fill=FILL, stroke=LINE, label_size=11),
+        box(510, 168, 216, 66, "DATA BROKERS", "collected, bundled, sold on",
+            fill=FILL, stroke=LINE, label_size=11),
+        text(380, 262, "Deleting your post does not delete anyone's screenshot of it",
+             11, 650, fill=WARN)])
+
+    tips = [("Check your privacy settings", "and again after every app update"),
+            ("Think before you post", "teacher, parent, future employer"),
+            ("Turn off location tagging", "a photo records where you were"),
+            ("Skip the fun quizzes", "your first pet is a security answer")]
+    s4 = "".join(
+        [box(36 + (i % 2) * 350, 60 + (i // 2) * 72, 338, 62, t, s,
+             fill=TEAL_SOFT, stroke=TEAL, label_size=12) for i, (t, s) in enumerate(tips)]
+        + [box(36, 204, 688, 36, "Log out of your accounts on any shared device",
+               fill=FILL, stroke=LINE, label_size=12),
+           text(380, 262, "Assume anything you put online is permanent and public",
+                11, 650, fill=TEAL)])
+
+    steps = [step(1, s1, L[0]), step(2, s2, L[1]), step(3, s3, L[2]), step(4, s4, L[3])]
+    desc = ("Your digital footprint has two halves. The active half is everything you "
+            "deliberately post: photos, videos, comments, messages, your profile, your "
+            "likes and follows. The passive half is collected without you doing anything: "
+            "which pages you visit and for how long, every search you type, your location, "
+            "your device and who you are connected to. Both halves end up in the same "
+            "store, where they are copied and searchable, and from there they reach "
+            "advertisers who profile you, employers and universities who really do look, "
+            "and data brokers who bundle and sell them on. Deleting a post does not delete "
+            "anybody's screenshot of it. You can shrink a footprint by checking privacy "
+            "settings after every update, thinking before posting, turning off location "
+            "tagging, refusing quizzes that ask for security question answers and logging "
+            "out on shared devices, but you cannot delete one.")
+    return figure_steps("ks3-fp", 760, 276, "".join(base), steps,
+                        "Active and passive digital footprints", desc,
+                        "The passive half is the bigger half, and it is the half most "
+                        "people have never thought about.", labels=L)
+
+
+# ============================================ 34. Relative and absolute cells
+
+@diagram("ks3-cell-references")
+def _ks3_cells():
+    """Why a formula that works in row 2 breaks in row 3."""
+    base = [text(380, 24, "What the dollar signs actually do", 12, 650, fill=MUTED)]
+    L = ["One cell holds the VAT multiplier. The formula points at a price and at that cell.",
+         "Copy it down with no dollar signs and BOTH references move. E2 is empty.",
+         "Lock it with $E$1 and the price still moves while the rate stays put.",
+         "Mixed references lock one half: the column, or the row."]
+
+    COLS = [("A", 60, 92), ("B", 152, 92), ("C", 244, 150), ("D", 394, 86), ("E", 480, 70)]
+    RH, R0 = 30, 92
+
+    def cellbox(x, w, r, s, fill=FILL, stroke="var(--dg-line-soft)", mono=False,
+                col="var(--dg-text)"):
+        y = R0 + r * RH
+        o = [box(x, y, w, RH, None, fill=fill, stroke=stroke, r=0)]
+        if s:
+            o.append(text(x + w / 2, y + RH / 2 + 4, s, 11, 600, fill=col, mono=mono))
+        return "".join(o)
+
+    def sheet(formulas, hl=()):
+        o = [box(26, 66, 34, 26, None, fill="var(--dg-fill-2)", stroke="var(--dg-line-soft)", r=0)]
+        for letter, x, w in COLS:
+            o.append(box(x, 66, w, 26, None, fill="var(--dg-fill-2)",
+                         stroke="var(--dg-line-soft)", r=0))
+            o.append(text(x + w / 2, 84, letter, 11, 700, fill=MUTED))
+        rows = [["Item", "Price", "With VAT", "VAT x", "1.2"],
+                ["Pen", "2.00", formulas[0], "", ""],
+                ["Pad", "5.00", formulas[1], "", ""],
+                ["Bag", "9.00", formulas[2], "", ""]]
+        for r in range(4):
+            o.append(box(26, R0 + r * RH, 34, RH, None, fill="var(--dg-fill-2)",
+                         stroke="var(--dg-line-soft)", r=0))
+            o.append(text(43, R0 + r * RH + RH / 2 + 4, str(r + 1), 11, 700, fill=MUTED))
+            for (letter, x, w), s in zip(COLS, rows[r]):
+                ref = "%s%d" % (letter, r + 1)
+                mono = letter == "C" and r > 0
+                acc = hl.get(ref) if isinstance(hl, dict) else None
+                o.append(cellbox(x, w, r, s, mono=mono,
+                                 fill=acc[1] if acc else FILL,
+                                 stroke=acc[0] if acc else "var(--dg-line-soft)",
+                                 col=acc[0] if acc and not mono else "var(--dg-text)"))
+        return "".join(o)
+
+    def notes(items, fill=MUTED):
+        return _lines(574, 108, items, size=11, gap=24, fill=fill)
+
+    s1 = sheet(["=B2*$E$1", "", ""], {"B2": (TEAL, TEAL_SOFT), "E1": (LILAC, LILAC_SOFT)})
+    s1 += notes(["B2 is the price", "on this row.", "", "E1 is the rate,", "stored once."])
+    s2 = sheet(["=B2*E1", "=B3*E2", "=B4*E3"],
+               {"E2": (WARN, WARN_SOFT), "E3": (WARN, WARN_SOFT)})
+    s2 += notes(["Both halves moved.", "E2 and E3 are", "empty cells, so", "both answers", "come out as 0."], WARN)
+    s3 = sheet(["=B2*$E$1", "=B3*$E$1", "=B4*$E$1"], {"E1": (TEAL, TEAL_SOFT)})
+    s3 += notes(["B moved: correct.", "$E$1 did not:", "also correct.", "", "2.40  6.00  10.80"], TEAL)
+
+    mixed = [("B2", "Nothing locked. Copy it anywhere and both parts move."),
+             ("$B$2", "Both locked. It always means B2, wherever you copy it."),
+             ("$B2", "Column locked, row free. Copy right and it stays in B."),
+             ("B$2", "Row locked, column free. Copy down and it stays in row 2.")]
+    s4 = "".join([box(40, 60 + i * 44, 672, 38, None, fill=FILL, stroke=LINE, r=8)
+                  + box(52, 68 + i * 44, 86, 22, None, fill=TEAL_SOFT, stroke=TEAL, r=6)
+                  + text(95, 84 + i * 44, ref, 12, 700, fill=TEAL, mono=True)
+                  + text(154, 84 + i * 44, meaning, 11, 500, anchor="start")
+                  for i, (ref, meaning) in enumerate(mixed)])
+
+    steps = [step(1, s1, L[0]), step(2, s2, L[1]), step(3, s3, L[2]), step(4, s4, L[3])]
+    desc = ("A sheet with items in column A, prices in column B and a VAT multiplier of "
+            "1.2 stored once in cell E1. The formula in C2 is B2 multiplied by E1. Written "
+            "with no dollar signs and copied down, both references move, so row 3 becomes "
+            "B3 times E2 and row 4 becomes B4 times E3. E2 and E3 are empty, so every "
+            "answer below the first row is zero. Written as B2 times dollar E dollar 1 and "
+            "copied down, the price reference still moves to B3 and B4, which is what you "
+            "want, while the locked rate reference stays on E1, giving 2.40, 6.00 and "
+            "10.80. A reference with no dollar signs is relative and moves. Dollar B "
+            "dollar 2 locks both parts. Dollar B 2 locks the column only. B dollar 2 locks "
+            "the row only.")
+    return figure_steps("ks3-cells", 760, 262, "".join(base), steps,
+                        "Relative and absolute cell references", desc,
+                        "If a formula works in the first row and gives nonsense when "
+                        "copied down, you needed a dollar sign on something that moved.",
+                        labels=L)
+
+
+# ============================================== 35. HTML, CSS and the browser
+
+@diagram("ks3-html-css-render")
+def _ks3_html_css():
+    """Two files, two jobs, one page."""
+    base = [text(380, 24, "HTML says what it is. CSS says what it looks like.",
+                 12, 650, fill=MUTED)]
+    L = ["HTML marks up the structure: a heading, a paragraph, a link.",
+         "CSS holds the styling rules, in a separate file.",
+         "The browser takes both and draws the page.",
+         "A selector decides which parts of the page a rule reaches."]
+
+    def code(x, y, title, lines, accent, soft):
+        o = [box(x, y, 336, 196, None, fill=soft, stroke=accent, r=10),
+             text(x + 14, y + 22, title, 11, 700, anchor="start", fill=accent)]
+        for i, s in enumerate(lines):
+            o.append(text(x + 14, y + 46 + i * 20, s, 10.5, 500, anchor="start", mono=True))
+        return "".join(o)
+
+    HTML = ['<body>', '  <h1>Welcome</h1>', '  <p>A paragraph of text.</p>',
+            '  <p class="highlight">Read me.</p>', '  <a href="page2.html">Next</a>',
+            '</body>']
+    CSS = ['h1 { color: #03969d;', '     text-align: center; }',
+           'p  { font-size: 16px; }', '.highlight {',
+           '  background-color: yellow; }', '#header { border-bottom: 2px; }']
+
+    def page(x, y, styled, selectors=False):
+        o = [box(x, y, 300, 196, None, fill="var(--dg-paper)", stroke=LINE, r=10)]
+        if styled:
+            o += [box(x + 1, y + 1, 298, 54, None, fill="var(--dg-fill-2)",
+                      stroke="none", r=10),
+                  line(x + 1, y + 55, x + 299, y + 55, stroke=LILAC, w=2),
+                  text(x + 150, y + 36, "Welcome", 17, 700, fill=TEAL)]
+        else:
+            o.append(text(x + 18, y + 36, "Welcome", 17, 700, anchor="start",
+                          fill="var(--dg-ink)"))
+        ty = y + (76 if styled else 66)
+        o.append(text(x + 18, ty, "A paragraph of text.", 11, 450, anchor="start",
+                      fill="var(--dg-ink)"))
+        if styled:
+            o.append(box(x + 16, ty + 16, 140, 24, None, fill="var(--dg-mark)",
+                         stroke="none", r=3))
+        o.append(text(x + 18, ty + 33, "Read me.", 11, 450, anchor="start",
+                      fill="var(--dg-mark-ink)" if styled else "var(--dg-ink)"))
+        o.append(text(x + 18, ty + 66, "Next", 11, 500, anchor="start",
+                      fill="var(--dg-link)"))
+        o.append(line(x + 18, ty + 70, x + 44, ty + 70, stroke="var(--dg-link)", w=1))
+        o.append(text(x + 150, y + 214, "the page as you see it", 11, 600, fill=MUTED))
+        if selectors:
+            o += [line(x - 86, y + 30, x + 140, y + 30, stroke=TEAL, dash="4 3",
+                       arrow=True, marker="ah-accent"),
+                  line(x - 86, ty + 28, x + 12, ty + 28, stroke=TEAL, dash="4 3",
+                       arrow=True, marker="ah-accent"),
+                  line(x - 86, y + 56, x + 1, y + 56, stroke=LILAC, dash="4 3",
+                       arrow=True, marker="ah-alt")]
+        return "".join(o)
+
+    s1 = code(26, 50, "index.html", HTML, TEAL, TEAL_SOFT) + page(410, 50, False) \
+        + text(380, 266, "With no CSS the browser uses its own plain defaults",
+               11, 600, fill=MUTED)
+    s2 = code(26, 50, "style.css", CSS, LILAC, LILAC_SOFT) + page(410, 50, False) \
+        + text(380, 266, "The rules exist, but nothing has been joined up yet",
+               11, 600, fill=MUTED)
+    s3 = "".join([
+        box(26, 50, 150, 72, "index.html", "structure", fill=TEAL_SOFT, stroke=TEAL,
+            label_size=12),
+        box(26, 142, 150, 72, "style.css", "style", fill=LILAC_SOFT, stroke=LILAC,
+            label_size=12),
+        path("M176 86 L226 86 L226 124", stroke=TEAL, arrow=True, marker="ah-accent"),
+        path("M176 178 L226 178 L226 140", stroke=LILAC, arrow=True, marker="ah-alt"),
+        box(196, 112, 180, 40, "THE BROWSER", fill=FILL, stroke=LINE, label_size=12),
+        line(376, 132, 404, 132, stroke=LINE, arrow=True),
+        page(410, 50, True),
+        text(30, 266, "one CSS file can style every page on the site", 11, 600,
+             anchor="start", fill=MUTED)])
+    s4 = "".join([
+        box(26, 62, 300, 40, None, fill=TEAL_SOFT, stroke=TEAL, r=8),
+        text(44, 86, "h1 { ... }", 12, 650, anchor="start", mono=True, fill=TEAL),
+        text(150, 86, "every h1 on the page", 11, 500, anchor="start"),
+        box(26, 112, 300, 40, None, fill=LILAC_SOFT, stroke=LILAC, r=8),
+        text(44, 136, "#header { ... }", 12, 650, anchor="start", mono=True, fill=LILAC),
+        text(166, 136, "the one id", 11, 500, anchor="start"),
+        box(26, 162, 300, 40, None, fill=TEAL_SOFT, stroke=TEAL, r=8),
+        text(44, 186, ".highlight { ... }", 12, 650, anchor="start", mono=True, fill=TEAL),
+        text(186, 186, "every class", 11, 500, anchor="start"),
+        page(410, 50, True, selectors=True),
+        text(176, 266, "a class for many, an id for exactly one", 11, 600, fill=MUTED)])
+
+    steps = [step(1, s1, L[0]), step(2, s2, L[1]), step(3, s3, L[2]), step(4, s4, L[3])]
+    desc = ("A web page is built from two files doing two different jobs. The HTML file "
+            "marks up structure: a body containing an h1 heading, two paragraphs, one of "
+            "them given class highlight, and a link. On its own the browser draws it with "
+            "plain default styling, left aligned in black. The CSS file holds rules: h1 "
+            "coloured teal and centred, paragraphs at sixteen pixels, the highlight class "
+            "given a yellow background, the header id given a bottom border. On its own it "
+            "draws nothing. The browser reads both and produces the finished page, which "
+            "is why one CSS file can restyle an entire site. A selector decides which "
+            "elements a rule reaches: a tag name such as h1 reaches every h1, a class "
+            "beginning with a dot reaches every element carrying that class, and an id "
+            "beginning with a hash reaches the single element with that id.")
+    return figure_steps("ks3-webdev", 760, 282, "".join(base), steps,
+                        "How HTML and CSS become a page", desc,
+                        "Keeping structure and style in separate files is the reason a "
+                        "whole site can be redesigned by editing one file.", labels=L)
+
+
+# =================================================== 36. How an AI is trained
+
+@diagram("ks3-how-ai-learns")
+def _ks3_ai():
+    """Rules against examples, and what that costs."""
+    base = [text(380, 24, "Nobody wrote the rules for recognising a cat",
+                 12, 650, fill=MUTED)]
+    L = ["A normal program follows rules a human wrote down.",
+         "Machine learning is shown labelled examples and finds the patterns itself.",
+         "It is then tested on images it has never seen before.",
+         "Whatever the training data contains, the system reproduces.",
+         "It has no idea what a cat is, which is why it can be confidently wrong."]
+
+    s1 = "".join([
+        box(30, 66, 190, 54, "THE RULES", "written by a programmer",
+            fill=LILAC_SOFT, stroke=LILAC, label_size=12),
+        box(30, 150, 190, 54, "THE DATA", "one photo", fill=FILL, stroke=LINE,
+            label_size=12),
+        path("M220 93 L272 93 L272 125", stroke=LILAC, arrow=True, marker="ah-alt"),
+        path("M220 177 L272 177 L272 145", stroke=LINE, arrow=True),
+        box(272, 112, 196, 46, "THE PROGRAM", fill=FILL, stroke=LINE, label_size=12),
+        line(468, 135, 508, 135, stroke=LINE, arrow=True),
+        box(514, 108, 216, 54, "THE ANSWER", "if whiskers and fur then cat",
+            fill=FILL, stroke=LINE, label_size=12),
+        text(380, 232, "This works for tax and for traffic lights. It does not work for "
+             "cats:", 11, 600, fill=MUTED),
+        text(380, 252, "nobody can write down the rule that makes a cat a cat",
+             11, 600, fill=MUTED)])
+
+    s2 = "".join([
+        box(30, 62, 204, 150, None, fill=TEAL_SOFT, stroke=TEAL, r=10),
+        text(132, 86, "TRAINING DATA", 11, 700, fill=TEAL),
+        _lines(48, 116, ["500,000 photographs,", "each one already", "labelled by a human:",
+                         "cat, or not cat"], size=11, gap=22),
+        line(234, 137, 274, 137, stroke=TEAL, arrow=True, marker="ah-accent"),
+        box(280, 62, 200, 150, None, fill=FILL, stroke=LINE, r=10),
+        text(380, 86, "THE MODEL", 11, 700, fill=MUTED),
+        _lines(296, 116, ["Adjusts millions of", "internal numbers,", "guesses a label,",
+                          "checks, adjusts again"], size=11, gap=22),
+        path("M300 212 L300 234 L460 234 L460 212", stroke=TEAL, dash="4 4", arrow=True,
+             marker="ah-accent"),
+        text(380, 252, "every wrong guess nudges the numbers", 10.5, 600, fill=MUTED),
+        line(480, 137, 520, 137, stroke=LINE, arrow=True),
+        box(526, 92, 204, 90, "A TRAINED MODEL", "no rules anywhere in it",
+            fill=LILAC_SOFT, stroke=LILAC, label_size=12)])
+
+    s3 = "".join([
+        box(30, 76, 214, 110, None, fill=FILL, stroke=LINE, r=10),
+        text(137, 102, "UNSEEN PHOTOS", 11, 700, fill=MUTED),
+        _lines(48, 132, ["10,000 images held", "back from training"], size=11, gap=22),
+        line(244, 131, 284, 131, stroke=LINE, arrow=True),
+        box(290, 92, 180, 78, "THE MODEL", fill=LILAC_SOFT, stroke=LILAC, label_size=12),
+        line(470, 131, 510, 131, stroke=LINE, arrow=True),
+        box(516, 76, 214, 110, None, fill=TEAL_SOFT, stroke=TEAL, r=10),
+        text(623, 102, "92% CORRECT", 12, 700, fill=TEAL),
+        _lines(534, 132, ["so it learned something", "general, not the answers"],
+               size=11, gap=22),
+        text(380, 228, "Testing on the training images would prove nothing at all:",
+             11, 600, fill=MUTED),
+        text(380, 248, "a system can score 100% by memorising and still be useless",
+             11, 600, fill=MUTED)])
+
+    def bar(x, y, w, pct, label, accent, soft):
+        return "".join([box(x, y, w, 26, None, fill=soft, stroke=accent, r=6),
+                        box(x, y, w * pct / 100.0, 26, None, fill=accent, stroke=accent, r=6),
+                        text(x + w + 12, y + 18, "%d%%" % pct, 12, 700, anchor="start",
+                             fill=accent),
+                        text(x, y - 10, label, 11, 600, anchor="start", fill=MUTED)])
+    s4 = "".join([
+        box(30, 62, 250, 150, None, fill=FILL, stroke=LINE, r=10),
+        text(155, 86, "THE TRAINING DATA", 11, 700, fill=MUTED),
+        box(48, 104, 214, 26, None, fill=TEAL, stroke=TEAL, r=6),
+        text(155, 122, "mostly light skinned faces", 10.5, 650, fill="var(--dg-fill)"),
+        box(48, 138, 56, 26, None, fill=LILAC, stroke=LILAC, r=6),
+        text(76, 156, "others", 10.5, 650, fill="var(--dg-fill)"),
+        text(155, 192, "nobody chose this on purpose", 10.5, 500, fill=MUTED),
+        line(280, 137, 320, 137, stroke=LINE, arrow=True),
+        text(300, 124, "learns", 10, 600, fill=MUTED),
+        bar(336, 104, 250, 98, "accuracy on light skinned faces", TEAL, TEAL_SOFT),
+        bar(336, 162, 250, 71, "accuracy on dark skinned faces", WARN, WARN_SOFT),
+        text(380, 242, "The system is not prejudiced. It is reproducing its data, "
+             "exactly as built.", 11, 650, fill=WARN)])
+
+    s5 = "".join([
+        box(30, 64, 330, 150, None, fill=WARN_SOFT, stroke=WARN, r=10),
+        text(195, 90, "WHAT IT ACTUALLY LEARNED", 11, 700, fill=WARN),
+        _lines(50, 120, ["\"Photos labelled wolf usually", "have snow in them.\"",
+                         "", "So a husky on a snowy path"], size=11, gap=22),
+        text(50, 208, "is labelled wolf, with 97% confidence.", 11, 600, anchor="start"),
+        box(400, 64, 330, 150, None, fill=FILL, stroke=LINE, r=10),
+        text(565, 90, "WHY THAT MATTERS", 11, 700, fill=MUTED),
+        _lines(420, 120, ["It found something that", "correlates with the answer.",
+                          "It understands nothing.", "Confident is not correct."],
+               size=11, gap=22),
+        text(380, 244, "Anything that matters has to be checked against a real source",
+             11, 650, fill=MUTED)])
+
+    steps = [step(1, s1, L[0]), step(2, s2, L[1]), step(3, s3, L[2]),
+             step(4, s4, L[3]), step(5, s5, L[4])]
+    desc = ("How a machine learning system is built, and what that costs. A normal program "
+            "takes rules a programmer wrote and some data, and produces an answer, which "
+            "works for tax but not for recognising a cat, because nobody can write down the "
+            "rule that makes a cat a cat. Machine learning instead starts from training "
+            "data: five hundred thousand photographs already labelled cat or not cat by "
+            "humans. The model guesses a label, checks it, and nudges millions of internal "
+            "numbers every time it is wrong, until it is usually right. It is then tested on "
+            "ten thousand images held back from training, and scoring well on those shows it "
+            "learned something general rather than memorising answers. Because it only ever "
+            "reproduces patterns in its data, data that is mostly light skinned faces "
+            "produces a system markedly less accurate on darker skin, without anyone "
+            "choosing that. And because it understands nothing, a system that learned only "
+            "that wolf photographs usually contain snow will label a husky on a snowy path "
+            "a wolf with ninety seven per cent confidence. Confident is not correct.")
+    return figure_steps("ks3-ai", 760, 268, "".join(base), steps,
+                        "How a machine learning system is trained, and how it goes wrong",
+                        desc,
+                        "The exam answer is the same every time: the system found "
+                        "patterns in its training data. It did not understand anything.",
+                        labels=L)
+
+
+# ================================================= 37. The 3D pipeline
+
+@diagram("ks3-3d-pipeline")
+def _ks3_3d():
+    """From eight points to a finished frame."""
+    base = [text(380, 24, "From eight points to a finished frame", 12, 650, fill=MUTED)]
+    L = ["A vertex is one point in 3D space, with an x, a y and a z.",
+         "An edge is a straight line joining two vertices. A cube needs twelve.",
+         "A face is a flat surface enclosed by edges. Together they make the mesh.",
+         "More polygons means more detail, and more work for the computer.",
+         "Materials say what it is made of, lights and a camera say how you see it.",
+         "Animation sets keyframes, then every frame in between is rendered."]
+
+    # An isometric cube. Front face, back face, and the edges joining them.
+    F = [(284, 128), (404, 128), (404, 248), (284, 248)]
+    B = [(340, 84), (460, 84), (460, 204), (340, 204)]
+    def poly(pts, fill, stroke, w=1.8, dash=None):
+        d = "M%d %d " % pts[0] + " ".join("L%d %d" % p for p in pts[1:]) + " Z"
+        return path(d, stroke=stroke, w=w, fill=fill, dash=dash)
+
+    verts = "".join(circle(x, y, 5, fill=TEAL, stroke=TEAL) for x, y in F + B)
+    edges = "".join([poly(F, "none", LINE), poly(B, "none", LINE)] +
+                    [line(F[i][0], F[i][1], B[i][0], B[i][1], stroke=LINE) for i in range(4)])
+
+    s1 = verts + text(380, 282, "8 vertices. A detailed character has hundreds of "
+                      "thousands.", 11, 600, fill=MUTED) \
+        + _lines(40, 120, ["VERTEX", "", "one point", "x across", "y depth",
+                           "z height"], size=11, gap=22, fill=MUTED)
+    s2 = edges + verts + text(380, 282, "12 edges. Still see through: there are no "
+                              "surfaces yet.", 11, 600, fill=MUTED) \
+        + _lines(40, 120, ["EDGE", "", "a straight line", "joining two",
+                           "vertices"], size=11, gap=22, fill=MUTED)
+    s3 = "".join([
+        poly([F[3], F[2], B[2], B[3]], TEAL_SOFT, TEAL),
+        poly([B[0], B[1], B[2], B[3]], "var(--dg-fill-2)", LINE),
+        poly([F[1], B[1], B[2], F[2]], LILAC_SOFT, LILAC),
+        poly(F, TEAL_SOFT, TEAL),
+        edges,
+        text(380, 282, "6 faces. Vertices plus edges plus faces is the mesh.",
+             11, 600, fill=MUTED),
+        _lines(40, 120, ["FACE", "", "a flat surface", "enclosed by", "edges, usually",
+                         "a triangle"], size=11, gap=22, fill=MUTED)])
+
+    def sphere(cx, cy, r, bands, accent, soft):
+        o = [circle(cx, cy, r, fill=soft, stroke=accent, w=1.8)]
+        for i in range(1, bands):
+            t = -r + 2.0 * r * i / bands
+            half = (r * r - t * t) ** 0.5
+            o.append(line(cx - half, cy + t, cx + half, cy + t,
+                          stroke=accent, w=1))
+            o.append(line(cx + t, cy - half, cx + t, cy + half, stroke=accent, w=1))
+        return "".join(o)
+    s4 = "".join([
+        sphere(180, 140, 62, 4, TEAL, TEAL_SOFT),
+        text(180, 230, "LOW POLYGON", 11, 700, fill=TEAL),
+        text(180, 250, "blocky, but fast", 11, 500, fill=MUTED),
+        sphere(400, 140, 62, 14, LILAC, LILAC_SOFT),
+        text(400, 230, "HIGH POLYGON", 11, 700, fill=LILAC),
+        text(400, 250, "smooth, but heavy", 11, 500, fill=MUTED),
+        box(540, 76, 200, 128, None, fill=FILL, stroke=LINE, r=10),
+        text(640, 100, "THE TRADE OFF", 11, 700, fill=MUTED),
+        _lines(556, 128, ["A film renders each", "frame once, over hours.",
+                          "A game renders 60", "frames every second."], size=10.5, gap=20),
+        text(380, 284, "Games fake the missing detail with clever textures instead",
+             11, 600, fill=MUTED)])
+
+    s5 = "".join([
+        poly([F[3], F[2], B[2], B[3]], TEAL_SOFT, TEAL),
+        poly([F[1], B[1], B[2], F[2]], LILAC_SOFT, LILAC),
+        poly(F, TEAL_SOFT, TEAL),
+        edges,
+        circle(170, 92, 20, fill=WARN_SOFT, stroke=WARN, w=2),
+        path("M186 104 L270 136", stroke=WARN, w=1.6, dash="5 4", arrow=True),
+        path("M186 96 L268 112", stroke=WARN, w=1.6, dash="5 4", arrow=True),
+        text(170, 64, "LIGHT", 11, 700, fill=WARN),
+        box(540, 212, 132, 48, "CAMERA", "the only view that exists",
+            fill=FILL, stroke=LINE, label_size=11),
+        path("M540 232 L478 206", stroke=LINE, dash="5 4", arrow=True),
+        _lines(40, 170, ["MATERIAL", "colour, shine,", "roughness,", "transparency"],
+               size=11, gap=20, fill=MUTED),
+        text(380, 284, "A model with no material, light or camera renders as nothing",
+             11, 600, fill=MUTED)])
+
+    s6 = "".join([
+        box(30, 70, 700, 96, None, fill=FILL, stroke=LINE, r=10),
+        text(60, 94, "TIMELINE", 11, 700, anchor="start", fill=MUTED),
+        line(60, 136, 700, 136, stroke="var(--dg-line-soft)", w=2),
+        chip(90, 136, "frame 1"), chip(380, 136, "frame 24"), chip(670, 136, "frame 48"),
+        text(90, 170, "keyframe", 10.5, 650, fill=TEAL),
+        text(380, 170, "keyframe", 10.5, 650, fill=TEAL),
+        text(670, 170, "keyframe", 10.5, 650, fill=TEAL),
+        text(235, 118, "the computer fills these in", 10.5, 500, fill=MUTED),
+        text(525, 118, "and these", 10.5, 500, fill=MUTED),
+        box(30, 190, 340, 60, "RENDERING", "every frame calculated: lights, materials, "
+            "shadows", fill=LILAC_SOFT, stroke=LILAC, label_size=12, sub_size=10),
+        box(390, 190, 340, 60, "WHY IT TAKES SO LONG", "a 2 minute film at 24fps is "
+            "2,880 frames", fill=WARN_SOFT, stroke=WARN, label_size=12, sub_size=10),
+        text(380, 284, "You set the important poses. The computer does the in between.",
+             11, 600, fill=MUTED)])
+
+    steps = [step(i + 1, b, L[i]) for i, b in enumerate([s1, s2, s3, s4, s5, s6])]
+    desc = ("How a 3D model is built and turned into a picture. A vertex is a single point "
+            "in 3D space with an x coordinate across, a y for depth and a z for height; a "
+            "cube has eight. An edge is a straight line joining two vertices, and a cube "
+            "needs twelve. A face is a flat surface enclosed by edges, usually a triangle "
+            "or a square, and a cube has six; vertices, edges and faces together are the "
+            "mesh. More polygons give more detail and smoother curves but need more "
+            "processing power and memory, which is the central trade off: a film renders "
+            "each frame once over hours and can afford millions of polygons, while a game "
+            "must render sixty frames every second and fakes missing detail with textures. "
+            "A material gives the surface colour, shine, roughness and transparency, and "
+            "lights and a camera decide how it is seen, since a model with none of those "
+            "renders as nothing. Animation sets keyframes at the important poses and the "
+            "computer calculates every frame in between, then renders each one, which is "
+            "why a two minute film at twenty four frames a second means two thousand eight "
+            "hundred and eighty rendered frames.")
+    return figure_steps("ks3-3d", 760, 300, "".join(base), steps,
+                        "The 3D pipeline, from vertices to a rendered frame", desc,
+                        "Vertex, edge, face, mesh. Learn those four in that order and "
+                        "the rest of the unit has somewhere to attach.", labels=L)
+
+
+# ================================================== 38. The development cycle
+
+@diagram("ks3-design-cycle")
+def _ks3_cycle():
+    """Six phases, and the fact that it goes round again."""
+    base = [text(380, 24, "Why nobody starts by building", 12, 650, fill=MUTED)]
+    PHASES = [
+        ("1. ANALYSIS", "who is it for, what must it do",
+         "Write requirements as testable statements. \"Make it good\" is not one."),
+        ("2. DESIGN", "screens, flow and data",
+         "Wireframes are deliberately ugly, so discussion stays on layout, not colour."),
+        ("3. IMPLEMENTATION", "build it",
+         "The shortest phase in this list, and the only one most people plan for."),
+        ("4. TESTING", "including when things go wrong",
+         "Normal, boundary and erroneous data. What happens when the field is empty?"),
+        ("5. EVALUATION", "does it solve the problem",
+         "Checked against the requirements you wrote in analysis, not against a hunch."),
+        ("6. MAINTENANCE", "fix problems, add features",
+         "And then straight back to analysis, which is why your apps update every week."),
+    ]
+    POS = [(40, 62), (280, 62), (520, 62), (520, 164), (280, 164), (40, 164)]
+
+    arrows = "".join([
+        line(240, 93, 276, 93, stroke=LINE, arrow=True),
+        line(480, 93, 516, 93, stroke=LINE, arrow=True),
+        path("M620 124 L620 160", stroke=LINE, arrow=True),
+        line(516, 195, 480, 195, stroke=LINE, arrow=True),
+        line(276, 195, 240, 195, stroke=LINE, arrow=True),
+        path("M140 226 L140 248 L380 248", stroke=LINE, w=1.5, dash="5 4"),
+        path("M380 248 L620 248 L620 230", stroke=LINE, dash="5 4", arrow=True),
+    ])
+    steps = []
+    for n, (title, sub, detail) in enumerate(PHASES):
+        body = [arrows]
+        for k, ((x, y), (t, s, _)) in enumerate(zip(POS, PHASES)):
+            on = k == n
+            body.append(box(x, y, 200, 62, t, s,
+                            fill=TEAL_SOFT if on else FILL,
+                            stroke=TEAL if on else "var(--dg-line-soft)",
+                            label_size=11, sub_size=10,
+                            text_fill=TEAL if on else MUTED))
+        body.append(text(380, 288, detail, 11, 600, fill=MUTED))
+        steps.append(step(n + 1, "".join(body), title[3:].capitalize() + ": " + sub))
+    base.append(text(380, 266, "and then round again, which is the whole point",
+                     10.5, 600, fill=MUTED))
+    desc = ("The development cycle has six phases and it repeats. Analysis asks who the "
+            "app is for and what it must do, written down as specific testable "
+            "requirements, so \"the user can add a task in two taps\" rather than \"make it "
+            "good\". Design plans the screens, the flow between them and the data needed, "
+            "using wireframes that are deliberately ugly so discussion stays on layout "
+            "rather than colour, and a navigation diagram showing which button leads where. "
+            "Implementation is the actual building. Testing checks it works, including with "
+            "boundary and erroneous data and when a field is left empty. Evaluation asks "
+            "whether it solves the original problem, measured against the requirements "
+            "written during analysis. Maintenance fixes problems and adds features, and "
+            "then the cycle returns to analysis, which is why real apps update constantly.")
+    return figure_steps("ks3-cycle", 760, 304, "".join(base), steps,
+                        "The six phase development cycle", desc,
+                        "Almost every failed project is one that started at phase three.",
+                        labels=[p[0][3:].capitalize() + ": " + p[1] for p in PHASES])
+
+
+# ============================================= 39. Variables and data types
+
+@diagram("ks3-python-variables")
+def _ks3_py_vars():
+    """Why input() plus 1 is an error, and what int() fixes."""
+    base = [text(380, 24, "The single most common beginner bug", 12, 650, fill=MUTED)]
+    L = ["input() always hands back text, even when the user typed a number.",
+         "So adding 1 to it is asking Python to add a number to a word.",
+         "int() converts the text into a number, and then it works.",
+         "The four types you need, and how to tell them apart.",
+         "Printing a number next to text needs str(), or a comma."]
+
+    def codebox(x, y, w, lines, accent, soft, h=None):
+        h = h or 30 + len(lines) * 22
+        o = [box(x, y, w, h, None, fill=soft, stroke=accent, r=10)]
+        for i, (s, col) in enumerate(lines):
+            o.append(text(x + 16, y + 30 + i * 22, s, 11.5, 500, anchor="start",
+                          mono=True, fill=col))
+        return "".join(o)
+
+    def memory(x, y, name, value, typ, accent, soft):
+        return "".join([
+            box(x, y, 230, 92, None, fill=FILL, stroke=LINE, r=10),
+            text(x + 115, y + 24, "IN MEMORY", 10.5, 700, fill=MUTED),
+            box(x + 24, y + 38, 80, 34, None, fill="var(--dg-fill-2)", stroke=LINE, r=6),
+            text(x + 64, y + 60, name, 12, 650, mono=True),
+            line(x + 104, y + 55, x + 124, y + 55, stroke=LINE, arrow=True),
+            box(x + 128, y + 38, 78, 34, None, fill=soft, stroke=accent, r=6),
+            text(x + 167, y + 60, value, 12, 650, mono=True, fill=accent),
+            text(x + 115, y + 86, "type: " + typ, 10.5, 600, fill=accent)])
+
+    T = "var(--dg-text)"
+    s1 = codebox(30, 62, 380, [('age = input("How old are you? ")', T),
+                               ('# the user types 14', MUTED)], TEAL, TEAL_SOFT) \
+        + memory(450, 62, "age", '"14"', "str", LILAC, LILAC_SOFT) \
+        + text(380, 200, "Those quote marks are the whole problem. 14 went in, "
+               '"14" came out.', 11, 650, fill=MUTED)
+    s2 = codebox(30, 62, 380, [('age = input("How old are you? ")', T),
+                               ('print(age + 1)', WARN)], WARN, WARN_SOFT) \
+        + box(450, 62, 230, 92, None, fill=WARN_SOFT, stroke=WARN, r=10) \
+        + text(565, 86, "TypeError", 12, 700, fill=WARN) \
+        + text(565, 112, "can only concatenate", 10, 500, fill=WARN) \
+        + text(565, 130, 'str to str, not int', 10, 500, fill=WARN) \
+        + text(380, 200, 'Python will not guess. "14" is a word and 1 is a number.',
+               11, 650, fill=MUTED)
+    s3 = codebox(30, 62, 380, [('age = int(input("How old are you? "))', T),
+                               ('print(age + 1)        # 15', TEAL)], TEAL, TEAL_SOFT) \
+        + memory(450, 62, "age", "14", "int", TEAL, TEAL_SOFT) \
+        + text(380, 200, "int() around the input. Three characters, and most of your "
+               "bugs go away.", 11, 650, fill=MUTED)
+
+    TYPES = [("int", "whole numbers", "7   -3   0"),
+             ("float", "numbers with a decimal point", "3.14   1.5"),
+             ("str", "text, called a string", '"hello"   "7"'),
+             ("bool", "True or False, nothing else", "True   False")]
+    s4 = "".join([box(40, 54 + i * 42, 672, 36, None, fill=FILL, stroke=LINE, r=8)
+                  + box(54, 61 + i * 42, 68, 22, None, fill=TEAL_SOFT, stroke=TEAL, r=6)
+                  + text(88, 77 + i * 42, t, 11.5, 700, fill=TEAL, mono=True)
+                  + text(140, 77 + i * 42, meaning, 11, 500, anchor="start")
+                  + text(700, 77 + i * 42, ex, 11, 500, anchor="end", mono=True, fill=MUTED)
+                  for i, (t, meaning, ex) in enumerate(TYPES)]) \
+        + text(380, 236, 'Note the fourth row: "7" is a str and 7 is an int. '
+               "They are not the same thing.", 11, 650, fill=MUTED)
+    s5 = codebox(30, 56, 672, [
+        ('score = 15', T),
+        ('print("You scored " + score)       # TypeError', WARN),
+        ('print("You scored " + str(score))  # converts it first', TEAL),
+        ('print("You scored", score)         # or let the comma do it', TEAL),
+    ], LILAC, LILAC_SOFT) \
+        + text(380, 214, "A plus sign joins two strings. A comma prints two things "
+               "with a space between.", 11, 650, fill=MUTED)
+
+    steps = [step(i + 1, b, L[i]) for i, b in enumerate([s1, s2, s3, s4, s5])]
+    desc = ("Why input plus one is an error. The input function always returns text, so "
+            "after age equals input, a user who typed fourteen leaves the string quote "
+            "fourteen quote in memory, with type str, not the number fourteen. Printing age "
+            "plus one then raises a TypeError, because Python will not guess: it cannot add "
+            "the number one to a word. Wrapping the input in int converts the text to a "
+            "whole number, so age holds fourteen as an int and age plus one gives fifteen. "
+            "The four main types are int for whole numbers such as seven or minus three, "
+            "float for numbers with a decimal point such as three point one four, str for "
+            "text including the digits quote seven quote, and bool for True or False. The "
+            "same conversion applies when printing: joining a number onto text with a plus "
+            "sign needs str around the number, or you can pass both to print separated by a "
+            "comma and Python handles it.")
+    return figure_steps("ks3-pyvars", 760, 248, "".join(base), steps,
+                        "Input, variables and data types", desc,
+                        "If an error message mentions str and int in the same sentence, "
+                        "you have forgotten a conversion.", labels=L)
+
+
+# ===================================================== 40. Loops, traced
+
+@diagram("ks3-python-loop-trace")
+def _ks3_loops():
+    """What the loop variable actually holds, line by line."""
+    base = [text(380, 24, "What the loop variable is doing on each pass",
+                 12, 650, fill=MUTED)]
+    L = ["A for loop repeats a known number of times, and i changes every pass.",
+         "range() decides exactly which numbers i takes.",
+         "A while loop repeats until its condition stops being true.",
+         "If nothing inside the loop can change the condition, it never stops."]
+
+    def codebox(x, y, w, lines, accent, soft):
+        h = 30 + len(lines) * 22
+        o = [box(x, y, w, h, None, fill=soft, stroke=accent, r=10)]
+        for i, (s, col) in enumerate(lines):
+            o.append(text(x + 16, y + 30 + i * 22, s, 11.5, 500, anchor="start",
+                          mono=True, fill=col))
+        return "".join(o)
+
+    T = "var(--dg-text)"
+
+    def tracetable(x, y, headers, rows, w=(60, 110), accent=TEAL):
+        o, cw = [], list(w)
+        tw = sum(cw)
+        for c, head in enumerate(headers):
+            cx = x + sum(cw[:c])
+            o.append(box(cx, y, cw[c], 26, None, fill="var(--dg-fill-2)",
+                         stroke="var(--dg-line-soft)", r=0))
+            o.append(text(cx + cw[c] / 2, y + 18, head, 10.5, 700, fill=MUTED, mono=True))
+        for r, row in enumerate(rows):
+            for c, cell in enumerate(row):
+                cx = x + sum(cw[:c])
+                o.append(box(cx, y + 26 + r * 26, cw[c], 26, None, fill=FILL,
+                             stroke="var(--dg-line-soft)", r=0))
+                o.append(text(cx + cw[c] / 2, y + 44 + r * 26, cell, 10.5, 600, mono=True))
+        o.append(text(x + tw / 2, y - 10, "TRACE", 10.5, 700, fill=accent))
+        return "".join(o)
+
+    s1 = codebox(30, 60, 330, [('for i in range(5):', T),
+                               ('    print("Hello", i)', T)], TEAL, TEAL_SOFT) \
+        + tracetable(410, 70, ["i", "printed"],
+                     [("0", "Hello 0"), ("1", "Hello 1"), ("2", "Hello 2"),
+                      ("3", "Hello 3"), ("4", "Hello 4")]) \
+        + text(195, 160, "five passes", 11, 650, fill=TEAL) \
+        + text(195, 182, "i starts at 0", 11, 500, fill=MUTED) \
+        + text(195, 204, "and never reaches 5", 11, 500, fill=MUTED) \
+        + text(380, 256, "range(5) gives five numbers starting at zero, which is why the "
+               "last one is 4", 11, 650, fill=MUTED)
+
+    def numline(y, label, nums, accent, soft):
+        o = [text(40, y + 6, label, 11.5, 650, anchor="start", mono=True, fill=accent)]
+        for k, n in enumerate(nums):
+            o.append(box(206 + k * 54, y - 14, 44, 28, None, fill=soft, stroke=accent, r=6))
+            o.append(text(228 + k * 54, y + 6, str(n), 11.5, 650, mono=True, fill=accent))
+        return "".join(o)
+    s2 = numline(80, "range(5)", [0, 1, 2, 3, 4], TEAL, TEAL_SOFT) \
+        + numline(136, "range(1, 6)", [1, 2, 3, 4, 5], LILAC, LILAC_SOFT) \
+        + numline(192, "range(0, 10, 2)", [0, 2, 4, 6, 8], WARN, WARN_SOFT) \
+        + text(380, 240, "start, stop, step. The stop value is never included.",
+               11, 650, fill=MUTED) \
+        + text(380, 262, "range(1, 6) is the one to use when counting 1 to 5",
+               11, 500, fill=MUTED)
+
+    s3 = codebox(30, 56, 350, [('password = ""', T),
+                               ('while password != "letmein":', T),
+                               ('    password = input("Password: ")', T),
+                               ('print("Welcome")', TEAL)], LILAC, LILAC_SOFT) \
+        + tracetable(410, 70, ["password", "!= letmein?"],
+                     [('""', "True"), ('"cat"', "True"), ('"dog"', "True"),
+                      ('"letmein"', "False")], w=(110, 110), accent=LILAC) \
+        + text(380, 244, "The condition is checked before every pass, so a wrong "
+               "guess simply asks again", 11, 650, fill=MUTED) \
+        + text(380, 266, "Use while when you do not know how many repeats you need",
+               11, 500, fill=MUTED)
+
+    s4 = codebox(30, 62, 330, [('total = 0', T),
+                               ('while total < 10:', WARN),
+                               ('    print(total)', T),
+                               ('# total never changes', WARN)], WARN, WARN_SOFT) \
+        + box(410, 62, 300, 118, None, fill=FILL, stroke=LINE, r=10) \
+        + text(560, 86, "INFINITE LOOP", 11, 700, fill=WARN) \
+        + _lines(430, 114, ["total is 0 forever, so", "0 < 10 is true forever.",
+                            "The program never ends."], size=11, gap=22) \
+        + text(380, 216, "Before you run a while loop, find the line inside it that "
+               "changes the value being tested.", 11, 650, fill=MUTED) \
+        + text(380, 240, "If there isn't one, you have written an infinite loop.",
+               11, 500, fill=MUTED)
+
+    steps = [step(i + 1, b, L[i]) for i, b in enumerate([s1, s2, s3, s4])]
+    desc = ("What a loop variable holds on each pass. For i in range five, printing Hello "
+            "and i, runs five times with i taking the values zero, one, two, three and "
+            "four, printing Hello 0 through to Hello 4, so it never reaches five. The range "
+            "function takes a start, a stop and a step, and the stop value is never "
+            "included: range five gives zero to four, range one to six gives one to five, "
+            "and range zero to ten step two gives zero, two, four, six and eight. A while "
+            "loop instead repeats as long as its condition is true, so a password loop that "
+            "starts with an empty string keeps asking while the entered password does not "
+            "equal letmein, and the trace shows the condition true for the empty string, "
+            "for cat and for dog, and false once letmein is typed, at which point Welcome "
+            "is printed. Use while when you do not know how many repeats are needed. If "
+            "nothing inside the loop changes the value being tested, such as a total that "
+            "stays at zero while the condition checks total less than ten, the loop runs "
+            "forever.")
+    return figure_steps("ks3-loops", 760, 280, "".join(base), steps,
+                        "for loops, while loops and what the loop variable holds", desc,
+                        "In an exam, trace the loop on paper with a two column table. It "
+                        "turns a guess into a method.", labels=L)
+
+
+# ========================================== 41. Lists, 2D lists and dictionaries
+
+@diagram("ks3-list-vs-dict")
+def _ks3_collections():
+    """Three ways to store more than one thing."""
+    base = [text(380, 24, "Three ways to hold more than one value", 12, 650, fill=MUTED)]
+    L = ["A list is values in order, reached by their position number.",
+         "Counting starts at zero, which is where off by one errors come from.",
+         "A 2D list is a list of lists: a grid, reached by row then column.",
+         "A dictionary uses a name instead of a position.",
+         "Which one to reach for."]
+
+    def cells(x, y, vals, accent, soft, idx=True, w=92, label=None):
+        o = []
+        for i, v in enumerate(vals):
+            cx = x + i * w
+            o.append(box(cx, y, w, 42, None, fill=soft, stroke=accent, r=8))
+            o.append(text(cx + w / 2, y + 27, str(v), 13, 650, mono=True))
+            if idx:
+                o.append(text(cx + w / 2, y + 62, "[%d]" % i, 11, 700, fill=accent,
+                              mono=True))
+        if label:
+            o.append(text(x, y - 14, label, 11.5, 650, anchor="start", mono=True,
+                          fill=accent))
+        return "".join(o)
+
+    s1 = cells(70, 90, [45, 78, 12, 90, 33], TEAL, TEAL_SOFT,
+               label="scores = [45, 78, 12, 90, 33]") \
+        + text(380, 182, "scores[0] is 45    scores[3] is 90    len(scores) is 5",
+               12, 650, fill=TEAL, mono=True) \
+        + text(380, 214, "Order is kept, duplicates are allowed, and you can add to or "
+               "remove from either end.", 11, 600, fill=MUTED) \
+        + text(380, 240, "sum, max, min, len, sorted, append, insert, remove, index",
+               11, 500, fill=MUTED, mono=True)
+    s2 = cells(70, 90, [45, 78, 12, 90, 33], TEAL, TEAL_SOFT,
+               label="scores = [45, 78, 12, 90, 33]") \
+        + box(438, 84, 100, 54, None, fill="none", stroke=WARN, r=10, dash="5 4") \
+        + text(488, 158, "[3]", 11, 700, fill=WARN, mono=True) \
+        + text(380, 190, "The fourth value lives at index 3", 12, 650, fill=WARN) \
+        + text(380, 222, "scores[5] does not exist: five values occupy indexes 0 to 4.",
+               11, 600, fill=MUTED) \
+        + text(380, 246, "IndexError means you asked for a position that is not there.",
+               11, 500, fill=MUTED)
+
+    board = [["X", "O", "X"], ["O", "X", "O"], ["X", "O", "X"]]
+    g = [text(60, 76, 'board = [["X","O","X"],', 11.5, 650, anchor="start", mono=True,
+              fill=LILAC),
+         text(60, 98, '         ["O","X","O"],', 11.5, 650, anchor="start", mono=True,
+              fill=LILAC),
+         text(60, 120, '         ["X","O","X"]]', 11.5, 650, anchor="start", mono=True,
+              fill=LILAC)]
+    for r in range(3):
+        g.append(text(404, 100 + r * 56, "row %d" % r, 10.5, 700, anchor="end", fill=MUTED,
+                      mono=True))
+        for c in range(3):
+            on = (r, c) == (1, 2)
+            g.append(box(418 + c * 56, 78 + r * 56, 50, 50, None,
+                         fill=WARN_SOFT if on else FILL,
+                         stroke=WARN if on else LINE, r=8))
+            g.append(text(443 + c * 56, 110 + r * 56, board[r][c], 14, 650, mono=True,
+                          fill=WARN if on else "var(--dg-text)"))
+    for c in range(3):
+        g.append(text(443 + c * 56, 68, "col %d" % c, 10.5, 700, fill=MUTED, mono=True))
+    g.append(text(380, 266, 'board[1][2] is "O": row first, then column',
+                  12, 650, fill=WARN, mono=True))
+    g.append(text(380, 290, "Swapping them round is the most common error in the whole "
+                  "topic.", 11, 600, fill=MUTED))
+    s3 = "".join(g)
+
+    pairs = [("name", '"Aisha"'), ("year", "9"), ("score", "82")]
+    s4 = "".join(
+        [text(60, 76, 'student = {"name": "Aisha", "year": 9, "score": 82}', 11.5, 650,
+              anchor="start", mono=True, fill=TEAL)]
+        + ["".join([box(120, 100 + i * 50, 170, 40, None, fill="var(--dg-fill-2)",
+                        stroke=LINE, r=8),
+                    text(205, 126 + i * 50, k, 12, 650, mono=True),
+                    line(292, 120 + i * 50, 326, 120 + i * 50, stroke=LINE, arrow=True),
+                    text(309, 110 + i * 50, "", 10, 500),
+                    box(332, 100 + i * 50, 170, 40, None, fill=TEAL_SOFT, stroke=TEAL, r=8),
+                    text(417, 126 + i * 50, v, 12, 650, mono=True, fill=TEAL)])
+           for i, (k, v) in enumerate(pairs)]
+        + [text(205, 92, "KEY", 10.5, 700, fill=MUTED),
+           text(417, 92, "VALUE", 10.5, 700, fill=TEAL),
+           _lines(530, 118, ['student["name"]', '  gives "Aisha"', "",
+                             'student["house"] = "Blue"', "  adds a new pair"],
+                  size=10.5, gap=20),
+           text(380, 266, 'student["score"] says what it means. scores[2] does not.',
+                11, 650, fill=MUTED)])
+
+    rows = [("A set of scores you will sort and total", "list", TEAL, TEAL_SOFT),
+            ("A noughts and crosses board, or a seating plan", "2D list", LILAC, LILAC_SOFT),
+            ("One person's name, year and score together", "dictionary", TEAL, TEAL_SOFT),
+            ("Anything where you would otherwise write a comment", "dictionary",
+             TEAL, TEAL_SOFT)]
+    s5 = "".join([box(40, 60 + i * 50, 672, 42, None, fill=FILL, stroke=LINE, r=8)
+                  + text(60, 86 + i * 50, what, 11.5, 500, anchor="start")
+                  + box(566, 68 + i * 50, 130, 26, None, fill=soft, stroke=acc, r=8)
+                  + text(631, 86 + i * 50, use, 11.5, 700, fill=acc, mono=True)
+                  for i, (what, use, acc, soft) in enumerate(rows)]) \
+        + text(380, 282, "A dictionary costs you nothing and makes the code readable six "
+               "months later.", 11, 650, fill=MUTED)
+
+    steps = [step(i + 1, b, L[i]) for i, b in enumerate([s1, s2, s3, s4, s5])]
+    desc = ("Three ways to store more than one value. A list holds values in order, reached "
+            "by position, so for scores equals forty five, seventy eight, twelve, ninety "
+            "and thirty three, scores index zero is forty five, scores index three is "
+            "ninety, and len of scores is five. Because counting starts at zero, five values "
+            "occupy indexes zero to four and asking for index five raises an IndexError. A "
+            "2D list is a list of lists forming a grid, so a noughts and crosses board is "
+            "three rows of three, and board index one index two means row one then column "
+            "two, which is O; getting row and column the wrong way round is the most common "
+            "error in the topic. A dictionary stores pairs of keys and values, so student "
+            "holds name Aisha, year nine and score eighty two, reached by name rather than "
+            "by position, and a new pair such as house Blue can simply be added. Use a list "
+            "for a set of values you will sort or total, a 2D list for a grid, and a "
+            "dictionary whenever a position number would otherwise need a comment "
+            "explaining it.")
+    return figure_steps("ks3-coll", 760, 300, "".join(base), steps,
+                        "Lists, 2D lists and dictionaries", desc,
+                        "If you find yourself writing a comment to remember what index 3 "
+                        "was, you wanted a dictionary.", labels=L)

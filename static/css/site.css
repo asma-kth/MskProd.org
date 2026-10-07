@@ -1060,6 +1060,11 @@ a.pill:hover { color: var(--accent); background: #fff; }
   --dg-alt-soft:    #EADFF1;
   --dg-warn:        #8A5A10;
   --dg-warn-soft:   #FBEFD6;
+  /* Used only inside the mock browser window in the HTML/CSS diagram: a
+     highlighted span, the text sitting on it, and a default link colour. */
+  --dg-mark:        #FFF07A;
+  --dg-mark-ink:    #2A2200;
+  --dg-link:        #1A4FC4;
 
   margin: var(--sp-5) 0;
   max-width: min(100%, var(--dg-max, 760px));
@@ -1076,6 +1081,9 @@ a.pill:hover { color: var(--accent); background: #fff; }
   --dg-alt-soft:    #2C2440;
   --dg-warn:        #D8B96B;
   --dg-warn-soft:   #342B14;
+  --dg-mark:        #6A5A12;
+  --dg-mark-ink:    #FFF4CC;
+  --dg-link:        #9CC0FF;
 }
 .diagram svg { width: 100%; height: auto; display: block; overflow: visible; }
 .diagram .dg-mono { font-family: var(--font-mono); }

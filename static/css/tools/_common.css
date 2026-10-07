@@ -1,0 +1,92 @@
+/* Chrome shared by every interactive tool.
+ *
+ * The tool scripts have always emitted .tool, .tool-head, .tool-btn,
+ * .tool-field and friends, but only the per tool files were ever written, so
+ * none of these had a single rule: every tool rendered as unstyled browser
+ * default buttons and inputs on a bare white page. This file is the missing
+ * half, and because it lives in the tools bundle it is only served to pages
+ * that actually mount a tool.
+ */
+.tool {
+  margin: var(--sp-5) 0;
+  padding: var(--sp-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-m);
+  box-shadow: var(--shadow-1);
+}
+.tool-head {
+  display: flex; align-items: center; gap: .55rem;
+  flex-wrap: wrap; min-width: 0;
+  padding-bottom: var(--sp-3);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--sp-4);
+}
+.tool-head .icon { width: 1.15rem; height: 1.15rem; color: var(--teal); flex: none; }
+.tool-head h4 {
+  margin: 0; min-width: 0; font-size: 1rem; font-weight: 650; color: var(--ink);
+}
+.tool-fallback { margin: 0; color: var(--ink-3); font-size: .92rem; line-height: 1.6; }
+
+/* Controls ---------------------------------------------------------------- */
+.tool-row {
+  display: flex; flex-wrap: wrap; gap: .8rem; align-items: flex-end;
+  margin-bottom: .9rem;
+}
+.tool-field { display: flex; flex-direction: column; gap: .3rem; min-width: 0; }
+.tool-field label, .tool-label {
+  font-size: .75rem; font-weight: 650; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--ink-3);
+}
+.tool input[type="text"], .tool input[type="number"],
+.tool select, .tool textarea {
+  font: inherit; font-size: .92rem; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--border-strong);
+  border-radius: var(--r-s); padding: .45rem .6rem; min-width: 0; max-width: 100%;
+}
+.tool textarea { font-family: var(--font-mono); font-size: .85rem; line-height: 1.7; }
+/* A dropdown has to be able to show its longest option: in "24 bit, 16.7
+   million colours" the part that matters is at the end. Browsers without :has
+   simply keep the field's own flex basis. */
+.tool-field:has(select) { flex-basis: auto; }
+.tool input[type="range"] { accent-color: var(--teal); }
+.tool input:focus-visible, .tool select:focus-visible, .tool textarea:focus-visible {
+  outline: 2px solid var(--focus-ring); outline-offset: 1px;
+}
+.tool-btns { display: flex; flex-wrap: wrap; gap: .5rem; margin: .2rem 0 .9rem; }
+.tool-btn {
+  font: inherit; font-size: .85rem; font-weight: 600; padding: .4rem 1rem;
+  border-radius: var(--r-pill); border: 1px solid var(--border-strong);
+  background: var(--surface); color: var(--ink-2); cursor: pointer;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.tool-btn:hover { background: var(--accent-quiet); color: var(--accent); border-color: transparent; }
+.tool-btn.is-primary { background: var(--grad-brand); color: #fff; border-color: transparent; }
+.tool-btn.is-primary:hover { color: #fff; filter: brightness(1.08); }
+.tool-btn:disabled { opacity: .5; cursor: not-allowed; }
+.tool-btn:disabled:hover { background: var(--surface); color: var(--ink-2); border-color: var(--border-strong); }
+
+/* Output ------------------------------------------------------------------ */
+.tool-note { margin: .6rem 0 0; font-size: .88rem; color: var(--ink-3); line-height: 1.6; }
+.tool-status { margin: .5rem 0 0; font-size: .9rem; font-weight: 600; color: var(--ink-2); }
+.tool-status.is-good { color: var(--ok); }
+.tool-status.is-bad { color: var(--bad); }
+.tool-working {
+  font-family: var(--font-mono); font-size: .84rem; line-height: 1.75;
+  color: var(--ink-2); background: var(--surface-2);
+  border: 1px solid var(--border); border-radius: var(--r-s);
+  padding: .65rem .8rem; margin: .5rem 0 0;
+}
+.tool .muted { color: var(--ink-3); }
+.tool table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+/* No text-transform here: a column header is often a variable name, and an
+   uppercased i is a different variable. */
+.tool th {
+  text-align: left; font-size: .82rem; font-weight: 700; color: var(--ink-2);
+  background: var(--surface-2); border-bottom: 1px solid var(--border);
+  padding: .45rem .5rem;
+}
+.tool td { border-bottom: 1px solid var(--border); }
+
+[data-theme="dark"] .tool-btn.is-primary,
+[data-theme="dark"] .tool-btn.is-primary:hover { color: #06231F; }
