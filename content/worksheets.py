@@ -16,7 +16,9 @@ def _lines(n):
 
 def _worksheet(course, unit, topic):
     path = "/%s/%s/worksheet/" % (course.slug, topic.slug)
-    title = "%s worksheet" % topic.title
+    # The same topic name appears in several courses, so the course short name
+    # is needed or three worksheets end up sharing one <title>.
+    title = "%s worksheet, %s" % (topic.title, course.short)
     trail = [("Home", "/"), (course.short, "/%s/" % course.slug),
              (topic.title, "/%s/%s/" % (course.slug, topic.slug)),
              ("Worksheet", None)]
@@ -130,7 +132,7 @@ def build(register, add_search, courses):
                 path, html = _worksheet(course, unit, topic)
                 write(path, html)
                 register(path, 0.5, "monthly")
-                add_search("%s worksheet" % topic.title, path,
+                add_search("%s worksheet, %s" % (topic.title, course.short), path,
                            "%s, printable worksheet and mark scheme" % course.short,
                            ("worksheet printable print %s %s mark scheme questions"
                             % (topic.title, course.short)).lower())

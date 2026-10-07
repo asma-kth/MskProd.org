@@ -1037,3 +1037,122 @@ a.pill:hover { color: var(--accent); background: #fff; }
 }
 .hero-figure img { width: 100%; height: auto; }
 @media (max-width: 900px) { .hero-figure { max-width: 34rem; } }
+
+/* ======================================================= inline diagrams
+   The SVG diagrams are drawn with these custom properties so one palette
+   re-themes every figure. Without them the var() references are invalid, the
+   presentation attributes fall back to the SVG defaults, and every shape
+   paints solid black with no stroke. */
+.diagram {
+  --dg-paper:      var(--surface);
+  --dg-fill:       #FFFFFF;
+  --dg-fill-2:     #F1F7F8;
+  --dg-line:       #9FBCC0;
+  --dg-line-soft:  #CFE0E2;
+  --dg-text:       var(--ink);
+  --dg-ink:        var(--ink);
+  --dg-muted:      var(--ink-3);
+  --dg-accent:      var(--teal-deep);
+  --dg-accent-soft: #D6EDEE;
+  --dg-alt:         var(--purple-deep);
+  --dg-alt-soft:    #EADFF1;
+  --dg-warn:        #8A5A10;
+  --dg-warn-soft:   #FBEFD6;
+
+  margin: var(--sp-5) 0;
+  max-width: min(100%, var(--dg-max, 760px));
+  margin-inline: auto;
+}
+[data-theme="dark"] .diagram {
+  --dg-fill:       #1B2A31;
+  --dg-fill-2:     #22333A;
+  --dg-line:       #4E6B72;
+  --dg-line-soft:  #375057;
+  --dg-accent:      var(--aqua);
+  --dg-accent-soft: #11363A;
+  --dg-alt:         var(--lilac);
+  --dg-alt-soft:    #2C2440;
+  --dg-warn:        #D8B96B;
+  --dg-warn-soft:   #342B14;
+}
+.diagram svg { width: 100%; height: auto; display: block; overflow: visible; }
+.diagram .dg-mono { font-family: var(--font-mono); }
+.diagram figcaption {
+  margin-top: var(--sp-3); font-size: .88rem; color: var(--ink-3);
+  line-height: 1.55; text-align: left;
+}
+
+/* --------------------------------------------------- stepped diagrams
+   Before the controller runs, every stage is visible and the figure reads as
+   a complete static diagram. .is-stepped is only added once JavaScript has
+   taken over, so there is never a moment where the content is hidden with no
+   way to reveal it. */
+.diagram-steps .dg-step { transition: opacity .35s ease; }
+.diagram-steps.is-stepped .dg-step { display: none; }
+.diagram-steps.is-stepped .dg-step.is-on { display: block; animation: dgIn .35s ease; }
+@keyframes dgIn { from { opacity: 0; } to { opacity: 1; } }
+
+.dg-controls {
+  display: flex; align-items: center; gap: .5rem; flex-wrap: wrap;
+  margin-top: var(--sp-3); padding-top: var(--sp-3);
+  border-top: 1px solid var(--border);
+}
+.dg-controls[hidden] { display: none; }
+.dg-btn {
+  font: inherit; font-size: .84rem; font-weight: 600; padding: .34rem .9rem;
+  border-radius: var(--r-pill); border: 1px solid var(--border-strong);
+  background: var(--surface); color: var(--ink-2); cursor: pointer;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.dg-btn:hover { background: var(--accent-quiet); color: var(--accent); border-color: transparent; }
+.dg-btn-play { background: var(--grad-brand); color: #fff; border-color: transparent; }
+.dg-btn-play:hover { color: #fff; filter: brightness(1.08); }
+[data-theme="dark"] .dg-btn-play, [data-theme="dark"] .dg-btn-play:hover { color: #06231F; }
+.dg-status {
+  margin: 0; font-size: .86rem; color: var(--ink-3); line-height: 1.5;
+  flex: 1 1 14rem; min-width: 0;
+}
+.dg-status b { color: var(--ink); font-weight: 650; margin-right: .3rem; white-space: nowrap; }
+
+/* A moving part only ever moves for a reader who has not asked for stillness.
+   The stepping controls keep working; only the motion stops. */
+@media (prefers-reduced-motion: reduce) {
+  .diagram-steps .dg-step,
+  .diagram-steps.is-stepped .dg-step.is-on { transition: none; animation: none; }
+  .dg-flow { animation: none !important; }
+}
+/* A dash that travels along a wire, used for buses and network links. */
+.dg-flow { stroke-dasharray: 7 7; animation: dgFlow 1.1s linear infinite; }
+@keyframes dgFlow { to { stroke-dashoffset: -14; } }
+.dg-pulse { animation: dgPulse 1.6s ease-in-out infinite; }
+@keyframes dgPulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+
+/* Question headers are flex rows holding a number, the question and a marks
+   chip. The question is a flex item, so it defaults to min-width:auto and will
+   not shrink below its longest unbreakable run, pushing the marks chip past the
+   edge on narrow screens. Same cause as the callout title above. */
+.examq-head, .q-stem { flex-wrap: wrap; }
+.examq-head .stem, .q-stem { min-width: 0; }
+.examq-head .stem, .q-stem, .ms li, .q-feedback { overflow-wrap: anywhere; }
+.examq-head .marks { margin-left: auto; }
+
+/* Quiz options are flex rows: a letter chip and the option text. The text is an
+   anonymous flex item, so it inherits min-width:auto and will not shrink below
+   its longest unbreakable run. Making the text breakable lets the row fit on a
+   320px screen, which is most of the site's quiz pages. */
+.opt { overflow-wrap: anywhere; }
+.opt .mark { flex: none; }
+
+/* Several interactive tools wrap fixed-width output (the LMC mailbox grid, wide
+   trace tables) in .tool-scroll, but that class had no style at all, so the
+   content widened the page instead of scrolling inside its own box. */
+.tool-scroll { overflow-x: auto; max-width: 100%; }
+
+/* Headings are set large, and a single long word such as "Representation" is
+   wider than a 320px screen can hold. break-word only acts when a word truly
+   cannot fit, so normal wrapping is unaffected. */
+h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
+
+/* Worksheet model answers can contain a long unbreakable run, such as a
+   spreadsheet formula with no spaces, which cannot wrap at any screen width. */
+.ws-ms-model, .ws-ms li, .model-answer p { overflow-wrap: anywhere; }

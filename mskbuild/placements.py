@@ -187,6 +187,46 @@ PLACEMENTS = {
     ("ks3", "computational-thinking"): {
         "Pseudocode and testing": ["!tool trace-table"],
     },
+    # ------------------------------- computational thinking, law, character sets
+    # Every course that teaches these now has a worked picture rather than three
+    # abstract nouns. Section titles below are the real ones; apply() raises at
+    # build time if any of them stops existing.
+    ("ks4/computer-science", "computational-thinking"): {
+        "Algorithmic thinking": ["!diagram computational-thinking"],
+    },
+    ("ks4/computer-science", "character-encoding"): {
+        "ASCII": ["!diagram character-encoding"],
+    },
+    ("ks4/computer-science", "ethical-legal-cultural-environmental"): {
+        "Legislation": ["!diagram uk-computing-law"],
+    },
+    ("ks4/aqa-computer-science", "computational-thinking"): {
+        "Abstraction": ["!diagram computational-thinking"],
+    },
+    ("ks4/aqa-computer-science", "character-encoding"): {
+        "ASCII": ["!diagram character-encoding"],
+    },
+    ("ks4/aqa-computer-science", "ethical-legal-and-environmental-impacts"): {
+        "The four Acts": ["!diagram uk-computing-law"],
+    },
+    ("ks4/edexcel-computer-science", "decomposition-and-abstraction"): {
+        "Using both in an exam answer": ["!diagram computational-thinking"],
+    },
+    ("ks4/edexcel-computer-science", "legislation-and-privacy"): {
+        "The Acts": ["!diagram uk-computing-law"],
+    },
+    ("ks3", "computational-thinking"): {
+        "The four techniques": ["!diagram computational-thinking"],
+    },
+    ("ks3", "digital-literacy-and-the-law"): {
+        "The four laws": ["!diagram uk-computing-law"],
+    },
+    ("ks5", "elements-of-computational-thinking"): {
+        "Abstractly, ahead and procedurally": ["!diagram computational-thinking"],
+    },
+    ("ks5", "legal-moral-and-ethical-issues"): {
+        "Legislation": ["!diagram uk-computing-law"],
+    },
 }
 
 

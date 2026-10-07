@@ -5,7 +5,7 @@ embedded in topic content with the `!diagram <name>` markup directive. Every one
 carries a <title> and a full <desc>, so a screen reader user receives the same
 information the picture conveys rather than being told an image exists.
 """
-from .svg import (figure, box, text, line, path, circle, chip, esc)
+from .svg import (figure, figure_steps, step, box, text, line, path, circle, chip, esc)
 
 REGISTRY = {}
 
@@ -38,68 +38,82 @@ def _lines(x, y, items, size=11, gap=21, fill="var(--dg-text)"):
 
 @diagram("fetch-decode-execute")
 def _fde():
-    b = []
-    cols = [
-        (11, "FETCH", TEAL, TEAL_SOFT, [
-            "1. Address in the PC is",
-            "    copied into the MAR",
-            "2. The PC is incremented",
-            "3. Address goes out on",
-            "    the address bus",
-            "4. Instruction returns on",
-            "    the data bus into the MDR",
-            "5. MDR is copied to the CIR",
-        ]),
-        (267, "DECODE", LILAC, LILAC_SOFT, [
-            "6. The Control Unit splits",
-            "    the instruction in the CIR",
-            "7. The opcode says which",
-            "    operation to perform",
-            "8. The operand gives the data,",
-            "    or the address of the data",
-            "9. Control signals are sent",
-            "    to the units that will act",
-        ]),
-        (523, "EXECUTE", TEAL, TEAL_SOFT, [
-            "10. The instruction is",
-            "      carried out",
-            "11. An ALU result is placed",
-            "      in the accumulator",
-            "12. Status register flags",
-            "      are updated",
-            "13. A jump writes a new",
-            "      address into the PC",
-        ]),
+    """The cycle, one stage at a time.
+
+    A static picture of three boxes does not show the one thing that matters,
+    which is that control returns to fetch and goes round again. Stepping
+    through it makes the loop the point rather than a footnote.
+    """
+    # Drawn on every stage: the CPU, memory, and the buses between them.
+    base = [
+        box(28, 54, 300, 180, None, fill="var(--dg-fill-2)", stroke=LINE, r=12),
+        text(178, 76, "CENTRAL PROCESSING UNIT", 11, 700, fill=MUTED),
+        box(46, 92, 128, 30, "PC", fill=FILL, stroke=LINE, label_size=12),
+        box(186, 92, 128, 30, "MAR", fill=FILL, stroke=LINE, label_size=12),
+        box(46, 132, 128, 30, "MDR", fill=FILL, stroke=LINE, label_size=12),
+        box(186, 132, 128, 30, "CIR", fill=FILL, stroke=LINE, label_size=12),
+        box(46, 180, 268, 36, "Control Unit  +  ALU", fill=FILL, stroke=LINE, label_size=12),
+        box(470, 92, 240, 124, None, fill="var(--dg-fill-2)", stroke=LINE, r=12),
+        text(590, 114, "MAIN MEMORY", 11, 700, fill=MUTED),
+        box(488, 128, 204, 30, "0x04A  ADD 12", fill=FILL, stroke=LINE, label_size=11),
+        box(488, 166, 204, 30, "0x04B  STA 20", fill=FILL, stroke=LINE, label_size=11),
+        # Faint rails so the bus labels have something to sit against on every
+        # stage; the live arrows are drawn over them when that stage runs.
+        line(328, 128, 470, 128, stroke="var(--dg-line-soft)", w=2),
+        line(328, 180, 470, 180, stroke="var(--dg-line-soft)", w=2),
+        text(399, 120, "address bus", 10, 500, fill=MUTED),
+        text(399, 204, "data bus", 10, 500, fill=MUTED),
     ]
-    for x, title, accent, soft, steps in cols:
-        b.append(box(x, 52, 226, 236, None, fill=FILL, stroke=accent))
-        b.append(box(x, 52, 226, 34, None, fill=soft, stroke=accent, r=8))
-        b.append(text(x + 113, 74, title, 13, 700, fill=accent))
-        b.append(_lines(x + 13, 108, steps))
-
-    b.append(line(240, 170, 264, 170, stroke=LINE, arrow=True))
-    b.append(line(496, 170, 520, 170, stroke=LINE, arrow=True))
-
-    b.append(path("M636 288 L636 330 L124 330 L124 292", stroke=TEAL, w=1.8,
-                  dash="5 4", arrow=True, marker="ah-accent"))
-    b.append(text(380, 322, "and repeat, billions of times each second", 11, 500,
-                  fill=MUTED))
-
-    desc = ("A three stage cycle. In fetch, the address in the program counter is copied "
-            "into the memory address register, the program counter is incremented, the "
-            "address travels out on the address bus, the instruction returns on the data "
-            "bus into the memory data register and is then copied into the current "
-            "instruction register. In decode, the control unit splits that instruction "
-            "into an opcode saying which operation to perform and an operand giving the "
-            "data or the address of the data, then sends control signals to the units that "
-            "will act. In execute, the instruction is carried out, any result from the "
-            "arithmetic logic unit is placed in the accumulator, the status register flags "
-            "are updated, and a jump instruction writes a new address into the program "
-            "counter. Control then returns to fetch and the cycle repeats.")
-    return figure("fde", 760, 348, "".join(b),
-                  "The fetch decode execute cycle", desc,
-                  "The fetch decode execute cycle. Naming the registers and buses in this "
-                  "order is what turns a one mark answer into a full mark one.")
+    L = [
+        "Fetch: the address in the program counter is copied into the MAR.",
+        "Fetch: the program counter is incremented, ready for the next instruction.",
+        "Fetch: the address travels out on the address bus to main memory.",
+        "Fetch: the instruction returns on the data bus into the MDR, then the CIR.",
+        "Decode: the control unit splits the instruction into an opcode and an operand.",
+        "Execute: the instruction is carried out and any result lands in the accumulator.",
+        "And back to fetch. A 3 GHz processor does this about three billion times a second.",
+    ]
+    def hl(x, y, w, h, c=TEAL):
+        return box(x, y, w, h, None, fill="none", stroke=c, r=8)
+    steps = [
+        step(1, hl(46, 92, 128, 30) + hl(186, 92, 128, 30)
+             + line(174, 107, 186, 107, stroke=TEAL, w=2.4, arrow=True, marker="ah-accent")
+             + text(178, 300, "PC  \u2192  MAR", 13, 700, fill=TEAL), L[0]),
+        step(2, hl(46, 92, 128, 30)
+             + text(110, 300, "PC = PC + 1", 13, 700, fill=TEAL), L[1]),
+        step(3, hl(186, 92, 128, 30)
+             + '<line x1="328" y1="128" x2="470" y2="128" stroke="%s" stroke-width="2.4" '
+               'marker-end="url(#ah-accent)" class="dg-flow"/>' % TEAL
+             + text(399, 300, "address out on the address bus", 12, 650, fill=TEAL), L[2]),
+        step(4, hl(46, 132, 128, 30) + hl(186, 132, 128, 30) + hl(488, 128, 204, 30)
+             + '<line x1="470" y1="180" x2="328" y2="180" stroke="%s" stroke-width="2.4" '
+               'marker-end="url(#ah-accent)" class="dg-flow"/>' % TEAL
+             + text(399, 300, "instruction back on the data bus  \u2192  MDR  \u2192  CIR",
+                    12, 650, fill=TEAL), L[3]),
+        step(5, hl(186, 132, 128, 30, LILAC) + hl(46, 180, 268, 36, LILAC)
+             + text(178, 300, "opcode  +  operand", 13, 700, fill=LILAC), L[4]),
+        step(6, hl(46, 180, 268, 36)
+             + text(178, 300, "carry it out, update the flags", 12, 650, fill=TEAL), L[5]),
+        step(7, path("M60 232 L60 282 L300 282", stroke=TEAL, w=2.2, dash="5 4",
+                     arrow=True, marker="ah-accent")
+             + text(420, 300, "repeat", 13, 700, fill=TEAL), L[6]),
+    ]
+    desc = ("A seven stage walk through the fetch decode execute cycle. In fetch, the "
+            "address in the program counter is copied into the memory address register, "
+            "the program counter is incremented, the address travels out on the address "
+            "bus to main memory, and the instruction returns on the data bus into the "
+            "memory data register and then the current instruction register. In decode, "
+            "the control unit splits that instruction into an opcode saying which "
+            "operation to perform and an operand giving the data or its address. In "
+            "execute, the instruction is carried out and any result from the arithmetic "
+            "logic unit is placed in the accumulator with the status flags updated. "
+            "Control then returns to fetch and the whole cycle repeats, around three "
+            "billion times a second on a 3 gigahertz processor.")
+    return figure_steps("fde", 760, 320, "".join(base), steps,
+                        "The fetch decode execute cycle", desc,
+                        "Step through the cycle. Naming the registers and buses in this "
+                        "order is what turns a one mark answer into a full mark one.",
+                        labels=L)
 
 
 # ======================================================== 2. CPU components
@@ -1220,3 +1234,191 @@ def _addition():
                   "Binary addition with carries, and overflow", desc,
                   "Always write the carry row above the columns. Losing a carry off the "
                   "left hand end is overflow, and it is a favourite exam question.")
+
+
+# ================================================= 22. Computational thinking
+
+@diagram("computational-thinking")
+def _ct():
+    """The three pillars applied to one concrete problem.
+
+    Taught abstractly these three words are indistinguishable to most students.
+    Walking one real problem through each pillar is what separates them.
+    """
+    base = [
+        box(24, 48, 712, 44, None, fill="var(--dg-fill-2)", stroke=LINE, r=10),
+        text(380, 76, "Problem: write a program that marks a class set of quizzes",
+             13, 650, fill="var(--dg-text)"),
+    ]
+    L = [
+        "Decomposition: break the problem into parts small enough to solve one at a time.",
+        "Abstraction: strip out the detail that does not affect the result.",
+        "Algorithmic thinking: write the steps down in an order a computer can follow.",
+    ]
+    cols = [
+        ("DECOMPOSITION", TEAL, TEAL_SOFT,
+         ["Read the answers from a file", "Compare each one to the key",
+          "Count the marks", "Work out a grade", "Write a report"]),
+        ("ABSTRACTION", LILAC, LILAC_SOFT,
+         ["Keep: the answer given", "Keep: the correct answer",
+          "Ignore: the pupil's handwriting", "Ignore: how long they took",
+          "Ignore: the paper colour"]),
+        ("ALGORITHM", TEAL, TEAL_SOFT,
+         ["FOR each pupil", "  score = 0", "  FOR each question",
+          "    IF answer = key THEN", "      score = score + 1"]),
+    ]
+    steps = []
+    for n, (title, accent, soft, items) in enumerate(cols, start=1):
+        x = 24 + (n - 1) * 244
+        body = [
+            box(x, 116, 228, 186, None, fill=FILL, stroke=accent, r=10),
+            box(x, 116, 228, 32, None, fill=soft, stroke=accent, r=10),
+            text(x + 114, 137, title, 11, 700, fill=accent),
+            _lines(x + 14, 172, items, size=11, gap=24,
+                   fill="var(--dg-text)" if n != 3 else "var(--dg-text)"),
+        ]
+        if n > 1:
+            body.append(line(x - 14, 209, x - 2, 209, stroke=LINE, arrow=True))
+        steps.append(step(n, "".join(body), L[n - 1]))
+    desc = ("Computational thinking applied to one problem, marking a class set of "
+            "quizzes. Decomposition breaks it into parts: read the answers from a file, "
+            "compare each one to the key, count the marks, work out a grade and write a "
+            "report. Abstraction decides what matters and what does not: keep the answer "
+            "given and the correct answer, ignore the pupil's handwriting, how long they "
+            "took and the colour of the paper. Algorithmic thinking then writes the steps "
+            "in an order a computer can follow, looping over each pupil and each question "
+            "and adding one to the score whenever the answer matches the key.")
+    return figure_steps("ct", 760, 320, "".join(base), steps,
+                        "Computational thinking applied to one problem", desc,
+                        "The three pillars on a single problem. In an exam, name the "
+                        "pillar and then show it doing something to the problem in front "
+                        "of you; naming it alone rarely scores.",
+                        labels=L)
+
+
+# ============================================= 23. UK computing law
+
+@diagram("uk-computing-law")
+def _law():
+    """The four Acts, each with the thing it actually prohibits.
+
+    Students lose marks by naming the right Act for the wrong offence, so each
+    card leads with the offence rather than the title.
+    """
+    base = [text(380, 36, "Which Act covers which offence", 12, 650, fill=MUTED)]
+    acts = [
+        ("Computer Misuse Act 1990", TEAL, TEAL_SOFT,
+         ["Unauthorised access to a computer", "Access with intent to commit a crime",
+          "Unauthorised changes to data", "Making or supplying hacking tools"],
+         "Hacking, planting malware, using\\nsomebody else's login"),
+        ("Data Protection Act 2018 / UK GDPR", LILAC, LILAC_SOFT,
+         ["Data used fairly and lawfully", "Collected for a stated purpose",
+          "Kept accurate and no longer than needed", "Kept secure, and the right to see it"],
+         "How an organisation must handle\\npersonal data about living people"),
+        ("Copyright, Designs and Patents Act 1988", TEAL, TEAL_SOFT,
+         ["Protects original work automatically", "Covers code, music, images, text",
+          "Lasts the author's life plus 70 years", "Breached by copying or sharing it"],
+         "Piracy, using an image without\\na licence, copying source code"),
+        ("Freedom of Information Act 2000", LILAC, LILAC_SOFT,
+         ["A right to ask public bodies for data", "Councils, schools, the NHS, police",
+          "They must reply within 20 working days", "Personal data is exempt"],
+         "Asking a public body what it holds,\\nnot a private company"),
+    ]
+    L = [a[0] for a in acts]
+    steps = []
+    for n, (title, accent, soft, points, when) in enumerate(acts, start=1):
+        body = [
+            box(60, 56, 640, 226, None, fill=FILL, stroke=accent, r=12),
+            box(60, 56, 640, 40, None, fill=soft, stroke=accent, r=12),
+            text(380, 82, title, 13, 700, fill=accent),
+            _lines(96, 132, points, size=12, gap=26),
+            line(96, 232, 664, 232, stroke="var(--dg-line-soft)", w=1),
+        ]
+        # Two lines of context sit inside the card, so they must clear its
+        # lower border at y = 282 rather than straddle it.
+        for i, ln in enumerate(when.split("\\n")):
+            body.append(text(380, 252 + i * 16, ln, 11, 500, fill=MUTED))
+        steps.append(step(n, "".join(body), title))
+    desc = ("Four Acts of UK law that apply to computing. The Computer Misuse Act 1990 "
+            "covers unauthorised access to a computer, access with intent to commit a "
+            "further offence, unauthorised changes to data, and making or supplying "
+            "hacking tools; it is the Act for hacking, malware and using somebody else's "
+            "login. The Data Protection Act 2018 and UK GDPR govern how organisations "
+            "handle personal data about living people, requiring it to be used fairly and "
+            "lawfully, collected for a stated purpose, kept accurate and no longer than "
+            "needed, kept secure, and made available to the person it is about. The "
+            "Copyright, Designs and Patents Act 1988 protects original work automatically, "
+            "including code, music, images and text, for the author's life plus seventy "
+            "years, and is breached by copying or sharing without permission. The Freedom "
+            "of Information Act 2000 gives a right to ask public bodies such as councils, "
+            "schools, the NHS and the police for the information they hold, with a reply "
+            "due within twenty working days, though personal data is exempt.")
+    return figure_steps("law", 760, 300, "".join(base), steps,
+                        "The four Acts that cover computing in the UK", desc,
+                        "Step through the four Acts. Most marks are lost by naming the "
+                        "right Act for the wrong offence, so learn these by the offence "
+                        "rather than by the title.",
+                        labels=L)
+
+
+# ============================================ 24. Character encoding
+
+@diagram("character-encoding")
+def _charset():
+    """From a keypress to the bits actually stored."""
+    base = [
+        text(380, 34, 'Storing the text  "Hi"', 12, 650, fill=MUTED),
+    ]
+    L = [
+        "Every character has a number. In ASCII, capital H is 72 and lower case i is 105.",
+        "That number is written in binary. ASCII uses 7 bits, usually stored in one byte.",
+        "So two characters take two bytes. Text size is simply characters times bytes each.",
+        "ASCII has only 128 codes, so Unicode extends the same idea to every writing system.",
+    ]
+    def cell(x, y, w, h, v, accent=TEAL, soft=TEAL_SOFT, sub=None, mono=True):
+        o = [box(x, y, w, h, None, fill=soft, stroke=accent, r=6),
+             '<text x="%s" y="%s" text-anchor="middle" font-size="14" font-weight="650" '
+             'fill="%s" class="dg-mono">%s</text>' % (x + w / 2, y + h / 2 + 5, accent, esc(v))]
+        if sub: o.append(text(x + w / 2, y + h + 16, sub, 10, 500, fill=MUTED))
+        return "".join(o)
+    steps = [
+        step(1, cell(250, 70, 110, 56, "H", TEAL, TEAL_SOFT, "character")
+             + cell(400, 70, 110, 56, "i", LILAC, LILAC_SOFT, "character")
+             + line(305, 140, 305, 176, stroke=LINE, arrow=True)
+             + line(455, 140, 455, 176, stroke=LINE, arrow=True)
+             + cell(250, 182, 110, 50, "72", TEAL, FILL, "ASCII code")
+             + cell(400, 182, 110, 50, "105", LILAC, FILL, "ASCII code"), L[0]),
+        step(2, cell(250, 70, 110, 50, "72", TEAL, FILL)
+             + cell(400, 70, 110, 50, "105", LILAC, FILL)
+             + line(305, 134, 305, 170, stroke=LINE, arrow=True)
+             + line(455, 134, 455, 170, stroke=LINE, arrow=True)
+             + cell(214, 176, 182, 50, "01001000", TEAL, TEAL_SOFT, "8 bits")
+             + cell(410, 176, 182, 50, "01101001", LILAC, LILAC_SOFT, "8 bits"), L[1]),
+        step(3, cell(214, 100, 182, 54, "01001000", TEAL, TEAL_SOFT, "1 byte")
+             + cell(410, 100, 182, 54, "01101001", LILAC, LILAC_SOFT, "1 byte")
+             + box(214, 196, 378, 46, None, fill=FILL, stroke=LINE, r=8)
+             + text(403, 224, "2 characters  x  1 byte  =  2 bytes", 13, 650, fill="var(--dg-text)"), L[2]),
+        step(4, box(120, 86, 240, 150, None, fill=FILL, stroke=TEAL, r=10)
+             + text(240, 112, "ASCII", 13, 700, fill=TEAL)
+             + _lines(142, 142, ["7 bits, 128 codes", "English letters,", "digits, punctuation"], 11, 24)
+             + box(400, 86, 240, 150, None, fill=FILL, stroke=LILAC, r=10)
+             + text(520, 112, "UNICODE", 13, 700, fill=LILAC)
+             + _lines(422, 142, ["Up to 32 bits", "Over 140,000 codes", "Every writing system,"
+                                 ], 11, 24)
+             + text(422, 214, "plus emoji", 11, 450, anchor="start", fill="var(--dg-text)")
+             + line(366, 160, 394, 160, stroke=LINE, arrow=True), L[3]),
+    ]
+    desc = ("How text is stored. Each character is given a number by a character set: in "
+            "ASCII, capital H is 72 and lower case i is 105. That number is then written "
+            "in binary, so H becomes 01001000 and i becomes 01101001. ASCII uses seven "
+            "bits and is normally stored in one byte per character, so the two character "
+            "string Hi takes two bytes, and the size of any text is simply the number of "
+            "characters multiplied by the bytes used for each. ASCII has only 128 codes, "
+            "enough for English letters, digits and punctuation, so Unicode extends the "
+            "same idea with up to 32 bits and over 140,000 codes, covering every writing "
+            "system in use as well as emoji.")
+    return figure_steps("charset", 760, 266, "".join(base), steps,
+                        "From a character to the bits stored", desc,
+                        "A character set is only a lookup table from characters to "
+                        "numbers. Everything else follows from that one idea.",
+                        labels=L)

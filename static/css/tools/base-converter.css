@@ -1,2 +1,6 @@
-.tool[data-tool="base-converter"] .tool-working { min-height: 2.4rem; white-space: pre; }
+/* The working keeps its binary columns aligned with white-space: pre, so it
+   cannot wrap and must scroll inside its own box instead of widening the page. */
+.tool[data-tool="base-converter"] .tool-working {
+  min-height: 2.4rem; white-space: pre; overflow-x: auto; max-width: 100%;
+}
 .tool[data-tool="base-converter"] input.tool-mono { letter-spacing: .05em; }

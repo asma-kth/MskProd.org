@@ -106,6 +106,11 @@ def layout(*, title: str, description: str, path: str, body: str,
         extra_head += '<link rel="stylesheet" href="/assets/css/tools.css">'
         scripts.append("/assets/js/tools.js")
 
+    # Stepped diagrams ship their stages inline and are usable without this
+    # script, so it is only pulled in by pages that actually contain one.
+    if 'diagram-steps' in body:
+        scripts.append("/assets/js/diagrams.js")
+
     # Runnable Python. The marker goes on <main>, and pyrun.js finds the Python
     # code blocks inside it. Pyodide itself is fetched only when a Run button is
     # pressed, so a page that is merely read costs nothing extra.
@@ -261,27 +266,22 @@ def footer() -> str:
         <h4>Practise</h4>
         <ul>
           <li><a href="/exam-papers/">Practice exam papers</a></li>
-          <li><a href="/tools/">Interactive tools</a></li>
-          <li><a href="/worksheets/">Printable worksheets</a></li>
           <li><a href="/progress/">Your progress</a></li>
           <li><a href="/how-to-revise/">How to revise properly</a></li>
           <li><a href="/glossary/">Computing glossary</a></li>
-          <li><a href="/sitemap.xml">Sitemap</a></li>
         </ul>
       </div>
       <div>
         <h4>Site</h4>
         <ul>
-          <li><a href="/assign/">Set an assignment</a></li>
           <li><a href="/about/">About</a></li>
           <li><a href="/privacy/">Privacy policy</a></li>
-          <li><a href="/accessibility/">Accessibility</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <span>Copyright MskProd Computing. Content written independently and not endorsed by any exam board.</span>
-      <span>No accounts. No cookies. No tracking.</span>
+      <span>No accounts and no subscription. Adverts are served by Google, as set out in the <a href="/privacy/">privacy policy</a>.</span>
     </div>
   </div>
 </footer>""" % logo_svg("")

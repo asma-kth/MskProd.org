@@ -99,3 +99,44 @@ def figure(name, width, height, body, title, desc, caption=None, max_w=760):
         '<title id="%s">%s</title><desc id="%s">%s</desc>%s%s</svg>%s</figure>'
         % (max_w, width, height, tid, did, tid, esc(title), did, esc(desc),
            defs(), body, cap))
+
+def step(n, body, label=""):
+    """One stage of a stepped diagram.
+
+    Every stage is rendered into the SVG. Without JavaScript they are all
+    visible, so the figure still reads as a complete static diagram; the
+    controller hides all but the current one once it loads.
+    """
+    lab = ' data-dg-label="%s"' % esc(label) if label else ""
+    return '<g class="dg-step" data-step="%d"%s>%s</g>' % (n, lab, body)
+
+
+def figure_steps(name, width, height, base, steps, title, desc,
+                 caption=None, max_w=760, labels=None):
+    """A diagram the reader can step through.
+
+    `base` is drawn always; `steps` is a list of stage markup built with step().
+    The controls are real buttons so the figure is keyboard operable, and the
+    live region announces each stage for screen reader users. The full `desc`
+    still describes the whole diagram, so nobody depends on the animation.
+    """
+    tid, did = "dg-%s-t" % name, "dg-%s-d" % name
+    cap = '<figcaption>%s</figcaption>' % esc(caption) if caption else ""
+    n = len(steps)
+    first = esc(labels[0]) if labels else ""
+    controls = (
+        '<div class="dg-controls" hidden data-dg-controls>'
+        '<button type="button" class="dg-btn" data-dg-prev aria-label="Previous step">Back</button>'
+        '<button type="button" class="dg-btn dg-btn-play" data-dg-play '
+        'aria-label="Play the animation">Play</button>'
+        '<button type="button" class="dg-btn" data-dg-next aria-label="Next step">Next</button>'
+        '<p class="dg-status" data-dg-status role="status" aria-live="polite">'
+        '<b data-dg-count>Step 1 of %d</b> <span data-dg-text>%s</span></p>'
+        '</div>' % (n, first))
+    return (
+        '<figure class="diagram diagram-steps" data-dg-steps="%d" style="--dg-max:%dpx">'
+        '<svg viewBox="0 0 %s %s" role="img" aria-labelledby="%s" aria-describedby="%s" '
+        'preserveAspectRatio="xMidYMid meet">'
+        '<title id="%s">%s</title><desc id="%s">%s</desc>%s%s%s</svg>%s%s</figure>'
+        % (n, max_w, width, height, tid, did, tid, esc(title), did, esc(desc),
+           defs(), base, "".join(steps), controls, cap))
