@@ -481,8 +481,13 @@ pre code { background: none; border: 0; padding: 0; color: inherit; white-space:
   display: flex; align-items: center; gap: .5rem; font-weight: 650; font-size: .88rem;
   letter-spacing: .04em; text-transform: uppercase; color: var(--note-accent, var(--teal));
   margin-bottom: .5rem;
+  /* A title may contain inline code, which becomes a flex item. Flex items
+     default to min-width:auto and so refuse to shrink below their content,
+     which pushed the whole page sideways on narrow screens. */
+  flex-wrap: wrap; min-width: 0;
 }
-.note-title .icon { width: 1.05rem; height: 1.05rem; }
+.note-title .icon { width: 1.05rem; height: 1.05rem; flex: none; }
+.note-title code { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
 .note-key   { --note-accent: var(--teal-deep); }
 .note-grade { --note-accent: var(--purple-deep); background: color-mix(in srgb, var(--lilac) 12%, var(--surface)); }
 .note-warn  { --note-accent: #8A6210; background: var(--warn-bg); }

@@ -364,6 +364,19 @@ def build_sitemap():
     with open(os.path.join(DIST, "CNAME"), "w", encoding="utf-8") as fh:
         fh.write("mskprod.org\n")
 
+    # Pages whose address has changed. GitHub Pages cannot issue a real 301, so
+    # the 404 page checks this list and forwards, which keeps old links and
+    # anything already in a search index working.
+    moved = {
+        "/python/input-and-selection/": "/python/input-and-operators/",
+        "/python/lists-and-strings/": "/python/lists/",
+    }
+    redirect_js = (
+        "<script>(function(){var m=%s;var p=location.pathname;"
+        "if(!p.endsWith('/'))p+='/';"
+        "if(m[p]){location.replace(m[p]+location.search+location.hash);}})();</script>"
+        % json.dumps(moved, separators=(",", ":")))
+
     # 404
     body = """<div class="wrap" style="padding:var(--sp-8) 0;text-align:center;max-width:640px">
   <div style="max-width:180px;margin:0 auto var(--sp-4)">%s</div>
@@ -376,7 +389,7 @@ def build_sitemap():
 </div>""" % render.mascot_svg()
     with open(os.path.join(DIST, "404.html"), "w", encoding="utf-8") as fh:
         fh.write(layout(title="Page not found", description="That page could not be found on MskProd Computing.",
-                        path="/404.html", body=body))
+                        path="/404.html", body=body, extra_head=redirect_js))
 
 
 def build_manifest():

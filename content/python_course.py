@@ -347,12 +347,12 @@ round(3.7)       # 4, this rounds properly
 )
 
 P_INPUT = Topic(
-    slug="input-and-selection",
-    title="Input, Operators and Selection",
+    slug="input-and-operators",
+    title="Input and Operators",
     spec="1.3",
     icon="i-flow",
-    minutes=24,
-    blurb="Getting data from the user, every operator you need, and making decisions with if, elif and else.",
+    minutes=18,
+    blurb="Getting data from the user, converting it before you use it, and every arithmetic and comparison operator you need.",
     fact="The single most common beginner bug in the world is forgetting that input returns text. If you remember only one thing from this page, make it that.",
     sections=[
         Section("Input", """
@@ -432,94 +432,26 @@ if not logged_in:
 - `or` needs **at least one** true
 - `not` reverses it
 """),
-        Section("Selection", """
-```python
-mark = int(input("Enter the mark: "))
-
-if mark >= 70:
-    print("Distinction")
-elif mark >= 50:
-    print("Merit")
-elif mark >= 40:
-    print("Pass")
-else:
-    print("Fail")
-```
-
-### The three rules
-
-1. The **colon** at the end of each condition line
-2. The **indentation** of the block underneath, four spaces
-3. Conditions are checked **top to bottom**, and the first true one runs while the rest are skipped
-
-!key Order the conditions from most restrictive to least :: If `mark >= 40` came first, a mark of 95 would print "Pass" and never reach the distinction branch, because Python stops at the first true condition.
-
-### Nested selection
-
-```python
-if logged_in:
-    if is_admin:
-        print("Admin dashboard")
-    else:
-        print("User dashboard")
-else:
-    print("Please log in")
-```
-
-### Combining rather than nesting
-
-Often clearer:
-
-```python
-if logged_in and is_admin:
-    print("Admin dashboard")
-elif logged_in:
-    print("User dashboard")
-else:
-    print("Please log in")
-```
-
-### match, an alternative for many fixed options
-
-```python
-command = input("Enter a command: ").lower()
-
-match command:
-    case "go":
-        print("You move forward.")
-    case "look":
-        print("You see a door.")
-    case "quit":
-        print("Goodbye.")
-    case _:
-        print("I do not understand.")
-```
-
-The underscore case runs when nothing else matched.
-"""),
     ],
     keyterms=[
         ("input()", "A function that displays a prompt and returns whatever the user types, always as a string."),
         ("Modulus", "The % operator, which returns the remainder after division."),
         ("Integer division", "The // operator, which returns only the whole number part of a division."),
-        ("Condition", "An expression that evaluates to True or False."),
-        ("Selection", "Choosing between different paths through a program based on a condition."),
-        ("elif", "Short for else if. Checks another condition only if the previous ones were false."),
-        ("Nested selection", "An if statement placed inside another if statement."),
+        ("Casting", "Converting a value from one type to another, such as int() around input()."),
+        ("Operator", "A symbol that performs an operation on one or more values."),
+        ("Operand", "A value that an operator acts on."),
     ],
     grade="""
 + Always convert input before doing arithmetic on it
-+ Order elif conditions from most restrictive to least
 + Use modulus to test for even numbers, extract time units and cycle values
-+ Use `and` and `or` to combine conditions rather than deeply nesting ifs
-+ Check the boundary: if a condition uses a number, test exactly that number
++ Know when `/` is wrong and `//` is what you meant
++ Write a prompt that tells the user exactly what format you expect
 """,
     mistakes=[
-        "Forgetting int() around input, then comparing a string with a number.",
-        "Using a single equals sign in a condition.",
-        "Ordering elif branches from least restrictive to most.",
-        "Forgetting the colon at the end of the if line.",
-        "Using `>` where `>=` was needed, which fails at exactly the boundary value.",
+        "Forgetting int() around input, then doing arithmetic on a string.",
+        "Using / when // was meant, leaving a decimal point in a count of whole things.",
+        "Writing a prompt with no trailing space, so the user types against the question mark.",
+        "Assuming input strips spaces. It does not, which is why strip() is so often needed.",
     ],
     quiz=[
         Q("What does `input()` always return?", ["A string", "An integer", "A float", "A boolean"], 0,
@@ -531,26 +463,21 @@ The underscore case runs when nothing else matched.
         Q("Which condition correctly tests whether n is even?",
           ["n % 2 == 0", "n / 2 == 0", "n % 2 == 1", "n == 2"], 0,
           "An even number leaves no remainder when divided by two."),
-        Q("A program has `if mark >= 40` before `elif mark >= 70`. What does a mark of 90 print?",
-          ["The message for 40, because the first true condition runs",
-           "The message for 70", "Both messages", "An error"], 0,
-          "Python runs the first true branch and skips the rest, so the most restrictive must come first."),
-        Q("What is wrong with `if score = 10:`?",
-          ["A comparison needs two equals signs", "There should be no colon",
-           "score must be in quotes", "Nothing"], 0,
-          "One equals sign assigns a value, which is not valid inside a condition."),
-        Q("When is `age >= 13 and age <= 19` true?",
-          ["When age is between 13 and 19 inclusive", "When age is 13 or 19 only",
-           "When age is above 13 or below 19", "Always"], 0,
-          "`and` requires both sides to be true at once, so the value must be inside the range."),
-        Q("What does `not True` evaluate to?", ["False", "True", "0", "An error"], 0,
-          "`not` reverses a boolean value."),
         Q("How would you get the seconds part of a total number of seconds?",
           ["total % 60", "total // 60", "total / 60", "total * 60"], 0,
           "Modulus 60 gives the remainder after taking out whole minutes."),
-        Q("In a match statement, what does `case _:` do?",
-          ["Runs when nothing else matched", "Runs first", "Runs always", "Ends the program"], 0,
-          "The underscore is the default case, equivalent to else."),
+        Q("What does `7 / 2` give in Python?", ["3.5", "3", "4", "3.0"], 0,
+          "A single slash always produces a float, even when the division is exact."),
+        Q("What does `6 / 2` give?", ["3.0", "3", "2", "An error"], 0,
+          "Normal division always returns a float, so the answer is 3.0 rather than the integer 3."),
+        Q("What is `2 ** 5`?", ["32", "10", "7", "25"], 0,
+          "The double star is the exponent operator, so this is 2 to the power of 5."),
+        Q("Which correctly reads a whole number from the user?",
+          ["int(input(\"Age: \"))", "input(int(\"Age: \"))",
+           "int(\"Age: \")", "input(\"Age: \") + 0"], 0,
+          "input runs first and returns text, then int converts that text to a number."),
+        Q("What does `\"  hi  \".strip()` give?", ["\"hi\"", "\"  hi  \"", "\"hi  \"", "An error"], 0,
+          "strip removes whitespace from both ends, which is why it is used on almost every input."),
     ],
     exam=[
         EQ("Explain why `age = input(\"Age: \")` followed by `if age > 18:` causes an error.", 3, [
@@ -571,6 +498,282 @@ The underscore case runs when nothing else matched.
             MP("// performs integer division, giving only the whole number part", ["integer division", "whole number", "truncates", "3"]),
         ], "The single slash performs ordinary division and always produces a float, so 7 / 2 gives 3.5 and even 6 / 2 gives 3.0 rather than 3. The double slash performs integer division, discarding anything after the decimal point and returning only the whole number part, so 7 // 2 gives 3. Integer division is useful when a fractional result makes no sense, for example working out how many whole minutes are in a number of seconds.",
            command="Explain"),
+        EQ("A program asks the user for a number of pencils and a total cost, then works out the cost of one pencil. Explain which operators and conversions are needed and why.", 4, [
+            MP("input returns a string so both values must be converted", ["string", "convert", "int(", "float("]),
+            MP("The count is converted with int because it is a whole number", ["int", "whole number", "integer"]),
+            MP("The cost is converted with float because it has a decimal part", ["float", "decimal", "pence"]),
+            MP("Division with a single slash is used, which correctly gives a float", ["/", "divide", "division"]),
+        ], "count = int(input(\"How many pencils? \"))\ncost = float(input(\"Total cost: \"))\nprint(f\"Each pencil costs {cost / count:.2f}\")\n\nThe input function always returns a string, so neither value can be used in arithmetic until it is converted. The number of pencils is converted with int because a count is always a whole number, while the total cost is converted with float because prices include pence and an int would discard them. Ordinary division with a single slash is correct here because the answer genuinely may have a decimal part, and it returns a float even when the division happens to be exact. Integer division would be wrong, because it would throw away the pence.",
+           command="Explain"),
+        EQ("Explain what the modulus operator does and give two situations where it is useful.", 4, [
+            MP("Modulus returns the remainder after division", ["remainder", "left over", "modulus"]),
+            MP("Gives a correct example such as 17 % 5 being 2", ["17 % 5", "example", "2", "remainder is"]),
+            MP("First use such as testing whether a number is even", ["even", "odd", "divisible"]),
+            MP("Second use such as extracting time units or cycling a value", ["seconds", "minutes", "time", "cycle", "wrap", "every nth"]),
+        ], "The modulus operator performs a division and returns the remainder rather than the quotient, so 17 % 5 gives 2 because 5 goes into 17 three times with 2 left over. One common use is testing divisibility: if a number modulus 2 equals 0 then it divides exactly by two and is therefore even, and the same technique checks whether something should happen every third or every tenth time round a loop. A second use is extracting units from a total, for example converting a total number of seconds into minutes and seconds, where total // 60 gives the whole minutes and total % 60 gives the seconds remaining. Modulus is also used to wrap a value around a fixed range, such as moving a player back to the start of a board after the last square.",
+           command="Explain"),
+    ],
+)
+
+P_SELECTION = Topic(
+    slug="selection",
+    title="Selection: if, elif and else",
+    spec="1.4",
+    icon="i-flow",
+    minutes=24,
+    blurb="Making a program choose. Conditions, elif chains, boolean logic, and the ordering mistake that quietly gives everybody the same answer.",
+    fact="Python checks an elif chain from the top and stops at the first true condition. That is why a grade boundary program with the conditions in the wrong order does not crash, it just silently gives every student the same grade, which is far harder to spot.",
+    sections=[
+        Section("Making a decision", """
+Everything so far has run top to bottom, every line, every time. **Selection** is how a
+program takes one path instead of another.
+
+```python
+age = int(input("How old are you? "))
+
+if age >= 18:
+    print("You may vote.")
+else:
+    print("Not yet.")
+```
+
+### The three rules
+
+1. A **colon** at the end of every `if`, `elif` and `else` line
+2. The block underneath is **indented**, four spaces, and the indentation is what decides
+   which lines belong to the branch
+3. Conditions are checked **top to bottom**, and the first true one runs while every
+   other branch is skipped
+
+```python
+mark = int(input("Enter the mark: "))
+
+if mark >= 70:
+    print("Distinction")
+elif mark >= 50:
+    print("Merit")
+elif mark >= 40:
+    print("Pass")
+else:
+    print("Fail")
+```
+
+!key Order conditions from most restrictive to least :: If `mark >= 40` came first, a mark of 95 would print "Pass" and never reach the distinction branch, because Python stops at the first true condition. The program does not crash. It just quietly gives the wrong answer.
+
+### if, elif and else are one statement
+
+A common misunderstanding is that these are three separate statements. They are one.
+
+```python
+# One decision, three possible outcomes. Exactly one branch runs.
+if temperature > 25:
+    print("Hot")
+elif temperature > 15:
+    print("Mild")
+else:
+    print("Cold")
+
+# Three separate decisions. Several can run.
+if temperature > 25:
+    print("Hot")
+if temperature > 15:
+    print("Mild")
+if temperature > 5:
+    print("Not freezing")
+```
+
+With `temperature = 30` the first version prints only "Hot". The second prints all three
+lines, because each `if` is judged independently.
+
+!warn `=` assigns, `==` compares :: `if score = 10:` is a syntax error. One equals sign means "make this the value". Two means "are these equal?". Python refuses the first inside a condition precisely because the mistake used to be so costly in other languages.
+"""),
+        Section("Boolean logic", """
+A **condition** is any expression that evaluates to `True` or `False`.
+
+| Operator | Meaning | True when |
+| `==` | equal to | `5 == 5` |
+| `!=` | not equal to | `5 != 3` |
+| `>` | greater than | `7 > 3` |
+| `<` | less than | `3 < 7` |
+| `>=` | greater than or equal | `5 >= 5` |
+| `<=` | less than or equal | `5 <= 5` |
+
+### Combining conditions
+
+```python
+age = 16
+has_permission = True
+
+if age >= 18 or has_permission:
+    print("Allowed in")
+
+if age >= 13 and age <= 19:
+    print("Teenager")
+
+if not has_permission:
+    print("Permission needed")
+```
+
+- `and` is true only when **both** sides are true
+- `or` is true when **at least one** side is true
+- `not` reverses a condition
+
+### Chaining comparisons
+
+Python lets you write a range the way maths does, and it is clearer:
+
+```python
+if 13 <= age <= 19:        # same as age >= 13 and age <= 19
+    print("Teenager")
+```
+
+### Checking membership
+
+```python
+command = input("> ").lower()
+
+if command in ["quit", "exit", "q"]:
+    print("Goodbye")
+
+if "a" in "banana":
+    print("Found one")
+```
+
+`in` saves you writing the same comparison three times with `or` between them.
+
+!key Watch the boundary :: Most selection bugs sit on exactly the boundary value. If a condition mentions 40, test 39, 40 and 41. `>` and `>=` behave identically everywhere except at the one value that matters.
+"""),
+        Section("Patterns that keep selection readable", """
+### Nested selection
+
+An `if` inside another `if`. The inner one is only reached when the outer condition is true.
+
+```python
+if logged_in:
+    if is_admin:
+        print("Admin dashboard")
+    else:
+        print("User dashboard")
+else:
+    print("Please log in")
+```
+
+### Combining rather than nesting
+
+The same logic, one level flatter, and usually easier to follow:
+
+```python
+if logged_in and is_admin:
+    print("Admin dashboard")
+elif logged_in:
+    print("User dashboard")
+else:
+    print("Please log in")
+```
+
+!grade Flatten where you can :: Deep nesting is the single biggest cause of unreadable beginner code. If you are three levels in, ask whether `and` or an early exit would say the same thing in one level.
+
+### Validating before you act
+
+```python
+reply = input("Enter your age: ")
+
+if not reply.isdigit():
+    print("That is not a whole number.")
+else:
+    age = int(reply)
+    if age >= 18:
+        print("You may vote.")
+    else:
+        print("Not yet.")
+```
+
+Checking the input first means `int()` is only ever handed something it can convert, so
+the program explains the problem instead of crashing.
+
+### match, for many fixed options
+
+```python
+command = input("Enter a command: ").lower()
+
+match command:
+    case "go":
+        print("You move forward.")
+    case "look":
+        print("You see a door.")
+    case "quit":
+        print("Goodbye.")
+    case _:
+        print("I do not understand.")
+```
+
+`match` compares one value against a list of fixed possibilities. The underscore case runs
+when nothing else matched, exactly like `else`. A long `elif` chain that keeps testing the
+same variable is usually clearer written this way.
+"""),
+    ],
+    keyterms=[
+        ("Selection", "Choosing between different paths through a program depending on a condition."),
+        ("Condition", "An expression that evaluates to either True or False."),
+        ("if", "Starts a selection statement, running its block only when the condition is true."),
+        ("elif", "Short for else if. Tests another condition, but only if every condition above it was false."),
+        ("else", "Runs when no condition above it was true. It takes no condition of its own."),
+        ("Boolean operator", "and, or and not, used to combine or reverse conditions."),
+        ("Nested selection", "An if statement placed inside the block of another if statement."),
+        ("Boundary value", "The exact value at which a condition changes from false to true."),
+    ],
+    grade="""
++ Order elif conditions from most restrictive to least, and explain why it matters
++ Choose between `>` and `>=` deliberately by testing the boundary value itself
++ Combine conditions with `and` and `or` instead of nesting three levels deep
++ Explain why an elif chain gives one outcome while separate ifs can give several
++ Validate input before converting it, so the program reports the problem rather than crashing
+""",
+    mistakes=[
+        "Using a single equals sign in a condition, which is a syntax error.",
+        "Ordering elif branches from least restrictive to most, so every value matches the first branch.",
+        "Forgetting the colon at the end of the if line.",
+        "Writing several separate ifs where one elif chain was meant, so more than one branch runs.",
+        "Using `>` where `>=` was needed, which fails at exactly the boundary value.",
+        "Writing `if age >= 13 and <= 19`, which is not valid. Each side of `and` must be a complete condition.",
+    ],
+    quiz=[
+        Q("What is wrong with `if score = 10:`?",
+          ["A comparison needs two equals signs", "There should be no colon",
+           "score must be in quotes", "Nothing is wrong"], 0,
+          "One equals sign assigns a value. A condition needs == to compare."),
+        Q("A program has `if mark >= 40` before `elif mark >= 70`. What does a mark of 90 print?",
+          ["The message for 40, because the first true condition runs",
+           "The message for 70", "Both messages", "An error"], 0,
+          "Python runs the first true branch and skips the rest, so the most restrictive condition must come first."),
+        Q("When is `age >= 13 and age <= 19` true?",
+          ["When age is between 13 and 19 inclusive", "When age is 13 or 19 only",
+           "When age is above 13 or below 19", "Always"], 0,
+          "`and` requires both sides to be true at the same time, so the value must be inside the range."),
+        Q("What does `not True` evaluate to?", ["False", "True", "0", "An error"], 0,
+          "`not` reverses a boolean value."),
+        Q("With `temperature = 30`, how many lines does three separate `if` statements print, if all three conditions are true?",
+          ["Three", "One", "None", "An error"], 0,
+          "Separate ifs are judged independently, so every true one runs. An elif chain would print only the first."),
+        Q("What does `else` take as its condition?",
+          ["Nothing, it runs when no condition above was true", "The opposite of the if",
+           "Any condition you like", "The same condition as the if"], 0,
+          "else is the catch-all. Writing a condition after it is a syntax error."),
+        Q("Which is equivalent to `age >= 13 and age <= 19`?",
+          ["13 <= age <= 19", "13 < age < 19", "age in (13, 19)", "age == 13 or age == 19"], 0,
+          "Python allows comparisons to be chained, which reads much closer to the maths."),
+        Q("What decides which lines belong inside an if branch?",
+          ["The indentation", "The brackets", "The semicolons", "The order they were typed"], 0,
+          "Python uses indentation where many other languages use curly brackets."),
+        Q("In a match statement, what does `case _:` do?",
+          ["Runs when nothing else matched", "Runs first", "Runs always", "Ends the program"], 0,
+          "The underscore is the default case, equivalent to else."),
+        Q("A condition uses `if mark > 40` for a pass. What happens to a mark of exactly 40?",
+          ["It fails, because 40 is not greater than 40", "It passes",
+           "It causes an error", "It is ignored"], 0,
+          "This is the classic boundary bug. `>=` would be needed to include 40 itself."),
+    ],
+    exam=[
         EQ("Write a program that asks for a mark out of 100 and prints Distinction for 70 or above, Merit for 50 to 69, Pass for 40 to 49 and Fail below 40.", 5, [
             MP("Reads and converts the input", ["int(input", "input"]),
             MP("Tests for 70 or above first", [">= 70", "70"]),
@@ -579,12 +782,33 @@ The underscore case runs when nothing else matched.
             MP("Uses else for everything below 40", ["else", "fail"]),
         ], "mark = int(input(\"Enter the mark: \"))\n\nif mark >= 70:\n    print(\"Distinction\")\nelif mark >= 50:\n    print(\"Merit\")\nelif mark >= 40:\n    print(\"Pass\")\nelse:\n    print(\"Fail\")\n\nThe conditions are ordered from most restrictive to least, which is essential. Python checks each condition in turn and runs the first one that is true, skipping the rest, so a mark of 85 is correctly caught by the first branch. If the 40 test came first, every mark of 40 or above would print Pass and the higher grades would never be reached.",
            command="Write"),
-        EQ("Explain what the modulus operator does and give two situations where it is useful.", 4, [
-            MP("Modulus returns the remainder after division", ["remainder", "left over", "modulus"]),
-            MP("Gives a correct example such as 17 % 5 being 2", ["17 % 5", "example", "2", "remainder is"]),
-            MP("First use such as testing whether a number is even", ["even", "odd", "divisible"]),
-            MP("Second use such as extracting time units or cycling a value", ["seconds", "minutes", "time", "cycle", "wrap", "every nth"]),
-        ], "The modulus operator performs a division and returns the remainder rather than the quotient, so 17 % 5 gives 2 because 5 goes into 17 three times with 2 left over. One common use is testing divisibility: if a number modulus 2 equals 0 then it divides exactly by two and is therefore even, and the same technique checks whether something should happen every third or every tenth time round a loop. A second use is extracting units from a total, for example converting a total number of seconds into minutes and seconds, where total // 60 gives the whole minutes and total % 60 gives the seconds remaining. Modulus is also used to wrap a value around a fixed range, such as moving a player back to the start of a board after the last square.",
+        EQ("Explain the difference between using an elif chain and using several separate if statements.", 4, [
+            MP("An elif chain is a single statement", ["one statement", "single", "same statement", "chain"]),
+            MP("Only the first true branch runs and the rest are skipped", ["first true", "only one", "skips", "stops"]),
+            MP("Separate ifs are each judged independently", ["independent", "separately", "each one", "every if"]),
+            MP("So several separate ifs may all run", ["more than one", "several", "all of them", "multiple"]),
+        ], "An if, elif and else chain forms one single selection statement with several possible outcomes. Python tests each condition from the top and runs the block belonging to the first one that is true, then skips every remaining branch entirely, so exactly one branch runs. Several separate if statements are instead judged one after another and completely independently of each other, so if more than one of their conditions happens to be true then more than one block will run. This is why a temperature of 30 prints only Hot from an elif chain, but would print Hot, Mild and Not freezing from three separate ifs.",
+           command="Explain"),
+        EQ("A program checks exam marks using `if mark >= 40` followed by `elif mark >= 70`. Explain why no student is ever awarded a distinction, and state the correction.", 4, [
+            MP("Python checks conditions from the top and stops at the first true one", ["first true", "top to bottom", "stops", "in order"]),
+            MP("Any mark of 70 or more also satisfies the 40 condition", ["also true", "satisfies both", "70 is above 40", "already true"]),
+            MP("So the 40 branch always runs first and the elif is never reached", ["never reached", "never runs", "skipped", "always pass"]),
+            MP("Reorder so the most restrictive condition is tested first", ["reorder", "70 first", "most restrictive first", "swap"]),
+        ], "Python evaluates the conditions of a selection statement in the order they are written and runs the block belonging to the first condition that is true, skipping all the others. A mark of 85 satisfies mark >= 40 just as much as it satisfies mark >= 70, so the first branch is taken and the elif below it is never even tested. Every student scoring 40 or above therefore receives the same message. The correction is to order the conditions from most restrictive to least, testing mark >= 70 first, then mark >= 50, then mark >= 40, so that each mark is caught by the highest band it qualifies for.",
+           command="Explain"),
+        EQ("Write a program that asks the user for their age, checks that what they typed is a whole number, and then states whether they may vote at 18 or not.", 5, [
+            MP("Reads the input as a string first", ["input", "reply", "answer"]),
+            MP("Checks the input is numeric before converting", ["isdigit", "validate", "check", "is a number"]),
+            MP("Reports the problem if it is not numeric", ["not a number", "invalid", "error message", "print"]),
+            MP("Converts the valid input to an integer", ["int(", "convert", "cast"]),
+            MP("Uses selection to print the correct voting message", ["if", ">= 18", "else"]),
+        ], "reply = input(\"Enter your age: \")\n\nif not reply.isdigit():\n    print(\"That is not a whole number.\")\nelse:\n    age = int(reply)\n    if age >= 18:\n        print(\"You may vote.\")\n    else:\n        print(\"Not yet.\")\n\nThe input is read as a string and checked with isdigit before any conversion is attempted, so int is only ever given something it can actually convert. Without that check, typing a word would raise a ValueError and stop the program. Validating first means the program explains the problem to the user instead of crashing, which is what any real program is expected to do.",
+           command="Write"),
+        EQ("Explain why combining two conditions with `and` is often preferable to nesting one if statement inside another.", 3, [
+            MP("Nesting adds a level of indentation for each condition", ["indentation", "level", "deeper", "nested"]),
+            MP("Deeply nested code is harder to read and follow", ["harder to read", "readable", "difficult", "confusing"]),
+            MP("A single condition joined with and expresses the same logic in one level", ["one level", "flatter", "same logic", "single condition"]),
+        ], "Each nested if adds another level of indentation, and code that is three or four levels deep becomes genuinely difficult to read because the reader has to hold every enclosing condition in their head at once to know when a line will actually run. Joining the conditions with and expresses exactly the same requirement, that both must be true, while keeping the code at a single level of indentation. The nested form is only preferable when the two conditions need separate else branches, because then each if genuinely has its own alternative to handle.",
            command="Explain"),
     ],
 )
@@ -851,14 +1075,286 @@ while True:
     ],
 )
 
-P_LISTS = Topic(
-    slug="lists-and-strings",
-    title="Lists and Strings",
+P_STRINGS = Topic(
+    slug="string-manipulation",
+    title="String Manipulation",
     spec="2.2",
+    icon="i-language",
+    minutes=24,
+    blurb="Indexing, slicing, the string methods you will actually use, and why `text.upper()` appears to do nothing at all.",
+    fact="Strings in Python cannot be changed once created. Every method that looks like it edits a string actually builds a brand new one and hands it back, which is exactly why you must assign the result to something.",
+    sections=[
+        Section("Indexing and slicing", """
+A string is a sequence of characters, and every character has a position, counting from **zero**.
+
+```python
+word = "Computing"
+#       012345678
+print(word[0])        # C
+print(word[3])        # p
+print(word[-1])       # g, the last character
+print(word[-2])       # n, the second from last
+print(len(word))      # 9
+```
+
+!warn The last index is `len(word) - 1` :: `word[9]` on a nine character string raises an IndexError, because the positions run 0 to 8. Negative indexing with `word[-1]` is the safe way to reach the end.
+
+### Slicing
+
+A **slice** takes a section of the string, using `[start:end]`. The start is included and
+the end is **excluded**.
+
+```python
+word = "Computing"
+
+print(word[0:4])      # Comp
+print(word[4:])       # uting, from 4 to the end
+print(word[:4])       # Comp, from the start to 4
+print(word[:])        # Computing, the whole thing
+print(word[::-1])     # gnitupmoC, reversed
+print(word[0:9:2])    # Cmuig, every second character
+```
+
+!key Why the end is excluded :: It means `word[:4]` and `word[4:]` fit together perfectly with no overlap and nothing missing. The length of `word[a:b]` is always `b - a`, which is far easier to reason about than it first looks.
+
+### Looping through a string
+
+```python
+for letter in "Python":
+    print(letter)
+```
+
+You rarely need the index. If you do want both the position and the character, use
+`enumerate`:
+
+```python
+for i, letter in enumerate("Python"):
+    print(i, letter)
+```
+"""),
+        Section("String methods", """
+```python
+text = "  Hello World  "
+
+print(text.strip())            # "Hello World", removes surrounding spaces
+print(text.upper())            # "  HELLO WORLD  "
+print(text.lower())            # "  hello world  "
+print(text.title())            # capitalises each word
+print(text.replace("l", "L"))  # swaps every match
+print(text.strip().split(" ")) # ["Hello", "World"]
+print("-".join(["a", "b", "c"]))  # "a-b-c"
+print(text.count("l"))         # 3
+print(text.find("World"))      # 8, the position, or -1 if not found
+print("Hello" in text)         # True
+```
+
+!warn Strings cannot be changed in place :: `text.upper()` does not change `text`. It returns a brand new string and leaves the original exactly as it was. You must write `text = text.upper()` to keep the result. This single misunderstanding causes more confusion than any other string bug.
+
+```python
+name = "aisha"
+name.title()          # returns "Aisha", but throws it away
+print(name)           # aisha, unchanged
+
+name = name.title()   # this is what you meant
+print(name)           # Aisha
+```
+
+### split and join are opposites
+
+```python
+line = "Aisha,Ben,Chloe"
+names = line.split(",")        # ["Aisha", "Ben", "Chloe"]
+back = ",".join(names)         # "Aisha,Ben,Chloe"
+```
+
+`split` turns one string into a list. `join` turns a list back into one string. Note that
+`join` is called **on the separator**, not on the list, which catches everybody out once.
+
+### Case insensitive comparison
+
+```python
+reply = input("Continue? ")
+
+if reply.lower() == "yes":     # accepts Yes, YES, yes, yEs
+    print("Carrying on")
+```
+
+Converting both sides to the same case before comparing is the standard way to stop a
+capital letter breaking a comparison.
+""" ),
+        Section("Validating and building text", """
+### Checking what a string contains
+
+```python
+"42".isdigit()      # True
+"abc".isalpha()     # True
+"abc123".isalnum()  # True
+" ".isspace()       # True
+"".isdigit()        # False, an empty string is never valid
+```
+
+`isdigit()` is the standard way to check that input can safely be converted with `int()`:
+
+```python
+reply = input("Enter a number: ")
+
+if reply.isdigit():
+    number = int(reply)
+    print(f"Twice that is {number * 2}")
+else:
+    print("That was not a whole number.")
+```
+
+### f-strings
+
+The clearest way to build text that contains values.
+
+```python
+name = "Aisha"
+score = 92
+
+print(f"{name} scored {score} out of 100")
+print(f"Rounded: {3.14159:.2f}")           # 3.14
+print(f"As a percentage: {score / 100:.1%}")  # 92.0%
+print(f"Padded: {name:>10}")               # right aligned in 10 characters
+```
+
+!grade Use f-strings for every piece of mixed output :: Building output with `+` and `str()` is longer, easier to get wrong, and crashes the moment you forget a conversion. An f-string handles the conversion for you and reads in the order the sentence is spoken.
+
+### Two classic string problems
+
+Counting vowels:
+
+```python
+word = input("Enter a word: ").lower()
+vowels = 0
+
+for letter in word:
+    if letter in "aeiou":
+        vowels += 1
+
+print(f"{word} contains {vowels} vowels")
+```
+
+Checking a palindrome:
+
+```python
+phrase = input("Enter a phrase: ").lower().replace(" ", "")
+
+if phrase == phrase[::-1]:
+    print("That is a palindrome")
+else:
+    print("That is not a palindrome")
+```
+
+Both rely on normalising the text first, lowering the case and removing anything that
+should not count, so the comparison is fair.
+"""),
+    ],
+    keyterms=[
+        ("String", "A sequence of characters, written inside quotation marks."),
+        ("Index", "The position of a character in a string, counting from 0."),
+        ("Slice", "A section of a string, taken with a start and an end index."),
+        ("Immutable", "Cannot be changed after creation. Strings in Python are immutable."),
+        ("Concatenation", "Joining two strings end to end with the + operator."),
+        ("split", "A string method that breaks text into a list at a chosen separator."),
+        ("join", "A string method, called on the separator, that combines a list of strings into one."),
+        ("f-string", "A string beginning with f where values written in braces are inserted directly."),
+        ("isdigit", "A string method returning True only when every character is a digit."),
+    ],
+    grade="""
++ Use negative indexes and slices confidently, including the reversing slice `[::-1]`
++ Remember that every string method returns a new string rather than changing the original
++ Use split and join to move between a line of text and a list of values
++ Validate text with isdigit before converting it, rather than letting int() crash
++ Use f-strings, with formatting such as `:.2f`, for all output that mixes text and values
+""",
+    mistakes=[
+        "Writing `text.upper()` and expecting text to change. The result must be assigned.",
+        "Using an index equal to the length of the string, which is out of range.",
+        "Forgetting that a slice excludes its end index.",
+        "Calling join on the list instead of on the separator.",
+        "Comparing input to \"yes\" without lowering the case first, so \"Yes\" fails.",
+        "Building output with lots of + and str() instead of an f-string.",
+    ],
+    quiz=[
+        Q("What does `\"Computing\"[0:4]` give?", ["Comp", "Compu", "omput", "puting"], 0,
+          "A slice includes the start index and excludes the end index."),
+        Q("What does `text.upper()` do to the variable text?",
+          ["Nothing, it returns a new string", "Changes text to upper case",
+           "Deletes text", "Causes an error"], 0,
+          "Strings are immutable, so you must assign the result to keep it."),
+        Q("What does `word[::-1]` give?", ["The string reversed", "The first character",
+                                           "The last character", "An error"], 0,
+          "A step of -1 walks through the sequence backwards."),
+        Q("What does `\"a,b,c\".split(\",\")` produce?",
+          ["['a', 'b', 'c']", "'abc'", "['a,b,c']", "An error"], 0,
+          "split breaks the string at each separator and returns a list of the pieces."),
+        Q("Which method checks that a string contains only digits?",
+          ["isdigit()", "isnumber()", "isint()", "digit()"], 0,
+          "It is the standard way to check that input can be safely converted with int()."),
+        Q("What does `f\"Score: {points}\"` do?",
+          ["Inserts the value of points into the text", "Prints the word points",
+           "Creates a list", "Causes an error"], 0,
+          "An f-string evaluates whatever is inside the braces and inserts the result."),
+        Q("What does `\"Computing\"[-1]` give?", ["g", "C", "9", "An error"], 0,
+          "Negative indexes count backwards from the end, so -1 is the last character."),
+        Q("How is join called?",
+          ["On the separator, as in \",\".join(names)", "On the list, as in names.join(\",\")",
+           "On the first item", "It is a built in function, not a method"], 0,
+          "This catches everybody out once. The separator owns the method."),
+        Q("What does `\"Hello\".find(\"z\")` return?", ["-1", "0", "None", "An error"], 0,
+          "find returns -1 when the text is not present, which is why it must be checked before use."),
+        Q("Why compare `reply.lower() == \"yes\"` rather than `reply == \"yes\"`?",
+          ["So Yes and YES are also accepted", "It runs faster",
+           "lower() removes spaces", "Strings cannot be compared directly"], 0,
+          "Normalising the case first means a capital letter does not break the comparison."),
+    ],
+    exam=[
+        EQ("State what is meant by saying that strings in Python are immutable.", 2, [
+            MP("A string cannot be changed after it is created", ["cannot be changed", "immutable", "not modified", "fixed"]),
+            MP("Methods return a new string rather than altering the original", ["new string", "returns", "does not alter", "must assign"]),
+        ], "Immutable means that once a string has been created its contents cannot be altered. Methods such as upper, replace and strip do not change the original string at all: they build and return a brand new string, which is why the result must be assigned to a variable if it is to be kept.",
+           command="State"),
+        EQ("Write a program that counts how many vowels are in a word entered by the user.", 4, [
+            MP("Reads the word and converts it to lower case", ["input", "lower()"]),
+            MP("Initialises a counter to zero", ["= 0", "count", "vowels = 0"]),
+            MP("Loops through each character in the word", ["for", "in word", "each letter"]),
+            MP("Increases the counter when the character is a vowel and prints the total", ["aeiou", "in \"aeiou\"", "+= 1", "print"]),
+        ], "word = input(\"Enter a word: \").lower()\nvowels = 0\n\nfor letter in word:\n    if letter in \"aeiou\":\n        vowels += 1\n\nprint(f\"{word} contains {vowels} vowels\")\n\nConverting the input to lower case means capital letters are counted too. The loop walks through the string one character at a time, and the in operator checks whether the current character appears in the string of vowels, which is much shorter than writing five separate comparisons.",
+           command="Write"),
+        EQ("Explain why `name.title()` on its own appears to have no effect, and state the correction.", 3, [
+            MP("Strings are immutable so the original cannot be changed", ["immutable", "cannot be changed", "unchanged"]),
+            MP("The method builds and returns a new string", ["returns", "new string", "builds"]),
+            MP("The returned value must be assigned, as in name = name.title()", ["assign", "name =", "store the result"]),
+        ], "Strings in Python are immutable, so no method is able to alter the string it is called on. The title method builds a brand new string with each word capitalised and returns it, leaving the original completely untouched. Written on a line by itself the returned string is simply discarded, so the variable appears unchanged. The correction is to assign the result back, writing name = name.title(), which makes the name refer to the new string instead.",
+           command="Explain"),
+        EQ("Write a program that reads a line of text containing names separated by commas and prints each name on its own line, numbered.", 5, [
+            MP("Reads the line of input", ["input", "line"]),
+            MP("Splits it on commas into a list", ["split(\",\")", "split", "comma"]),
+            MP("Loops through the resulting list", ["for", "loop", "each"]),
+            MP("Removes surrounding spaces from each name", ["strip", "trim", "spaces"]),
+            MP("Prints each name with a number", ["print", "enumerate", "number", "count"]),
+        ], "line = input(\"Enter names separated by commas: \")\nnames = line.split(\",\")\n\nfor i, name in enumerate(names, start=1):\n    print(f\"{i}. {name.strip()}\")\n\nThe split method breaks the line into a list at every comma. Because the user is likely to type a space after each comma, strip is used to remove any surrounding whitespace from each name before it is printed. Using enumerate with start set to 1 gives a counter beginning at 1 rather than 0, which is more natural for a numbered list shown to a user.",
+           command="Write"),
+        EQ("Explain how a program can check whether a phrase is a palindrome, ignoring spaces and capital letters.", 4, [
+            MP("Convert the phrase to a single case", ["lower", "upper", "same case", "case"]),
+            MP("Remove the spaces", ["replace", "remove spaces", "strip spaces"]),
+            MP("Reverse the phrase using a slice with a step of -1", ["[::-1]", "reversed", "backwards", "step of -1"]),
+            MP("Compare the normalised phrase with its reverse", ["compare", "==", "equal", "same"]),
+        ], "The phrase must first be normalised so that differences which should not count are removed. Converting it entirely to lower case means a capital letter at the start does not cause a mismatch, and replacing every space with nothing means the spacing of the original phrase is ignored. The normalised phrase is then reversed using the slice [::-1], which walks through the characters with a step of minus one. If the normalised phrase and its reverse are equal then the phrase reads the same in both directions and is a palindrome. Without normalising first, a genuine palindrome such as Never odd or even would be reported as not being one.",
+           command="Explain"),
+    ],
+)
+
+P_LISTS = Topic(
+    slug="lists",
+    title="Lists",
+    spec="2.3",
     icon="i-list",
-    minutes=26,
-    blurb="Storing many values, slicing, the string methods you will actually use, and the list comprehension that replaces four lines with one.",
-    fact="Strings in Python cannot be changed once created. Every method that appears to modify a string actually builds a brand new one, which is why you must assign the result to something.",
+    minutes=22,
+    blurb="Storing many values in order, indexing and slicing them, the methods that change them, and the list comprehension that replaces four lines with one.",
+    fact="A Python list can hold anything at all, including other lists, and the items do not have to be the same type. That flexibility is why a list is the first structure you reach for, and why a dictionary is sometimes the better one.",
     sections=[
         Section("Lists", """
 ```python
@@ -923,90 +1419,7 @@ for n in range(1, 6):
 
 Both are correct. Use whichever is clearer for the situation.
 """),
-        Section("Strings", """
-### Slicing
-
-Strings work like lists of characters.
-
-```python
-word = "Computing"
-print(word[0])        # C
-print(word[-1])       # g
-print(word[0:4])      # Comp
-print(word[4:])       # uting
-print(word[:4])       # Comp
-print(word[::-1])     # gnitupmoC, reversed
-print(len(word))      # 9
-```
-
-### Methods
-
-```python
-text = "  Hello World  "
-
-print(text.strip())            # "Hello World", removes surrounding spaces
-print(text.upper())            # "  HELLO WORLD  "
-print(text.lower())
-print(text.title())            # capitalises each word
-print(text.replace("l", "L"))
-print(text.strip().split(" ")) # ["Hello", "World"]
-print("-".join(["a", "b", "c"]))  # "a-b-c"
-print(text.count("l"))         # 3
-print(text.find("World"))      # position, or -1 if not found
-print("Hello" in text)         # True
-```
-
-### Checking what a string contains
-
-```python
-"42".isdigit()      # True
-"abc".isalpha()     # True
-"abc123".isalnum()  # True
-" ".isspace()       # True
-```
-
-`isdigit()` is the standard way to check that input can safely be converted to a number.
-
-!warn Strings cannot be changed in place :: `text.upper()` does not change `text`, it returns a new string. You must write `text = text.upper()` to keep the result.
-
-### f-strings
-
-The clearest way to build text containing values.
-
-```python
-name = "Aisha"
-score = 92
-
-print(f"{name} scored {score} out of 100")
-print(f"That is {score / 100:.1%}")        # 92.0%
-print(f"Rounded: {3.14159:.2f}")           # 3.14
-```
-"""),
-        Section("Putting them together", """
-### Counting vowels
-
-```python
-word = input("Enter a word: ").lower()
-vowels = 0
-
-for letter in word:
-    if letter in "aeiou":
-        vowels += 1
-
-print(f"{word} contains {vowels} vowels")
-```
-
-### Checking a palindrome
-
-```python
-phrase = input("Enter a phrase: ").lower().replace(" ", "")
-
-if phrase == phrase[::-1]:
-    print("That is a palindrome")
-else:
-    print("That is not a palindrome")
-```
-
+        Section("Lists in practice", """
 ### Reading a list of names and sorting them
 
 ```python
@@ -1049,38 +1462,37 @@ print(f"Range:  {max(marks) - min(marks)}")
         ("Slice", "A section of a list or string, taken with a start and end index."),
         ("append", "A list method that adds an item to the end."),
         ("List comprehension", "A compact expression that builds a new list from an existing one."),
-        ("Immutable", "Cannot be changed after creation. Strings in Python are immutable."),
-        ("split", "A string method that breaks text into a list at a chosen separator."),
-        ("join", "A string method that combines a list of strings into one string."),
-        ("f-string", "A string beginning with f where values in braces are inserted directly."),
+        ("Mutable", "Can be changed after creation. Lists are mutable, which is why append works."),
+        ("sort", "A list method that reorders the list itself and returns nothing."),
+        ("sorted", "A built in function that returns a new sorted list, leaving the original alone."),
+        ("enumerate", "A built in function giving both the index and the item while looping."),
     ],
     grade="""
-+ Use negative indexes and slices confidently on both lists and strings
-+ Remember that string methods return a new string rather than changing the original
-+ Use split and join to move between text and lists
-+ Use f-strings for all output that mixes text and values
++ Use negative indexes and slices confidently, including `[::-1]` to reverse
++ Know the difference between sort() and sorted(), and choose deliberately
++ Use append, insert, remove and del knowing exactly which works by value and which by index
 + Know when a list comprehension is clearer than a loop, and when it is not
++ Use enumerate rather than a counter variable you maintain by hand
 """,
     mistakes=[
-        "Writing `text.upper()` and expecting text to change. Assign the result.",
         "Using an index equal to the length of the list, which is out of range.",
         "Using `remove()` with an index. It removes by value, `del` removes by index.",
         "Forgetting that `sort()` changes the list while `sorted()` returns a copy.",
-        "Building output with lots of + and str() instead of an f-string.",
+        "Expecting `list2 = list1` to make a copy. Both names refer to the same list.",
+        "Removing items from a list while looping over it, which silently skips entries.",
     ],
     quiz=[
         Q("What does `scores[-1]` give?", ["The last item", "The first item",
                                           "An error", "The length"], 0,
           "Negative indexes count backwards from the end, so -1 is the last item."),
-        Q("What does `\"Computing\"[0:4]` give?", ["Comp", "Compu", "omput", "puting"], 0,
+        Q("What does `scores[1:3]` give for `[45, 78, 12, 90]`?",
+          ["[78, 12]", "[78, 12, 90]", "[45, 78]", "[78]"], 0,
           "A slice includes the start index and excludes the end index."),
-        Q("What does `text.upper()` do to the variable text?",
-          ["Nothing, it returns a new string", "Changes text to upper case",
-           "Deletes text", "Causes an error"], 0,
-          "Strings are immutable, so you must assign the result to keep it."),
-        Q("What does `\"a,b,c\".split(\",\")` produce?",
-          ["['a', 'b', 'c']", "'abc'", "['a,b,c']", "An error"], 0,
-          "split breaks the string at each separator and returns a list of the pieces."),
+        Q("What does `len([4, 8, 15])` give?", ["3", "2", "27", "An error"], 0,
+          "len counts the items, so the highest valid index here is 2."),
+        Q("How do you add an item to the end of a list?",
+          ["append()", "add()", "insert()", "push()"], 0,
+          "append always adds to the end. insert needs a position as well."),
         Q("What does `scores.append(5)` do?", ["Adds 5 to the end of the list",
                                                "Inserts 5 at the start", "Removes 5", "Sorts the list"], 0,
           "append always adds to the end and makes the list one longer."),
@@ -1089,47 +1501,50 @@ print(f"Range:  {max(marks) - min(marks)}")
            "sorted() changes the list, sort() returns a copy",
            "They are identical", "sorted() only works on strings"], 0,
           "Use sorted() when the original order still matters elsewhere."),
-        Q("What does `word[::-1]` give?", ["The string reversed", "The first character",
-                                           "The last character", "An error"], 0,
-          "A step of -1 walks through the sequence backwards."),
-        Q("Which method checks that a string contains only digits?",
-          ["isdigit()", "isnumber()", "isint()", "digit()"], 0,
-          "It is the standard way to check that input can be safely converted with int()."),
-        Q("What does `f\"Score: {points}\"` do?",
-          ["Inserts the value of points into the text", "Prints the word points",
-           "Creates a list", "Causes an error"], 0,
-          "An f-string evaluates whatever is inside the braces and inserts the result."),
+        Q("What does `numbers[::-1]` give?", ["The list reversed", "The first item",
+                                              "The last item", "An error"], 0,
+          "A step of -1 walks through the sequence backwards and returns a new list."),
+        Q("What is the difference between `remove(3)` and `del numbers[3]`?",
+          ["remove deletes the value 3, del deletes the item at index 3",
+           "They are identical", "remove works on index, del works on value",
+           "del only works on strings"], 0,
+          "One works by value and the other by position, which is a very easy mix up."),
+        Q("After `list2 = list1`, what does changing list2 do?",
+          ["It changes list1 too, because both names refer to the same list",
+           "Nothing, list1 is a copy", "It raises an error",
+           "It only changes list2"], 0,
+          "Assignment copies the reference, not the list. Use list1.copy() for a real copy."),
         Q("What does `[n * 2 for n in [1, 2, 3]]` produce?",
           ["[2, 4, 6]", "[1, 2, 3]", "6", "[1, 4, 9]"], 0,
           "A list comprehension applies the expression to each item and collects the results."),
     ],
     exam=[
-        EQ("State what is meant by saying that strings in Python are immutable.", 2, [
-            MP("A string cannot be changed after it is created", ["cannot be changed", "immutable", "not modified", "fixed"]),
-            MP("Methods return a new string rather than altering the original", ["new string", "returns", "does not alter", "must assign"]),
-        ], "Immutable means that once a string has been created its contents cannot be altered. Methods such as upper, replace and strip do not change the original string at all: they build and return a brand new string, which is why the result must be assigned to a variable if it is to be kept.",
-           command="State"),
-        EQ("Write a program that counts how many vowels are in a word entered by the user.", 4, [
-            MP("Reads the word and converts it to lower case", ["input", "lower()"]),
-            MP("Initialises a counter to zero", ["= 0", "count", "vowels = 0"]),
-            MP("Loops through each character in the word", ["for", "in word", "each letter"]),
-            MP("Increases the counter when the character is a vowel and prints the total", ["aeiou", "in \"aeiou\"", "+= 1", "print"]),
-        ], "word = input(\"Enter a word: \").lower()\nvowels = 0\n\nfor letter in word:\n    if letter in \"aeiou\":\n        vowels += 1\n\nprint(f\"{word} contains {vowels} vowels\")\n\nConverting the input to lower case means capital letters are counted too. The loop walks through the string one character at a time, and the in operator checks whether the current character appears in the string of vowels, which is much shorter than writing five separate comparisons.",
-           command="Write"),
         EQ("Explain the difference between the list methods sort() and the function sorted().", 3, [
             MP("sort() rearranges the original list in place", ["in place", "original", "changes the list", "rearranges"]),
             MP("sorted() returns a new sorted list", ["new list", "copy", "returns", "leaves the original"]),
             MP("Use sorted() when the original order must be kept", ["keep", "original order", "unchanged", "still need"]),
         ], "The sort method rearranges the items of the list it is called on, changing the original list permanently and returning nothing. The sorted function leaves the original list completely untouched and returns a brand new list containing the same items in order. Which one to use depends on whether the original order still matters: if it does, sorted must be used, otherwise the original ordering is lost and cannot be recovered.",
            command="Explain"),
-        EQ("Write a program that reads a line of text containing names separated by commas and prints each name on its own line, numbered.", 5, [
-            MP("Reads the line of input", ["input", "line"]),
-            MP("Splits it on commas into a list", ["split(\",\")", "split", "comma"]),
-            MP("Loops through the resulting list", ["for", "loop", "each"]),
-            MP("Removes surrounding spaces from each name", ["strip", "trim", "spaces"]),
-            MP("Prints each name with a number", ["print", "enumerate", "number", "count"]),
-        ], "line = input(\"Enter names separated by commas: \")\nnames = line.split(\",\")\n\nfor i, name in enumerate(names, start=1):\n    print(f\"{i}. {name.strip()}\")\n\nThe split method breaks the line into a list at every comma. Because the user is likely to type a space after each comma, strip is used to remove any surrounding whitespace from each name before it is printed. Using enumerate with start set to 1 gives a counter beginning at 1 rather than 0, which is more natural for a numbered list shown to a user.",
+        EQ("Write a program that stores five marks in a list and prints the highest, the lowest and the mean.", 5, [
+            MP("Creates a list containing the five marks", ["= [", "list", "marks"]),
+            MP("Uses max to find the highest", ["max"]),
+            MP("Uses min to find the lowest", ["min"]),
+            MP("Uses sum divided by len for the mean", ["sum", "len", "/"]),
+            MP("Prints all three results", ["print"]),
+        ], "marks = [67, 82, 45, 91, 58]\n\nprint(f\"Highest: {max(marks)}\")\nprint(f\"Lowest:  {min(marks)}\")\nprint(f\"Mean:    {sum(marks) / len(marks):.1f}\")\n\nThe built in functions max, min, sum and len all take the list directly, so no loop is needed at all. The mean is the total divided by how many items there are, and len is used rather than typing 5 so that the program still works correctly if marks are added or removed later.",
            command="Write"),
+        EQ("Explain the difference between `numbers.remove(3)` and `del numbers[3]`.", 3, [
+            MP("remove searches for the value 3 and deletes the first match", ["value", "searches", "first match", "by value"]),
+            MP("del deletes whatever item is at index 3", ["index", "position", "by position", "third"]),
+            MP("They affect different items unless the value happens to equal the index", ["different", "not the same", "unless"]),
+        ], "The remove method takes a value rather than a position. It searches the list from the start and deletes the first item equal to that value, raising a ValueError if no item matches. The del statement takes a position and removes whatever item currently sits at that index, raising an IndexError if the index does not exist. For the list [10, 20, 3, 40], remove(3) deletes the value 3 while del numbers[3] deletes 40, so confusing the two silently removes the wrong item.",
+           command="Explain"),
+        EQ("A programmer writes `copy = original` and then appends to copy. Explain why original changes as well.", 3, [
+            MP("Assignment copies the reference, not the list itself", ["reference", "not a copy", "same list", "points to"]),
+            MP("Both names therefore refer to one single list in memory", ["both names", "same object", "one list"]),
+            MP("Use copy() or list() to make a genuine copy", ["copy()", "list(", "slice", "[:]"]),
+        ], "Assigning one list to another name does not duplicate the list. It makes the new name refer to exactly the same list already held in memory, so there is only ever one list with two labels attached to it. Appending through either name therefore changes what is seen through both. To create a genuinely separate list the programmer must copy the contents, using original.copy(), list(original) or the slice original[:], each of which builds a new list containing the same items.",
+           command="Explain"),
         EQ("A program uses `numbers[5]` on a list containing five items and crashes. Explain why and state the valid range of indexes.", 3, [
             MP("List indexes start at 0", ["start at 0", "zero", "first is 0"]),
             MP("Five items therefore occupy indexes 0 to 4", ["0 to 4", "four", "0,1,2,3,4"]),
@@ -1142,7 +1557,7 @@ print(f"Range:  {max(marks) - min(marks)}")
 P_FUNCTIONS = Topic(
     slug="functions",
     title="Functions and Structure",
-    spec="2.3",
+    spec="2.4",
     icon="i-layers",
     minutes=26,
     blurb="Writing your own functions, parameters and return values, scope, default arguments, and structuring a program that stays readable at 300 lines.",
@@ -3123,10 +3538,10 @@ COURSE = Course(
     units=[
         Unit("foundations", "Foundations",
              "Output, variables, types, input, operators and making decisions. The bit everything else is built on.",
-             [P_FIRST, P_VARS, P_INPUT], icon="i-play", term="Beginner"),
+             [P_FIRST, P_VARS, P_INPUT, P_SELECTION], icon="i-play", term="Beginner"),
         Unit("core", "Core Programming",
-             "Loops, lists, strings and your own functions. After this unit you can write real programs.",
-             [P_LOOPS, P_LISTS, P_FUNCTIONS], icon="i-repeat", term="Beginner to intermediate"),
+             "Repetition, text handling, lists and your own functions. After this unit you can write real programs.",
+             [P_LOOPS, P_STRINGS, P_LISTS, P_FUNCTIONS], icon="i-repeat", term="Beginner to intermediate"),
         Unit("real-programs", "Real Programs",
              "Dictionaries for structured data, files so your program remembers things, and error handling so it does not crash.",
              [P_DATA], icon="i-database", term="Intermediate"),
