@@ -37,7 +37,9 @@ var SHELL_URLS = [
    live: a cached ad script would serve stale creatives and would keep working
    after a visitor withdrew consent. */
 var NEVER_CACHE = /^https:\/\/(cdn\.jsdelivr\.net|pagead2\.googlesyndication\.com|googleads\.g\.doubleclick\.net|fundingchoicesmessages\.google\.com|ep[12]\.adtrafficquality\.google)\//;
-var FONT_HOSTS = /^https:\/\/fonts\.(googleapis|gstatic)\.com\//;
+// Self hosted now, so this matches our own font directory rather than
+// Google's two origins. The files are immutable under a given name.
+var FONT_HOSTS = /\/assets\/fonts\/[^/]+\.woff2?$/;
 
 self.addEventListener("install", function (e) {
   e.waitUntil(

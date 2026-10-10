@@ -3368,6 +3368,7 @@ An honest evaluation identifying real weaknesses scores far more highly than one
 
 COURSE = Course(
     slug="ks5",
+    seo="OCR H446 A Level revision",
     title="A Level Computer Science",
     short="A Level",
     stage="KS5",

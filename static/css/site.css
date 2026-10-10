@@ -24,26 +24,29 @@
   --deep-ink:   #023B39;
 
   /* The ground ----------------------------------------------------------- */
-  --grad-page: linear-gradient(135deg, #CBF0F2 0%, #A3E2E7 42%, #79D0D7 100%);
+  /* Cream rather than white or teal. A slightly warm, slightly darker ground
+     cuts the glare of a white screen, which is what makes a long page of
+     revision easier to sit in front of. */
+  --grad-page: linear-gradient(135deg, #FDFAF0 0%, #FAF3E1 45%, #F3E8CD 100%);
   --grad-brand: linear-gradient(135deg, var(--teal-deep), var(--deep));
   --grad-lilac: linear-gradient(135deg, var(--lilac), var(--purple));
   --grad-soft:  linear-gradient(135deg, var(--aqua-soft), var(--lilac-soft));
 
   /* Glass ---------------------------------------------------------------- */
-  --glass:        rgba(255, 255, 255, 0.62);
-  --glass-strong: rgba(255, 255, 255, 0.78);
-  --glass-edge:   rgba(255, 255, 255, 0.55);
+  --glass:        rgba(255, 253, 246, 0.66);
+  --glass-strong: rgba(255, 253, 246, 0.82);
+  --glass-edge:   rgba(255, 252, 242, 0.62);
   --glass-blur:   blur(16px) saturate(150%);
 
   /* Solid surfaces for reading ------------------------------------------- */
-  --surface:      #FFFFFF;
-  --surface-2:    #F4F8F9;
-  --surface-sunk: #EAF2F3;
-  --bg:      #EAF7F8;
-  --bg-alt:  #F6FBFB;
+  --surface:      #FFFDF7;
+  --surface-2:    #F8F2E3;
+  --surface-sunk: #F1E8D3;
+  --bg:      #FBF6E9;
+  --bg-alt:  #FDFBF4;
 
-  --border:        #DCE8E9;
-  --border-strong: #BFD5D7;
+  --border:        #E8DEC8;
+  --border-strong: #D4C6A8;
 
   /* Ink ------------------------------------------------------------------ */
   --ink:       #0F2026;
@@ -54,7 +57,7 @@
 
   --accent:        var(--teal-deep);
   --accent-strong: var(--deep);
-  --accent-quiet:  #DCEFF0;
+  --accent-quiet:  #E2EFE2;
   --focus-ring:    #024E52;
 
   /* Marking states ------------------------------------------------------- */
@@ -257,10 +260,10 @@ kbd {
 /* ----------------------------------------------------------------- header */
 .site-header {
   position: sticky; top: 0; z-index: 90;
-  background: rgba(255, 255, 255, .72);
+  background: rgba(255, 253, 246, .76);
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
-  border-bottom: 1px solid rgba(255, 255, 255, .45);
+  border-bottom: 1px solid rgba(212, 198, 168, .45);
 }
 [data-theme="dark"] .site-header {
   background: rgba(14, 31, 35, .72); border-bottom-color: rgba(255,255,255,.09);
@@ -394,18 +397,18 @@ kbd {
 [data-theme="dark"] .btn-primary { color: #06231F; }
 [data-theme="dark"] .btn-primary:hover { color: #06231F; }
 .btn-secondary {
-  background: rgba(255,255,255,.75); color: var(--ink); border-color: var(--glass-edge);
+  background: rgba(255,253,246,.8); color: var(--ink); border-color: var(--glass-edge);
   -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
   box-shadow: var(--shadow-1);
 }
 [data-theme="dark"] .btn-secondary { background: rgba(255,255,255,.09); }
-.btn-secondary:hover { background: #fff; color: var(--ink); }
+.btn-secondary:hover { background: #FFFDF7; color: var(--ink); }
 [data-theme="dark"] .btn-secondary:hover { background: rgba(255,255,255,.16); }
 /* A ghost button has no panel behind it, so it is read against the darkest
    stop of the page gradient and needs the deepest ink in the ramp. */
 .btn-ghost { background: transparent; color: var(--deep-ink); border-color: transparent; padding-inline: .7rem; }
 [data-theme="dark"] .btn-ghost { color: var(--accent-strong); }
-.btn-ghost:hover { background: rgba(255,255,255,.5); }
+.btn-ghost:hover { background: rgba(255,253,246,.62); }
 [data-theme="dark"] .btn-ghost:hover { background: rgba(255,255,255,.08); }
 .btn-lilac {
   background: var(--grad-lilac); color: #241A2C;
@@ -585,6 +588,19 @@ pre code { background: none; border: 0; padding: 0; color: inherit; white-space:
   .topic-layout { grid-template-columns: 1fr; padding: var(--sp-5) var(--sp-4); }
   .topic-aside { position: static !important; order: -1; }
 }
+/* The standalone pages (about, privacy, accessibility, how to revise, the
+   glossary) used to set their prose straight onto the page gradient, where a
+   teal link reads at 3.21:1 against the darkest stop. They get the same solid
+   panel a topic page uses, which fixes the contrast and makes them look like
+   the rest of the site. */
+.page-panel {
+  max-width: 1080px; margin: 0 auto var(--sp-8);
+  background: var(--surface); border: 1px solid var(--glass-edge);
+  border-radius: var(--r-xl); padding: var(--sp-6); box-shadow: var(--shadow-2);
+}
+@media (max-width: 1040px) { .page-panel { padding: var(--sp-5) var(--sp-4); } }
+.page-panel > .prose { max-width: var(--measure); margin-inline: auto; }
+
 .topic-aside { position: sticky; top: 5.6rem; display: grid; gap: var(--sp-3); }
 .toc { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r-m); padding: var(--sp-4); }
 .toc h4 { font-size: .76rem; text-transform: uppercase; letter-spacing: .12em; color: var(--ink-muted); margin-bottom: .7rem; font-family: var(--font-body); }
@@ -1047,10 +1063,10 @@ a.pill:hover { color: var(--accent); background: #fff; }
    paints solid black with no stroke. */
 .diagram {
   --dg-paper:      var(--surface);
-  --dg-fill:       #FFFFFF;
-  --dg-fill-2:     #F1F7F8;
-  --dg-line:       #9FBCC0;
-  --dg-line-soft:  #CFE0E2;
+  --dg-fill:       #FFFDF7;
+  --dg-fill-2:     #F7F1E1;
+  --dg-line:       #A99A78;
+  --dg-line-soft:  #DFD3B8;
   --dg-text:       var(--ink);
   --dg-ink:        var(--ink);
   --dg-muted:      var(--ink-3);
@@ -1166,3 +1182,425 @@ h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
 /* Worksheet model answers can contain a long unbreakable run, such as a
    spreadsheet formula with no spaces, which cannot wrap at any screen width. */
 .ws-ms-model, .ws-ms li, .model-answer p { overflow-wrap: anywhere; }
+
+/* ====================================================== photographs
+   A photograph of real hardware, for topics where the exam asks students to
+   recognise a physical object. Always lazily loaded and always carrying its
+   own width and height, so nothing on the page jumps while it arrives. */
+.photo {
+  margin: var(--sp-5) 0; max-width: min(100%, 640px); margin-inline: auto;
+}
+.photo img {
+  width: 100%; height: auto; display: block; border-radius: var(--r-m);
+  background: var(--surface-2); border: 1px solid var(--border);
+  box-shadow: var(--shadow-1);
+}
+.photo figcaption {
+  margin-top: var(--sp-3); font-size: .88rem; color: var(--ink-3);
+  line-height: 1.55; text-align: left;
+}
+/* The credit has to be legible, not hidden. It is the condition the licence
+   is granted on. */
+.photo-credit {
+  display: block; margin-top: .3rem; font-size: .76rem; color: var(--ink-muted);
+}
+.attribution-list { display: grid; gap: var(--sp-4); margin-top: var(--sp-4); }
+.attribution-list li { list-style: none; }
+.attribution-list b { display: block; font-weight: 650; color: var(--ink); }
+.attribution-list span { font-size: .88rem; color: var(--ink-3); }
+
+/* ===================================================== 3D scenes
+   Depth drawn with CSS transforms rather than WebGL. A scene is a stage with
+   perspective, a world that can be turned, and sheets lifted off the floor on
+   the Z axis. No library is loaded, and with JavaScript off every stage stays
+   visible so the figure still reads as a complete picture. */
+.scene {
+  margin: var(--sp-5) 0; max-width: min(100%, 760px); margin-inline: auto;
+  --sc-face:      rgba(255, 253, 246, .86);
+  --sc-edge:      var(--border-strong);
+  --sc-teal:      var(--teal-deep);
+  --sc-teal-face: rgba(205, 237, 239, .78);
+  --sc-lilac:     var(--purple-deep);
+  --sc-lilac-face: rgba(234, 223, 241, .78);
+  --sc-floor:     rgba(3, 92, 88, .10);
+}
+[data-theme="dark"] .scene {
+  --sc-face:       rgba(27, 42, 49, .86);
+  --sc-edge:       #4E6B72;
+  --sc-teal:       var(--aqua);
+  --sc-teal-face:  rgba(17, 54, 58, .86);
+  --sc-lilac:      var(--lilac);
+  --sc-lilac-face: rgba(44, 36, 64, .86);
+  --sc-floor:      rgba(107, 196, 202, .10);
+}
+.sc-frame { overflow: hidden; border-radius: var(--r-l); }
+.sc-stage {
+  height: var(--sc-h, 340px); perspective: 1100px; perspective-origin: 50% 46%;
+  background: radial-gradient(ellipse at 50% 72%, var(--sc-floor), transparent 68%);
+  border-radius: var(--r-l); touch-action: pan-y; cursor: grab;
+}
+.sc-stage:active { cursor: grabbing; }
+.sc-stage:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+.sc-world {
+  position: relative; width: 100%; height: 100%; pointer-events: none;
+  transform-style: preserve-3d;
+  transform: translateY(calc(var(--sc-depth, 0px) / 2.2 * var(--sc-scale, 1) * var(--sc-fit, 1)))
+             scale(calc(var(--sc-scale, 1) * var(--sc-fit, 1)))
+             rotateX(var(--rx, 58deg)) rotateZ(var(--rz, -32deg));
+  transition: transform .4s ease;
+}
+.sc-world.is-dragging { transition: none; }
+
+.sc-plane, .sc-unit, .sc-glow {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%) translateZ(var(--sc-z, 0px));
+  transform-style: preserve-3d;
+}
+.sc-plane {
+  width: var(--sc-w, 330px); height: 146px; border-radius: 16px;
+  background: var(--sc-face); border: 1.5px solid var(--sc-edge);
+  box-shadow: 0 14px 30px rgba(2, 59, 57, .13);
+}
+.sc-teal  { border-color: var(--sc-teal);  background: var(--sc-teal-face); }
+.sc-lilac { border-color: var(--sc-lilac); background: var(--sc-lilac-face); }
+/* The label is counter rotated so the text faces the reader instead of lying
+   flat on the sheet, where it would be unreadable at this angle. */
+/* Counter rotated so the text faces the reader instead of lying flat on the
+   sheet. The two angles track the world's own rotation, which the controller
+   writes onto the figure as the reader turns it. */
+.sc-plane-label {
+  position: absolute; left: 16px; top: 14px;
+  transform: rotateZ(var(--sc-rz, 34deg)) rotateX(var(--sc-rx, -62deg));
+  transform-origin: left top; display: grid; gap: 1px; white-space: nowrap;
+}
+/* A chip behind the text, because at a steep angle a label will sometimes
+   cross the sheet behind it and has to stay readable when it does. */
+.sc-plane-label b, .sc-plane-label i {
+  background: var(--surface); border-radius: 5px; padding: .1rem .34rem;
+  box-shadow: 0 1px 3px rgba(2, 59, 57, .14); width: max-content;
+}
+.sc-plane-label b {
+  font-family: var(--font-display); font-size: .74rem; font-weight: 700;
+  letter-spacing: .08em; color: var(--ink);
+}
+.sc-plane-label i { font-style: normal; font-size: .68rem; color: var(--ink-3); }
+
+.sc-unit {
+  display: grid; gap: .3rem; justify-items: center; padding: .5rem .7rem;
+  border-radius: 12px; background: var(--surface); border: 1.5px solid var(--sc-edge);
+  box-shadow: 0 10px 22px rgba(2, 59, 57, .2);
+  transform: translate(-50%, -50%) translateZ(calc(var(--sc-z, 0px) + 26px))
+             rotateZ(var(--sc-rz, 34deg)) rotateX(var(--sc-rx, -62deg));
+}
+.sc-unit-name {
+  font-family: var(--font-display); font-size: .66rem; font-weight: 700;
+  letter-spacing: .1em; color: var(--ink-3);
+}
+.sc-unit-parts { display: flex; gap: 3px; }
+.sc-chip {
+  font-family: var(--font-mono); font-size: .62rem; font-weight: 600;
+  padding: .18rem .4rem; border-radius: 4px; white-space: nowrap;
+}
+.sc-chip-head { background: var(--accent-quiet); color: var(--accent); }
+.sc-chip-body { background: var(--surface-sunk); color: var(--ink); }
+[data-theme="dark"] .sc-chip-body { background: #22333A; }
+
+.sc-glow {
+  width: 330px; height: 146px; border-radius: 16px; pointer-events: none;
+  border: 2px solid var(--sc-teal);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--sc-teal) 22%, transparent);
+}
+/* A highlight ring placed at an arbitrary point, used to pick out the part of
+   a scene the current step is talking about. */
+.sc-glow-at {
+  width: var(--sc-w, 90px); height: var(--sc-hh, 56px); border-radius: 10px;
+  transform: translate(-50%, -50%)
+             translate3d(var(--sc-x, 0px), var(--sc-y, 0px), var(--sc-z, 0px));
+}
+.sc-glow-at.sc-lilac {
+  border-color: var(--sc-lilac);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--sc-lilac) 22%, transparent);
+}
+.sc-arrow {
+  position: absolute; left: 50%; top: 50%; width: 4px; height: 146px;
+  transform: translate(-50%, -50%) translateZ(110px);
+  background: linear-gradient(to top, transparent, var(--sc-teal));
+}
+.sc-note {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%) translateZ(250px)
+             rotateZ(var(--sc-rz, 34deg)) rotateX(var(--sc-rx, -62deg));
+  font-size: .74rem; font-weight: 600; color: var(--ink-2); text-align: center;
+  background: var(--surface); padding: .3rem .6rem; border-radius: 8px;
+  border: 1px solid var(--border); white-space: nowrap;
+}
+
+/* Primitives: a board to stand things on, blocks with real height, wires
+   laid between two points, travelling markers, and captions that face the
+   reader wherever the scene is turned. */
+.sc-plane.sc-board { height: var(--sc-hh, 146px); background: var(--sc-face); }
+.sc-floor { border-color: var(--sc-edge); background: var(--sc-face); }
+
+.sc-box, .sc-wire, .sc-dot, .sc-note-at {
+  position: absolute; left: 50%; top: 50%; transform-style: preserve-3d;
+}
+.sc-box {
+  width: var(--sc-w, 90px); height: var(--sc-hh, 56px); border-radius: 10px;
+  background: var(--sc-face); border: 1.5px solid var(--sc-edge);
+  box-shadow: 0 8px 18px rgba(2, 59, 57, .16);
+  transform: translate(-50%, -50%)
+             translate3d(var(--sc-x, 0px), var(--sc-y, 0px), var(--sc-z, 0px));
+}
+.sc-box.is-round { border-radius: 50%; }
+.sc-box.sc-teal  { border-color: var(--sc-teal);  background: var(--sc-teal-face); }
+.sc-box.sc-lilac { border-color: var(--sc-lilac); background: var(--sc-lilac-face); }
+/* The side wall. Standing it up on the box's near edge is what makes a flat
+   rectangle read as a solid block once the scene is turned. */
+.sc-leg {
+  position: absolute; left: 0; right: 0; top: 100%; height: var(--sc-leg, 20px);
+  background: color-mix(in srgb, var(--sc-edge) 30%, transparent);
+  border: 1px solid var(--sc-edge); border-top: 0;
+  transform-origin: top center; transform: rotateX(-90deg);
+}
+.sc-box-label {
+  position: absolute; left: 50%; top: 50%; display: grid; gap: 1px;
+  justify-items: center; white-space: nowrap;
+  transform: translate(-50%, -50%) translateZ(2px)
+             rotateZ(var(--sc-rz, 32deg)) rotateX(var(--sc-rx, -58deg));
+}
+.sc-box-label b {
+  font-family: var(--font-display); font-size: .68rem; font-weight: 700;
+  letter-spacing: .06em; color: var(--ink);
+  background: var(--surface); border-radius: 5px; padding: .08rem .3rem;
+}
+/* Often this is a value rather than a description, and in a logic circuit
+   the value is the entire point, so it is not allowed to go faint. */
+.sc-box-label i {
+  font-style: normal; font-size: .66rem; font-weight: 600; color: var(--ink-2);
+  background: var(--surface); border-radius: 4px; padding: .04rem .26rem;
+}
+
+/* Cube parts. A face is a square sheet rotated into place; an edge is a thin
+   bar laid along one axis. Both sit in the same 3D space as everything else,
+   so the whole thing turns as one solid. */
+.sc-face, .sc-edge {
+  position: absolute; left: 50%; top: 50%; transform-style: preserve-3d;
+}
+.sc-face {
+  width: var(--sc-s, 100px); height: var(--sc-s, 100px); margin: 0;
+  background: color-mix(in srgb, var(--sc-teal) 16%, transparent);
+  border: 1.5px solid var(--sc-teal);
+  transform: translate(-50%, -50%)
+             translate3d(var(--sc-x, 0px), var(--sc-y, 0px), var(--sc-z, 0px))
+             var(--sc-rot3);
+}
+.sc-face.sc-lilac {
+  background: color-mix(in srgb, var(--sc-lilac) 16%, transparent);
+  border-color: var(--sc-lilac);
+}
+.sc-edge {
+  width: var(--sc-len, 100px); height: 3px; border-radius: 2px;
+  background: var(--sc-teal);
+  transform: translate(-50%, -50%)
+             translate3d(var(--sc-x, 0px), var(--sc-y, 0px), var(--sc-z, 0px))
+             var(--sc-rot3);
+}
+.sc-edge.sc-edge-lilac { background: var(--sc-lilac); }
+
+.sc-wire {
+  height: 3px; width: var(--sc-len, 100px); border-radius: 2px;
+  transform-origin: left center;
+  transform: translate(0, -50%)
+             translate3d(var(--sc-x, 0px), var(--sc-y, 0px), var(--sc-z, 0px))
+             rotateZ(var(--sc-rot, 0deg));
+  background: var(--sc-teal); opacity: .75;
+}
+.sc-wire-lilac { background: var(--sc-lilac); }
+.sc-wire-floor { background: var(--sc-edge); opacity: .9; }
+.sc-wire.is-dashed {
+  background: repeating-linear-gradient(90deg, var(--sc-teal) 0 8px, transparent 8px 15px);
+}
+.sc-wire-tag {
+  position: absolute; left: 50%; top: 50%; font-size: .6rem; font-weight: 700;
+  letter-spacing: .05em; color: var(--ink-3); background: var(--surface);
+  padding: .05rem .3rem; border-radius: 4px; white-space: nowrap;
+  transform: translate(-50%, -50%) rotateZ(calc(-1 * var(--sc-rot, 0deg)))
+             rotateZ(var(--sc-rz, 32deg)) rotateX(var(--sc-rx, -58deg));
+}
+
+.sc-dot {
+  width: var(--sc-size, 14px); height: var(--sc-size, 14px); border-radius: 50%;
+  background: var(--sc-teal); box-shadow: 0 0 0 4px color-mix(in srgb, var(--sc-teal) 24%, transparent);
+  transform: translate(-50%, -50%)
+             translate3d(var(--sc-x, 0px), var(--sc-y, 0px), var(--sc-z, 0px));
+}
+.sc-dot.sc-lilac { background: var(--sc-lilac); box-shadow: 0 0 0 4px color-mix(in srgb, var(--sc-lilac) 24%, transparent); }
+.sc-dot-tag {
+  position: absolute; left: 50%; bottom: 100%; font-size: .6rem; font-weight: 700;
+  color: var(--ink); background: var(--surface); padding: .06rem .3rem;
+  border-radius: 4px; white-space: nowrap; border: 1px solid var(--border);
+  transform: translate(-50%, -6px) rotateZ(var(--sc-rz, 32deg)) rotateX(var(--sc-rx, -58deg));
+  transform-origin: center bottom;
+}
+
+.sc-note-at {
+  transform: translate(-50%, -50%)
+             translate3d(var(--sc-x, 0px), var(--sc-y, 0px), var(--sc-z, 0px))
+             rotateZ(var(--sc-rz, 32deg)) rotateX(var(--sc-rx, -58deg));
+  font-size: .72rem; font-weight: 600; color: var(--ink-2); text-align: center;
+  background: var(--surface); padding: .26rem .55rem; border-radius: 8px;
+  border: 1px solid var(--border); white-space: nowrap;
+}
+.sc-note-at.sc-teal  { color: var(--sc-teal);  border-color: var(--sc-teal); }
+.sc-note-at.sc-lilac { color: var(--sc-lilac); border-color: var(--sc-lilac); }
+
+.sc-step { display: contents; }
+.scene.is-stepped .sc-step { display: none; }
+.scene.is-stepped .sc-step.is-on { display: contents; }
+
+.sc-hint { margin: .5rem 0 0; font-size: .8rem; color: var(--ink-3); text-align: center; }
+.sc-hint[hidden] { display: none; }
+.sc-controls {
+  display: flex; flex-wrap: wrap; gap: .5rem; align-items: center;
+  margin-top: var(--sp-3);
+}
+.sc-controls[hidden] { display: none; }
+.sc-btn {
+  font: inherit; font-size: .84rem; font-weight: 600; padding: .34rem .9rem;
+  border-radius: var(--r-pill); border: 1px solid var(--border-strong);
+  background: var(--surface); color: var(--ink-2); cursor: pointer;
+}
+.sc-btn:hover { background: var(--accent-quiet); color: var(--accent); border-color: transparent; }
+.sc-btn-play { background: var(--grad-brand); color: #fff; border-color: transparent; }
+.sc-btn-play:hover { color: #fff; filter: brightness(1.08); }
+[data-theme="dark"] .sc-btn-play, [data-theme="dark"] .sc-btn-play:hover { color: #06231F; }
+.sc-status { margin: 0; font-size: .86rem; color: var(--ink-3); flex: 1 1 14rem; min-width: 0; }
+.sc-status b { color: var(--ink); font-weight: 650; margin-right: .3rem; white-space: nowrap; }
+
+/* The text alternative is the picture's content for anybody who cannot see
+   it, so it is hidden from sight but never from a screen reader. */
+.sc-alt {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* A scene that moves on its own is a scene nobody asked to move. Stepping
+   still works; only the turning animation and autoplay stop. */
+@media (prefers-reduced-motion: reduce) {
+  .sc-world { transition: none; }
+}
+@media (max-width: 760px) {
+  .scene { --sc-scale: .78; }
+  .sc-stage { height: calc(var(--sc-h, 340px) * .8); }
+}
+@media (max-width: 480px) {
+  .scene { --sc-scale: .58; }
+  .sc-stage { height: calc(var(--sc-h, 340px) * .62); perspective: 820px; }
+}
+
+/* ======================================================= Pixel in 3D
+   The cat cut into layers and held apart on the Z axis. The container sways
+   a few degrees and the layers move at different rates against each other,
+   so the ears and the headphones shift relative to the face. That parallax
+   is the whole effect: without it this is just a drawing. */
+.cat3d {
+  position: relative; width: var(--cat-size, 240px); height: var(--cat-size, 240px);
+  perspective: 620px; margin-inline: auto;
+}
+.cat3d-world {
+  position: absolute; inset: 0; transform-style: preserve-3d;
+  animation: catSway 7s ease-in-out infinite alternate;
+}
+.cat3d-layer {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  transform: translateZ(var(--z, 0px));
+  transform-style: preserve-3d; overflow: visible;
+}
+@keyframes catSway {
+  from { transform: rotateY(-13deg) rotateX(5deg); }
+  to   { transform: rotateY(13deg) rotateX(-3deg); }
+}
+
+/* Asleep: he breathes, his ears sag, and the Zs drift up. */
+.cat3d.is-asleep .cat3d-world { animation: catSway 9s ease-in-out infinite alternate; }
+.cat3d.is-asleep .cat3d-head,
+.cat3d.is-asleep .cat3d-visor,
+.cat3d.is-asleep .cat3d-eyes,
+.cat3d.is-asleep .cat3d-muzzle,
+.cat3d.is-asleep .cat3d-cans {
+  animation: catBreathe 4s ease-in-out infinite;
+}
+.cat3d.is-asleep .cat3d-ears { animation: catEarSag 9s ease-in-out infinite alternate; }
+@keyframes catBreathe {
+  0%, 100% { transform: translateZ(var(--z, 0px)) translateY(0) scale(1); }
+  50%      { transform: translateZ(var(--z, 0px)) translateY(1.4%) scale(1.018); }
+}
+@keyframes catEarSag {
+  from { transform: translateZ(var(--z, 0px)) rotate(0deg); }
+  to   { transform: translateZ(var(--z, 0px)) rotate(-2.5deg); }
+}
+.cat3d-zzz {
+  position: absolute; left: 68%; top: 6%; display: flex; gap: .35em;
+  font-family: var(--font-display); font-weight: 700; color: var(--purple-deep);
+  pointer-events: none;
+}
+.cat3d-zzz span {
+  font-size: calc(var(--cat-size, 240px) * .1); opacity: 0;
+  animation: catZ 3.6s ease-in-out infinite;
+}
+.cat3d-zzz span:nth-child(2) { animation-delay: 1.2s; font-size: calc(var(--cat-size, 240px) * .082); }
+.cat3d-zzz span:nth-child(3) { animation-delay: 2.4s; font-size: calc(var(--cat-size, 240px) * .064); }
+@keyframes catZ {
+  0%   { opacity: 0; transform: translate(0, 0) rotate(-6deg) scale(.7); }
+  25%  { opacity: .9; }
+  100% { opacity: 0; transform: translate(42%, -120%) rotate(14deg) scale(1.1); }
+}
+
+/* Nothing here is information, so when stillness is asked for it all stops
+   and the cat simply sits there, which is exactly as useful. */
+@media (prefers-reduced-motion: reduce) {
+  .cat3d-world, .cat3d-layer, .cat3d-zzz span { animation: none !important; }
+  .cat3d-world { transform: rotateY(-8deg) rotateX(3deg); }
+  .cat3d-zzz span { opacity: .75; }
+}
+
+/* ------------------------------------------------- the waking-up screen
+   Only ever shown when a page has genuinely not arrived yet. It is added by
+   app.js after a delay, so a fast load never sees it: a loading screen on a
+   page that was already there is just a slower page. */
+.page-loader {
+  position: fixed; inset: 0; z-index: 400; display: grid; place-content: center;
+  gap: var(--sp-4); justify-items: center; text-align: center;
+  background: var(--grad-page); opacity: 0; visibility: hidden;
+  transition: opacity .25s ease, visibility .25s ease;
+}
+.page-loader.is-on { opacity: 1; visibility: visible; }
+.page-loader p {
+  margin: 0; font-family: var(--font-display); font-weight: 650;
+  font-size: 1.05rem; color: var(--ink-2);
+}
+.page-loader .loader-bar {
+  width: min(220px, 60vw); height: 6px; border-radius: 3px;
+  background: var(--surface-sunk); overflow: hidden;
+}
+.page-loader .loader-bar i {
+  display: block; width: 40%; height: 100%; border-radius: 3px;
+  background: var(--grad-brand); animation: loaderSlide 1.25s ease-in-out infinite;
+}
+@keyframes loaderSlide {
+  from { transform: translateX(-110%); } to { transform: translateX(290%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-loader .loader-bar i { animation: none; width: 100%; opacity: .5; }
+}
+
+/* ------------------------------------------------------- the empty screens
+   404 and offline. Both are "there is nothing here yet", so both get the
+   same sleeping cat rather than a shrug and a back button. */
+.empty-screen {
+  display: grid; justify-items: center; text-align: center; gap: var(--sp-3);
+  padding: var(--sp-7) 0 var(--sp-8); max-width: 44rem; margin-inline: auto;
+}
+.empty-screen h1 { margin: 0; }
+.empty-screen .lead { margin: 0 auto; max-width: 34rem; }
+.empty-screen .btn-row { justify-content: center; margin-top: var(--sp-3); }

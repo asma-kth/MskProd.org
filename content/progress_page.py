@@ -57,8 +57,6 @@ def build(register, add_search):
     write(path, layout(
         title="Your Revision Progress", description=LEAD, path=path, body=body,
         active="/progress/",
-        greeting="Start with the five topics at the top. They are the ones where an "
-                 "hour buys you the most marks.",
         scripts=["/assets/js/dashboard.js"],
         jsonld=[crumbs_ld(trail)]))
     register(path, 0.6, "weekly")

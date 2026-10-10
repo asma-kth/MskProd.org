@@ -102,7 +102,7 @@ The Little Man Computer is a complete processor with one accumulator, one hundre
 }
 
 
-def _page(path, title, description, trail, body_md, greeting=""):
+def _page(path, title, description, trail, body_md):
     body = """<div class="wrap">
   %s
   <div class="wrap-narrow" style="width:100%%;margin-inline:auto">
@@ -113,7 +113,7 @@ def _page(path, title, description, trail, body_md, greeting=""):
   </div>
 </div>""" % (crumbs(trail), esc(title), esc(description), markup.render(body_md))
     return path, layout(title=title, description=description, path=path, body=body,
-                        active="/tools/", greeting=greeting,
+                        active="/tools/",
                         jsonld=[crumbs_ld(trail)])
 
 
@@ -135,9 +135,6 @@ def build(register, add_search):
     path = "/tools/"
     write(path, layout(title="Interactive Computing Tools",
                        description=INTRO, path=path, body=body, active="/tools/",
-                       greeting="Pick one and break it. You learn far more from a circuit "
-                                "that gives the wrong answer than from one that works "
-                                "first time.",
                        jsonld=[crumbs_ld(trail)]))
     register(path, 0.8, "monthly")
     add_search("Interactive tools", path, "Six tools you can actually use",

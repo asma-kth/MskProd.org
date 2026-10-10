@@ -1038,6 +1038,7 @@ Record for each test the test data used, the expected result and the actual resu
 
 COURSE = Course(
     slug="ks4/imedia",
+    seo="OCR J834 Creative iMedia",
     title="Creative iMedia",
     short="Creative iMedia",
     stage="KS4",

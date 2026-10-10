@@ -16,30 +16,31 @@ PLACEMENTS = {
         "The fetch decode execute cycle": ["!diagram fetch-decode-execute"],
     },
     ("ks4/computer-science", "primary-storage"): {
-        "Why primary memory exists": ["!diagram memory-hierarchy"],
+        "Why primary memory exists": ["!diagram memory-hierarchy", "!scene memory-hierarchy-3d"],
     },
     ("ks4/computer-science", "units-of-data"): {
         "Calculating file sizes": ["!tool file-size"],
     },
     ("ks4/computer-science", "binary-and-hexadecimal"): {
-        "Binary to denary": ["!diagram binary-place-values", "!tool base-converter"],
+        "Binary to denary": ["!diagram binary-place-values", "!scene binary-place-value-3d",
+                             "!tool base-converter"],
         "Binary addition": ["!diagram binary-addition"],
     },
     ("ks4/computer-science", "storing-images"): {
-        "Bitmap images": ["!diagram image-representation"],
+        "Bitmap images": ["!diagram image-representation", "!scene image-layers-3d"],
         "Calculating image file size": ["!tool file-size"],
     },
     ("ks4/computer-science", "storing-sound"): {
-        "Analogue to digital": ["!diagram sound-sampling"],
+        "Analogue to digital": ["!diagram sound-sampling", "!scene sound-sampling-3d"],
         "Calculating sound file size": ["!tool file-size"],
     },
     ("ks4/computer-science", "networks-and-topologies"): {
-        "Client server and peer to peer": ["!diagram client-server-p2p"],
-        "Star and mesh topologies": ["!diagram network-topologies"],
+        "Client server and peer to peer": ["!diagram client-server-p2p", "!scene client-server-3d"],
+        "Star and mesh topologies": ["!diagram network-topologies", "!scene network-topologies-3d"],
     },
     ("ks4/computer-science", "protocols-and-layers"): {
-        "Standards and protocols": ["!diagram packet-switching"],
-        "Layers": ["!diagram tcp-ip-stack"],
+        "Standards and protocols": ["!diagram packet-switching", "!scene packet-journey-3d"],
+        "Layers": ["!diagram tcp-ip-stack", "!scene tcp-ip-stack-3d"],
     },
     ("ks4/computer-science", "boolean-logic"): {
         "The three gates": ["!diagram logic-gates"],
@@ -179,10 +180,11 @@ PLACEMENTS = {
     ("ks3", "data-representation"): {
         "Binary and hexadecimal": ["!tool base-converter"],
         "Binary addition and units": ["!diagram binary-addition", "!tool file-size"],
-        "Representing text, images and sound": ["!diagram image-representation"],
+        "Representing text, images and sound": ["!diagram image-representation",
+                                                "!scene image-layers-3d"],
     },
     ("ks3", "networks-and-cyber-security"): {
-        "Networks": ["!diagram network-topologies"],
+        "Networks": ["!diagram network-topologies", "!scene network-topologies-3d"],
     },
     # ------------------------------- computational thinking, law, character sets
     # Every course that teaches these now has a worked picture rather than three
@@ -320,8 +322,274 @@ def apply(course):
     return used
 
 
+
+# Scene placements are kept apart from the table above and merged into it,
+# rather than written as more entries in the same literal. A dict literal
+# keeps only the last of a repeated key, and almost every topic that wants a
+# scene already has a line above for its diagrams: written inline, fifteen of
+# them quietly replaced the diagram placements they were meant to join.
+SCENES = {
+    ("ks5", "types-of-processor"): {
+        "GPUs and parallel systems": ["!scene parallel-cores-3d"],
+    },
+    ("ks3", "networks-and-cyber-security"): {
+        "The internet and the web": ["!scene web-request-3d"],
+    },
+    ("ks4/aqa-computer-science", "data-structures-and-file-handling"): {
+        "Arrays and records": ["!scene array-2d-3d"],
+    },
+    ("ks4/computer-science", "networks-and-topologies"): {
+        "LAN and WAN": ["!scene lan-wan-3d"],
+    },
+    ("ks4/computer-science", "embedded-systems"): {
+        "Embedded versus general purpose": ["!scene embedded-systems-3d"],
+    },
+    ("ks3", "3d-modelling-and-animation"): {
+        "How 3D models are built": ["!scene mesh-3d"],
+    },
+    ("ks4/imedia", "visual-identity-and-digital-graphics"): {
+        "Planning and creating digital graphics": ["!scene graphics-layers-3d"],
+    },
+    ("ks3", "vector-graphics"): {
+        "Working with vector shapes": ["!scene graphics-layers-3d"],
+    },
+    ("ks4/computer-science", "compression"): {
+        "Why compress": ["!scene compression-3d"],
+    },
+    ("ks4/aqa-computer-science", "data-compression"): {
+        "Why compress at all": ["!scene compression-3d"],
+    },
+    ("ks5", "compression-encryption-and-hashing"): {
+        "Compression": ["!scene compression-3d"],
+        "Encryption and hashing": ["!scene encryption-3d"],
+    },
+    ("ks4/computer-science", "network-security"): {
+        "Preventing attacks": ["!scene encryption-3d"],
+    },
+    ("ks4/computer-science", "units-of-data"): {
+        "The units": ["!scene units-of-data-3d"],
+    },
+    ("ks4/computer-science", "cpu-performance"): {
+        "The three factors": ["!scene cpu-performance-3d"],
+    },
+    ("ks4/computer-science", "boolean-logic"): {
+        "Truth tables for combined circuits": ["!scene logic-circuit-3d"],
+    },
+    ("ks4/aqa-computer-science", "boolean-logic"): {
+        "Reading and drawing circuit diagrams": ["!scene logic-circuit-3d"],
+    },
+    ("ks4/edexcel-computer-science", "truth-tables-and-logic"): {
+        "Logic in real systems and real programs": ["!scene logic-circuit-3d"],
+    },
+    ("ks5", "data-types-and-boolean-algebra"): {
+        "Boolean algebra": ["!scene logic-circuit-3d"],
+    },
+    ("ks5", "data-structures"): {
+        "Linear structures": ["!scene stack-queue-3d"],
+        "Trees, graphs and hash tables": ["!scene binary-tree-3d"],
+    },
+    ("ks4/aqa-computer-science", "relational-databases-and-sql"): {
+        "Relational database structure": ["!scene database-tables-3d"],
+    },
+    ("ks5", "databases"): {
+        "Structure and normalisation": ["!scene database-tables-3d"],
+    },
+    ("ks4/computer-science", "systems-software"): {
+        "What system software is": ["!scene abstraction-layers-3d"],
+    },
+    ("ks4/aqa-computer-science", "hardware-software-and-the-operating-system"): {
+        "System software and the operating system": ["!scene abstraction-layers-3d"],
+    },
+    ("ks4/edexcel-computer-science", "software-and-programming-languages"): {
+        "System and application software": ["!scene abstraction-layers-3d"],
+    },
+    ("ks4/computer-science", "primary-storage"): {
+        "Virtual memory": ["!scene virtual-memory-3d"],
+    },
+    ("ks5", "systems-software"): {
+        "Memory management and scheduling": ["!scene virtual-memory-3d"],
+    },
+    # ------------------------------------------------------- 3D scenes
+    # Only on topics whose subject genuinely has layers, stacking or position
+    # in space. Everything else keeps its flat stepped diagram.
+    ("ks4/computer-science", "architecture-of-the-cpu"): {
+        "Components of the CPU": ["!scene cpu-board-3d"],
+    },
+    ("ks4/aqa-computer-science", "systems-architecture"): {
+        "The von Neumann architecture": ["!scene cpu-board-3d"],
+        "CPU performance and embedded systems": ["!scene cpu-performance-3d"],
+    },
+    ("ks4/edexcel-computer-science", "hardware-and-the-processor"): {
+        "Inside the CPU": ["!scene cpu-board-3d"],
+        "What makes a processor faster": ["!scene cpu-performance-3d"],
+    },
+    ("ks5", "structure-and-function-of-the-processor"): {
+        "Components and registers": ["!scene cpu-board-3d"],
+    },
+    ("ks4/aqa-computer-science", "computer-networks"): {
+        "Star and bus topologies": ["!scene network-topologies-3d"],
+        "Networks": ["!scene lan-wan-3d"],
+    },
+    ("ks4/edexcel-computer-science", "networks-and-network-security"): {
+        "Networks and topologies": ["!scene network-topologies-3d"],
+        "Protocols and layers": ["!scene tcp-ip-stack-3d"],
+    },
+    ("ks4/aqa-computer-science", "number-bases-and-units"): {
+        "Converting between the bases": ["!scene binary-place-value-3d"],
+        "Units of information": ["!scene units-of-data-3d"],
+    },
+    ("ks4/edexcel-computer-science", "binary-and-hexadecimal"): {
+        "Converting between denary and binary": ["!scene binary-place-value-3d"],
+    },
+    ("ks4/computer-science", "secondary-storage"): {
+        "The three types": ["!scene secondary-storage-3d"],
+    },
+    ("ks4/aqa-computer-science", "representing-images"): {
+        "Bitmap images": ["!scene image-layers-3d"],
+    },
+    ("ks4/aqa-computer-science", "representing-sound"): {
+        "From analogue to digital": ["!scene sound-sampling-3d"],
+    },
+    ("ks4/aqa-computer-science", "protocols-and-layers"): {
+        "Layers": ["!scene tcp-ip-stack-3d"],
+    },
+    ("ks4/edexcel-computer-science", "representing-text-images-and-sound"): {
+        "Representing images": ["!scene image-layers-3d"],
+        "Representing sound": ["!scene sound-sampling-3d"],
+    },
+    ("ks4/edexcel-computer-science", "data-storage-and-compression"): {
+        "Secondary storage": ["!scene secondary-storage-3d"],
+        "Compression": ["!scene compression-3d"],
+        "Units of storage": ["!scene units-of-data-3d"],
+    },
+    ("ks5", "networks-and-web-technologies"): {
+        "Networks and protocols": ["!scene tcp-ip-stack-3d"],
+        "Web technologies": ["!scene web-request-3d"],
+    },
+    ("ks5", "input-output-and-storage"): {
+        "Storage": ["!scene secondary-storage-3d"],
+    },
+}
+
+for _key, _mapping in SCENES.items():
+    _target = PLACEMENTS.setdefault(_key, {})
+    for _section, _items in _mapping.items():
+        # Only scenes belong here. Restating a diagram would add a second copy
+        # of it to a page that already has one, which is how this table went
+        # wrong the first time.
+        assert all(i.startswith("!scene ") for i in _items), (_key, _section)
+        _target.setdefault(_section, []).extend(_items)
+
+
+# Photographs, merged in the same way and for the same reason as the scenes.
+# A topic that already has a diagram or a scene above keeps it: the picture of
+# the object and the picture of the mechanism do different jobs. Entries whose
+# image file is not in the repository yet render as nothing, so this table can
+# be written before the photographs are sourced.
+PHOTO_PLACEMENTS = {
+    ("ks3", "using-computers"): {
+        "Hardware and software": ["!photo peripherals"],
+    },
+    ("ks3", "understanding-computers"): {
+        "Inside the computer": ["!photo motherboard", "!photo cpu-chip"],
+    },
+    ("ks4/computer-science", "architecture-of-the-cpu"): {
+        "What the CPU is for": ["!photo cpu-chip"],
+    },
+    ("ks4/computer-science", "cpu-performance"): {
+        "The three factors": ["!photo heatsink-fan"],
+    },
+    ("ks4/computer-science", "primary-storage"): {
+        "RAM": ["!photo ram-stick"],
+        "ROM": ["!photo rom-chip"],
+    },
+    ("ks4/computer-science", "secondary-storage"): {
+        "The three types": ["!photo hdd-open", "!photo ssd-open"],
+        "Choosing the right device": ["!photo usb-and-disc"],
+    },
+    ("ks4/computer-science", "embedded-systems"): {
+        "What an embedded system is": ["!photo embedded-board"],
+    },
+    ("ks4/computer-science", "networks-and-topologies"): {
+        "Network hardware": ["!photo network-switch", "!photo home-router"],
+        "Client server and peer to peer": ["!photo server-rack"],
+    },
+    ("ks4/computer-science", "protocols-and-layers"): {
+        "Wired and wireless": ["!photo ethernet-cable", "!photo fibre-optic"],
+        "IP addresses and MAC addresses": ["!photo nic-card"],
+    },
+    ("ks4/aqa-computer-science", "systems-architecture"): {
+        "The von Neumann architecture": ["!photo cpu-chip"],
+    },
+    ("ks4/aqa-computer-science", "hardware-software-and-the-operating-system"): {
+        "Hardware and software": ["!photo ram-stick"],
+    },
+    ("ks4/aqa-computer-science", "computer-networks"): {
+        "Networks": ["!photo network-switch"],
+        "Wired and wireless": ["!photo ethernet-cable"],
+    },
+    ("ks4/edexcel-computer-science", "hardware-and-the-processor"): {
+        "Components of a computer system": ["!photo motherboard"],
+        "Inside the CPU": ["!photo cpu-chip"],
+    },
+    ("ks4/edexcel-computer-science", "data-storage-and-compression"): {
+        "Secondary storage": ["!photo hdd-open", "!photo ssd-open"],
+    },
+    ("ks5", "structure-and-function-of-the-processor"): {
+        "Components and registers": ["!photo cpu-chip"],
+    },
+    ("ks5", "types-of-processor"): {
+        "GPUs and parallel systems": ["!photo gpu-card"],
+    },
+    ("ks5", "input-output-and-storage"): {
+        "Devices and how they work": ["!photo peripherals"],
+        "Storage": ["!photo hdd-open", "!photo ssd-open"],
+    },
+}
+
+for _key, _mapping in PHOTO_PLACEMENTS.items():
+    _target = PLACEMENTS.setdefault(_key, {})
+    for _section, _items in _mapping.items():
+        assert all(i.startswith("!photo ") for i in _items), (_key, _section)
+        _target.setdefault(_section, []).extend(_items)
+
+def _duplicate_keys():
+    """Find keys written twice in the literal above.
+
+    A dict literal keeps the last of any repeated key and says nothing, so
+    writing the same (course, topic) pair twice silently throws the earlier
+    one away. That has now happened twice here, once losing a tool from a
+    page for several deploys, so the source is parsed and checked rather than
+    trusted. Nothing else can catch it: by the time the module has imported,
+    the evidence is gone.
+    """
+    import ast
+    with open(__file__, encoding="utf-8") as fh:
+        tree = ast.parse(fh.read())
+    seen, dupes = set(), []
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Assign):
+            continue
+        name = next((getattr(t, "id", "") for t in node.targets), "")
+        if name not in ("PLACEMENTS", "SCENES", "PHOTO_PLACEMENTS"):
+            continue
+        for key in node.value.keys:
+            try:
+                k = ast.literal_eval(key)
+            except ValueError:
+                continue
+            if (name, k) in seen:
+                dupes.append("%s%r" % (name, (k,)))
+            seen.add((name, k))
+    return dupes
+
+
 def check(all_used):
-    """Every mapping must have matched a real topic."""
+    """Every mapping must have matched a real topic, and be written once."""
+    dupes = _duplicate_keys()
+    if dupes:
+        raise KeyError("placement keys written more than once, so the earlier "
+                       "one is being discarded: %s" % sorted(dupes))
     missing = set(PLACEMENTS) - all_used
     if missing:
         raise KeyError("placements that matched no topic: %s" % sorted(missing))

@@ -2,6 +2,8 @@
 
 Block syntax
 ------------
+    !photo <slug>                   -> a photograph, if its file is present
+    ## Heading                      -> h2 section heading, with an id
     ### Heading                     -> h4 sub heading
     - item                          -> unordered list
     1. item                         -> ordered list
@@ -24,6 +26,8 @@ Inline syntax
 """
 import html
 import re
+
+from .util import slugify
 
 def _slot(i: int) -> str:
     """Placeholder built from control characters.
@@ -168,6 +172,16 @@ def render(src: str) -> str:
             continue
 
         # heading
+        # The standalone pages (about, privacy, accessibility, how to revise)
+        # are authored as whole documents and use ## for their sections. That
+        # was never implemented, so every one of their headings rendered as
+        # literal "## Why this site exists" text on the live site.
+        if stripped.startswith("## "):
+            text = stripped[3:]
+            out.append('<h2 id="%s">%s</h2>' % (slugify(text), inline(text)))
+            i += 1
+            continue
+
         if stripped.startswith("### "):
             out.append("<h4>%s</h4>" % inline(stripped[4:]))
             i += 1
@@ -182,6 +196,26 @@ def render(src: str) -> str:
                 raise KeyError("unknown diagram %r (have: %s)"
                                % (name, ", ".join(sorted(_DG))))
             out.append(_DG[name]())
+            i += 1
+            continue
+
+        # photograph: !photo <slug>
+        m = re.match(r"^!photo\s+([a-z0-9-]+)\s*$", stripped)
+        if m:
+            from . import photos as _PH
+            out.append(_PH.render(m.group(1)))
+            i += 1
+            continue
+
+        # 3D scene: !scene <name>
+        m = re.match(r"^!scene\s+([a-z0-9-]+)\s*$", stripped)
+        if m:
+            from .scenes import REGISTRY as _SC
+            name = m.group(1)
+            if name not in _SC:
+                raise KeyError("unknown scene %r (have: %s)"
+                               % (name, ", ".join(sorted(_SC))))
+            out.append(_SC[name]())
             i += 1
             continue
 

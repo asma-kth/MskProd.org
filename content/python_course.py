@@ -3511,6 +3511,7 @@ pygame.quit()
 
 COURSE = Course(
     slug="python",
+    seo="Python tutorial",
     title="Python from Scratch",
     short="Python",
     stage="All",

@@ -4,12 +4,12 @@ from mskbuild.render import (layout, crumbs, crumbs_ld, ico, esc, write,
                              SITE_URL, SITE_NAME, mascot_svg)
 
 
-def _page(path, title, description, crumb, body_md, extra="", greeting="", ld=None):
+def _page(path, title, description, crumb, body_md, extra="", ld=None):
     trail = [("Home", "/"), (crumb, None)]
     body = """<div class="wrap">
   %s
-  <div class="wrap-narrow" style="width:100%%;margin-inline:auto">
-    <article class="prose" style="padding-bottom:var(--sp-8)">
+  <div class="page-panel">
+    <article class="prose">
       <header class="topic-header"><h1>%s</h1><p class="lead">%s</p></header>
       %s
       %s
@@ -17,7 +17,7 @@ def _page(path, title, description, crumb, body_md, extra="", greeting="", ld=No
   </div>
 </div>""" % (crumbs(trail), esc(title), esc(description), markup.render(body_md), extra)
     return path, layout(title=title, description=description, path=path,
-                        body=body, greeting=greeting,
+                        body=body,
                         jsonld=(ld or []) + [crumbs_ld(trail)])
 
 
@@ -228,8 +228,7 @@ def build(register, add_search, courses):
     path, html = _page(
         "/how-to-revise/", "How to Revise Properly",
         "What actually works in revision, based on evidence rather than on what feels productive, plus exam technique worth several grades.",
-        "How to revise", HOW_TO_REVISE,
-        greeting="This page is worth more than any single topic on the site. Most students never change how they revise, and that is exactly why changing it works so well.")
+        "How to revise", HOW_TO_REVISE)
     write(path, html)
     register(path, 0.8, "monthly")
     add_search("How to revise properly", path, "Evidence based revision technique",
@@ -257,8 +256,7 @@ def build(register, add_search, courses):
         "Every key term across Key Stage 3, GCSE and A Level computing, each defined in one sentence you could write in an exam.",
         "Glossary",
         "Definitions written the way a mark scheme wants them: one sentence, precise, and using the vocabulary the examiner is looking for. Type in the box to filter, and cover the definition and say it out loud before you read it.",
-        extra=extra,
-        greeting="Do not read this list. Cover a definition, say it out loud, then check. Retrieval is what makes it stick.")
+        extra=extra)
     write(path, html)
     register(path, 0.7, "monthly")
     add_search("Computing glossary", path, "%d key terms defined" % len(GLOSSARY),
@@ -310,10 +308,9 @@ Corrections are genuinely welcome. If something on this site is wrong, unclear o
 """
     path, html = _page(
         "/about/", "About MskProd Computing",
-        "A free revision site for UK computing students at Key Stage 3, GCSE and A Level, covering OCR, AQA and Edexcel, with no accounts, adverts or tracking.",
+        "A free revision site for UK computing students at Key Stage 3, GCSE and A Level, covering OCR J277, AQA 8525, Edexcel 1CP2, Creative iMedia and A Level H446. No account needed.",
         "About", about % (total_topics, total_quiz),
         extra='<div class="center" style="max-width:220px;margin:var(--sp-6) auto 0">%s</div>' % mascot_svg(),
-        greeting="I am Pixel. I live in the corner of every page, and I run entirely on your own device. Nothing you do here is sent anywhere.",
         ld=[{"@context": "https://schema.org", "@type": "AboutPage",
              "name": "About " + SITE_NAME, "url": SITE_URL + "/about/"}])
     write(path, html)
@@ -371,7 +368,7 @@ Pixel, the robot cat, runs entirely in your browser. The facts, tips and message
 
 ## Third party services
 
-The site loads its typefaces from **Google Fonts**. When your browser requests those font files it makes a request to Google's servers, which as with any web request involves your IP address and browser information being visible to Google. If you would prefer to avoid it, most browsers and privacy extensions can block requests to fonts.googleapis.com, and the site remains fully readable and fully functional with a fallback typeface.
+The site's typefaces are served from mskprod.org itself. They used to come from Google Fonts, which meant your browser made a request to Google's servers for every page; that request no longer happens.
 
 The runnable Python examples download the Python engine from a public code network (jsDelivr) the first time you press Run on a page. That request is only made if you press Run.
 
@@ -409,7 +406,6 @@ If you have a question about privacy on this site, please get in touch through t
         "/privacy/", "Privacy Policy",
         "The site owner collects no personal data and your quiz scores never leave your device. The site is funded by Google adverts, which do set cookies. Explained in full here.",
         "Privacy", privacy,
-        greeting="Short version: your scores never leave your device. The adverts are Google's, and they do use cookies. It is all explained here.",
         ld=[{"@context": "https://schema.org", "@type": "WebPage",
              "name": "Privacy Policy", "url": SITE_URL + "/privacy/"}])
     write(path, html)
@@ -484,9 +480,45 @@ If any part of this site is difficult or impossible for you to use, please say s
     path, html = _page(
         "/accessibility/", "Accessibility",
         "How this site is built to be usable by everybody, what has been done, what standard it aims for, and what is not yet perfect.",
-        "Accessibility", access,
-        greeting="If any part of this site is hard for you to use, that is a bug. Please report it.")
+        "Accessibility", access)
     write(path, html)
     register(path, 0.5, "yearly")
     add_search("Accessibility", path, "Accessibility statement",
                "accessibility screen reader keyboard contrast wcag")
+
+
+# ============================================================== ATTRIBUTIONS
+
+def build_attributions(write, register):
+    """Credit every photograph in one place.
+
+    Only built once there are photographs to credit: an empty page listing
+    nothing would be a thin page with no reason to exist. The credit under
+    each picture is what the licence actually requires; this page is so that
+    somebody checking can see the whole set at once.
+    """
+    from mskbuild import photos as ph
+    have = ph.available()
+    if not have:
+        return
+    items = []
+    for slug in sorted(have):
+        p = have[slug]
+        bits = [x for x in (p.credit, p.licence) if x]
+        src = (' &middot; <a href="%s" rel="nofollow noopener">source</a>' % esc(p.source)
+               if p.source else "")
+        items.append('<li><b>%s</b><span>%s%s</span></li>'
+                     % (esc(p.caption.split(".")[0]),
+                        esc(" \u00b7 ".join(bits)) or "credit pending", src))
+    extra = ('<ul class="attribution-list">%s</ul>' % "".join(items))
+    path, html = _page(
+        "/attributions/", "Image attributions",
+        "Where the photographs on this site came from, and the licence each one "
+        "is used under.",
+        "Attributions",
+        "Every photograph on this site is used under a licence that permits "
+        "commercial use, and each one is credited underneath the picture it "
+        "appears on. They are all listed here as well.\n",
+        extra=extra)
+    write(path, html)
+    register(path, 0.3, "monthly")

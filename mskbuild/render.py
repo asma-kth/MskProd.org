@@ -10,7 +10,9 @@ import os
 import re
 from typing import List, Optional
 
+from . import cat
 from . import markup
+from .util import slugify
 from .models import Topic, Unit, Course, Q, EQ
 
 SITE_NAME = "MskProd Computing"
@@ -38,17 +40,21 @@ def icons() -> str:
 
 
 def mascot_svg() -> str:
+    """The dock cat: one flat drawing, because it is 44px in a corner."""
     global _MASCOT_CACHE
     if _MASCOT_CACHE is None:
-        _MASCOT_CACHE = _asset("mascot.svg")
+        _MASCOT_CACHE = cat.flat()
     return _MASCOT_CACHE
 
 
 def logo_svg(cls: str = "brand-logo") -> str:
+    """The same cat's head, on its cream plate. Generated rather than read
+    from a file, so the logo and the mascot cannot drift into two cats."""
     global _LOGO_CACHE
     if _LOGO_CACHE is None:
-        _LOGO_CACHE = _asset("logo.svg")
-    return _LOGO_CACHE.replace("<svg ", '<svg class="%s" ' % cls, 1)
+        _LOGO_CACHE = cat.flat(head_only=True, plate=True,
+                               label="MskProd Computing", cls="")
+    return _LOGO_CACHE.replace('class=""', 'class="%s"' % cls, 1)
 
 
 def ico(name: str, cls: str = "icon") -> str:
@@ -59,9 +65,6 @@ def esc(s: str) -> str:
     return html.escape(str(s or ""), quote=True)
 
 
-def slugify(s: str) -> str:
-    s = re.sub(r"[^a-z0-9]+", "-", str(s).lower()).strip("-")
-    return s or "section"
 
 
 # ===================================================================== nav
@@ -90,13 +93,48 @@ def _nav(active: str) -> str:
 
 # ================================================================== layout
 
+
+# A search result shows roughly the first 60 characters of a title and the
+# first 160 of a description. Anything past that is cut, so the brand suffix is
+# only worth adding when the words that win the click still fit in front of it.
+TITLE_MAX = 60
+DESC_MAX = 160
+
+
+def _title(title: str) -> str:
+    if title.endswith(SITE_NAME):
+        return title
+    suffix = " | " + SITE_NAME
+    return title + suffix if len(title) + len(suffix) <= TITLE_MAX else title
+
+
+def _meta_description(desc: str) -> str:
+    """Trim a description to what a result actually shows.
+
+    Several hub blurbs run past 250 characters, so the useful half was being
+    cut mid sentence by Google. Cutting here, at a sentence end where one
+    exists and a word boundary otherwise, keeps the page copy untouched and
+    the snippet readable.
+    """
+    desc = " ".join(desc.split())
+    if len(desc) <= DESC_MAX:
+        return desc
+    window = desc[:DESC_MAX]
+    stop = max(window.rfind(". "), window.rfind("? "), window.rfind("! "))
+    if stop >= 90:
+        return window[:stop + 1]
+    return window[:window.rfind(" ")].rstrip(",;:") + "."
+
+
 def layout(*, title: str, description: str, path: str, body: str,
-           active: str = "", topic_id: str = "", greeting: str = "",
+           active: str = "", topic_id: str = "",
            jsonld: Optional[list] = None, extra_head: str = "",
-           scripts: Optional[list] = None, show_progress: bool = False) -> str:
+           scripts: Optional[list] = None, show_progress: bool = False,
+           noindex: bool = False) -> str:
     """Wrap page body in the full site chrome."""
     canonical = SITE_URL + path
-    full_title = title if title.endswith(SITE_NAME) else "%s | %s" % (title, SITE_NAME)
+    full_title = _title(title)
+    description = _meta_description(description)
     scripts = list(scripts or [])
     ld = jsonld or []
 
@@ -110,6 +148,11 @@ def layout(*, title: str, description: str, path: str, body: str,
     # script, so it is only pulled in by pages that actually contain one.
     if 'diagram-steps' in body:
         scripts.append("/assets/js/diagrams.js")
+
+    # Same deal for the 3D scenes: the stages are in the markup and the figure
+    # reads fine without this, so only a page carrying one fetches it.
+    if 'class="scene"' in body:
+        scripts.append("/assets/js/scenes.js")
 
     # Runnable Python. The marker goes on <main>, and pyrun.js finds the Python
     # code blocks inside it. Pyodide itself is fetched only when a Run button is
@@ -130,9 +173,9 @@ def layout(*, title: str, description: str, path: str, body: str,
 <title>{full_title}</title>
 <meta name="description" content="{desc}">
 <link rel="canonical" href="{canonical}">
-<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="robots" content="{robots}">
 <meta name="author" content="MskProd Computing">
-<meta name="theme-color" content="#E8FBFB" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#FDFAF0" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0C2B2E" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="{site}">
@@ -149,17 +192,16 @@ def layout(*, title: str, description: str, path: str, body: str,
 <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <link rel="sitemap" type="application/xml" href="/sitemap.xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="/assets/fonts/inter-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/poppins-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6941224638209377"
      crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
 <link rel="stylesheet" href="/assets/css/site.css">
 {extra_head}
 {ld_html}
 </head>
-<body class="no-js"{topic_attr}{greet_attr}>
+<body class="no-js"{topic_attr}>
 <script>document.body.classList.remove("no-js");</script>
 <a class="skip-link" href="#main">Skip to content</a>
 {icons}
@@ -184,6 +226,11 @@ def layout(*, title: str, description: str, path: str, body: str,
 {footer}
 {search_shell}
 {mascot}
+<div class="page-loader" id="pageLoader" aria-hidden="true">
+{loader}
+  <p>Waking Pixel…</p>
+  <span class="loader-bar"><i></i></span>
+</div>
 <script>window.MSK_BASE="/";</script>
 <script src="/assets/js/app.js" defer></script>
 <script src="/assets/js/mascot.js" defer></script>
@@ -192,14 +239,17 @@ def layout(*, title: str, description: str, path: str, body: str,
 </html>""".format(
         full_title=esc(full_title),
         ogtitle=esc(title),
-        desc=esc(description[:300]),
+        desc=esc(description),
+        loader=cat.stack("asleep", 170, zzz=True,
+                         label="Pixel the robot cat, asleep"),
+        robots=("noindex, follow" if noindex
+                else "index, follow, max-image-preview:large, max-snippet:-1"),
         canonical=canonical,
         site=SITE_NAME,
         site_url=SITE_URL,
         extra_head=extra_head,
         ld_html=ld_html,
         topic_attr=' data-topic="%s"' % esc(topic_id) if topic_id else "",
-        greet_attr=' data-cat-greeting="%s"' % esc(greeting) if greeting else "",
         icons=icons(),
         progress='<div class="progress-bar" id="readProgress"></div>' if show_progress else "",
         logo=logo_svg(),
@@ -334,8 +384,7 @@ def render_quiz(topic_slug: str, questions: List[Q], title: str = "Knowledge che
     return """<section class="quiz" id="quiz" data-quiz-id="%s" aria-labelledby="quizTitle">
   <div class="quiz-head">
     <div>
-      <h2 id="quizTitle">%s</h2>
-      <p>%s</p>
+      <h2 id="quizTitle">%s</h2>%s
     </div>
     <span class="quiz-counter" data-counter>0 of %d answered</span>
   </div>
@@ -348,7 +397,7 @@ def render_quiz(topic_slug: str, questions: List[Q], title: str = "Knowledge che
     <button class="btn btn-ghost btn-sm" type="button" data-quiz-shuffle>%s Shuffle answers</button>
   </div>
 </section>""" % (esc(topic_slug), esc(title),
-                 esc(lead or "Ten questions on what you have just read. Pick an answer to see whether it is right and why."),
+                 ("<p>%s</p>" % esc(lead)) if lead else "",
                  len(questions), "".join(qs), len(questions),
                  ico("i-repeat"), ico("i-shuffle"))
 
@@ -368,11 +417,10 @@ def render_exam(topic_slug: str, questions: List[EQ], title: str = "Exam-style q
         qs.append("""<div class="examq" data-marks="%d" data-exam-id="%s-e%d">
   <div class="examq-head"><span class="n">%d</span><span class="stem">%s</span><span class="marks">%d %s</span></div>
   %s
-  <textarea placeholder="Write your answer here, the way you would in the exam." aria-label="Your answer to question %d"></textarea>
+  <textarea placeholder="Write your answer as you would in the exam." aria-label="Your answer to question %d"></textarea>
   <div class="examq-tools">
     <button class="btn btn-primary btn-sm" type="button" data-mark>%s Mark my answer</button>
     <button class="btn btn-ghost btn-sm" type="button" data-exam-reset>Clear</button>
-    <span class="muted" style="font-size:.8rem">Ctrl and Enter also marks it</span>
   </div>
   <div class="examq-result">
     <p class="muted" data-verdict style="font-size:.9rem"></p>
@@ -472,8 +520,7 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
     if topic.mistakes:
         toc.append(("mistakes", "Common mistakes"))
         sec_html.append(
-            '<h2 id="mistakes">Mistakes that cost marks here</h2>'
-            '<p>Every one of these is something students actually write. Read them now so you do not write them in May.</p>'
+'<h2 id="mistakes">Mistakes that cost marks here</h2>'
             '<div class="note note-warn"><div class="note-title">%s Avoid these</div><ul>%s</ul></div>'
             % (ico("i-warn"), "".join("<li>%s</li>" % markup.inline(m) for m in topic.mistakes)))
 
@@ -510,7 +557,7 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
 
     fact = ""
     if topic.fact:
-        fact = ('<div class="note note-fact"><div class="note-title">%s Pixel fun fact</div><p>%s</p></div>'
+        fact = ('<div class="note note-fact"><div class="note-title">%s Fun fact</div><p>%s</p></div>'
                 % (ico("i-sparkle"), markup.inline(topic.fact)))
 
     body = """<div class="wrap">
@@ -574,12 +621,10 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
             } for q in topic.quiz[:10]],
         })
 
-    greet = ("Welcome to %s. Read it once slowly, then do the quiz without scrolling back. That is where the learning happens."
-             % topic.title)
-    return path, layout(title="%s | %s revision" % (topic.title, course.short),
+    return path, layout(title="%s | %s" % (topic.title, course.seo or course.short),
                         description=desc, path=path, body=body,
                         active="/%s/" % course.slug,
-                        topic_id=tid, greeting=greet, jsonld=ld,
+                        topic_id=tid, jsonld=ld,
                         scripts=["/assets/js/quiz.js"], show_progress=True)
 
 
@@ -670,11 +715,13 @@ def course_page(course: Course) -> tuple:
         "syllabusSections": [{"@type": "Syllabus", "name": u.title,
                               "description": u.blurb} for u in course.units],
     }]
-    greet = ("This is the whole %s course mapped out. Start at the top and work down, it is ordered the way it is taught."
-             % course.short)
-    return path, layout(title=course.title, description=course.blurb, path=path,
+    hub_title = course.title
+    if course.board and course.code:
+        board = "Edexcel" if course.board == "Pearson Edexcel" else course.board
+        hub_title = "%s | %s %s Revision" % (course.title, board, course.code)
+    return path, layout(title=hub_title, description=course.blurb, path=path,
                         body=body, active="/%s/" % course.slug,
-                        greeting=greet, jsonld=ld)
+                        jsonld=ld)
 
 
 def write(path: str, html_text: str):

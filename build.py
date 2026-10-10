@@ -7,6 +7,7 @@ fully crawlable and works without JavaScript. Run with: python3 build.py
 import hashlib
 import json
 import os
+import re
 import shutil
 import sys
 from datetime import date
@@ -230,20 +231,21 @@ def build_home():
     }, {
         "@context": "https://schema.org", "@type": "WebSite",
         "name": SITE_NAME, "url": SITE_URL, "inLanguage": "en-GB",
-        "potentialAction": {"@type": "SearchAction",
-                            "target": {"@type": "EntryPoint", "urlTemplate": SITE_URL + "/search/?q={search_term_string}"},
-                            "query-input": "required name=search_term_string"},
     }]
     write("/", layout(
-        title="MskProd Computing | UK computing revision for KS3, GCSE and A Level",
+        title="GCSE, KS3 and A Level Computing Revision",
         description="Free computing revision for UK students. KS3, OCR GCSE Computer Science J277, Creative iMedia J834, OCR A Level H446 and a full Python course. Explanations, quizzes, auto marked exam questions and practice papers.",
         path="/", body=body, active="/",
-        greeting="Hello. I am Pixel. Pick your key stage below, and tap me any time for a fun fact or a revision tip.",
         jsonld=ld))
     register("/", 1.0, "weekly")
 
 
 # --------------------------------------------------------------- offline
+
+def _cat_offline():
+    from mskbuild import cat
+    return cat.stack("asleep", 230, zzz=True)
+
 
 def build_pwa():
     """Write the service worker, the offline fallback page and assetlinks.
@@ -256,18 +258,19 @@ def build_pwa():
     write("/offline/", layout(
         title="Offline",
         description="You are offline and this page has not been saved to this device yet.",
-        path="/offline/",
-        body="""<div class="wrap" style="padding:var(--sp-8) 0;max-width:44rem">
+        path="/offline/", noindex=True,
+        body="""<div class="wrap"><div class="empty-screen">
+  %s
   <h1>You are offline</h1>
-  <p class="lead">This page has not been opened on this device before, so there is no saved
-  copy to show you.</p>
-  <p>Anything you have already read stays available offline. Open the menu and pick a topic
-  you have visited before, or reconnect and try again.</p>
-  <div class="btn-row" style="margin-top:var(--sp-5)">
+  <p class="lead">This page has not been opened on this device before, so there is no
+    saved copy to show you.</p>
+  <p>Anything you have already read is still here. Pick a topic you have visited
+    before, or reconnect and try again.</p>
+  <div class="btn-row">
     <a class="btn btn-primary" href="/">Go to the home page</a>
   </div>
-</div>"""))
-    register("/offline/", 0.1, "yearly")
+</div></div>""" % _cat_offline()))
+
 
     shell = []
     for rel in ("css/site.css", "js/app.js", "js/mascot.js", "js/tools.js"):
@@ -336,7 +339,7 @@ def build_sitemap():
         "categories": ["education"],
         # Matches the frosted header and the top of the page gradient, so the
         # Android status bar and splash screen line up with the site.
-        "theme_color": "#E8FBFB", "background_color": "#CBF0F2",
+        "theme_color": "#FDFAF0", "background_color": "#FBF6E9",
         "icons": [
             {"src": "/assets/img/favicon.svg", "sizes": "any", "type": "image/svg+xml"},
             {"src": "/assets/img/icon-192.png", "sizes": "192x192", "type": "image/png",
@@ -378,17 +381,20 @@ def build_sitemap():
         % json.dumps(moved, separators=(",", ":")))
 
     # 404
-    body = """<div class="wrap" style="padding:var(--sp-8) 0;text-align:center;max-width:640px">
-  <div style="max-width:180px;margin:0 auto var(--sp-4)">%s</div>
-  <h1>That page does not exist</h1>
-  <p class="lead" style="margin-inline:auto">Pixel has checked twice. The link may be old, or there may be a typo in the address.</p>
-  <div class="btn-row" style="justify-content:center;margin-top:var(--sp-4)">
+    from mskbuild import cat
+    body = """<div class="wrap"><div class="empty-screen">
+  %s
+  <h1>Nothing here to wake up for</h1>
+  <p class="lead">That page does not exist. The link may be old, or there may be a
+    typo in the address.</p>
+  <div class="btn-row">
     <a class="btn btn-primary" href="/">Back to the home page</a>
     <a class="btn btn-secondary" href="#" data-search-open>Search the site</a>
   </div>
-</div>""" % render.mascot_svg()
+</div></div>""" % cat.stack("asleep", 260, zzz=True)
     with open(os.path.join(DIST, "404.html"), "w", encoding="utf-8") as fh:
-        fh.write(layout(title="Page not found", description="That page could not be found on MskProd Computing.",
+        fh.write(layout(title="Page not found", noindex=True,
+                        description="That page could not be found on MskProd Computing.",
                         path="/404.html", body=body, extra_head=redirect_js))
 
 
@@ -405,6 +411,36 @@ def build_manifest():
         json.dump({"courses": MANIFEST}, fh, separators=(",", ":"))
 
 
+
+def dark_media(css):
+    """Make the dark theme work before, and without, JavaScript.
+
+    Every dark rule in the stylesheet is written as [data-theme="dark"] X, and
+    that attribute is only set by app.js, which is deferred. A reader whose
+    system is set to dark therefore gets a flash of the light theme on every
+    page load, and with JavaScript off never gets the dark theme at all.
+
+    Rather than rewrite 38 hand written rules and have the next one forget,
+    each is mirrored here into a prefers-color-scheme block, guarded so an
+    explicit [data-theme="light"] still wins. The attribute keeps working, so
+    nothing else has to change.
+    """
+    rules = re.findall(r'(\[data-theme="dark"\][^{}]*)\{([^{}]*)\}', css)
+    if not rules:
+        return css
+    out = ['\n\n/* Generated by build.py: the dark rules above, repeated for readers',
+           '   whose system asks for dark before any script has run. An explicit',
+           '   data-theme="light" still overrides them. */',
+           '@media (prefers-color-scheme: dark) {']
+    for sel, body in rules:
+        sel = ", ".join(
+            s.strip().replace('[data-theme="dark"]', ':root:not([data-theme="light"])', 1)
+            for s in sel.split(","))
+        out.append("  %s {%s}" % (sel, body.strip()))
+    out.append("}\n")
+    return css + "\n".join(out)
+
+
 def copy_static():
     src = os.path.join(ROOT, "static")
     dst = os.path.join(DIST, "assets")
@@ -419,6 +455,31 @@ def copy_static():
         fh.write(tool_reg.bundle(ROOT, "js"))
     with open(os.path.join(dst, "css", "tools.css"), "w", encoding="utf-8") as fh:
         fh.write(tool_reg.bundle(ROOT, "css"))
+
+    # The @font-face rules go at the head of the one stylesheet every page
+    # already loads, so self hosting the fonts costs no extra request.
+    css_dir = os.path.join(dst, "css")
+    fonts_css = os.path.join(css_dir, "fonts.css")
+    site_css = os.path.join(css_dir, "site.css")
+    with open(fonts_css, encoding="utf-8") as fh:
+        head = fh.read()
+    with open(site_css, encoding="utf-8") as fh:
+        rest = fh.read()
+    with open(site_css, "w", encoding="utf-8") as fh:
+        fh.write(dark_media(head + "\n" + rest))
+    os.remove(fonts_css)
+
+    # The favicon is the same cat, generated from the same source as the logo
+    # and the mascot, so a change to the character reaches the browser tab too.
+    from mskbuild import cat as _cat
+    with open(os.path.join(dst, "img", "favicon.svg"), "w", encoding="utf-8") as fh:
+        fh.write(_cat.flat(head_only=True, plate=True, label="MskProd Computing"))
+
+    tools_css = os.path.join(css_dir, "tools.css")
+    with open(tools_css, encoding="utf-8") as fh:
+        t = fh.read()
+    with open(tools_css, "w", encoding="utf-8") as fh:
+        fh.write(dark_media(t))
 
 
 def main():
@@ -442,6 +503,7 @@ def main():
     try:
         from content import pages
         pages.build(register, add_search, COURSES)
+        pages.build_attributions(write, register)
     except ImportError:
         pass
 
@@ -464,6 +526,13 @@ def main():
     assign_page.build(register, add_search)
 
     placements.check(PLACED)
+
+    from mskbuild import photos as _photos
+    _waiting = _photos.pending()
+    if _waiting:
+        print("Photographs pending (%d of %d): their placements render as "
+              "nothing until the files exist.\n  %s"
+              % (len(_waiting), len(_photos.PHOTOS), ", ".join(_waiting)))
 
     build_home()
     copy_static()

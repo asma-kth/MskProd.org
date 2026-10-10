@@ -257,3 +257,44 @@
     });
   }
 })();
+
+/* ---------------------------------------------------------- waking screen
+ * A loading screen on a page that has already arrived is just a slower page,
+ * so this one never shows on a quick load. A same origin link starts a
+ * timer; only if the new page still has not taken over after the delay does
+ * Pixel appear. On a fast connection nobody will ever see him.
+ */
+(function () {
+  var loader = document.getElementById("pageLoader");
+  if (!loader) return;
+  var DELAY = 450, timer = null;
+
+  function show() { loader.classList.add("is-on"); loader.setAttribute("aria-hidden", "false"); }
+  function hide() {
+    clearTimeout(timer);
+    loader.classList.remove("is-on");
+    loader.setAttribute("aria-hidden", "true");
+  }
+
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("a");
+    if (!a || e.defaultPrevented || e.button !== 0) return;
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    if (a.target && a.target !== "_self") return;
+    if (a.hasAttribute("download") || a.getAttribute("href") === null) return;
+    var href = a.getAttribute("href");
+    if (href.charAt(0) === "#" || /^(mailto|tel|javascript):/i.test(href)) return;
+    var url;
+    try { url = new URL(a.href, location.href); } catch (err) { return; }
+    if (url.origin !== location.origin) return;
+    // Same page, different anchor: nothing is loading.
+    if (url.pathname === location.pathname && url.search === location.search) return;
+    clearTimeout(timer);
+    timer = setTimeout(show, DELAY);
+  });
+
+  // Coming back through the history cache shows the old page instantly, so
+  // the overlay must not still be sitting on top of it.
+  window.addEventListener("pageshow", hide);
+  window.addEventListener("pagehide", hide);
+})();
