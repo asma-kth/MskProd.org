@@ -1215,8 +1215,8 @@ h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
 .sc-world {
   position: relative; width: 100%; height: 100%; pointer-events: none;
   transform-style: preserve-3d;
-  transform: translateY(calc(var(--sc-depth, 0px) / 1.8 * var(--sc-scale, 1)))
-             scale(var(--sc-scale, 1))
+  transform: translateY(calc(var(--sc-depth, 0px) / 2.2 * var(--sc-scale, 1) * var(--sc-fit, 1)))
+             scale(calc(var(--sc-scale, 1) * var(--sc-fit, 1)))
              rotateX(var(--rx, 58deg)) rotateZ(var(--rz, -32deg));
   transition: transform .4s ease;
 }
@@ -1281,6 +1281,17 @@ h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
   border: 2px solid var(--sc-teal);
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--sc-teal) 22%, transparent);
 }
+/* A highlight ring placed at an arbitrary point, used to pick out the part of
+   a scene the current step is talking about. */
+.sc-glow-at {
+  width: var(--sc-w, 90px); height: var(--sc-hh, 56px); border-radius: 10px;
+  transform: translate(-50%, -50%)
+             translate3d(var(--sc-x, 0px), var(--sc-y, 0px), var(--sc-z, 0px));
+}
+.sc-glow-at.sc-lilac {
+  border-color: var(--sc-lilac);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--sc-lilac) 22%, transparent);
+}
 .sc-arrow {
   position: absolute; left: 50%; top: 50%; width: 4px; height: 146px;
   transform: translate(-50%, -50%) translateZ(110px);
@@ -1294,6 +1305,94 @@ h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
   background: var(--surface); padding: .3rem .6rem; border-radius: 8px;
   border: 1px solid var(--border); white-space: nowrap;
 }
+
+/* Primitives: a board to stand things on, blocks with real height, wires
+   laid between two points, travelling markers, and captions that face the
+   reader wherever the scene is turned. */
+.sc-plane.sc-board { height: var(--sc-hh, 146px); background: var(--sc-face); }
+.sc-floor { border-color: var(--sc-edge); background: var(--sc-face); }
+
+.sc-box, .sc-wire, .sc-dot, .sc-note-at {
+  position: absolute; left: 50%; top: 50%; transform-style: preserve-3d;
+}
+.sc-box {
+  width: var(--sc-w, 90px); height: var(--sc-hh, 56px); border-radius: 10px;
+  background: var(--sc-face); border: 1.5px solid var(--sc-edge);
+  box-shadow: 0 8px 18px rgba(2, 59, 57, .16);
+  transform: translate(-50%, -50%)
+             translate3d(var(--sc-x, 0px), var(--sc-y, 0px), var(--sc-z, 0px));
+}
+.sc-box.sc-teal  { border-color: var(--sc-teal);  background: var(--sc-teal-face); }
+.sc-box.sc-lilac { border-color: var(--sc-lilac); background: var(--sc-lilac-face); }
+/* The side wall. Standing it up on the box's near edge is what makes a flat
+   rectangle read as a solid block once the scene is turned. */
+.sc-leg {
+  position: absolute; left: 0; right: 0; top: 100%; height: var(--sc-leg, 20px);
+  background: color-mix(in srgb, var(--sc-edge) 30%, transparent);
+  border: 1px solid var(--sc-edge); border-top: 0;
+  transform-origin: top center; transform: rotateX(-90deg);
+}
+.sc-box-label {
+  position: absolute; left: 50%; top: 50%; display: grid; gap: 1px;
+  justify-items: center; white-space: nowrap;
+  transform: translate(-50%, -50%) translateZ(2px)
+             rotateZ(var(--sc-rz, 32deg)) rotateX(var(--sc-rx, -58deg));
+}
+.sc-box-label b {
+  font-family: var(--font-display); font-size: .68rem; font-weight: 700;
+  letter-spacing: .06em; color: var(--ink);
+  background: var(--surface); border-radius: 5px; padding: .08rem .3rem;
+}
+.sc-box-label i {
+  font-style: normal; font-size: .62rem; color: var(--ink-3);
+  background: var(--surface); border-radius: 4px; padding: .04rem .26rem;
+}
+
+.sc-wire {
+  height: 3px; width: var(--sc-len, 100px); border-radius: 2px;
+  transform-origin: left center;
+  transform: translate(0, -50%)
+             translate3d(var(--sc-x, 0px), var(--sc-y, 0px), var(--sc-z, 0px))
+             rotateZ(var(--sc-rot, 0deg));
+  background: var(--sc-teal); opacity: .75;
+}
+.sc-wire-lilac { background: var(--sc-lilac); }
+.sc-wire.is-dashed {
+  background: repeating-linear-gradient(90deg, var(--sc-teal) 0 8px, transparent 8px 15px);
+}
+.sc-wire-tag {
+  position: absolute; left: 50%; top: 50%; font-size: .6rem; font-weight: 700;
+  letter-spacing: .05em; color: var(--ink-3); background: var(--surface);
+  padding: .05rem .3rem; border-radius: 4px; white-space: nowrap;
+  transform: translate(-50%, -50%) rotateZ(calc(-1 * var(--sc-rot, 0deg)))
+             rotateZ(var(--sc-rz, 32deg)) rotateX(var(--sc-rx, -58deg));
+}
+
+.sc-dot {
+  width: var(--sc-size, 14px); height: var(--sc-size, 14px); border-radius: 50%;
+  background: var(--sc-teal); box-shadow: 0 0 0 4px color-mix(in srgb, var(--sc-teal) 24%, transparent);
+  transform: translate(-50%, -50%)
+             translate3d(var(--sc-x, 0px), var(--sc-y, 0px), var(--sc-z, 0px));
+}
+.sc-dot.sc-lilac { background: var(--sc-lilac); box-shadow: 0 0 0 4px color-mix(in srgb, var(--sc-lilac) 24%, transparent); }
+.sc-dot-tag {
+  position: absolute; left: 50%; bottom: 100%; font-size: .6rem; font-weight: 700;
+  color: var(--ink); background: var(--surface); padding: .06rem .3rem;
+  border-radius: 4px; white-space: nowrap; border: 1px solid var(--border);
+  transform: translate(-50%, -6px) rotateZ(var(--sc-rz, 32deg)) rotateX(var(--sc-rx, -58deg));
+  transform-origin: center bottom;
+}
+
+.sc-note-at {
+  transform: translate(-50%, -50%)
+             translate3d(var(--sc-x, 0px), var(--sc-y, 0px), var(--sc-z, 0px))
+             rotateZ(var(--sc-rz, 32deg)) rotateX(var(--sc-rx, -58deg));
+  font-size: .72rem; font-weight: 600; color: var(--ink-2); text-align: center;
+  background: var(--surface); padding: .26rem .55rem; border-radius: 8px;
+  border: 1px solid var(--border); white-space: nowrap;
+}
+.sc-note-at.sc-teal  { color: var(--sc-teal);  border-color: var(--sc-teal); }
+.sc-note-at.sc-lilac { color: var(--sc-lilac); border-color: var(--sc-lilac); }
 
 .sc-step { display: contents; }
 .scene.is-stepped .sc-step { display: none; }

@@ -16,13 +16,14 @@ PLACEMENTS = {
         "The fetch decode execute cycle": ["!diagram fetch-decode-execute"],
     },
     ("ks4/computer-science", "primary-storage"): {
-        "Why primary memory exists": ["!diagram memory-hierarchy"],
+        "Why primary memory exists": ["!diagram memory-hierarchy", "!scene memory-hierarchy-3d"],
     },
     ("ks4/computer-science", "units-of-data"): {
         "Calculating file sizes": ["!tool file-size"],
     },
     ("ks4/computer-science", "binary-and-hexadecimal"): {
-        "Binary to denary": ["!diagram binary-place-values", "!tool base-converter"],
+        "Binary to denary": ["!diagram binary-place-values", "!scene binary-place-value-3d",
+                             "!tool base-converter"],
         "Binary addition": ["!diagram binary-addition"],
     },
     ("ks4/computer-science", "storing-images"): {
@@ -35,7 +36,7 @@ PLACEMENTS = {
     },
     ("ks4/computer-science", "networks-and-topologies"): {
         "Client server and peer to peer": ["!diagram client-server-p2p"],
-        "Star and mesh topologies": ["!diagram network-topologies"],
+        "Star and mesh topologies": ["!diagram network-topologies", "!scene network-topologies-3d"],
     },
     ("ks4/computer-science", "protocols-and-layers"): {
         "Standards and protocols": ["!diagram packet-switching"],
@@ -182,7 +183,7 @@ PLACEMENTS = {
         "Representing text, images and sound": ["!diagram image-representation"],
     },
     ("ks3", "networks-and-cyber-security"): {
-        "Networks": ["!diagram network-topologies"],
+        "Networks": ["!diagram network-topologies", "!scene network-topologies-3d"],
     },
     # ------------------------------- computational thinking, law, character sets
     # Every course that teaches these now has a worked picture rather than three
@@ -225,6 +226,36 @@ PLACEMENTS = {
     ("ks5", "legal-moral-and-ethical-issues"): {
         "Legislation": ["!diagram uk-computing-law"],
     },
+    # ------------------------------------------------------- 3D scenes
+    # Only on topics whose subject genuinely has layers, stacking or position
+    # in space. Everything else keeps its flat stepped diagram.
+    ("ks4/computer-science", "architecture-of-the-cpu"): {
+        "Components of the CPU": ["!diagram cpu-components", "!scene cpu-board-3d"],
+        "The fetch decode execute cycle": ["!diagram fetch-decode-execute"],
+    },
+    ("ks4/aqa-computer-science", "systems-architecture"): {
+        "The von Neumann architecture": ["!scene cpu-board-3d"],
+    },
+    ("ks4/edexcel-computer-science", "hardware-and-the-processor"): {
+        "Inside the CPU": ["!scene cpu-board-3d"],
+    },
+    ("ks5", "structure-and-function-of-the-processor"): {
+        "Components and registers": ["!scene cpu-board-3d"],
+    },
+    ("ks4/aqa-computer-science", "computer-networks"): {
+        "Star and bus topologies": ["!scene network-topologies-3d"],
+    },
+    ("ks4/edexcel-computer-science", "networks-and-network-security"): {
+        "Networks and topologies": ["!scene network-topologies-3d"],
+        "Protocols and layers": ["!scene tcp-ip-stack-3d"],
+    },
+    ("ks4/aqa-computer-science", "number-bases-and-units"): {
+        "Converting between the bases": ["!scene binary-place-value-3d"],
+    },
+    ("ks4/edexcel-computer-science", "binary-and-hexadecimal"): {
+        "Converting between denary and binary": ["!scene binary-place-value-3d"],
+    },
+
     # ------------------------------------------- Key Stage 3 unit diagrams
     # Every KS3 topic now carries a figure. The three programming topics get the
     # idea drawn before the syntax, which is the order Year 7 to 9 need it in.
