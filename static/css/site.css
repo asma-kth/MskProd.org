@@ -1497,3 +1497,110 @@ h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
   .scene { --sc-scale: .58; }
   .sc-stage { height: calc(var(--sc-h, 340px) * .62); perspective: 820px; }
 }
+
+/* ======================================================= Pixel in 3D
+   The cat cut into layers and held apart on the Z axis. The container sways
+   a few degrees and the layers move at different rates against each other,
+   so the ears and the headphones shift relative to the face. That parallax
+   is the whole effect: without it this is just a drawing. */
+.cat3d {
+  position: relative; width: var(--cat-size, 240px); height: var(--cat-size, 240px);
+  perspective: 620px; margin-inline: auto;
+}
+.cat3d-world {
+  position: absolute; inset: 0; transform-style: preserve-3d;
+  animation: catSway 7s ease-in-out infinite alternate;
+}
+.cat3d-layer {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  transform: translateZ(var(--z, 0px));
+  transform-style: preserve-3d; overflow: visible;
+}
+@keyframes catSway {
+  from { transform: rotateY(-13deg) rotateX(5deg); }
+  to   { transform: rotateY(13deg) rotateX(-3deg); }
+}
+
+/* Asleep: he breathes, his ears sag, and the Zs drift up. */
+.cat3d.is-asleep .cat3d-world { animation: catSway 9s ease-in-out infinite alternate; }
+.cat3d.is-asleep .cat3d-head,
+.cat3d.is-asleep .cat3d-visor,
+.cat3d.is-asleep .cat3d-eyes,
+.cat3d.is-asleep .cat3d-muzzle,
+.cat3d.is-asleep .cat3d-cans {
+  animation: catBreathe 4s ease-in-out infinite;
+}
+.cat3d.is-asleep .cat3d-ears { animation: catEarSag 9s ease-in-out infinite alternate; }
+@keyframes catBreathe {
+  0%, 100% { transform: translateZ(var(--z, 0px)) translateY(0) scale(1); }
+  50%      { transform: translateZ(var(--z, 0px)) translateY(1.4%) scale(1.018); }
+}
+@keyframes catEarSag {
+  from { transform: translateZ(var(--z, 0px)) rotate(0deg); }
+  to   { transform: translateZ(var(--z, 0px)) rotate(-2.5deg); }
+}
+.cat3d-zzz {
+  position: absolute; left: 68%; top: 6%; display: flex; gap: .35em;
+  font-family: var(--font-display); font-weight: 700; color: var(--purple-deep);
+  pointer-events: none;
+}
+.cat3d-zzz span {
+  font-size: calc(var(--cat-size, 240px) * .1); opacity: 0;
+  animation: catZ 3.6s ease-in-out infinite;
+}
+.cat3d-zzz span:nth-child(2) { animation-delay: 1.2s; font-size: calc(var(--cat-size, 240px) * .082); }
+.cat3d-zzz span:nth-child(3) { animation-delay: 2.4s; font-size: calc(var(--cat-size, 240px) * .064); }
+@keyframes catZ {
+  0%   { opacity: 0; transform: translate(0, 0) rotate(-6deg) scale(.7); }
+  25%  { opacity: .9; }
+  100% { opacity: 0; transform: translate(42%, -120%) rotate(14deg) scale(1.1); }
+}
+
+/* Nothing here is information, so when stillness is asked for it all stops
+   and the cat simply sits there, which is exactly as useful. */
+@media (prefers-reduced-motion: reduce) {
+  .cat3d-world, .cat3d-layer, .cat3d-zzz span { animation: none !important; }
+  .cat3d-world { transform: rotateY(-8deg) rotateX(3deg); }
+  .cat3d-zzz span { opacity: .75; }
+}
+
+/* ------------------------------------------------- the waking-up screen
+   Only ever shown when a page has genuinely not arrived yet. It is added by
+   app.js after a delay, so a fast load never sees it: a loading screen on a
+   page that was already there is just a slower page. */
+.page-loader {
+  position: fixed; inset: 0; z-index: 400; display: grid; place-content: center;
+  gap: var(--sp-4); justify-items: center; text-align: center;
+  background: var(--grad-page); opacity: 0; visibility: hidden;
+  transition: opacity .25s ease, visibility .25s ease;
+}
+.page-loader.is-on { opacity: 1; visibility: visible; }
+.page-loader p {
+  margin: 0; font-family: var(--font-display); font-weight: 650;
+  font-size: 1.05rem; color: var(--ink-2);
+}
+.page-loader .loader-bar {
+  width: min(220px, 60vw); height: 6px; border-radius: 3px;
+  background: var(--surface-sunk); overflow: hidden;
+}
+.page-loader .loader-bar i {
+  display: block; width: 40%; height: 100%; border-radius: 3px;
+  background: var(--grad-brand); animation: loaderSlide 1.25s ease-in-out infinite;
+}
+@keyframes loaderSlide {
+  from { transform: translateX(-110%); } to { transform: translateX(290%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-loader .loader-bar i { animation: none; width: 100%; opacity: .5; }
+}
+
+/* ------------------------------------------------------- the empty screens
+   404 and offline. Both are "there is nothing here yet", so both get the
+   same sleeping cat rather than a shrug and a back button. */
+.empty-screen {
+  display: grid; justify-items: center; text-align: center; gap: var(--sp-3);
+  padding: var(--sp-7) 0 var(--sp-8); max-width: 44rem; margin-inline: auto;
+}
+.empty-screen h1 { margin: 0; }
+.empty-screen .lead { margin: 0 auto; max-width: 34rem; }
+.empty-screen .btn-row { justify-content: center; margin-top: var(--sp-3); }

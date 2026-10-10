@@ -242,6 +242,11 @@ def build_home():
 
 # --------------------------------------------------------------- offline
 
+def _cat_offline():
+    from mskbuild import cat
+    return cat.stack("asleep", 230, zzz=True)
+
+
 def build_pwa():
     """Write the service worker, the offline fallback page and assetlinks.
 
@@ -254,16 +259,17 @@ def build_pwa():
         title="Offline",
         description="You are offline and this page has not been saved to this device yet.",
         path="/offline/", noindex=True,
-        body="""<div class="wrap" style="padding:var(--sp-8) 0;max-width:44rem">
+        body="""<div class="wrap"><div class="empty-screen">
+  %s
   <h1>You are offline</h1>
-  <p class="lead">This page has not been opened on this device before, so there is no saved
-  copy to show you.</p>
-  <p>Anything you have already read stays available offline. Open the menu and pick a topic
-  you have visited before, or reconnect and try again.</p>
-  <div class="btn-row" style="margin-top:var(--sp-5)">
+  <p class="lead">This page has not been opened on this device before, so there is no
+    saved copy to show you.</p>
+  <p>Anything you have already read is still here. Pick a topic you have visited
+    before, or reconnect and try again.</p>
+  <div class="btn-row">
     <a class="btn btn-primary" href="/">Go to the home page</a>
   </div>
-</div>"""))
+</div></div>""" % _cat_offline()))
 
 
     shell = []
@@ -375,15 +381,17 @@ def build_sitemap():
         % json.dumps(moved, separators=(",", ":")))
 
     # 404
-    body = """<div class="wrap" style="padding:var(--sp-8) 0;text-align:center;max-width:640px">
-  <div style="max-width:180px;margin:0 auto var(--sp-4)">%s</div>
-  <h1>That page does not exist</h1>
-  <p class="lead" style="margin-inline:auto">Pixel has checked twice. The link may be old, or there may be a typo in the address.</p>
-  <div class="btn-row" style="justify-content:center;margin-top:var(--sp-4)">
+    from mskbuild import cat
+    body = """<div class="wrap"><div class="empty-screen">
+  %s
+  <h1>Nothing here to wake up for</h1>
+  <p class="lead">That page does not exist. The link may be old, or there may be a
+    typo in the address.</p>
+  <div class="btn-row">
     <a class="btn btn-primary" href="/">Back to the home page</a>
     <a class="btn btn-secondary" href="#" data-search-open>Search the site</a>
   </div>
-</div>""" % render.mascot_svg()
+</div></div>""" % cat.stack("asleep", 260, zzz=True)
     with open(os.path.join(DIST, "404.html"), "w", encoding="utf-8") as fh:
         fh.write(layout(title="Page not found", noindex=True,
                         description="That page could not be found on MskProd Computing.",
@@ -460,6 +468,12 @@ def copy_static():
     with open(site_css, "w", encoding="utf-8") as fh:
         fh.write(dark_media(head + "\n" + rest))
     os.remove(fonts_css)
+
+    # The favicon is the same cat, generated from the same source as the logo
+    # and the mascot, so a change to the character reaches the browser tab too.
+    from mskbuild import cat as _cat
+    with open(os.path.join(dst, "img", "favicon.svg"), "w", encoding="utf-8") as fh:
+        fh.write(_cat.flat(head_only=True, plate=True, label="MskProd Computing"))
 
     tools_css = os.path.join(css_dir, "tools.css")
     with open(tools_css, encoding="utf-8") as fh:

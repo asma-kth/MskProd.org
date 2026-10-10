@@ -10,6 +10,7 @@ import os
 import re
 from typing import List, Optional
 
+from . import cat
 from . import markup
 from .util import slugify
 from .models import Topic, Unit, Course, Q, EQ
@@ -39,17 +40,21 @@ def icons() -> str:
 
 
 def mascot_svg() -> str:
+    """The dock cat: one flat drawing, because it is 44px in a corner."""
     global _MASCOT_CACHE
     if _MASCOT_CACHE is None:
-        _MASCOT_CACHE = _asset("mascot.svg")
+        _MASCOT_CACHE = cat.flat()
     return _MASCOT_CACHE
 
 
 def logo_svg(cls: str = "brand-logo") -> str:
+    """The same cat's head, on its cream plate. Generated rather than read
+    from a file, so the logo and the mascot cannot drift into two cats."""
     global _LOGO_CACHE
     if _LOGO_CACHE is None:
-        _LOGO_CACHE = _asset("logo.svg")
-    return _LOGO_CACHE.replace("<svg ", '<svg class="%s" ' % cls, 1)
+        _LOGO_CACHE = cat.flat(head_only=True, plate=True,
+                               label="MskProd Computing", cls="")
+    return _LOGO_CACHE.replace('class=""', 'class="%s"' % cls, 1)
 
 
 def ico(name: str, cls: str = "icon") -> str:
@@ -221,6 +226,11 @@ def layout(*, title: str, description: str, path: str, body: str,
 {footer}
 {search_shell}
 {mascot}
+<div class="page-loader" id="pageLoader" aria-hidden="true">
+{loader}
+  <p>Waking Pixel…</p>
+  <span class="loader-bar"><i></i></span>
+</div>
 <script>window.MSK_BASE="/";</script>
 <script src="/assets/js/app.js" defer></script>
 <script src="/assets/js/mascot.js" defer></script>
@@ -230,6 +240,8 @@ def layout(*, title: str, description: str, path: str, body: str,
         full_title=esc(full_title),
         ogtitle=esc(title),
         desc=esc(description),
+        loader=cat.stack("asleep", 170, zzz=True,
+                         label="Pixel the robot cat, asleep"),
         robots=("noindex, follow" if noindex
                 else "index, follow, max-image-preview:large, max-snippet:-1"),
         canonical=canonical,
