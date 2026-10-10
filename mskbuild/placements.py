@@ -329,6 +329,21 @@ def apply(course):
 # scene already has a line above for its diagrams: written inline, fifteen of
 # them quietly replaced the diagram placements they were meant to join.
 SCENES = {
+    ("ks5", "types-of-processor"): {
+        "GPUs and parallel systems": ["!scene parallel-cores-3d"],
+    },
+    ("ks3", "networks-and-cyber-security"): {
+        "The internet and the web": ["!scene web-request-3d"],
+    },
+    ("ks4/aqa-computer-science", "data-structures-and-file-handling"): {
+        "Arrays and records": ["!scene array-2d-3d"],
+    },
+    ("ks4/computer-science", "networks-and-topologies"): {
+        "LAN and WAN": ["!scene lan-wan-3d"],
+    },
+    ("ks4/computer-science", "embedded-systems"): {
+        "Embedded versus general purpose": ["!scene embedded-systems-3d"],
+    },
     ("ks3", "3d-modelling-and-animation"): {
         "How 3D models are built": ["!scene mesh-3d"],
     },
@@ -413,6 +428,7 @@ SCENES = {
     },
     ("ks4/aqa-computer-science", "computer-networks"): {
         "Star and bus topologies": ["!scene network-topologies-3d"],
+        "Networks": ["!scene lan-wan-3d"],
     },
     ("ks4/edexcel-computer-science", "networks-and-network-security"): {
         "Networks and topologies": ["!scene network-topologies-3d"],
@@ -448,6 +464,7 @@ SCENES = {
     },
     ("ks5", "networks-and-web-technologies"): {
         "Networks and protocols": ["!scene tcp-ip-stack-3d"],
+        "Web technologies": ["!scene web-request-3d"],
     },
     ("ks5", "input-output-and-storage"): {
         "Storage": ["!scene secondary-storage-3d"],

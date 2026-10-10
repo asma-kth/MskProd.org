@@ -1345,3 +1345,248 @@ def _cpu_performance():
                         caption="Exam answers that just say ‘higher clock speed is "
                                 "faster’ get one mark. Saying what it does, and what "
                                 "limits it, gets the rest.")
+
+
+# ==================================================== processors and networks
+
+@scene("parallel-cores-3d")
+def _parallel():
+    """One core working through a queue, then four sharing it out."""
+    L = ["One core takes the jobs one after another, in order.",
+         "Four cores take four jobs at once, so the queue clears sooner.",
+         "Only if the work can be split. Some jobs must wait for the one before.",
+         "A GPU takes this much further: thousands of tiny cores, one kind of job."]
+
+    def core(x, y, label, jobs, tone="teal"):
+        out = [box3d(x, y, 24, 110, 70, label, "", tone)]
+        for i, j in enumerate(jobs):
+            out.append(box3d(x, y - 90 - i * 46, 20, 90, 38, j, "", "floor"))
+        return "".join(out)
+
+    s1 = (board(520, 330) + core(-120, 60, "CORE 1", ["job 1", "job 2", "job 3", "job 4"])
+          + billboard(130, 60, 60, "4 jobs, one at a time", "teal"))
+    s2 = (board(520, 330)
+          + "".join(core(-180 + i * 120, 60, "CORE %d" % (i + 1), ["job %d" % (i + 1)])
+                    for i in range(4))
+          + billboard(0, 190, 40, "4 jobs, all at once", "teal"))
+    s3 = (board(520, 330)
+          + "".join(core(-180 + i * 120, 60, "CORE %d" % (i + 1),
+                         ["job %d" % (i + 1)] if i < 2 else [])
+                    for i in range(4))
+          + billboard(0, 190, 40, "jobs 3 and 4 need the result of job 2", "lilac"))
+    s4 = (board(520, 330)
+          + "".join(box3d(-200 + (i % 10) * 45, -70 + (i // 10) * 45, 20, 36, 36, "", "",
+                          "lilac")
+                    for i in range(40))
+          + billboard(0, 190, 40, "a GPU: thousands of simple cores, same job each", "lilac"))
+    steps = [stage(i + 1, b, L[i]) for i, b in enumerate([s1, s2, s3, s4])]
+    desc = ("Why more cores is not simply more speed. A single core takes jobs from the "
+            "queue one after another, so four jobs take four times as long as one. Four "
+            "cores can take one job each at the same moment, and the queue clears in "
+            "roughly a quarter of the time. That only works if the work can genuinely be "
+            "split: when job three needs the result of job two it has to wait however "
+            "many cores are sitting idle, which is why doubling the cores rarely doubles "
+            "real performance and why software has to be deliberately written to use "
+            "them. A graphics processor takes the idea to its limit with thousands of very "
+            "simple cores, each doing the same kind of small calculation on different "
+            "data, which suits shading millions of pixels or training a neural network "
+            "and is poor at general purpose work.")
+    return figure_scene("parallel-cores-3d", world="", steps=steps,
+                        title="One core, four cores, and a GPU", desc=desc,
+                        height=390, depth=40, labels=L, scale=0.82,
+                        caption="The exam answer is the condition, not the claim: more "
+                                "cores help when the task can be divided.")
+
+
+@scene("web-request-3d")
+def _web_request():
+    """What actually happens between typing an address and seeing a page."""
+    L = ["You type an address. The browser needs the IP address behind the name.",
+         "A DNS server looks up the name and returns the IP address.",
+         "The browser sends an HTTP request to that address.",
+         "The server sends back HTML, CSS, images and scripts.",
+         "The browser renders them into the page you see."]
+
+    base = (board(620, 300)
+            + box3d(-230, 60, 20, 130, 80, "YOUR BROWSER", "", "teal")
+            + box3d(0, -110, 20, 130, 70, "DNS SERVER", "the phone book", "lilac")
+            + box3d(230, 60, 20, 130, 80, "WEB SERVER", "", "teal"))
+    s1 = base + billboard(-230, 170, 40, "mskprod.org", "teal")
+    s2 = (base + link3d(-230, 60, 0, -110, 16, "lilac")
+          + dot3d(-115, -25, 26, "mskprod.org?", "lilac")
+          + billboard(0, 170, 40, "names are for people, addresses are for routers", "lilac"))
+    s3 = (base + link3d(0, -110, -230, 60, 16, "lilac")
+          + dot3d(-115, -25, 26, "185.199.108.153", "lilac")
+          + billboard(0, 170, 40, "now the browser knows where to go"))
+    s4 = (base + link3d(-230, 60, 230, 60, 16, "teal")
+          + dot3d(0, 60, 26, "GET /", "teal")
+          + billboard(0, 170, 40, "an HTTP request for one page", "teal"))
+    s5 = (base + link3d(230, 60, -230, 60, 16, "teal")
+          + dot3d(0, 60, 26, "HTML + CSS + images", "teal")
+          + billboard(0, 170, 40, "the browser builds the page from the files", "teal"))
+    steps = [stage(i + 1, b, L[i]) for i, b in enumerate([s1, s2, s3, s4, s5])]
+    desc = ("What happens between typing a web address and seeing the page. You type a "
+            "domain name, which is written for people to remember, but routers only "
+            "understand IP addresses, so the browser first has to translate it. It asks a "
+            "DNS server, which works like a phone book for the internet, and the DNS "
+            "server returns the IP address that the name belongs to. The browser then "
+            "sends an HTTP request to that address asking for the page. The web server "
+            "responds with the files that make it up: the HTML holding the structure, the "
+            "CSS holding the styling, and the images and scripts. The browser puts those "
+            "together and renders the finished page. If the address begins with HTTPS the "
+            "whole exchange is encrypted first, so anybody intercepting it sees nothing "
+            "useful.")
+    return figure_scene("web-request-3d", world="", steps=steps,
+                        title="From typing an address to seeing a page", desc=desc,
+                        height=380, depth=30, labels=L, scale=0.84,
+                        caption="DNS is a lookup, not a delivery. It tells the browser "
+                                "where to go, and the browser goes there itself.")
+
+
+@scene("array-2d-3d")
+def _array_2d():
+    """One row, then a grid, then a record. The indexes are the point."""
+    L = ["A one dimensional array: values in a row, reached by one index.",
+         "A two dimensional array: rows and columns, reached by two.",
+         "grid[1][2] means row 1, then column 2. Row always comes first.",
+         "A record holds fields of different types, reached by name."]
+
+    def row(vals, lit=None, y=0, z=20):
+        out = []
+        for i, v in enumerate(vals):
+            out.append(box3d(-160 + i * 80, y, z, 66, 52, str(v), "[%d]" % i,
+                             "teal" if i == lit else "floor"))
+        return "".join(out)
+
+    def grid(lit=None):
+        out = []
+        data = [[4, 9, 2], [7, 1, 8], [3, 6, 5]]
+        for r in range(3):
+            for c in range(3):
+                out.append(box3d(-110 + c * 110, -90 + r * 90, 20, 84, 64,
+                                 str(data[r][c]), "[%d][%d]" % (r, c),
+                                 "teal" if (r, c) == lit else "floor"))
+        return "".join(out)
+
+    s1 = board(480, 180) + row([4, 9, 2, 7, 1]) + billboard(0, 130, 40, "scores[3] is 7")
+    s2 = board(480, 340) + grid() + billboard(0, 215, 40, "three rows, three columns")
+    s3 = (board(480, 340) + grid(lit=(1, 2))
+          + billboard(0, 215, 40, "grid[1][2] is 8, not 6", "teal"))
+    s4 = (board(480, 200)
+          + box3d(-170, 0, 24, 140, 80, "name", "\"Aisha\"", "teal")
+          + box3d(0, 0, 24, 140, 80, "year", "10", "lilac")
+          + box3d(170, 0, 24, 140, 80, "present", "True", "teal")
+          + billboard(0, 150, 40, "one record, three fields, three types", "teal"))
+    steps = [stage(i + 1, b, L[i]) for i, b in enumerate([s1, s2, s3, s4])]
+    desc = ("Arrays and records. A one dimensional array is a row of values of the same "
+            "type, reached by a single index, and the indexes start at zero, so in the "
+            "row 4, 9, 2, 7, 1 the value at index 3 is 7. A two dimensional array is a "
+            "grid of rows and columns, reached by two indexes, and the order is always "
+            "row first and column second: in a three by three grid, grid index one index "
+            "two means the second row and the third column. Getting those two the wrong "
+            "way round is the single most common mistake in the topic, and on a grid that "
+            "is not square it crashes rather than quietly giving the wrong answer. A "
+            "record is different again: it holds several fields which may be of different "
+            "types, a string for the name, an integer for the year, a Boolean for whether "
+            "they are present, and the fields are reached by name rather than by position, "
+            "which is what makes a record readable where an index is not.")
+    return figure_scene("array-2d-3d", world="", steps=steps,
+                        title="Arrays, two dimensional arrays and records", desc=desc,
+                        height=380, depth=40, labels=L, scale=0.84,
+                        caption="Row first, then column. Say it out loud every time you "
+                                "write a 2D index and you will stop getting it backwards.")
+
+
+@scene("lan-wan-3d")
+def _lan_wan():
+    """Two sites, each a LAN, joined into a WAN by infrastructure you rent."""
+    L = ["A LAN covers one site: one building, one campus, cabling you own.",
+         "A second site has its own LAN, with its own switch and its own cabling.",
+         "Joining them makes a WAN, over lines nobody at either end owns.",
+         "That is the real difference: not size, but who owns the connection."]
+
+    def site(cx, label, tone):
+        pts = [(cx - 80, -70), (cx + 80, -70), (cx - 80, 70), (cx + 80, 70)]
+        out = [box3d(cx, 0, 26, 100, 54, "SWITCH", "", tone)]
+        for i, (x, y) in enumerate(pts):
+            out.append(box3d(x, y, 18, 70, 40, "PC", "", "floor"))
+            out.append(link3d(cx, 0, x, y, 12, tone))
+        out.append(billboard(cx, 150, 40, label, tone))
+        return "".join(out)
+
+    left = site(-200, "SITE A · LAN", "teal")
+    right = site(200, "SITE B · LAN", "lilac")
+    base = board(700, 330)
+    s1 = base + left + billboard(0, -170, 60, "cabling and switches you own and maintain")
+    s2 = base + left + right + billboard(0, -170, 60, "two separate local networks")
+    s3 = (base + left + right
+          + link3d(-200, 0, 200, 0, 50, "teal", "leased line · rented")
+          + billboard(0, -170, 60, "a WAN: the link between them is somebody else's", "teal"))
+    s4 = (base + left + right
+          + link3d(-200, 0, 200, 0, 50, "teal", "the internet is the largest WAN")
+          + billboard(0, -170, 60, "size is a symptom. Ownership is the definition.", "lilac"))
+    steps = [stage(i + 1, b, L[i]) for i, b in enumerate([s1, s2, s3, s4])]
+    desc = ("The difference between a local area network and a wide area network. A LAN "
+            "covers a single geographical site, one building or one campus, and the "
+            "organisation owns and maintains all of it: the switches, the cabling, the "
+            "wireless access points. That is why a LAN is fast and cheap to run once it is "
+            "installed. A second site has its own LAN, its own switch and its own cabling. "
+            "Joining the two sites makes a wide area network, and the link between them "
+            "runs over infrastructure that neither site owns, whether a leased line, a "
+            "fibre connection from a telecoms provider or the internet itself. That is the "
+            "real distinction and the one exam answers miss: not that a WAN is bigger, but "
+            "that a WAN depends on connections somebody else owns, which is why it is "
+            "slower, costs a rental, and brings security questions a LAN does not have. "
+            "The internet is simply the largest WAN there is.")
+    return figure_scene("lan-wan-3d", world="", steps=steps,
+                        title="LAN, WAN and who owns the wire", desc=desc,
+                        height=380, depth=60, labels=L, scale=0.76,
+                        caption="‘A WAN is bigger’ gets you nothing. ‘A WAN "
+                                "uses infrastructure the organisation does not own’ "
+                                "is the mark.")
+
+
+@scene("embedded-systems-3d")
+def _embedded():
+    """A general purpose machine beside a chip that does exactly one job."""
+    L = ["A general purpose computer: many parts, and it runs whatever you install.",
+         "An embedded system: one small board, built into the device it controls.",
+         "It runs one program, written once, stored in ROM, never replaced.",
+         "That is why it boots instantly, costs pennies and almost never crashes."]
+
+    general = (box3d(-180, 0, 14, 300, 230, "", "", "floor")
+               + box3d(-250, -60, 26, 110, 60, "CPU", "", "teal")
+               + box3d(-110, -60, 26, 110, 60, "RAM", "", "lilac")
+               + box3d(-250, 50, 26, 110, 60, "DISK", "", "floor")
+               + box3d(-110, 50, 26, 110, 60, "GPU", "", "floor")
+               + billboard(-180, 170, 40, "general purpose computer"))
+    embedded = (box3d(190, 0, 14, 200, 150, "", "", "teal")
+                + box3d(190, 0, 26, 120, 70, "ONE CHIP", "CPU + ROM + I/O", "teal")
+                + billboard(190, 150, 40, "embedded system", "teal"))
+    base = board(640, 320)
+    s1 = base + general
+    s2 = base + general + embedded
+    s3 = (base + general + embedded
+          + billboard(0, -190, 70, "washing machine · microwave · traffic light · pacemaker"))
+    s4 = (base + general + embedded
+          + billboard(0, -190, 70, "one job, so nothing else can slow it down or break it",
+                      "teal"))
+    steps = [stage(i + 1, b, L[i]) for i, b in enumerate([s1, s2, s3, s4])]
+    desc = ("A general purpose computer against an embedded system. The general purpose "
+            "machine has a processor, main memory, a graphics processor and secondary "
+            "storage, runs a full operating system, and will run whatever software you "
+            "choose to install on it, which is exactly what makes it flexible, expensive "
+            "and complicated. An embedded system is a single small board built into the "
+            "device it controls, often one chip carrying the processor, the memory and the "
+            "input and output together. It runs one program, written for that device, "
+            "stored in ROM and normally never changed for the life of the product. "
+            "Washing machines, microwaves, traffic lights, car engine management and "
+            "pacemakers are all embedded systems. Because it does one job it can be made "
+            "tiny and cheap, it starts instantly with no operating system to load, it uses "
+            "very little power, and there is very little in it to go wrong, which matters "
+            "a great deal when the device is keeping somebody's heart beating.")
+    return figure_scene("embedded-systems-3d", world="", steps=steps,
+                        title="General purpose against embedded", desc=desc,
+                        height=380, depth=40, labels=L, scale=0.8,
+                        caption="Ask whether the user can install new software on it. If "
+                                "not, it is almost certainly embedded.")
