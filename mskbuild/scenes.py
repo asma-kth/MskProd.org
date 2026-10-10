@@ -59,6 +59,46 @@ def box3d(x, y, z, w, h, label, sub="", tone="teal", tall=0, round=False):
                '<i>%s</i>' % esc(sub) if sub else ""))
 
 
+def cube3d(size, cx=0, cy=0, cz=0, verts=False, edges=False, faces=False,
+           tone="teal"):
+    """A real cube: six faces, twelve edges, eight vertices, in actual 3D.
+
+    This is the one topic where the medium is the subject. A 3D model is built
+    from vertices joined by edges enclosing faces, and here those are the
+    literal parts of the drawing rather than a picture of them.
+    """
+    h = size / 2.0
+    out = []
+    if faces:
+        spec = [("", 0, 0), ("rotateY(180deg)", 0, 0), ("rotateY(90deg)", 0, 0),
+                ("rotateY(-90deg)", 0, 0), ("rotateX(90deg)", 0, 0),
+                ("rotateX(-90deg)", 0, 0)]
+        for rot, _, _ in spec:
+            out.append('<div class="sc-face sc-%s" style="--sc-x:%dpx;--sc-y:%dpx;'
+                       '--sc-z:%dpx;--sc-s:%dpx;--sc-rot3:%s translateZ(%dpx)"></div>'
+                       % (tone, cx, cy, cz, size, rot or "rotateX(0deg)", h))
+    if edges:
+        for axis in ("x", "y", "z"):
+            for a in (-h, h):
+                for b in (-h, h):
+                    if axis == "x":
+                        p, rot = (cx, cy + a, cz + b), "rotateX(0deg)"
+                    elif axis == "y":
+                        p, rot = (cx + a, cy, cz + b), "rotateZ(90deg)"
+                    else:
+                        p, rot = (cx + a, cy + b, cz), "rotateY(90deg)"
+                    out.append('<div class="sc-edge sc-edge-%s" style="--sc-x:%dpx;'
+                               '--sc-y:%dpx;--sc-z:%dpx;--sc-len:%dpx;--sc-rot3:%s"></div>'
+                               % (tone, p[0], p[1], p[2], size, rot))
+    if verts:
+        for dx in (-h, h):
+            for dy in (-h, h):
+                for dz in (-h, h):
+                    out.append(dot3d(int(cx + dx), int(cy + dy), int(cz + dz),
+                                     "", tone, 13))
+    return "".join(out)
+
+
 def link3d(x1, y1, x2, y2, z=0, tone="teal", label="", dashed=False):
     """A bus or wire laid on the board between two points.
 
@@ -1028,3 +1068,280 @@ def _virtual_memory():
                         height=420, depth=260, labels=L, scale=0.78,
                         caption="Virtual memory does not make a machine faster. It lets it "
                                 "run more than will fit, and pays for that in disk time.")
+
+
+# ================================================== 3D modelling and graphics
+
+@scene("mesh-3d")
+def _mesh_3d():
+    """Vertex, edge, face, mesh, built as an actual cube you can turn."""
+    L = ["A vertex is one point in space, with an x, a y and a z. A cube has 8.",
+         "An edge is a straight line joining two vertices. A cube needs 12.",
+         "A face is a flat surface enclosed by edges. A cube has 6.",
+         "All of them together are the mesh, and that is the model.",
+         "More polygons means more detail, and more work for the computer."]
+
+    s1 = cube3d(190, cz=110, verts=True) + billboard(0, 190, 20, "8 vertices")
+    s2 = cube3d(190, cz=110, verts=True, edges=True) + billboard(0, 190, 20, "12 edges")
+    s3 = (cube3d(190, cz=110, edges=True, faces=True)
+          + billboard(0, 190, 20, "6 faces, each one flat"))
+    s4 = (cube3d(190, cz=110, verts=True, edges=True, faces=True)
+          + billboard(0, 190, 20, "vertices + edges + faces = the mesh", "teal"))
+    s5 = (cube3d(120, cx=-150, cz=90, edges=True, faces=True)
+          + cube3d(120, cx=150, cz=90, edges=True, faces=True, tone="lilac")
+          + "".join(cube3d(40, cx=150 - 40 + (i % 3) * 40, cy=-40 + (i // 3) * 40,
+                           cz=50 + 40 * ((i % 2)), edges=True, tone="lilac")
+                    for i in range(6))
+          + billboard(-150, 110, 20, "low poly: fast")
+          + billboard(150, 110, 20, "high poly: heavy", "lilac"))
+    steps = [stage(i + 1, b, L[i]) for i, b in enumerate([s1, s2, s3, s4, s5])]
+    desc = ("A cube, built from the parts a 3D model is actually made of. A vertex is a "
+            "single point in three dimensional space, given by an x coordinate across, a "
+            "y for depth and a z for height, and a cube has eight of them, one at each "
+            "corner. An edge is a straight line joining two vertices, and a cube needs "
+            "twelve. A face is a flat surface enclosed by edges, usually a triangle or a "
+            "square, and a cube has six. Those three things together, every vertex, every "
+            "edge and every face, are the mesh, and the mesh is the model. The number of "
+            "faces is the polygon count, and it is the central trade off in all 3D work: "
+            "more polygons give finer detail and smoother curves, and also demand more "
+            "processing power and more memory. A film can afford millions per character "
+            "because each frame is rendered once over hours, while a game has to draw "
+            "sixty frames every second and uses far simpler meshes with clever texturing "
+            "to fake the detail that is missing.")
+    return figure_scene("mesh-3d", world="", steps=steps,
+                        title="Vertices, edges, faces and the mesh", desc=desc,
+                        height=400, depth=210, labels=L, scale=0.9,
+                        hint="Drag it. This one is a real cube, so turning it shows you "
+                             "the faces you could not see before.",
+                        caption="Learn vertex, edge, face, mesh in that order and the "
+                                "rest of the unit has somewhere to attach.")
+
+
+@scene("graphics-layers-3d")
+def _graphics_layers():
+    """Why designers work in layers: each part stays editable on its own."""
+    L = ["The background sits at the bottom of the stack.",
+         "The photograph goes on a layer of its own, above it.",
+         "The logo goes above that, so it is never painted into the photo.",
+         "The text sits on top, and can be restyled without touching anything else.",
+         "Flatten it and they merge into one image, and that is no longer editable."]
+    LAYERS = [(0, "BACKGROUND", "the base colour or texture", "floor"),
+              (80, "PHOTOGRAPH", "placed, masked, not painted in", "teal"),
+              (160, "LOGO", "vector, so it scales cleanly", "lilac"),
+              (240, "TEXT", "still editable text, not pixels", "teal")]
+    world = "".join(plane(z, t, s, tone, width=340, height=130)
+                    for z, t, s, tone in LAYERS)
+    steps = []
+    for i, (z, t, s_, tone) in enumerate(LAYERS):
+        steps.append(stage(i + 1,
+                           '<div class="sc-glow sc-glow-at sc-%s" style="--sc-x:0px;'
+                           '--sc-y:0px;--sc-z:%dpx;--sc-w:340px;--sc-hh:130px"></div>'
+                           % (tone, z + 2), L[i]))
+    steps.append(stage(5, billboard(0, 160, 40,
+                                    "keep the layered master file, export the flat one",
+                                    "lilac"), L[4]))
+    desc = ("Why graphics software works in layers. Each part of the design sits on its "
+            "own layer, stacked above the others: the background colour or texture at the "
+            "bottom, then the photograph, then the logo, then the text on top. Nothing is "
+            "painted into anything else, so any one layer can be moved, recoloured, "
+            "hidden or deleted without disturbing the rest. The logo stays a vector, so "
+            "it scales to any size cleanly, and the text stays real text, so the wording "
+            "and the typeface can still be changed. Flattening merges every layer into a "
+            "single image, which is what an exported JPEG or PNG is, and at that point "
+            "none of it can be separated again. That is why the working practice is "
+            "always to keep the layered master file and export a flat copy for use.")
+    return figure_scene("graphics-layers-3d", world=world, steps=steps,
+                        title="Working in layers", desc=desc,
+                        height=380, depth=240, labels=L, scale=0.88,
+                        caption="A flattened file is a finished file. The master stays "
+                                "layered, because the client always wants one change.")
+
+
+# ==================================================== compression and security
+
+@scene("compression-3d")
+def _compression():
+    """The same data, three heights: original, lossless, lossy."""
+    L = ["The original file: every byte of the data, nothing thrown away.",
+         "Lossless finds repetition and records it more briefly.",
+         "Unpack it and you get back exactly what you started with.",
+         "Lossy throws data away permanently, and gets much smaller.",
+         "Text and code must be lossless. Photos and music can be lossy."]
+
+    def bar(x, h, label, sub, tone):
+        return box3d(x, 0, h, 120, 120, label, sub, tone, tall=h)
+
+    base = board(520, 220)
+    s1 = base + bar(-160, 180, "ORIGINAL", "100%", "floor") + billboard(0, 205, 30, "say 10 MB")
+    s2 = (base + bar(-160, 180, "ORIGINAL", "100%", "floor")
+          + bar(20, 110, "LOSSLESS", "about 60%", "teal")
+          + billboard(0, 205, 30, "RLE, Huffman: patterns written once", "teal"))
+    s3 = (base + bar(-160, 180, "ORIGINAL", "100%", "floor")
+          + bar(20, 110, "LOSSLESS", "about 60%", "teal")
+          + billboard(0, 205, 30, "every bit recoverable, exactly", "teal"))
+    s4 = (base + bar(-160, 180, "ORIGINAL", "100%", "floor")
+          + bar(20, 110, "LOSSLESS", "about 60%", "teal")
+          + bar(190, 40, "LOSSY", "about 10%", "lilac")
+          + billboard(0, 205, 30, "the discarded detail is gone for good", "lilac"))
+    s5 = (base + bar(-160, 180, "ORIGINAL", "100%", "floor")
+          + bar(20, 110, "LOSSLESS", "text, code, spreadsheets", "teal")
+          + bar(190, 40, "LOSSY", "photos, music, video", "lilac")
+          + billboard(0, 205, 30, "one missing letter ruins a program", "teal"))
+    steps = [stage(i + 1, b, L[i]) for i, b in enumerate([s1, s2, s3, s4, s5])]
+    desc = ("Compression, with the height of each block standing for the size of the "
+            "file. The original holds every byte of the data. Lossless compression finds "
+            "repetition and records it more briefly: run length encoding replaces a run "
+            "of identical values with the value and a count, and Huffman coding gives the "
+            "most common symbols the shortest codes. Nothing is discarded, so unpacking "
+            "returns exactly the original file, bit for bit, and the saving is modest, "
+            "often around forty per cent. Lossy compression instead permanently throws "
+            "away detail the eye or the ear is unlikely to notice, such as colours in a "
+            "photograph or frequencies in a recording. It achieves far smaller files, "
+            "often a tenth of the original, and what it removed cannot be recovered. "
+            "Which to use follows from that: text, program code, spreadsheets and "
+            "databases must be lossless, because a single changed character breaks them, "
+            "while photographs, music and video are normally lossy, because nobody can "
+            "tell and the saving is enormous.")
+    return figure_scene("compression-3d", world="", steps=steps,
+                        title="Lossless and lossy compression", desc=desc,
+                        height=370, depth=190, labels=L, scale=0.86,
+                        caption="Ask what happens if one byte changes. If the answer is "
+                                "that it breaks, the compression has to be lossless.")
+
+
+@scene("encryption-3d")
+def _encryption():
+    """Plaintext in, ciphertext across, plaintext out."""
+    L = ["You start with plaintext: the message as anyone could read it.",
+         "A key and an algorithm turn it into ciphertext.",
+         "The ciphertext is what travels, and it is what an attacker sees.",
+         "The right key reverses it. The wrong key gives nothing useful.",
+         "Hashing is different: it is one way, and there is no way back."]
+
+    base = board(600, 200)
+    sender = box3d(-220, 0, 20, 130, 90, "PLAINTEXT", "MEET AT SIX", "teal")
+    attacker = box3d(0, 130, 20, 150, 70, "ATTACKER", "sees only this", "lilac")
+    receiver = box3d(220, 0, 20, 130, 90, "PLAINTEXT", "MEET AT SIX", "teal")
+    cipher = box3d(0, -60, 70, 160, 80, "CIPHERTEXT", "Xq7#tLp2@v", "lilac")
+
+    s1 = base + sender + billboard(0, 150, 30, "readable by anyone who intercepts it")
+    s2 = (base + sender + cipher
+          + box3d(-110, -60, 120, 90, 50, "KEY", "", "teal")
+          + billboard(0, 150, 30, "same algorithm, different key, different output", "teal"))
+    s3 = (base + sender + cipher + attacker
+          + billboard(0, 215, 30, "without the key it is noise", "lilac"))
+    s4 = (base + sender + cipher + receiver
+          + box3d(110, -60, 120, 90, 50, "KEY", "", "teal")
+          + billboard(0, 150, 30, "decryption is the same process in reverse", "teal"))
+    s5 = (base + sender
+          + box3d(60, -60, 70, 190, 80, "HASH", "a3f91c7e04", "lilac")
+          + billboard(0, 150, 30, "stored instead of the password, and never reversed", "lilac"))
+    steps = [stage(i + 1, b, L[i]) for i, b in enumerate([s1, s2, s3, s4, s5])]
+    desc = ("Encryption, drawn as a journey. You begin with plaintext, the message as "
+            "anybody could read it. An encryption algorithm combined with a key turns it "
+            "into ciphertext, which looks like nonsense. The algorithm is usually public "
+            "and well known; the secrecy lives entirely in the key, and the same algorithm "
+            "with a different key produces completely different ciphertext. The ciphertext "
+            "is what actually travels across the network, so an attacker who intercepts it "
+            "sees only that, and without the key it is noise. At the far end the right key "
+            "reverses the process and the original plaintext comes back. Hashing is a "
+            "different thing that is often confused with it: a hash function turns an "
+            "input into a fixed length value and is deliberately one way, with no key and "
+            "no way back. That is why a sensible system stores the hash of a password "
+            "rather than the password: it can check a login by hashing what was typed and "
+            "comparing, while a stolen database gives the thief nothing to read.")
+    return figure_scene("encryption-3d", world="", steps=steps,
+                        title="Encryption, and why hashing is not the same", desc=desc,
+                        height=370, depth=130, labels=L, scale=0.84,
+                        caption="The algorithm is public. The key is the secret. That one "
+                                "sentence answers most encryption questions.")
+
+
+# =============================================================== units and speed
+
+@scene("units-of-data-3d")
+def _units():
+    """Each unit sitting on the one below it, a thousand times bigger each time."""
+    L = ["A bit is one binary digit: a single 0 or a single 1.",
+         "Eight bits make a byte, which is enough for one character.",
+         "A thousand bytes make a kilobyte. A page of plain text.",
+         "A thousand kilobytes make a megabyte. A photograph, or a minute of music.",
+         "A thousand megabytes make a gigabyte, and a thousand of those a terabyte."]
+    TIERS = [(0, 110, "BIT", "one 0 or one 1", "teal"),
+             (85, 170, "BYTE", "8 bits · one character", "lilac"),
+             (170, 240, "KILOBYTE", "1,000 bytes · a page of text", "teal"),
+             (255, 320, "MEGABYTE", "1,000 KB · a photo", "lilac"),
+             (340, 400, "GIGABYTE", "1,000 MB · a film", "teal")]
+    world = "".join(plane(z, t, s, tone, width=w, height=100)
+                    for z, w, t, s, tone in TIERS)
+    steps = []
+    for i, (z, w, t, s_, tone) in enumerate(TIERS):
+        steps.append(stage(i + 1,
+                           '<div class="sc-glow sc-glow-at sc-%s" style="--sc-x:0px;'
+                           '--sc-y:0px;--sc-z:%dpx;--sc-w:%dpx;--sc-hh:100px"></div>'
+                           % (tone, z + 2, w), L[i]))
+    desc = ("The units of data storage, each sitting on the one below it. A bit is a "
+            "single binary digit, one 0 or one 1, and it is the smallest thing a computer "
+            "can store. A nibble is four bits. Eight bits make a byte, which is enough to "
+            "hold one character of text. A thousand bytes make a kilobyte, roughly a page "
+            "of plain text. A thousand kilobytes make a megabyte, about the size of a "
+            "photograph or a minute of music. A thousand megabytes make a gigabyte, enough "
+            "for a film, and a thousand gigabytes make a terabyte, which is a typical hard "
+            "disk. Each step is a thousand times the one before it, so the jumps are far "
+            "larger than they look written down. Exam boards accept either a thousand or "
+            "1,024 bytes to the kilobyte; OCR and AQA mark schemes use a thousand, and as "
+            "long as you say which one you used you will not lose the mark.")
+    return figure_scene("units-of-data-3d", world=world, steps=steps,
+                        title="Bits, bytes and the units above them", desc=desc,
+                        height=400, depth=340, labels=L, scale=0.8,
+                        caption="Each step up is a thousand times the last. That is why a "
+                                "film does not fit on a floppy disk and a text file "
+                                "always will.")
+
+
+@scene("cpu-performance-3d")
+def _cpu_performance():
+    """The three factors as three towers, so the trade offs are visible."""
+    L = ["Clock speed: how many cycles the processor runs each second.",
+         "Cores: how many instructions it can genuinely work on at once.",
+         "Cache: fast memory on the chip, so it waits for RAM less often.",
+         "A bigger number is not automatically a faster computer."]
+
+    def towers(lit=None):
+        def t(name):
+            return "teal" if lit == name else "floor"
+        return (board(480, 200)
+                + box3d(-150, 0, 170, 120, 110, "CLOCK SPEED", "3.6 GHz", t("clock"), tall=170)
+                + box3d(0, 0, 110, 120, 110, "CORES", "8 cores", t("cores"), tall=110)
+                + box3d(150, 0, 140, 120, 110, "CACHE", "16 MB", t("cache"), tall=140))
+
+    steps = [
+        stage(1, towers("clock") + billboard(0, 165, 40,
+                                             "3.6 GHz is 3,600,000,000 cycles a second"), L[0]),
+        stage(2, towers("cores") + billboard(0, 165, 40,
+                                             "only helps if the software is written to use them", "teal"), L[1]),
+        stage(3, towers("cache") + billboard(0, 165, 40,
+                                             "a cache miss costs hundreds of wasted cycles", "teal"), L[2]),
+        stage(4, towers() + billboard(0, 165, 40,
+                                      "four slow cores can lose to two fast ones", "lilac"), L[3]),
+    ]
+    desc = ("The three things that decide how fast a processor is. Clock speed is how many "
+            "cycles it runs each second, measured in gigahertz, and 3.6 GHz means three "
+            "thousand six hundred million cycles a second; each cycle can carry out part "
+            "of an instruction, so more cycles means more work done, as long as nothing "
+            "else is holding it up. The number of cores is how many instructions it can "
+            "genuinely process at the same time, since each core is effectively a separate "
+            "processor, but that only helps if the software has been written to split its "
+            "work across them, which is why doubling the cores rarely doubles the speed. "
+            "Cache is a small amount of very fast memory on the processor chip holding "
+            "data it is likely to need next: a cache hit is answered in a few cycles while "
+            "a miss means waiting hundreds of cycles for main memory, so more cache means "
+            "less waiting. None of the three works alone, which is why four slow cores can "
+            "be beaten by two fast ones, and why a bigger number on the box does not by "
+            "itself mean a faster computer.")
+    return figure_scene("cpu-performance-3d", world="", steps=steps,
+                        title="Clock speed, cores and cache", desc=desc,
+                        height=370, depth=180, labels=L, scale=0.88,
+                        caption="Exam answers that just say ‘higher clock speed is "
+                                "faster’ get one mark. Saying what it does, and what "
+                                "limits it, gets the rest.")

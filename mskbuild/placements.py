@@ -329,6 +329,34 @@ def apply(course):
 # scene already has a line above for its diagrams: written inline, fifteen of
 # them quietly replaced the diagram placements they were meant to join.
 SCENES = {
+    ("ks3", "3d-modelling-and-animation"): {
+        "How 3D models are built": ["!scene mesh-3d"],
+    },
+    ("ks4/imedia", "visual-identity-and-digital-graphics"): {
+        "Planning and creating digital graphics": ["!scene graphics-layers-3d"],
+    },
+    ("ks3", "vector-graphics"): {
+        "Working with vector shapes": ["!scene graphics-layers-3d"],
+    },
+    ("ks4/computer-science", "compression"): {
+        "Why compress": ["!scene compression-3d"],
+    },
+    ("ks4/aqa-computer-science", "data-compression"): {
+        "Why compress at all": ["!scene compression-3d"],
+    },
+    ("ks5", "compression-encryption-and-hashing"): {
+        "Compression": ["!scene compression-3d"],
+        "Encryption and hashing": ["!scene encryption-3d"],
+    },
+    ("ks4/computer-science", "network-security"): {
+        "Preventing attacks": ["!scene encryption-3d"],
+    },
+    ("ks4/computer-science", "units-of-data"): {
+        "The units": ["!scene units-of-data-3d"],
+    },
+    ("ks4/computer-science", "cpu-performance"): {
+        "The three factors": ["!scene cpu-performance-3d"],
+    },
     ("ks4/computer-science", "boolean-logic"): {
         "Truth tables for combined circuits": ["!scene logic-circuit-3d"],
     },
@@ -374,9 +402,11 @@ SCENES = {
     },
     ("ks4/aqa-computer-science", "systems-architecture"): {
         "The von Neumann architecture": ["!scene cpu-board-3d"],
+        "CPU performance and embedded systems": ["!scene cpu-performance-3d"],
     },
     ("ks4/edexcel-computer-science", "hardware-and-the-processor"): {
         "Inside the CPU": ["!scene cpu-board-3d"],
+        "What makes a processor faster": ["!scene cpu-performance-3d"],
     },
     ("ks5", "structure-and-function-of-the-processor"): {
         "Components and registers": ["!scene cpu-board-3d"],
@@ -390,6 +420,7 @@ SCENES = {
     },
     ("ks4/aqa-computer-science", "number-bases-and-units"): {
         "Converting between the bases": ["!scene binary-place-value-3d"],
+        "Units of information": ["!scene units-of-data-3d"],
     },
     ("ks4/edexcel-computer-science", "binary-and-hexadecimal"): {
         "Converting between denary and binary": ["!scene binary-place-value-3d"],
@@ -412,6 +443,8 @@ SCENES = {
     },
     ("ks4/edexcel-computer-science", "data-storage-and-compression"): {
         "Secondary storage": ["!scene secondary-storage-3d"],
+        "Compression": ["!scene compression-3d"],
+        "Units of storage": ["!scene units-of-data-3d"],
     },
     ("ks5", "networks-and-web-technologies"): {
         "Networks and protocols": ["!scene tcp-ip-stack-3d"],
@@ -447,16 +480,17 @@ def _duplicate_keys():
     for node in ast.walk(tree):
         if not isinstance(node, ast.Assign):
             continue
-        if not any(getattr(t, "id", "") == "PLACEMENTS" for t in node.targets):
+        name = next((getattr(t, "id", "") for t in node.targets), "")
+        if name not in ("PLACEMENTS", "SCENES"):
             continue
         for key in node.value.keys:
             try:
                 k = ast.literal_eval(key)
             except ValueError:
                 continue
-            if k in seen:
-                dupes.append(k)
-            seen.add(k)
+            if (name, k) in seen:
+                dupes.append("%s%r" % (name, (k,)))
+            seen.add((name, k))
     return dupes
 
 

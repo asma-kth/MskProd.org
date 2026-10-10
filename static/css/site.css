@@ -1351,6 +1351,33 @@ h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
   background: var(--surface); border-radius: 4px; padding: .04rem .26rem;
 }
 
+/* Cube parts. A face is a square sheet rotated into place; an edge is a thin
+   bar laid along one axis. Both sit in the same 3D space as everything else,
+   so the whole thing turns as one solid. */
+.sc-face, .sc-edge {
+  position: absolute; left: 50%; top: 50%; transform-style: preserve-3d;
+}
+.sc-face {
+  width: var(--sc-s, 100px); height: var(--sc-s, 100px); margin: 0;
+  background: color-mix(in srgb, var(--sc-teal) 16%, transparent);
+  border: 1.5px solid var(--sc-teal);
+  transform: translate(-50%, -50%)
+             translate3d(var(--sc-x, 0px), var(--sc-y, 0px), var(--sc-z, 0px))
+             var(--sc-rot3);
+}
+.sc-face.sc-lilac {
+  background: color-mix(in srgb, var(--sc-lilac) 16%, transparent);
+  border-color: var(--sc-lilac);
+}
+.sc-edge {
+  width: var(--sc-len, 100px); height: 3px; border-radius: 2px;
+  background: var(--sc-teal);
+  transform: translate(-50%, -50%)
+             translate3d(var(--sc-x, 0px), var(--sc-y, 0px), var(--sc-z, 0px))
+             var(--sc-rot3);
+}
+.sc-edge.sc-edge-lilac { background: var(--sc-lilac); }
+
 .sc-wire {
   height: 3px; width: var(--sc-len, 100px); border-radius: 2px;
   transform-origin: left center;
