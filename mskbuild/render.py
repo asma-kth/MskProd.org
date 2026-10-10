@@ -144,6 +144,11 @@ def layout(*, title: str, description: str, path: str, body: str,
     if 'diagram-steps' in body:
         scripts.append("/assets/js/diagrams.js")
 
+    # Same deal for the 3D scenes: the stages are in the markup and the figure
+    # reads fine without this, so only a page carrying one fetches it.
+    if 'class="scene"' in body:
+        scripts.append("/assets/js/scenes.js")
+
     # Runnable Python. The marker goes on <main>, and pyrun.js finds the Python
     # code blocks inside it. Pyodide itself is fetched only when a Run button is
     # pressed, so a page that is merely read costs nothing extra.

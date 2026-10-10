@@ -39,7 +39,7 @@ PLACEMENTS = {
     },
     ("ks4/computer-science", "protocols-and-layers"): {
         "Standards and protocols": ["!diagram packet-switching"],
-        "Layers": ["!diagram tcp-ip-stack"],
+        "Layers": ["!diagram tcp-ip-stack", "!scene tcp-ip-stack-3d"],
     },
     ("ks4/computer-science", "boolean-logic"): {
         "The three gates": ["!diagram logic-gates"],

@@ -1179,3 +1179,162 @@ h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
 /* Worksheet model answers can contain a long unbreakable run, such as a
    spreadsheet formula with no spaces, which cannot wrap at any screen width. */
 .ws-ms-model, .ws-ms li, .model-answer p { overflow-wrap: anywhere; }
+
+/* ===================================================== 3D scenes
+   Depth drawn with CSS transforms rather than WebGL. A scene is a stage with
+   perspective, a world that can be turned, and sheets lifted off the floor on
+   the Z axis. No library is loaded, and with JavaScript off every stage stays
+   visible so the figure still reads as a complete picture. */
+.scene {
+  margin: var(--sp-5) 0; max-width: min(100%, 760px); margin-inline: auto;
+  --sc-face:      rgba(255, 255, 255, .82);
+  --sc-edge:      var(--border-strong);
+  --sc-teal:      var(--teal-deep);
+  --sc-teal-face: rgba(205, 237, 239, .78);
+  --sc-lilac:     var(--purple-deep);
+  --sc-lilac-face: rgba(234, 223, 241, .78);
+  --sc-floor:     rgba(3, 92, 88, .10);
+}
+[data-theme="dark"] .scene {
+  --sc-face:       rgba(27, 42, 49, .86);
+  --sc-edge:       #4E6B72;
+  --sc-teal:       var(--aqua);
+  --sc-teal-face:  rgba(17, 54, 58, .86);
+  --sc-lilac:      var(--lilac);
+  --sc-lilac-face: rgba(44, 36, 64, .86);
+  --sc-floor:      rgba(107, 196, 202, .10);
+}
+.sc-frame { overflow: hidden; border-radius: var(--r-l); }
+.sc-stage {
+  height: var(--sc-h, 340px); perspective: 1100px; perspective-origin: 50% 46%;
+  background: radial-gradient(ellipse at 50% 72%, var(--sc-floor), transparent 68%);
+  border-radius: var(--r-l); touch-action: pan-y; cursor: grab;
+}
+.sc-stage:active { cursor: grabbing; }
+.sc-stage:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+.sc-world {
+  position: relative; width: 100%; height: 100%; pointer-events: none;
+  transform-style: preserve-3d;
+  transform: translateY(calc(var(--sc-depth, 0px) / 1.8 * var(--sc-scale, 1)))
+             scale(var(--sc-scale, 1))
+             rotateX(var(--rx, 58deg)) rotateZ(var(--rz, -32deg));
+  transition: transform .4s ease;
+}
+.sc-world.is-dragging { transition: none; }
+
+.sc-plane, .sc-unit, .sc-glow {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%) translateZ(var(--sc-z, 0px));
+  transform-style: preserve-3d;
+}
+.sc-plane {
+  width: var(--sc-w, 330px); height: 146px; border-radius: 16px;
+  background: var(--sc-face); border: 1.5px solid var(--sc-edge);
+  box-shadow: 0 14px 30px rgba(2, 59, 57, .13);
+}
+.sc-teal  { border-color: var(--sc-teal);  background: var(--sc-teal-face); }
+.sc-lilac { border-color: var(--sc-lilac); background: var(--sc-lilac-face); }
+/* The label is counter rotated so the text faces the reader instead of lying
+   flat on the sheet, where it would be unreadable at this angle. */
+/* Counter rotated so the text faces the reader instead of lying flat on the
+   sheet. The two angles track the world's own rotation, which the controller
+   writes onto the figure as the reader turns it. */
+.sc-plane-label {
+  position: absolute; left: 16px; top: 14px;
+  transform: rotateZ(var(--sc-rz, 34deg)) rotateX(var(--sc-rx, -62deg));
+  transform-origin: left top; display: grid; gap: 1px; white-space: nowrap;
+}
+/* A chip behind the text, because at a steep angle a label will sometimes
+   cross the sheet behind it and has to stay readable when it does. */
+.sc-plane-label b, .sc-plane-label i {
+  background: var(--surface); border-radius: 5px; padding: .1rem .34rem;
+  box-shadow: 0 1px 3px rgba(2, 59, 57, .14); width: max-content;
+}
+.sc-plane-label b {
+  font-family: var(--font-display); font-size: .74rem; font-weight: 700;
+  letter-spacing: .08em; color: var(--ink);
+}
+.sc-plane-label i { font-style: normal; font-size: .68rem; color: var(--ink-3); }
+
+.sc-unit {
+  display: grid; gap: .3rem; justify-items: center; padding: .5rem .7rem;
+  border-radius: 12px; background: var(--surface); border: 1.5px solid var(--sc-edge);
+  box-shadow: 0 10px 22px rgba(2, 59, 57, .2);
+  transform: translate(-50%, -50%) translateZ(calc(var(--sc-z, 0px) + 26px))
+             rotateZ(var(--sc-rz, 34deg)) rotateX(var(--sc-rx, -62deg));
+}
+.sc-unit-name {
+  font-family: var(--font-display); font-size: .66rem; font-weight: 700;
+  letter-spacing: .1em; color: var(--ink-3);
+}
+.sc-unit-parts { display: flex; gap: 3px; }
+.sc-chip {
+  font-family: var(--font-mono); font-size: .62rem; font-weight: 600;
+  padding: .18rem .4rem; border-radius: 4px; white-space: nowrap;
+}
+.sc-chip-head { background: var(--accent-quiet); color: var(--accent); }
+.sc-chip-body { background: var(--surface-sunk); color: var(--ink); }
+[data-theme="dark"] .sc-chip-body { background: #22333A; }
+
+.sc-glow {
+  width: 330px; height: 146px; border-radius: 16px; pointer-events: none;
+  border: 2px solid var(--sc-teal);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--sc-teal) 22%, transparent);
+}
+.sc-arrow {
+  position: absolute; left: 50%; top: 50%; width: 4px; height: 146px;
+  transform: translate(-50%, -50%) translateZ(110px);
+  background: linear-gradient(to top, transparent, var(--sc-teal));
+}
+.sc-note {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%) translateZ(250px)
+             rotateZ(var(--sc-rz, 34deg)) rotateX(var(--sc-rx, -62deg));
+  font-size: .74rem; font-weight: 600; color: var(--ink-2); text-align: center;
+  background: var(--surface); padding: .3rem .6rem; border-radius: 8px;
+  border: 1px solid var(--border); white-space: nowrap;
+}
+
+.sc-step { display: contents; }
+.scene.is-stepped .sc-step { display: none; }
+.scene.is-stepped .sc-step.is-on { display: contents; }
+
+.sc-hint { margin: .5rem 0 0; font-size: .8rem; color: var(--ink-3); text-align: center; }
+.sc-hint[hidden] { display: none; }
+.sc-controls {
+  display: flex; flex-wrap: wrap; gap: .5rem; align-items: center;
+  margin-top: var(--sp-3);
+}
+.sc-controls[hidden] { display: none; }
+.sc-btn {
+  font: inherit; font-size: .84rem; font-weight: 600; padding: .34rem .9rem;
+  border-radius: var(--r-pill); border: 1px solid var(--border-strong);
+  background: var(--surface); color: var(--ink-2); cursor: pointer;
+}
+.sc-btn:hover { background: var(--accent-quiet); color: var(--accent); border-color: transparent; }
+.sc-btn-play { background: var(--grad-brand); color: #fff; border-color: transparent; }
+.sc-btn-play:hover { color: #fff; filter: brightness(1.08); }
+[data-theme="dark"] .sc-btn-play, [data-theme="dark"] .sc-btn-play:hover { color: #06231F; }
+.sc-status { margin: 0; font-size: .86rem; color: var(--ink-3); flex: 1 1 14rem; min-width: 0; }
+.sc-status b { color: var(--ink); font-weight: 650; margin-right: .3rem; white-space: nowrap; }
+
+/* The text alternative is the picture's content for anybody who cannot see
+   it, so it is hidden from sight but never from a screen reader. */
+.sc-alt {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* A scene that moves on its own is a scene nobody asked to move. Stepping
+   still works; only the turning animation and autoplay stop. */
+@media (prefers-reduced-motion: reduce) {
+  .sc-world { transition: none; }
+}
+@media (max-width: 760px) {
+  .scene { --sc-scale: .78; }
+  .sc-stage { height: calc(var(--sc-h, 340px) * .8); }
+}
+@media (max-width: 480px) {
+  .scene { --sc-scale: .58; }
+  .sc-stage { height: calc(var(--sc-h, 340px) * .62); perspective: 820px; }
+}

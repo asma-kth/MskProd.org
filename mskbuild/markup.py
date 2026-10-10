@@ -198,6 +198,18 @@ def render(src: str) -> str:
             i += 1
             continue
 
+        # 3D scene: !scene <name>
+        m = re.match(r"^!scene\s+([a-z0-9-]+)\s*$", stripped)
+        if m:
+            from .scenes import REGISTRY as _SC
+            name = m.group(1)
+            if name not in _SC:
+                raise KeyError("unknown scene %r (have: %s)"
+                               % (name, ", ".join(sorted(_SC))))
+            out.append(_SC[name]())
+            i += 1
+            continue
+
         # interactive tool: !tool <name>
         m = re.match(r"^!tool\s+([a-z0-9-]+)\s*(?:::\s*(.*))?$", stripped)
         if m:
