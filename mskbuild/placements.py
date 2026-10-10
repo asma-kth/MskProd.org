@@ -329,6 +329,43 @@ def apply(course):
 # scene already has a line above for its diagrams: written inline, fifteen of
 # them quietly replaced the diagram placements they were meant to join.
 SCENES = {
+    ("ks4/computer-science", "boolean-logic"): {
+        "Truth tables for combined circuits": ["!scene logic-circuit-3d"],
+    },
+    ("ks4/aqa-computer-science", "boolean-logic"): {
+        "Reading and drawing circuit diagrams": ["!scene logic-circuit-3d"],
+    },
+    ("ks4/edexcel-computer-science", "truth-tables-and-logic"): {
+        "Logic in real systems and real programs": ["!scene logic-circuit-3d"],
+    },
+    ("ks5", "data-types-and-boolean-algebra"): {
+        "Boolean algebra": ["!scene logic-circuit-3d"],
+    },
+    ("ks5", "data-structures"): {
+        "Linear structures": ["!scene stack-queue-3d"],
+        "Trees, graphs and hash tables": ["!scene binary-tree-3d"],
+    },
+    ("ks4/aqa-computer-science", "relational-databases-and-sql"): {
+        "Relational database structure": ["!scene database-tables-3d"],
+    },
+    ("ks5", "databases"): {
+        "Structure and normalisation": ["!scene database-tables-3d"],
+    },
+    ("ks4/computer-science", "systems-software"): {
+        "What system software is": ["!scene abstraction-layers-3d"],
+    },
+    ("ks4/aqa-computer-science", "hardware-software-and-the-operating-system"): {
+        "System software and the operating system": ["!scene abstraction-layers-3d"],
+    },
+    ("ks4/edexcel-computer-science", "software-and-programming-languages"): {
+        "System and application software": ["!scene abstraction-layers-3d"],
+    },
+    ("ks4/computer-science", "primary-storage"): {
+        "Virtual memory": ["!scene virtual-memory-3d"],
+    },
+    ("ks5", "systems-software"): {
+        "Memory management and scheduling": ["!scene virtual-memory-3d"],
+    },
     # ------------------------------------------------------- 3D scenes
     # Only on topics whose subject genuinely has layers, stacking or position
     # in space. Everything else keeps its flat stepped diagram.

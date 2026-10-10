@@ -711,3 +711,320 @@ def _secondary():
                         caption="Exam answers need the reason, not the name: no moving "
                                 "parts is why an SSD survives being dropped and starts up "
                                 "faster.")
+
+
+# ============================================================ logic and data
+
+@scene("logic-circuit-3d")
+def _logic_circuit():
+    """A two gate circuit with the signal actually travelling through it."""
+    L = ["Two inputs, one AND gate, one NOT gate, one output.",
+         "A = 1 and B = 0. AND needs both, so it gives 0.",
+         "NOT flips it, so Q becomes 1.",
+         "A = 1 and B = 1. AND gives 1, NOT flips it, Q is 0.",
+         "Q = NOT (A AND B). That is a NAND gate, written out."]
+
+    def circuit(a, b, mid, q, lit=()):
+        def tone(n):
+            return "teal" if n in lit else "floor"
+        return (board(620, 240)
+                + box3d(-230, -50, 20, 70, 44, "A", str(a), tone("A"))
+                + box3d(-230, 50, 20, 70, 44, "B", str(b), tone("B"))
+                + link3d(-195, -50, -70, -25, 16, "teal" if a else "floorwire")
+                + link3d(-195, 50, -70, 25, 16, "teal" if b else "floorwire")
+                + box3d(-20, 0, 24, 100, 70, "AND", str(mid) if mid is not None else "",
+                        tone("AND"))
+                + link3d(30, 0, 110, 0, 16, "teal" if mid else "floorwire")
+                + box3d(150, 0, 24, 90, 60, "NOT", "", tone("NOT"))
+                + link3d(195, 0, 250, 0, 16, "teal" if q else "floorwire")
+                + box3d(262, 0, 20, 70, 44, "Q", str(q) if q is not None else "", tone("Q")))
+
+    steps = [
+        stage(1, circuit("", "", None, None), L[0]),
+        stage(2, circuit(1, 0, 0, None, lit=("A", "AND"))
+              + billboard(0, 170, 40, "AND needs both inputs to be 1"), L[1]),
+        stage(3, circuit(1, 0, 0, 1, lit=("A", "AND", "NOT", "Q"))
+              + billboard(0, 170, 40, "NOT turns the 0 into a 1", "teal"), L[2]),
+        stage(4, circuit(1, 1, 1, 0, lit=("A", "B", "AND", "NOT"))
+              + billboard(0, 170, 40, "both inputs 1, so Q is 0", "lilac"), L[3]),
+        stage(5, circuit("A", "B", "A AND B", "Q")
+              + billboard(0, 170, 40, "Q = NOT (A AND B)", "teal"), L[4]),
+    ]
+    desc = ("A circuit with two inputs, A and B, feeding an AND gate whose output feeds a "
+            "NOT gate, which produces the output Q. The AND gate outputs 1 only when both "
+            "its inputs are 1, so with A set to 1 and B set to 0 it outputs 0. The NOT "
+            "gate inverts whatever it is given, so that 0 becomes a 1 and Q is 1. Setting "
+            "both A and B to 1 makes the AND gate output 1, the NOT gate inverts it, and Q "
+            "becomes 0. The whole circuit is therefore Q equals NOT, bracket, A AND B, "
+            "bracket, and it gives 1 in every case except when both inputs are 1. That "
+            "combination is common enough to have its own name and its own symbol: it is "
+            "a NAND gate. When reading a circuit in an exam, work left to right and write "
+            "the value on every wire as you go, because the marks are for the "
+            "intermediate columns as much as the answer.")
+    return figure_scene("logic-circuit-3d", world="", steps=steps,
+                        title="Tracing a signal through a logic circuit", desc=desc,
+                        height=350, depth=30, labels=L, scale=0.86,
+                        caption="Label every wire as you go. An intermediate column in a "
+                                "truth table is a mark, and it is also how you catch your "
+                                "own mistake.")
+
+
+@scene("stack-queue-3d")
+def _stack_queue():
+    """A stack is a pile. A queue is a line. Drawn as a pile and a line."""
+    L = ["A stack is a pile. New items go on the top.",
+         "Push another one and it goes on top again.",
+         "Pop takes the top one off, so the last in is the first out.",
+         "A queue is a line. New items join the back.",
+         "Dequeue takes from the front, so the first in is the first out."]
+
+    def stack(items, tag=None, tagz=0):
+        out = [board(300, 200)]
+        for i, v in enumerate(items):
+            out.append(box3d(0, 0, 14 + i * 46, 150, 80, v, "", "teal" if i == len(items) - 1 else "floor"))
+        if tag:
+            out.append(billboard(0, 150, tagz, tag, "teal"))
+        return "".join(out)
+
+    def queue(items, front=0, tag=None):
+        out = [board(560, 190)]
+        for i, v in enumerate(items):
+            x = -210 + i * 105
+            out.append(box3d(x, 0, 18, 92, 78, v, "", "teal" if i == front else "floor"))
+        out.append(billboard(-270, 0, 90, "front"))
+        out.append(billboard(270, 0, 90, "back"))
+        if tag:
+            out.append(billboard(0, 150, 40, tag, "teal"))
+        return "".join(out)
+
+    steps = [
+        stage(1, stack(["first", "second"], "push adds to the top", 40), L[0]),
+        stage(2, stack(["first", "second", "third"], "push: third goes on top", 40), L[1]),
+        stage(3, stack(["first", "second"], "pop returned third: last in, first out", 40), L[2]),
+        stage(4, queue(["A", "B", "C", "D"], 0, "enqueue adds to the back"), L[3]),
+        stage(5, queue(["B", "C", "D"], 0, "dequeue returned A: first in, first out"), L[4]),
+    ]
+    desc = ("Two linear data structures, drawn as the two physical things they are named "
+            "after. A stack is a pile: items are pushed onto the top and popped off the "
+            "top, so the last item in is the first one out, which is called LIFO. Pushing "
+            "first, then second, then third gives a pile with third on top, and popping "
+            "returns third. Only the top item can be reached, and a pointer records where "
+            "the top is. Stacks are what a computer uses to remember where to return to "
+            "after a subroutine call, and what an undo feature is built on. A queue is a "
+            "line: items are enqueued at the back and dequeued from the front, so the "
+            "first item in is the first one out, which is called FIFO. With A, B, C and D "
+            "in the queue, dequeuing returns A. Two pointers are needed, one for the front "
+            "and one for the back. Queues are used for print jobs, for keyboard input and "
+            "for scheduling processes, anywhere that fairness matters.")
+    return figure_scene("stack-queue-3d", world="", steps=steps,
+                        title="Stacks and queues", desc=desc,
+                        height=390, depth=120, labels=L, scale=0.9,
+                        caption="LIFO and FIFO are not jargon to memorise. A stack of "
+                                "plates and a queue at a shop behave exactly like this.")
+
+
+@scene("binary-tree-3d")
+def _tree_3d():
+    """A binary search tree, and the path a search takes through it."""
+    L = ["A binary tree: every node has at most two children.",
+         "In a binary search tree, smaller goes left and larger goes right.",
+         "Searching for 37: start at the root and compare.",
+         "37 is less than 50, so go left. More than 30, so go right. Found.",
+         "Three comparisons for seven items. That is why trees are fast."]
+
+    N = {50: (0, -110), 30: (-150, 10), 70: (150, 10),
+         20: (-230, 130), 37: (-70, 130), 60: (70, 130), 90: (230, 130)}
+    EDGES = [(50, 30), (50, 70), (30, 20), (30, 37), (70, 60), (70, 90)]
+
+    def tree(lit=(), path=()):
+        out = [board(600, 330)]
+        for a, b in EDGES:
+            tone = "teal" if (a, b) in path else "floorwire"
+            out.append(link3d(N[a][0], N[a][1], N[b][0], N[b][1], 12, tone))
+        for v, (x, y) in N.items():
+            out.append(box3d(x, y, 20, 66, 46, str(v), "", "teal" if v in lit else "floor"))
+        return "".join(out)
+
+    steps = [
+        stage(1, tree() + billboard(0, 215, 40, "root at the top, leaves at the bottom"), L[0]),
+        stage(2, tree() + billboard(-230, -110, 60, "smaller", "lilac")
+              + billboard(230, -110, 60, "larger", "teal"), L[1]),
+        stage(3, tree(lit=(50,)) + billboard(0, 215, 40, "37 < 50", "teal"), L[2]),
+        stage(4, tree(lit=(50, 30, 37), path=((50, 30), (30, 37)))
+              + billboard(0, 240, 20, "37 > 30, so right. Found.", "teal"), L[3]),
+        stage(5, tree(lit=(50, 30, 37), path=((50, 30), (30, 37)))
+              + billboard(0, 240, 20, "7 items, at most 3 comparisons", "lilac"), L[4]),
+    ]
+    desc = ("A binary search tree holding the values 50, 30, 70, 20, 37, 60 and 90. Every "
+            "node has at most two children, the node at the top is the root, and the nodes "
+            "with no children at the bottom are the leaves. What makes it a search tree "
+            "rather than just a binary tree is the rule about where things go: anything "
+            "smaller than a node is placed in its left subtree and anything larger in its "
+            "right subtree. Searching is then a matter of comparing and moving. To find "
+            "37, start at the root, 50. 37 is smaller, so go left to 30. 37 is larger than "
+            "30, so go right, and there it is. Three comparisons for seven items, because "
+            "each comparison throws away half of what is left, in the same way a binary "
+            "search does on a sorted list. That is why a balanced tree of a million items "
+            "needs about twenty comparisons rather than a million.")
+    return figure_scene("binary-tree-3d", world="", steps=steps,
+                        title="A binary search tree", desc=desc,
+                        height=380, depth=20, labels=L, scale=0.82,
+                        caption="Every comparison halves what is left. A tree is binary "
+                                "search, built into the shape of the data.")
+
+
+@scene("database-tables-3d")
+def _db_tables():
+    """Two tables as two sheets, with the foreign key joining them."""
+    L = ["One table for students. Each row is a student, each column a field.",
+         "A primary key: one field whose value is different in every row.",
+         "A second table for courses, with its own primary key.",
+         "A foreign key in one table holds the primary key of the other.",
+         "That link is why the data is stored once and not repeated."]
+
+    def rows(z, tone, key, data):
+        """A sheet with real rows on it, because a table without rows is a box."""
+        out = []
+        for i, (k, rest) in enumerate(data):
+            y = -46 + i * 46
+            out.append(box3d(-130, y, z + 6, 96, 26, k, "", tone))
+            out.append(box3d(40, y, z + 6, 180, 26, rest, "", "floor"))
+        out.append(billboard(-130, -72, z + 20, key, tone))
+        return "".join(out)
+
+    students = (plane(0, "STUDENTS", "", "teal", width=400, height=190)
+                + rows(0, "teal", "StudentID (primary key)",
+                       [("S01", "Aisha Khan · Y10"),
+                        ("S02", "Tom Reilly · Y11"),
+                        ("S03", "Mia Okafor · Y10")]))
+    courses = (plane(230, "COURSES", "", "lilac", width=400, height=190)
+               + rows(230, "lilac", "CourseID (primary key)",
+                      [("C01", "Computing · Mr Ali"),
+                       ("C02", "Physics · Ms Dale"),
+                       ("C03", "Art · Mr Boyd")]))
+    steps = [
+        stage(1, students + billboard(0, 150, 40, "one row per student, one column per field"), L[0]),
+        stage(2, students + billboard(0, 150, 40, "unique, never reused, never a name", "teal"), L[1]),
+        stage(3, students + courses + billboard(0, 150, 40, "two tables, two primary keys", "lilac"), L[2]),
+        stage(4, students + courses
+              + billboard(0, 20, 118, "ENROLMENTS  \u2022  S01 + C01  \u2022  S01 + C03", "teal")
+              + billboard(0, 150, 40, "in that table both fields are foreign keys", "teal"), L[3]),
+        stage(5, students + courses
+              + billboard(0, 150, 40, "change a teacher once, not on 300 rows", "lilac"), L[4]),
+    ]
+    desc = ("A relational database drawn as separate sheets. One table holds students, "
+            "with a row for each student and a column for each field: StudentID, Name and "
+            "Year. One field is chosen as the primary key, here StudentID, and its value "
+            "must be different in every row and must never be reused, which is why a name "
+            "makes a poor key and an ID number makes a good one. A second table holds "
+            "courses, with CourseID as its own primary key. The two are joined by a third "
+            "table of enrolments holding pairs of StudentID and CourseID, and in that "
+            "table each of those fields is a foreign key, meaning a field that holds the "
+            "primary key of another table. Splitting the data this way is normalisation, "
+            "and the reason for it is that every fact is then stored exactly once: when a "
+            "course changes teacher you change one row in the courses table rather than "
+            "three hundred rows in one enormous table, and there is no way for two of "
+            "those rows to end up disagreeing.")
+    return figure_scene("database-tables-3d", world="", steps=steps,
+                        title="Tables, keys and the link between them", desc=desc,
+                        height=420, depth=230, labels=L, scale=0.74,
+                        caption="Store every fact once. Almost every database exam answer "
+                                "comes back to that sentence.")
+
+
+@scene("abstraction-layers-3d")
+def _abstraction():
+    """What sits on what, from the metal up to the thing you clicked."""
+    L = ["The hardware at the bottom: the parts you could drop on your foot.",
+         "The operating system sits on it and manages all of it for you.",
+         "Utility software does the housekeeping jobs around the system.",
+         "Your applications sit on top and never touch the hardware directly.",
+         "That is why a program written once runs on very different machines."]
+    TIERS = [
+        (0, "HARDWARE", "CPU · memory · disks · screen", "floor"),
+        (95, "OPERATING SYSTEM", "memory, files, processes, devices, users", "teal"),
+        (190, "UTILITY SOFTWARE", "backup · defrag · compression · antivirus", "lilac"),
+        (285, "APPLICATIONS", "browser · word processor · game", "teal"),
+    ]
+    world = "".join(plane(z, t, s, tone, width=400, height=120) for z, t, s, tone in TIERS)
+    steps = []
+    for i, (z, t, s_, tone) in enumerate(TIERS):
+        steps.append(stage(i + 1,
+                           '<div class="sc-glow sc-glow-at sc-%s" style="--sc-x:0px;--sc-y:0px;'
+                           '--sc-z:%dpx;--sc-w:400px;--sc-hh:120px"></div>' % (tone, z + 2),
+                           L[i]))
+    steps.append(stage(5, billboard(0, 170, 150,
+                                    "each layer only talks to the one below it", "teal"), L[4]))
+    desc = ("The layers of a computer system, from the metal upwards. At the bottom is the "
+            "hardware: the processor, the memory, the disks, the screen. On top of it sits "
+            "the operating system, which manages all of that on everyone's behalf, "
+            "handling memory allocation, the file system, processes and scheduling, device "
+            "drivers and user accounts. Beside it sits utility software, the housekeeping "
+            "programs that keep the system in order: backup, defragmentation, compression "
+            "and antivirus. On top sit the applications, the browser, the word processor, "
+            "the game, which is what the person actually wanted to use. The rule that "
+            "makes this worth drawing is that each layer talks only to the layer below it. "
+            "An application never addresses the disk directly; it asks the operating "
+            "system, which asks the driver, which talks to the hardware. That is exactly "
+            "why the same program can run on two machines with completely different "
+            "hardware inside them.")
+    return figure_scene("abstraction-layers-3d", world=world, steps=steps,
+                        title="Hardware, operating system, utilities, applications", desc=desc,
+                        height=400, depth=285, labels=L, scale=0.82,
+                        caption="An application that wants a file asks the operating "
+                                "system. It has no idea whether the file is on a hard disk "
+                                "or an SSD, and it does not need to.")
+
+
+@scene("virtual-memory-3d")
+def _virtual_memory():
+    """Pages moving between RAM and the disk, which is the whole mechanism."""
+    L = ["RAM holds the programs that are running. It is fast, and it is small.",
+         "Open one program too many and there is no room left.",
+         "A page that has not been used lately is written out to the disk.",
+         "That frees real memory, so the new program can start.",
+         "Needed again, the page is fetched back, which is why it goes slow."]
+
+    def ram(pages, tone_of=None):
+        out = [plane(230, "RAM", "fast · small · volatile", "teal", width=330, height=120)]
+        for i in range(4):
+            v = pages[i] if i < len(pages) else None
+            out.append(box3d(-120 + i * 80, 26, 248, 66, 58, v or "", "",
+                             (tone_of(i) if tone_of else ("lilac" if v else "floor"))))
+        return "".join(out)
+
+    def disk(pages):
+        out = [plane(0, "DISK", "slow · huge · permanent", "lilac", width=430, height=150)]
+        for i, v in enumerate(pages):
+            out.append(box3d(-150 + i * 80, 32, 18, 66, 58, v, "", "floor"))
+        return "".join(out)
+
+    s1 = ram(["A1", "A2", "B1", "B2"]) + disk([])
+    s2 = (ram(["A1", "A2", "B1", "B2"]) + disk([])
+          + billboard(0, 205, 120, "program C needs a page, and RAM is full", "lilac"))
+    s3 = (ram(["A1", "A2", "B1", "B2"], tone_of=lambda i: "teal" if i == 0 else "lilac")
+          + disk(["A1"]) + billboard(0, 205, 120, "A1 is least recently used: page it out", "teal"))
+    s4 = (ram(["C1", "A2", "B1", "B2"], tone_of=lambda i: "teal" if i == 0 else "lilac")
+          + disk(["A1"]) + billboard(0, 205, 120, "C1 takes its place in real memory", "teal"))
+    s5 = (ram(["A1", "A2", "B1", "B2"], tone_of=lambda i: "teal" if i == 0 else "lilac")
+          + disk(["C1"]) + billboard(0, 205, 120, "swapping back and forth is thrashing", "lilac"))
+    steps = [stage(1, s1, L[0]), stage(2, s2, L[1]), stage(3, s3, L[2]),
+             stage(4, s4, L[3]), stage(5, s5, L[4])]
+    desc = ("Virtual memory, drawn as pages moving between two levels. RAM holds the parts "
+            "of the running programs that are needed now: it is fast, volatile and small. "
+            "The disk below is slow, permanent and enormous. When another program is "
+            "started and there is no space left in RAM, the operating system picks a page "
+            "that has not been used recently and writes it out to a reserved area of the "
+            "disk, which is the swap space or page file. That frees a frame of real memory "
+            "for the new page, so the program can start even though the machine has run "
+            "out of actual RAM. The cost arrives when the page that was written out is "
+            "needed again, because fetching it back from disk is thousands of times slower "
+            "than reading RAM. If memory is badly oversubscribed the machine spends most "
+            "of its time moving pages in and out rather than doing any work, which is "
+            "called thrashing and is what a computer that has gone treacly is usually "
+            "doing. Adding more RAM fixes it; a faster processor does not.")
+    return figure_scene("virtual-memory-3d", world="", steps=steps,
+                        title="Virtual memory: paging to disk", desc=desc,
+                        height=420, depth=260, labels=L, scale=0.78,
+                        caption="Virtual memory does not make a machine faster. It lets it "
+                                "run more than will fit, and pays for that in disk time.")

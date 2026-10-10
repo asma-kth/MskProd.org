@@ -1344,8 +1344,10 @@ h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
   letter-spacing: .06em; color: var(--ink);
   background: var(--surface); border-radius: 5px; padding: .08rem .3rem;
 }
+/* Often this is a value rather than a description, and in a logic circuit
+   the value is the entire point, so it is not allowed to go faint. */
 .sc-box-label i {
-  font-style: normal; font-size: .62rem; color: var(--ink-3);
+  font-style: normal; font-size: .66rem; font-weight: 600; color: var(--ink-2);
   background: var(--surface); border-radius: 4px; padding: .04rem .26rem;
 }
 
