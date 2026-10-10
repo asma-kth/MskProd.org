@@ -230,12 +230,9 @@ def build_home():
     }, {
         "@context": "https://schema.org", "@type": "WebSite",
         "name": SITE_NAME, "url": SITE_URL, "inLanguage": "en-GB",
-        "potentialAction": {"@type": "SearchAction",
-                            "target": {"@type": "EntryPoint", "urlTemplate": SITE_URL + "/search/?q={search_term_string}"},
-                            "query-input": "required name=search_term_string"},
     }]
     write("/", layout(
-        title="MskProd Computing | UK computing revision for KS3, GCSE and A Level",
+        title="GCSE, KS3 and A Level Computing Revision",
         description="Free computing revision for UK students. KS3, OCR GCSE Computer Science J277, Creative iMedia J834, OCR A Level H446 and a full Python course. Explanations, quizzes, auto marked exam questions and practice papers.",
         path="/", body=body, active="/",
         greeting="Hello. I am Pixel. Pick your key stage below, and tap me any time for a fun fact or a revision tip.",
@@ -256,7 +253,7 @@ def build_pwa():
     write("/offline/", layout(
         title="Offline",
         description="You are offline and this page has not been saved to this device yet.",
-        path="/offline/",
+        path="/offline/", noindex=True,
         body="""<div class="wrap" style="padding:var(--sp-8) 0;max-width:44rem">
   <h1>You are offline</h1>
   <p class="lead">This page has not been opened on this device before, so there is no saved
@@ -267,7 +264,7 @@ def build_pwa():
     <a class="btn btn-primary" href="/">Go to the home page</a>
   </div>
 </div>"""))
-    register("/offline/", 0.1, "yearly")
+
 
     shell = []
     for rel in ("css/site.css", "js/app.js", "js/mascot.js", "js/tools.js"):
@@ -388,7 +385,8 @@ def build_sitemap():
   </div>
 </div>""" % render.mascot_svg()
     with open(os.path.join(DIST, "404.html"), "w", encoding="utf-8") as fh:
-        fh.write(layout(title="Page not found", description="That page could not be found on MskProd Computing.",
+        fh.write(layout(title="Page not found", noindex=True,
+                        description="That page could not be found on MskProd Computing.",
                         path="/404.html", body=body, extra_head=redirect_js))
 
 
@@ -419,6 +417,19 @@ def copy_static():
         fh.write(tool_reg.bundle(ROOT, "js"))
     with open(os.path.join(dst, "css", "tools.css"), "w", encoding="utf-8") as fh:
         fh.write(tool_reg.bundle(ROOT, "css"))
+
+    # The @font-face rules go at the head of the one stylesheet every page
+    # already loads, so self hosting the fonts costs no extra request.
+    css_dir = os.path.join(dst, "css")
+    fonts_css = os.path.join(css_dir, "fonts.css")
+    site_css = os.path.join(css_dir, "site.css")
+    with open(fonts_css, encoding="utf-8") as fh:
+        head = fh.read()
+    with open(site_css, encoding="utf-8") as fh:
+        rest = fh.read()
+    with open(site_css, "w", encoding="utf-8") as fh:
+        fh.write(head + "\n" + rest)
+    os.remove(fonts_css)
 
 
 def main():

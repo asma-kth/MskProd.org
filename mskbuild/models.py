@@ -82,4 +82,11 @@ class Course:
     board: str = ""
     code: str = ""
     goal: str = ""             # the top grade for this course
+    # The phrase a student actually types into Google for this course. Exam
+    # board plus specification code is the highest intent search there is:
+    # somebody searching "OCR J277 boolean logic" wants exactly our page, and
+    # the code appeared in no page title at all before. Kept short, because a
+    # title has about sixty characters before Google truncates it and the
+    # topic name has to survive that cut.
+    seo: str = ""
     journey: List[Tuple[str, str, str]] = field(default_factory=list)

@@ -5920,6 +5920,7 @@ This topic is factual, so accuracy is everything.
 
 COURSE = Course(
     slug="ks4/computer-science",
+    seo="OCR J277 GCSE revision",
     title="GCSE Computer Science",
     short="GCSE Computer Science",
     stage="KS4",

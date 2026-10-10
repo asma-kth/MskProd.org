@@ -18,7 +18,11 @@ def _worksheet(course, unit, topic):
     path = "/%s/%s/worksheet/" % (course.slug, topic.slug)
     # The same topic name appears in several courses, so the course short name
     # is needed or three worksheets end up sharing one <title>.
-    title = "%s worksheet, %s" % (topic.title, course.short)
+    # Board and code only here. The topic name plus the word worksheet is what
+    # wins this search, so the suffix has to stay short enough to leave room.
+    board = {"Pearson Edexcel": "Edexcel", "National Curriculum": "KS3"}.get(course.board, course.board)
+    title = "%s worksheet | %s" % (topic.title,
+                                   " ".join(x for x in (board, course.code) if x) or course.short)
     trail = [("Home", "/"), (course.short, "/%s/" % course.slug),
              (topic.title, "/%s/%s/" % (course.slug, topic.slug)),
              ("Worksheet", None)]

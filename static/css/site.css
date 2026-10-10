@@ -585,6 +585,19 @@ pre code { background: none; border: 0; padding: 0; color: inherit; white-space:
   .topic-layout { grid-template-columns: 1fr; padding: var(--sp-5) var(--sp-4); }
   .topic-aside { position: static !important; order: -1; }
 }
+/* The standalone pages (about, privacy, accessibility, how to revise, the
+   glossary) used to set their prose straight onto the page gradient, where a
+   teal link reads at 3.21:1 against the darkest stop. They get the same solid
+   panel a topic page uses, which fixes the contrast and makes them look like
+   the rest of the site. */
+.page-panel {
+  max-width: 1080px; margin: 0 auto var(--sp-8);
+  background: var(--surface); border: 1px solid var(--glass-edge);
+  border-radius: var(--r-xl); padding: var(--sp-6); box-shadow: var(--shadow-2);
+}
+@media (max-width: 1040px) { .page-panel { padding: var(--sp-5) var(--sp-4); } }
+.page-panel > .prose { max-width: var(--measure); margin-inline: auto; }
+
 .topic-aside { position: sticky; top: 5.6rem; display: grid; gap: var(--sp-3); }
 .toc { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r-m); padding: var(--sp-4); }
 .toc h4 { font-size: .76rem; text-transform: uppercase; letter-spacing: .12em; color: var(--ink-muted); margin-bottom: .7rem; font-family: var(--font-body); }

@@ -8,8 +8,8 @@ def _page(path, title, description, crumb, body_md, extra="", greeting="", ld=No
     trail = [("Home", "/"), (crumb, None)]
     body = """<div class="wrap">
   %s
-  <div class="wrap-narrow" style="width:100%%;margin-inline:auto">
-    <article class="prose" style="padding-bottom:var(--sp-8)">
+  <div class="page-panel">
+    <article class="prose">
       <header class="topic-header"><h1>%s</h1><p class="lead">%s</p></header>
       %s
       %s
@@ -310,10 +310,10 @@ Corrections are genuinely welcome. If something on this site is wrong, unclear o
 """
     path, html = _page(
         "/about/", "About MskProd Computing",
-        "A free revision site for UK computing students at Key Stage 3, GCSE and A Level, covering OCR, AQA and Edexcel, with no accounts, adverts or tracking.",
+        "A free revision site for UK computing students at Key Stage 3, GCSE and A Level, covering OCR J277, AQA 8525, Edexcel 1CP2, Creative iMedia and A Level H446. No account needed.",
         "About", about % (total_topics, total_quiz),
         extra='<div class="center" style="max-width:220px;margin:var(--sp-6) auto 0">%s</div>' % mascot_svg(),
-        greeting="I am Pixel. I live in the corner of every page, and I run entirely on your own device. Nothing you do here is sent anywhere.",
+        greeting="I am Pixel. I live in the corner of every page, and I run entirely on your own device. Your answers and your progress stay in your browser.",
         ld=[{"@context": "https://schema.org", "@type": "AboutPage",
              "name": "About " + SITE_NAME, "url": SITE_URL + "/about/"}])
     write(path, html)
@@ -371,7 +371,7 @@ Pixel, the robot cat, runs entirely in your browser. The facts, tips and message
 
 ## Third party services
 
-The site loads its typefaces from **Google Fonts**. When your browser requests those font files it makes a request to Google's servers, which as with any web request involves your IP address and browser information being visible to Google. If you would prefer to avoid it, most browsers and privacy extensions can block requests to fonts.googleapis.com, and the site remains fully readable and fully functional with a fallback typeface.
+The site's typefaces are served from mskprod.org itself. They used to come from Google Fonts, which meant your browser made a request to Google's servers for every page; that request no longer happens.
 
 The runnable Python examples download the Python engine from a public code network (jsDelivr) the first time you press Run on a page. That request is only made if you press Run.
 

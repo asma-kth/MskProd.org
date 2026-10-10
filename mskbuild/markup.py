@@ -2,6 +2,7 @@
 
 Block syntax
 ------------
+    ## Heading                      -> h2 section heading, with an id
     ### Heading                     -> h4 sub heading
     - item                          -> unordered list
     1. item                         -> ordered list
@@ -24,6 +25,8 @@ Inline syntax
 """
 import html
 import re
+
+from .util import slugify
 
 def _slot(i: int) -> str:
     """Placeholder built from control characters.
@@ -168,6 +171,16 @@ def render(src: str) -> str:
             continue
 
         # heading
+        # The standalone pages (about, privacy, accessibility, how to revise)
+        # are authored as whole documents and use ## for their sections. That
+        # was never implemented, so every one of their headings rendered as
+        # literal "## Why this site exists" text on the live site.
+        if stripped.startswith("## "):
+            text = stripped[3:]
+            out.append('<h2 id="%s">%s</h2>' % (slugify(text), inline(text)))
+            i += 1
+            continue
+
         if stripped.startswith("### "):
             out.append("<h4>%s</h4>" % inline(stripped[4:]))
             i += 1
