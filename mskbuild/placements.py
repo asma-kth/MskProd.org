@@ -27,19 +27,19 @@ PLACEMENTS = {
         "Binary addition": ["!diagram binary-addition"],
     },
     ("ks4/computer-science", "storing-images"): {
-        "Bitmap images": ["!diagram image-representation"],
+        "Bitmap images": ["!diagram image-representation", "!scene image-layers-3d"],
         "Calculating image file size": ["!tool file-size"],
     },
     ("ks4/computer-science", "storing-sound"): {
-        "Analogue to digital": ["!diagram sound-sampling"],
+        "Analogue to digital": ["!diagram sound-sampling", "!scene sound-sampling-3d"],
         "Calculating sound file size": ["!tool file-size"],
     },
     ("ks4/computer-science", "networks-and-topologies"): {
-        "Client server and peer to peer": ["!diagram client-server-p2p"],
+        "Client server and peer to peer": ["!diagram client-server-p2p", "!scene client-server-3d"],
         "Star and mesh topologies": ["!diagram network-topologies", "!scene network-topologies-3d"],
     },
     ("ks4/computer-science", "protocols-and-layers"): {
-        "Standards and protocols": ["!diagram packet-switching"],
+        "Standards and protocols": ["!diagram packet-switching", "!scene packet-journey-3d"],
         "Layers": ["!diagram tcp-ip-stack", "!scene tcp-ip-stack-3d"],
     },
     ("ks4/computer-science", "boolean-logic"): {
@@ -180,7 +180,8 @@ PLACEMENTS = {
     ("ks3", "data-representation"): {
         "Binary and hexadecimal": ["!tool base-converter"],
         "Binary addition and units": ["!diagram binary-addition", "!tool file-size"],
-        "Representing text, images and sound": ["!diagram image-representation"],
+        "Representing text, images and sound": ["!diagram image-representation",
+                                                "!scene image-layers-3d"],
     },
     ("ks3", "networks-and-cyber-security"): {
         "Networks": ["!diagram network-topologies", "!scene network-topologies-3d"],
@@ -226,36 +227,6 @@ PLACEMENTS = {
     ("ks5", "legal-moral-and-ethical-issues"): {
         "Legislation": ["!diagram uk-computing-law"],
     },
-    # ------------------------------------------------------- 3D scenes
-    # Only on topics whose subject genuinely has layers, stacking or position
-    # in space. Everything else keeps its flat stepped diagram.
-    ("ks4/computer-science", "architecture-of-the-cpu"): {
-        "Components of the CPU": ["!diagram cpu-components", "!scene cpu-board-3d"],
-        "The fetch decode execute cycle": ["!diagram fetch-decode-execute"],
-    },
-    ("ks4/aqa-computer-science", "systems-architecture"): {
-        "The von Neumann architecture": ["!scene cpu-board-3d"],
-    },
-    ("ks4/edexcel-computer-science", "hardware-and-the-processor"): {
-        "Inside the CPU": ["!scene cpu-board-3d"],
-    },
-    ("ks5", "structure-and-function-of-the-processor"): {
-        "Components and registers": ["!scene cpu-board-3d"],
-    },
-    ("ks4/aqa-computer-science", "computer-networks"): {
-        "Star and bus topologies": ["!scene network-topologies-3d"],
-    },
-    ("ks4/edexcel-computer-science", "networks-and-network-security"): {
-        "Networks and topologies": ["!scene network-topologies-3d"],
-        "Protocols and layers": ["!scene tcp-ip-stack-3d"],
-    },
-    ("ks4/aqa-computer-science", "number-bases-and-units"): {
-        "Converting between the bases": ["!scene binary-place-value-3d"],
-    },
-    ("ks4/edexcel-computer-science", "binary-and-hexadecimal"): {
-        "Converting between denary and binary": ["!scene binary-place-value-3d"],
-    },
-
     # ------------------------------------------- Key Stage 3 unit diagrams
     # Every KS3 topic now carries a figure. The three programming topics get the
     # idea drawn before the syntax, which is the order Year 7 to 9 need it in.
@@ -351,8 +322,113 @@ def apply(course):
     return used
 
 
+
+# Scene placements are kept apart from the table above and merged into it,
+# rather than written as more entries in the same literal. A dict literal
+# keeps only the last of a repeated key, and almost every topic that wants a
+# scene already has a line above for its diagrams: written inline, fifteen of
+# them quietly replaced the diagram placements they were meant to join.
+SCENES = {
+    # ------------------------------------------------------- 3D scenes
+    # Only on topics whose subject genuinely has layers, stacking or position
+    # in space. Everything else keeps its flat stepped diagram.
+    ("ks4/computer-science", "architecture-of-the-cpu"): {
+        "Components of the CPU": ["!scene cpu-board-3d"],
+    },
+    ("ks4/aqa-computer-science", "systems-architecture"): {
+        "The von Neumann architecture": ["!scene cpu-board-3d"],
+    },
+    ("ks4/edexcel-computer-science", "hardware-and-the-processor"): {
+        "Inside the CPU": ["!scene cpu-board-3d"],
+    },
+    ("ks5", "structure-and-function-of-the-processor"): {
+        "Components and registers": ["!scene cpu-board-3d"],
+    },
+    ("ks4/aqa-computer-science", "computer-networks"): {
+        "Star and bus topologies": ["!scene network-topologies-3d"],
+    },
+    ("ks4/edexcel-computer-science", "networks-and-network-security"): {
+        "Networks and topologies": ["!scene network-topologies-3d"],
+        "Protocols and layers": ["!scene tcp-ip-stack-3d"],
+    },
+    ("ks4/aqa-computer-science", "number-bases-and-units"): {
+        "Converting between the bases": ["!scene binary-place-value-3d"],
+    },
+    ("ks4/edexcel-computer-science", "binary-and-hexadecimal"): {
+        "Converting between denary and binary": ["!scene binary-place-value-3d"],
+    },
+    ("ks4/computer-science", "secondary-storage"): {
+        "The three types": ["!scene secondary-storage-3d"],
+    },
+    ("ks4/aqa-computer-science", "representing-images"): {
+        "Bitmap images": ["!scene image-layers-3d"],
+    },
+    ("ks4/aqa-computer-science", "representing-sound"): {
+        "From analogue to digital": ["!scene sound-sampling-3d"],
+    },
+    ("ks4/aqa-computer-science", "protocols-and-layers"): {
+        "Layers": ["!scene tcp-ip-stack-3d"],
+    },
+    ("ks4/edexcel-computer-science", "representing-text-images-and-sound"): {
+        "Representing images": ["!scene image-layers-3d"],
+        "Representing sound": ["!scene sound-sampling-3d"],
+    },
+    ("ks4/edexcel-computer-science", "data-storage-and-compression"): {
+        "Secondary storage": ["!scene secondary-storage-3d"],
+    },
+    ("ks5", "networks-and-web-technologies"): {
+        "Networks and protocols": ["!scene tcp-ip-stack-3d"],
+    },
+    ("ks5", "input-output-and-storage"): {
+        "Storage": ["!scene secondary-storage-3d"],
+    },
+}
+
+for _key, _mapping in SCENES.items():
+    _target = PLACEMENTS.setdefault(_key, {})
+    for _section, _items in _mapping.items():
+        # Only scenes belong here. Restating a diagram would add a second copy
+        # of it to a page that already has one, which is how this table went
+        # wrong the first time.
+        assert all(i.startswith("!scene ") for i in _items), (_key, _section)
+        _target.setdefault(_section, []).extend(_items)
+
+def _duplicate_keys():
+    """Find keys written twice in the literal above.
+
+    A dict literal keeps the last of any repeated key and says nothing, so
+    writing the same (course, topic) pair twice silently throws the earlier
+    one away. That has now happened twice here, once losing a tool from a
+    page for several deploys, so the source is parsed and checked rather than
+    trusted. Nothing else can catch it: by the time the module has imported,
+    the evidence is gone.
+    """
+    import ast
+    with open(__file__, encoding="utf-8") as fh:
+        tree = ast.parse(fh.read())
+    seen, dupes = set(), []
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Assign):
+            continue
+        if not any(getattr(t, "id", "") == "PLACEMENTS" for t in node.targets):
+            continue
+        for key in node.value.keys:
+            try:
+                k = ast.literal_eval(key)
+            except ValueError:
+                continue
+            if k in seen:
+                dupes.append(k)
+            seen.add(k)
+    return dupes
+
+
 def check(all_used):
-    """Every mapping must have matched a real topic."""
+    """Every mapping must have matched a real topic, and be written once."""
+    dupes = _duplicate_keys()
+    if dupes:
+        raise KeyError("placement keys written more than once, so the earlier "
+                       "one is being discarded: %s" % sorted(dupes))
     missing = set(PLACEMENTS) - all_used
     if missing:
         raise KeyError("placements that matched no topic: %s" % sorted(missing))

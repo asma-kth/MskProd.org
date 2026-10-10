@@ -45,17 +45,17 @@ def board(w, h, label="", tone="floor"):
             % (tone, w, h, lab))
 
 
-def box3d(x, y, z, w, h, label, sub="", tone="teal", tall=0):
+def box3d(x, y, z, w, h, label, sub="", tone="teal", tall=0, round=False):
     """A labelled block standing on the board at (x, y), lifted to z.
 
     `tall` draws a side wall under it so the block reads as having height
     rather than floating, which is what sells the depth on a flat board.
     """
     wall = ('<span class="sc-leg" style="--sc-leg:%dpx"></span>' % tall) if tall else ""
-    return ('<div class="sc-box sc-%s" style="--sc-x:%dpx;--sc-y:%dpx;--sc-z:%dpx;'
+    return ('<div class="sc-box sc-%s%s" style="--sc-x:%dpx;--sc-y:%dpx;--sc-z:%dpx;'
             '--sc-w:%dpx;--sc-hh:%dpx">%s'
             '<span class="sc-box-label"><b>%s</b>%s</span></div>'
-            % (tone, x, y, z, w, h, wall, esc(label),
+            % (tone, " is-round" if round else "", x, y, z, w, h, wall, esc(label),
                '<i>%s</i>' % esc(sub) if sub else ""))
 
 
@@ -449,3 +449,265 @@ def _place_value():
                         height=370, depth=90, labels=L, scale=0.88,
                         caption="Each column doubles. Learn the row 128 64 32 16 8 4 2 1 "
                                 "and every conversion question becomes adding up.")
+
+
+@scene("client-server-3d")
+def _client_server():
+    """Clients round a server, then the same machines with no server at all."""
+    import math
+    L = ["Client server: every device asks one central machine for what it needs.",
+         "The server holds the files, does the work and checks who you are.",
+         "Peer to peer: no server, and every machine is both client and server.",
+         "Lose the server and a client server network stops. A peer network does not."]
+    pts = [(round(150 * math.cos(math.radians(a))), round(150 * math.sin(math.radians(a))))
+           for a in (90, 162, 234, 306, 18)]
+
+    def clients(tone="floor"):
+        return "".join(box3d(x, y, 16, 80, 44, "Client %d" % (i + 1), "", tone)
+                       for i, (x, y) in enumerate(pts))
+
+    cs = (board(460, 360) + clients()
+          + "".join(link3d(0, 0, x, y, 12, "teal") for x, y in pts)
+          + box3d(0, 0, 26, 120, 60, "SERVER", "", "teal"))
+    cs2 = (cs + billboard(0, 235, 30, "files · printing · logins · backups", "teal"))
+    p2p = (board(460, 360)
+           + "".join(box3d(x, y, 16, 80, 44, "Peer %d" % (i + 1), "", "lilac")
+                     for i, (x, y) in enumerate(pts))
+           + "".join(link3d(pts[i][0], pts[i][1], pts[j][0], pts[j][1], 12, "lilac")
+                     for i in range(5) for j in range(i + 1, 5))
+           + billboard(0, 235, 30, "every machine shares with every other", "lilac"))
+    gone = (board(460, 360) + clients()
+            + billboard(0, 0, 60, "server down: nobody can work", "teal")
+            + billboard(0, 235, 30, "a peer network would carry on", "lilac"))
+
+    steps = [stage(1, cs, L[0]), stage(2, cs2, L[1]), stage(3, p2p, L[2]), stage(4, gone, L[3])]
+    desc = ("Two ways of organising a network. In a client server network, five client "
+            "machines all connect to one central server, which stores the files, does the "
+            "heavy processing, handles printing, checks logins and runs the backups. That "
+            "makes everything central: one place to back up, one place to set security, "
+            "one place to update. It also makes the server a single point of failure, so "
+            "when it goes down nobody can work, and it is expensive and needs managing. "
+            "In a peer to peer network there is no server at all. Every machine is both "
+            "client and server, sharing its own files directly with the others, which is "
+            "cheap, needs no specialist to run and keeps working when any one machine is "
+            "switched off. The cost is that files are scattered across machines, backups "
+            "are nobody's job in particular, and performance drops as machines get busy.")
+    return figure_scene("client-server-3d", world="", steps=steps,
+                        title="Client server and peer to peer", desc=desc,
+                        height=380, depth=0, labels=L, scale=0.88,
+                        caption="A school uses client server because somebody has to "
+                                "control logins and back work up. Sharing music between "
+                                "phones is peer to peer.")
+
+
+@scene("packet-journey-3d")
+def _packet_journey():
+    """One message, split into packets, each taking its own way across a mesh."""
+    L = ["Your message is too big to send in one go, so it is split into packets.",
+         "Every packet carries the destination address and its own number.",
+         "Each router picks the next hop, so packets can take different routes.",
+         "They arrive out of order, and the numbers put them back together."]
+    R = [(-190, 60), (-70, -80), (60, 70), (190, -60), (0, -10), (120, -120)]
+
+    def mesh():
+        out = [board(520, 330)]
+        for i, (x, y) in enumerate(R):
+            out.append(box3d(x, y, 16, 72, 40, "R%d" % (i + 1), "", "floor"))
+        pairs = [(0, 1), (0, 4), (1, 4), (1, 5), (4, 2), (4, 3), (2, 3), (3, 5), (1, 2)]
+        for i, j in pairs:
+            out.append(link3d(R[i][0], R[i][1], R[j][0], R[j][1], 12, "floorwire"))
+        return "".join(out)
+
+    base = mesh() + box3d(-215, 125, 20, 94, 48, "YOU", "", "teal") \
+                  + box3d(215, -125, 20, 94, 48, "SERVER", "", "lilac")
+    s1 = base + billboard(0, 225, 40, "one 3 MB photo → about 2,000 packets", "teal")
+    s2 = (base + dot3d(-190, 60, 30, "1 of 3", 16)
+          + dot3d(-150, 20, 30, "2 of 3", 16) + dot3d(-110, -20, 30, "3 of 3", 16)
+          + billboard(0, 225, 40, "each packet: address, number, and a slice of the data", "teal"))
+    s3 = (base
+          + link3d(R[0][0], R[0][1], R[4][0], R[4][1], 22, "teal")
+          + link3d(R[4][0], R[4][1], R[3][0], R[3][1], 22, "teal")
+          + link3d(R[0][0], R[0][1], R[1][0], R[1][1], 22, "lilac")
+          + link3d(R[1][0], R[1][1], R[5][0], R[5][1], 22, "lilac")
+          + link3d(R[5][0], R[5][1], R[3][0], R[3][1], 22, "lilac")
+          + billboard(0, 225, 40, "two packets, two routes, same destination"))
+    s4 = (base + dot3d(230, -105, 30, "3", 16) + dot3d(255, -70, 30, "1", 16)
+          + dot3d(205, -70, 30, "2", 16)
+          + billboard(0, 225, 40, "out of order on arrival, reassembled by number", "lilac"))
+    steps = [stage(1, s1, L[0]), stage(2, s2, L[1]), stage(3, s3, L[2]), stage(4, s4, L[3])]
+    desc = ("How packet switching moves a message across a network. The message is far "
+            "too big to send as one lump, so it is split into packets: a three megabyte "
+            "photograph becomes roughly two thousand of them. Each packet carries the "
+            "destination address, the address it came from, its own sequence number and a "
+            "slice of the data, plus a checksum used to spot corruption. Each router it "
+            "reaches reads the destination and chooses the next hop based on how busy the "
+            "links are at that moment, so two packets from the same message can take "
+            "completely different routes through the network. That is the strength of the "
+            "method: there is no fixed line to tie up and no single route to break. The "
+            "packets therefore arrive out of order, and the receiving computer uses the "
+            "sequence numbers to put them back in order, asking for any that never "
+            "arrived to be sent again.")
+    return figure_scene("packet-journey-3d", world="", steps=steps,
+                        title="A packet's journey across a network", desc=desc,
+                        height=400, depth=30, labels=L, scale=0.85,
+                        caption="Nothing reserves a line for you. Every packet is handled "
+                                "on its own, and that is why the internet copes when part "
+                                "of it fails.")
+
+
+@scene("image-layers-3d")
+def _image_layers():
+    """A bitmap taken apart: pixels, then channels, then bits."""
+    L = ["A bitmap is a grid of pixels. This one is 8 by 8, so 64 of them.",
+         "Pick one pixel. Its colour is three numbers: red, green and blue.",
+         "Each number is 8 bits, so one pixel costs 24 bits, which is 3 bytes.",
+         "File size = width × height × colour depth. That is the whole formula."]
+
+    import math
+    def grid(z=0, tone_of=None):
+        out = []
+        for r in range(8):
+            for c in range(8):
+                on = ((r - 3.5) ** 2 + (c - 3.5) ** 2) <= 10
+                out.append(box3d(-140 + c * 40, -140 + r * 40, z, 34, 34, "", "",
+                                 (tone_of(r, c) if tone_of else ("teal" if on else "floor"))))
+        return "".join(out)
+
+    s1 = board(380, 380) + grid() + billboard(0, 240, 30, "8 × 8 = 64 pixels")
+    one = (board(380, 380)
+           + grid(tone_of=lambda r, c: "teal" if (r, c) == (2, 5) else "floor")
+           + box3d(60, -60, 70, 44, 44, "", "", "teal")
+           + billboard(60, -60, 130, "one pixel", "teal"))
+    s2 = one
+    s3 = (board(380, 380)
+          + box3d(0, 0, 40, 220, 160, "RED", "1 0 1 1 0 0 1 0", "lilac")
+          + box3d(0, 0, 130, 220, 160, "GREEN", "0 1 1 0 1 1 0 1", "teal")
+          + box3d(0, 0, 220, 220, 160, "BLUE", "0 0 1 1 1 0 1 0", "lilac")
+          + billboard(0, 255, 30, "8 + 8 + 8 = 24 bits for one pixel", "teal"))
+    s4 = (board(380, 380)
+          + billboard(0, -60, 150, "64 pixels × 24 bits = 1,536 bits")
+          + billboard(0, 0, 100, "1,536 ÷ 8 = 192 bytes", "teal")
+          + billboard(0, 60, 50, "add a few bytes of metadata on top", "lilac"))
+    steps = [stage(1, s1, L[0]), stage(2, s2, L[1]), stage(3, s3, L[2]), stage(4, s4, L[3])]
+    desc = ("How a bitmap image is stored. The image is a grid of pixels, and this one is "
+            "eight by eight, so sixty four pixels in total. Every pixel holds one colour, "
+            "and that colour is stored as three numbers: how much red, how much green and "
+            "how much blue. In 24 bit colour each of those three numbers gets eight bits, "
+            "so one pixel costs 8 plus 8 plus 8, which is 24 bits or 3 bytes. The colour "
+            "depth is simply how many bits each pixel gets: more bits means more possible "
+            "colours, and 24 bits gives about 16.7 million of them. File size is therefore "
+            "width times height times colour depth: 64 pixels times 24 bits is 1,536 bits, "
+            "which divided by 8 is 192 bytes, plus a small amount of metadata recording "
+            "the dimensions, the colour depth and when the picture was taken. Doubling "
+            "both the width and the height multiplies the file size by four, because it "
+            "is four times as many pixels.")
+    return figure_scene("image-layers-3d", world="", steps=steps,
+                        title="How a bitmap image is stored", desc=desc,
+                        height=420, depth=220, labels=L, scale=0.8,
+                        caption="Width times height times colour depth gives bits. Divide "
+                                "by 8 for bytes. Every image file size question is that "
+                                "line and nothing more.")
+
+
+@scene("sound-sampling-3d")
+def _sound_3d():
+    """Sampling drawn as bars standing on a timeline."""
+    import math
+    L = ["Sound is a wave: a smooth, continuous change in air pressure.",
+         "A computer cannot store smooth. It measures the height at intervals.",
+         "Sample more often and the shape you recorded is closer to the original.",
+         "Bit depth is how finely each measurement is rounded."]
+
+    def wave(n, tone="teal", z0=0, show_steps=False, levels=0):
+        out = []
+        span = 460.0
+        for i in range(n):
+            t = i / float(n - 1)
+            x = int(-span / 2 + t * span)
+            v = math.sin(t * math.pi * 1.6) * 0.5 + 0.5
+            if levels:
+                v = round(v * (levels - 1)) / float(levels - 1)
+            h = int(16 + v * 150)
+            out.append(box3d(x, 0, h, max(8, int(span / n) - 6), 30, "", "", tone, tall=h))
+        return "".join(out)
+
+    base = board(540, 150)
+    s1 = base + wave(44, "lilac") + billboard(0, 110, 200, "the original wave, smooth", "lilac")
+    s2 = (base + wave(11, "teal")
+          + billboard(0, 110, 200, "11 samples: the shape is rough", "teal"))
+    s3 = (base + wave(30, "teal")
+          + billboard(0, 110, 200, "30 samples: closer, and a bigger file", "teal"))
+    s4 = (base + wave(30, "teal", levels=4)
+          + billboard(0, 110, 200, "only 4 levels to round to: 2 bit depth", "lilac"))
+    steps = [stage(1, s1, L[0]), stage(2, s2, L[1]), stage(3, s3, L[2]), stage(4, s4, L[3])]
+    desc = ("How a sound is turned into numbers. Sound is a wave, a smooth and continuous "
+            "change in air pressure, and a computer cannot store smooth because it can "
+            "only store numbers. So it measures the height of the wave at regular "
+            "intervals, and each measurement is a sample. The sample rate is how many "
+            "measurements are taken each second, in hertz: with only eleven samples the "
+            "recorded shape is a rough approximation of the original, and with thirty it "
+            "is much closer, at the cost of a bigger file. CD audio uses 44,100 samples a "
+            "second. The bit depth, sometimes called the sample resolution, is how many "
+            "bits each measurement gets, which decides how finely it can be rounded: with "
+            "only two bits there are four levels to round to and the result is coarse and "
+            "distorted, while sixteen bits gives 65,536 levels and sounds accurate. File "
+            "size is sample rate times bit depth times the number of seconds, times two "
+            "for stereo.")
+    return figure_scene("sound-sampling-3d", world="", steps=steps,
+                        title="Sampling a sound wave", desc=desc,
+                        height=390, depth=170, labels=L, scale=0.85,
+                        caption="Higher sample rate and higher bit depth both mean a "
+                                "closer recording and a bigger file. That trade is the "
+                                "whole topic.")
+
+
+@scene("secondary-storage-3d")
+def _secondary():
+    """The three technologies, as the three different physical things they are."""
+    L = ["Magnetic: spinning platters with a head floating over the surface.",
+         "Solid state: a grid of cells holding charge, with no moving parts.",
+         "Optical: one spiral track of pits and lands, read by a laser.",
+         "Which one depends on capacity, speed, durability and cost per gigabyte."]
+
+    hdd = (board(420, 330)
+           + "".join(box3d(0, 0, 20 + i * 36, 190, 190, "", "", "floor", round=True)
+                     for i in range(3))
+           + box3d(0, 0, 128, 190, 190, "", "", "teal", round=True)
+           + box3d(120, -10, 140, 110, 22, "read/write head", "", "lilac")
+           + billboard(0, 215, 40, "platters spin, the head moves in and out", "teal"))
+    ssd = (board(420, 330)
+           + "".join(box3d(-150 + c * 60, -90 + r * 60, 24, 50, 50, "", "",
+                           "teal" if (r * 6 + c) % 3 else "floor")
+                     for r in range(4) for c in range(6))
+           + billboard(0, 215, 40, "no moving parts, so nothing to wear out", "teal"))
+    opt = (board(420, 330)
+           + box3d(0, 0, 20, 230, 230, "", "", "floor", round=True)
+           + box3d(0, 0, 26, 70, 70, "", "", "floor", round=True)
+           + "".join(box3d(-90 + i * 26, 0, 32, 14, 14, "", "", "lilac") for i in range(8))
+           + billboard(0, 215, 40, "pits and lands in one long spiral", "lilac"))
+    cmp_ = (board(420, 330)
+            + box3d(-130, 0, 30, 150, 90, "MAGNETIC", "cheapest per GB", "floor", tall=30)
+            + box3d(30, 0, 70, 150, 90, "SOLID STATE", "fastest, no moving parts", "teal", tall=70)
+            + box3d(190, 0, 20, 150, 90, "OPTICAL", "cheap to post", "lilac", tall=20)
+            + billboard(0, 215, 40, "height here is speed, not capacity"))
+    steps = [stage(1, hdd, L[0]), stage(2, ssd, L[1]), stage(3, opt, L[2]), stage(4, cmp_, L[3])]
+    desc = ("The three kinds of secondary storage, as the three different physical things "
+            "they actually are. A magnetic hard disk drive is a stack of spinning platters "
+            "coated in magnetic material, with a read write head floating just above the "
+            "surface and moving in and out to reach different tracks. It is the cheapest "
+            "per gigabyte and comes in the largest capacities, but it is slow, it is noisy, "
+            "it uses more power, and because it has moving parts a knock while it is "
+            "running can destroy it. A solid state drive is a grid of flash memory cells "
+            "that hold an electrical charge, with no moving parts at all, which makes it "
+            "far faster to start up and to find data, silent, more durable and more power "
+            "efficient, at a higher price per gigabyte and with a limit on how many times "
+            "each cell can be rewritten. Optical media such as a CD, DVD or Blu-ray stores "
+            "data as pits and lands along one long spiral track, read by a laser. It is "
+            "very cheap, light and easy to post, but it is slow, holds little, and "
+            "scratches easily.")
+    return figure_scene("secondary-storage-3d", world="", steps=steps,
+                        title="Magnetic, solid state and optical storage", desc=desc,
+                        height=400, depth=130, labels=L, scale=0.82,
+                        caption="Exam answers need the reason, not the name: no moving "
+                                "parts is why an SSD survives being dropped and starts up "
+                                "faster.")

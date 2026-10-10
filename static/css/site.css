@@ -1322,6 +1322,7 @@ h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
   transform: translate(-50%, -50%)
              translate3d(var(--sc-x, 0px), var(--sc-y, 0px), var(--sc-z, 0px));
 }
+.sc-box.is-round { border-radius: 50%; }
 .sc-box.sc-teal  { border-color: var(--sc-teal);  background: var(--sc-teal-face); }
 .sc-box.sc-lilac { border-color: var(--sc-lilac); background: var(--sc-lilac-face); }
 /* The side wall. Standing it up on the box's near edge is what makes a flat
@@ -1357,6 +1358,7 @@ h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
   background: var(--sc-teal); opacity: .75;
 }
 .sc-wire-lilac { background: var(--sc-lilac); }
+.sc-wire-floor { background: var(--sc-edge); opacity: .9; }
 .sc-wire.is-dashed {
   background: repeating-linear-gradient(90deg, var(--sc-teal) 0 8px, transparent 8px 15px);
 }
