@@ -1180,6 +1180,32 @@ h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
    spreadsheet formula with no spaces, which cannot wrap at any screen width. */
 .ws-ms-model, .ws-ms li, .model-answer p { overflow-wrap: anywhere; }
 
+/* ====================================================== photographs
+   A photograph of real hardware, for topics where the exam asks students to
+   recognise a physical object. Always lazily loaded and always carrying its
+   own width and height, so nothing on the page jumps while it arrives. */
+.photo {
+  margin: var(--sp-5) 0; max-width: min(100%, 640px); margin-inline: auto;
+}
+.photo img {
+  width: 100%; height: auto; display: block; border-radius: var(--r-m);
+  background: var(--surface-2); border: 1px solid var(--border);
+  box-shadow: var(--shadow-1);
+}
+.photo figcaption {
+  margin-top: var(--sp-3); font-size: .88rem; color: var(--ink-3);
+  line-height: 1.55; text-align: left;
+}
+/* The credit has to be legible, not hidden. It is the condition the licence
+   is granted on. */
+.photo-credit {
+  display: block; margin-top: .3rem; font-size: .76rem; color: var(--ink-muted);
+}
+.attribution-list { display: grid; gap: var(--sp-4); margin-top: var(--sp-4); }
+.attribution-list li { list-style: none; }
+.attribution-list b { display: block; font-weight: 650; color: var(--ink); }
+.attribution-list span { font-size: .88rem; color: var(--ink-3); }
+
 /* ===================================================== 3D scenes
    Depth drawn with CSS transforms rather than WebGL. A scene is a stage with
    perspective, a world that can be turned, and sheets lifted off the floor on

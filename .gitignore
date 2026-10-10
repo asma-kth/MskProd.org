@@ -8,3 +8,7 @@ dist/
 *.jks
 twa/app-release*
 twa/android/
+
+# Photograph originals. Only the optimised copies under static/img/photos/
+# are committed and served.
+photos-incoming/

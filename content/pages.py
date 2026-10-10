@@ -490,3 +490,40 @@ If any part of this site is difficult or impossible for you to use, please say s
     register(path, 0.5, "yearly")
     add_search("Accessibility", path, "Accessibility statement",
                "accessibility screen reader keyboard contrast wcag")
+
+
+# ============================================================== ATTRIBUTIONS
+
+def build_attributions(write, register):
+    """Credit every photograph in one place.
+
+    Only built once there are photographs to credit: an empty page listing
+    nothing would be a thin page with no reason to exist. The credit under
+    each picture is what the licence actually requires; this page is so that
+    somebody checking can see the whole set at once.
+    """
+    from mskbuild import photos as ph
+    have = ph.available()
+    if not have:
+        return
+    items = []
+    for slug in sorted(have):
+        p = have[slug]
+        bits = [x for x in (p.credit, p.licence) if x]
+        src = (' &middot; <a href="%s" rel="nofollow noopener">source</a>' % esc(p.source)
+               if p.source else "")
+        items.append('<li><b>%s</b><span>%s%s</span></li>'
+                     % (esc(p.caption.split(".")[0]),
+                        esc(" \u00b7 ".join(bits)) or "credit pending", src))
+    extra = ('<ul class="attribution-list">%s</ul>' % "".join(items))
+    path, html = _page(
+        "/attributions/", "Image attributions",
+        "Where the photographs on this site came from, and the licence each one "
+        "is used under.",
+        "Attributions",
+        "Every photograph on this site is used under a licence that permits "
+        "commercial use, and each one is credited underneath the picture it "
+        "appears on. They are all listed here as well.\n",
+        extra=extra)
+    write(path, html)
+    register(path, 0.3, "monthly")

@@ -480,6 +480,79 @@ for _key, _mapping in SCENES.items():
         assert all(i.startswith("!scene ") for i in _items), (_key, _section)
         _target.setdefault(_section, []).extend(_items)
 
+
+# Photographs, merged in the same way and for the same reason as the scenes.
+# A topic that already has a diagram or a scene above keeps it: the picture of
+# the object and the picture of the mechanism do different jobs. Entries whose
+# image file is not in the repository yet render as nothing, so this table can
+# be written before the photographs are sourced.
+PHOTO_PLACEMENTS = {
+    ("ks3", "using-computers"): {
+        "Hardware and software": ["!photo peripherals"],
+    },
+    ("ks3", "understanding-computers"): {
+        "Inside the computer": ["!photo motherboard", "!photo cpu-chip"],
+    },
+    ("ks4/computer-science", "architecture-of-the-cpu"): {
+        "What the CPU is for": ["!photo cpu-chip"],
+    },
+    ("ks4/computer-science", "cpu-performance"): {
+        "The three factors": ["!photo heatsink-fan"],
+    },
+    ("ks4/computer-science", "primary-storage"): {
+        "RAM": ["!photo ram-stick"],
+        "ROM": ["!photo rom-chip"],
+    },
+    ("ks4/computer-science", "secondary-storage"): {
+        "The three types": ["!photo hdd-open", "!photo ssd-open"],
+        "Choosing the right device": ["!photo usb-and-disc"],
+    },
+    ("ks4/computer-science", "embedded-systems"): {
+        "What an embedded system is": ["!photo embedded-board"],
+    },
+    ("ks4/computer-science", "networks-and-topologies"): {
+        "Network hardware": ["!photo network-switch", "!photo home-router"],
+        "Client server and peer to peer": ["!photo server-rack"],
+    },
+    ("ks4/computer-science", "protocols-and-layers"): {
+        "Wired and wireless": ["!photo ethernet-cable", "!photo fibre-optic"],
+        "IP addresses and MAC addresses": ["!photo nic-card"],
+    },
+    ("ks4/aqa-computer-science", "systems-architecture"): {
+        "The von Neumann architecture": ["!photo cpu-chip"],
+    },
+    ("ks4/aqa-computer-science", "hardware-software-and-the-operating-system"): {
+        "Hardware and software": ["!photo ram-stick"],
+    },
+    ("ks4/aqa-computer-science", "computer-networks"): {
+        "Networks": ["!photo network-switch"],
+        "Wired and wireless": ["!photo ethernet-cable"],
+    },
+    ("ks4/edexcel-computer-science", "hardware-and-the-processor"): {
+        "Components of a computer system": ["!photo motherboard"],
+        "Inside the CPU": ["!photo cpu-chip"],
+    },
+    ("ks4/edexcel-computer-science", "data-storage-and-compression"): {
+        "Secondary storage": ["!photo hdd-open", "!photo ssd-open"],
+    },
+    ("ks5", "structure-and-function-of-the-processor"): {
+        "Components and registers": ["!photo cpu-chip"],
+    },
+    ("ks5", "types-of-processor"): {
+        "GPUs and parallel systems": ["!photo gpu-card"],
+    },
+    ("ks5", "input-output-and-storage"): {
+        "Devices and how they work": ["!photo peripherals"],
+        "Storage": ["!photo hdd-open", "!photo ssd-open"],
+    },
+}
+
+for _key, _mapping in PHOTO_PLACEMENTS.items():
+    _target = PLACEMENTS.setdefault(_key, {})
+    for _section, _items in _mapping.items():
+        assert all(i.startswith("!photo ") for i in _items), (_key, _section)
+        _target.setdefault(_section, []).extend(_items)
+
 def _duplicate_keys():
     """Find keys written twice in the literal above.
 
@@ -498,7 +571,7 @@ def _duplicate_keys():
         if not isinstance(node, ast.Assign):
             continue
         name = next((getattr(t, "id", "") for t in node.targets), "")
-        if name not in ("PLACEMENTS", "SCENES"):
+        if name not in ("PLACEMENTS", "SCENES", "PHOTO_PLACEMENTS"):
             continue
         for key in node.value.keys:
             try:

@@ -2,6 +2,7 @@
 
 Block syntax
 ------------
+    !photo <slug>                   -> a photograph, if its file is present
     ## Heading                      -> h2 section heading, with an id
     ### Heading                     -> h4 sub heading
     - item                          -> unordered list
@@ -195,6 +196,14 @@ def render(src: str) -> str:
                 raise KeyError("unknown diagram %r (have: %s)"
                                % (name, ", ".join(sorted(_DG))))
             out.append(_DG[name]())
+            i += 1
+            continue
+
+        # photograph: !photo <slug>
+        m = re.match(r"^!photo\s+([a-z0-9-]+)\s*$", stripped)
+        if m:
+            from . import photos as _PH
+            out.append(_PH.render(m.group(1)))
             i += 1
             continue
 
