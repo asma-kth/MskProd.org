@@ -782,12 +782,9 @@ def _paper_page(paper):
         "educationalLevel": paper.course, "inLanguage": "en-GB",
         "isAccessibleForFree": True,
     }]
-    greeting = ("Sit this one properly. Timer on, no notes, every question answered. "
-                "Ninety minutes done honestly teaches you more than a week of rereading.")
     return path, layout(title=paper.title,
                         description=paper.blurb,
-                        path=path, body=body, active="/exam-papers/",
-                        greeting=greeting, jsonld=ld,
+                        path=path, body=body, active="/exam-papers/", jsonld=ld,
                         scripts=["/assets/js/quiz.js"], show_progress=True)
 
 
@@ -904,7 +901,6 @@ def build(register, add_search, *_):
         title="Practice Exam Papers",
         description="Original full length practice papers for OCR GCSE Computer Science J277, OCR A Level H446 and Creative iMedia R093, each with a timer, a complete mark scheme and model answers, plus links to the official past papers.",
         path="/exam-papers/", body=body, active="/exam-papers/",
-        greeting="Papers are where revision turns into marks. Pick one, set the timer, and do it properly with no notes.",
         jsonld=ld))
     register("/exam-papers/", 0.9, "monthly")
     add_search("Practice exam papers", "/exam-papers/",

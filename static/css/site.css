@@ -24,26 +24,29 @@
   --deep-ink:   #023B39;
 
   /* The ground ----------------------------------------------------------- */
-  --grad-page: linear-gradient(135deg, #CBF0F2 0%, #A3E2E7 42%, #79D0D7 100%);
+  /* Cream rather than white or teal. A slightly warm, slightly darker ground
+     cuts the glare of a white screen, which is what makes a long page of
+     revision easier to sit in front of. */
+  --grad-page: linear-gradient(135deg, #FDFAF0 0%, #FAF3E1 45%, #F3E8CD 100%);
   --grad-brand: linear-gradient(135deg, var(--teal-deep), var(--deep));
   --grad-lilac: linear-gradient(135deg, var(--lilac), var(--purple));
   --grad-soft:  linear-gradient(135deg, var(--aqua-soft), var(--lilac-soft));
 
   /* Glass ---------------------------------------------------------------- */
-  --glass:        rgba(255, 255, 255, 0.62);
-  --glass-strong: rgba(255, 255, 255, 0.78);
-  --glass-edge:   rgba(255, 255, 255, 0.55);
+  --glass:        rgba(255, 253, 246, 0.66);
+  --glass-strong: rgba(255, 253, 246, 0.82);
+  --glass-edge:   rgba(255, 252, 242, 0.62);
   --glass-blur:   blur(16px) saturate(150%);
 
   /* Solid surfaces for reading ------------------------------------------- */
-  --surface:      #FFFFFF;
-  --surface-2:    #F4F8F9;
-  --surface-sunk: #EAF2F3;
-  --bg:      #EAF7F8;
-  --bg-alt:  #F6FBFB;
+  --surface:      #FFFDF7;
+  --surface-2:    #F8F2E3;
+  --surface-sunk: #F1E8D3;
+  --bg:      #FBF6E9;
+  --bg-alt:  #FDFBF4;
 
-  --border:        #DCE8E9;
-  --border-strong: #BFD5D7;
+  --border:        #E8DEC8;
+  --border-strong: #D4C6A8;
 
   /* Ink ------------------------------------------------------------------ */
   --ink:       #0F2026;
@@ -54,7 +57,7 @@
 
   --accent:        var(--teal-deep);
   --accent-strong: var(--deep);
-  --accent-quiet:  #DCEFF0;
+  --accent-quiet:  #E2EFE2;
   --focus-ring:    #024E52;
 
   /* Marking states ------------------------------------------------------- */
@@ -257,10 +260,10 @@ kbd {
 /* ----------------------------------------------------------------- header */
 .site-header {
   position: sticky; top: 0; z-index: 90;
-  background: rgba(255, 255, 255, .72);
+  background: rgba(255, 253, 246, .76);
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
-  border-bottom: 1px solid rgba(255, 255, 255, .45);
+  border-bottom: 1px solid rgba(212, 198, 168, .45);
 }
 [data-theme="dark"] .site-header {
   background: rgba(14, 31, 35, .72); border-bottom-color: rgba(255,255,255,.09);
@@ -394,18 +397,18 @@ kbd {
 [data-theme="dark"] .btn-primary { color: #06231F; }
 [data-theme="dark"] .btn-primary:hover { color: #06231F; }
 .btn-secondary {
-  background: rgba(255,255,255,.75); color: var(--ink); border-color: var(--glass-edge);
+  background: rgba(255,253,246,.8); color: var(--ink); border-color: var(--glass-edge);
   -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
   box-shadow: var(--shadow-1);
 }
 [data-theme="dark"] .btn-secondary { background: rgba(255,255,255,.09); }
-.btn-secondary:hover { background: #fff; color: var(--ink); }
+.btn-secondary:hover { background: #FFFDF7; color: var(--ink); }
 [data-theme="dark"] .btn-secondary:hover { background: rgba(255,255,255,.16); }
 /* A ghost button has no panel behind it, so it is read against the darkest
    stop of the page gradient and needs the deepest ink in the ramp. */
 .btn-ghost { background: transparent; color: var(--deep-ink); border-color: transparent; padding-inline: .7rem; }
 [data-theme="dark"] .btn-ghost { color: var(--accent-strong); }
-.btn-ghost:hover { background: rgba(255,255,255,.5); }
+.btn-ghost:hover { background: rgba(255,253,246,.62); }
 [data-theme="dark"] .btn-ghost:hover { background: rgba(255,255,255,.08); }
 .btn-lilac {
   background: var(--grad-lilac); color: #241A2C;
@@ -1060,10 +1063,10 @@ a.pill:hover { color: var(--accent); background: #fff; }
    paints solid black with no stroke. */
 .diagram {
   --dg-paper:      var(--surface);
-  --dg-fill:       #FFFFFF;
-  --dg-fill-2:     #F1F7F8;
-  --dg-line:       #9FBCC0;
-  --dg-line-soft:  #CFE0E2;
+  --dg-fill:       #FFFDF7;
+  --dg-fill-2:     #F7F1E1;
+  --dg-line:       #A99A78;
+  --dg-line-soft:  #DFD3B8;
   --dg-text:       var(--ink);
   --dg-ink:        var(--ink);
   --dg-muted:      var(--ink-3);
@@ -1213,7 +1216,7 @@ h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
    visible so the figure still reads as a complete picture. */
 .scene {
   margin: var(--sp-5) 0; max-width: min(100%, 760px); margin-inline: auto;
-  --sc-face:      rgba(255, 255, 255, .82);
+  --sc-face:      rgba(255, 253, 246, .86);
   --sc-edge:      var(--border-strong);
   --sc-teal:      var(--teal-deep);
   --sc-teal-face: rgba(205, 237, 239, .78);

@@ -166,9 +166,6 @@ def build(register, add_search, courses):
     path = "/worksheets/"
     write(path, layout(title="Printable Computing Worksheets", description=lead,
                        path=path, body=body,
-                       greeting="Printing a worksheet and doing it with a pen beats "
-                                "clicking through a quiz, because writing an answer out "
-                                "is closer to what the exam actually asks of you.",
                        jsonld=[crumbs_ld(trail)]))
     register(path, 0.7, "monthly")
     add_search("Printable worksheets", path, "Every topic as a printable worksheet",

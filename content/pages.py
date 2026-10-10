@@ -4,7 +4,7 @@ from mskbuild.render import (layout, crumbs, crumbs_ld, ico, esc, write,
                              SITE_URL, SITE_NAME, mascot_svg)
 
 
-def _page(path, title, description, crumb, body_md, extra="", greeting="", ld=None):
+def _page(path, title, description, crumb, body_md, extra="", ld=None):
     trail = [("Home", "/"), (crumb, None)]
     body = """<div class="wrap">
   %s
@@ -17,7 +17,7 @@ def _page(path, title, description, crumb, body_md, extra="", greeting="", ld=No
   </div>
 </div>""" % (crumbs(trail), esc(title), esc(description), markup.render(body_md), extra)
     return path, layout(title=title, description=description, path=path,
-                        body=body, greeting=greeting,
+                        body=body,
                         jsonld=(ld or []) + [crumbs_ld(trail)])
 
 
@@ -228,8 +228,7 @@ def build(register, add_search, courses):
     path, html = _page(
         "/how-to-revise/", "How to Revise Properly",
         "What actually works in revision, based on evidence rather than on what feels productive, plus exam technique worth several grades.",
-        "How to revise", HOW_TO_REVISE,
-        greeting="This page is worth more than any single topic on the site. Most students never change how they revise, and that is exactly why changing it works so well.")
+        "How to revise", HOW_TO_REVISE)
     write(path, html)
     register(path, 0.8, "monthly")
     add_search("How to revise properly", path, "Evidence based revision technique",
@@ -257,8 +256,7 @@ def build(register, add_search, courses):
         "Every key term across Key Stage 3, GCSE and A Level computing, each defined in one sentence you could write in an exam.",
         "Glossary",
         "Definitions written the way a mark scheme wants them: one sentence, precise, and using the vocabulary the examiner is looking for. Type in the box to filter, and cover the definition and say it out loud before you read it.",
-        extra=extra,
-        greeting="Do not read this list. Cover a definition, say it out loud, then check. Retrieval is what makes it stick.")
+        extra=extra)
     write(path, html)
     register(path, 0.7, "monthly")
     add_search("Computing glossary", path, "%d key terms defined" % len(GLOSSARY),
@@ -313,7 +311,6 @@ Corrections are genuinely welcome. If something on this site is wrong, unclear o
         "A free revision site for UK computing students at Key Stage 3, GCSE and A Level, covering OCR J277, AQA 8525, Edexcel 1CP2, Creative iMedia and A Level H446. No account needed.",
         "About", about % (total_topics, total_quiz),
         extra='<div class="center" style="max-width:220px;margin:var(--sp-6) auto 0">%s</div>' % mascot_svg(),
-        greeting="I am Pixel. I live in the corner of every page, and I run entirely on your own device. Your answers and your progress stay in your browser.",
         ld=[{"@context": "https://schema.org", "@type": "AboutPage",
              "name": "About " + SITE_NAME, "url": SITE_URL + "/about/"}])
     write(path, html)
@@ -409,7 +406,6 @@ If you have a question about privacy on this site, please get in touch through t
         "/privacy/", "Privacy Policy",
         "The site owner collects no personal data and your quiz scores never leave your device. The site is funded by Google adverts, which do set cookies. Explained in full here.",
         "Privacy", privacy,
-        greeting="Short version: your scores never leave your device. The adverts are Google's, and they do use cookies. It is all explained here.",
         ld=[{"@context": "https://schema.org", "@type": "WebPage",
              "name": "Privacy Policy", "url": SITE_URL + "/privacy/"}])
     write(path, html)
@@ -484,8 +480,7 @@ If any part of this site is difficult or impossible for you to use, please say s
     path, html = _page(
         "/accessibility/", "Accessibility",
         "How this site is built to be usable by everybody, what has been done, what standard it aims for, and what is not yet perfect.",
-        "Accessibility", access,
-        greeting="If any part of this site is hard for you to use, that is a bug. Please report it.")
+        "Accessibility", access)
     write(path, html)
     register(path, 0.5, "yearly")
     add_search("Accessibility", path, "Accessibility statement",

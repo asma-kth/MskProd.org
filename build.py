@@ -236,7 +236,6 @@ def build_home():
         title="GCSE, KS3 and A Level Computing Revision",
         description="Free computing revision for UK students. KS3, OCR GCSE Computer Science J277, Creative iMedia J834, OCR A Level H446 and a full Python course. Explanations, quizzes, auto marked exam questions and practice papers.",
         path="/", body=body, active="/",
-        greeting="Hello. I am Pixel. Pick your key stage below, and tap me any time for a fun fact or a revision tip.",
         jsonld=ld))
     register("/", 1.0, "weekly")
 
@@ -334,7 +333,7 @@ def build_sitemap():
         "categories": ["education"],
         # Matches the frosted header and the top of the page gradient, so the
         # Android status bar and splash screen line up with the site.
-        "theme_color": "#E8FBFB", "background_color": "#CBF0F2",
+        "theme_color": "#FDFAF0", "background_color": "#FBF6E9",
         "icons": [
             {"src": "/assets/img/favicon.svg", "sizes": "any", "type": "image/svg+xml"},
             {"src": "/assets/img/icon-192.png", "sizes": "192x192", "type": "image/png",

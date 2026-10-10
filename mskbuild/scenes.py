@@ -157,8 +157,7 @@ def figure_scene(name, *, world, steps, title, desc, caption=None,
             '<b data-sc-count>Step 1 of %d</b> <span data-sc-text>%s</span></p>'
             '</div>' % (n, first))
     tip = ('<p class="sc-hint" data-sc-hint hidden>%s</p>'
-           % esc(hint or "Drag the picture to turn it round. "
-                         "With it focused, the arrow keys turn it too.")) if hint is not False else ""
+           % esc(hint or "Drag to turn it.")) if hint is not False else ""
     cap = '<figcaption>%s</figcaption>' % esc(caption) if caption else ""
     return (
         '<figure class="scene" data-scene="%s" style="--sc-h:%dpx;--sc-depth:%dpx;--sc-fit:%s">'
@@ -1111,8 +1110,7 @@ def _mesh_3d():
     return figure_scene("mesh-3d", world="", steps=steps,
                         title="Vertices, edges, faces and the mesh", desc=desc,
                         height=400, depth=210, labels=L, scale=0.9,
-                        hint="Drag it. This one is a real cube, so turning it shows you "
-                             "the faces you could not see before.",
+                        hint="Drag it: this one is a real cube.",
                         caption="Learn vertex, edge, face, mesh in that order and the "
                                 "rest of the unit has somewhere to attach.")
 

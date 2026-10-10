@@ -1,41 +1,47 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="MskProd Computing robot cat logo">
+  <!-- Drawn to survive being 40px wide in the header and 16px in a browser
+       tab. Everything smaller than about a pixel at that size has been taken
+       out: the old mark had cheek vents, a hairline visor seam and doubled
+       shadow ellipses, none of which read as anything but mud. What is left
+       is a silhouette: two ears, a round head, two big eyes. -->
   <defs>
-    <linearGradient id="lgHead" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#6BC4CA"/><stop offset="1" stop-color="#03969D"/>
+    <linearGradient id="lgHead" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#55B9C0"/><stop offset="1" stop-color="#02848B"/>
     </linearGradient>
-    <linearGradient id="lgCrown" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#E6D8EC"/><stop offset="1" stop-color="#CAABD5"/>
-    </linearGradient>
-    <linearGradient id="lgEye" x1="0.3" y1="0" x2="0.7" y2="1">
-      <stop offset="0" stop-color="#E6D8EC"/><stop offset="0.55" stop-color="#CAABD5"/><stop offset="1" stop-color="#83749F"/>
+    <linearGradient id="lgVisor" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#E7D9EE"/><stop offset="1" stop-color="#C3A2D0"/>
     </linearGradient>
   </defs>
-  <!-- ears -->
-  <path d="M17.5 21.5 L19.6 7.4 Q20.1 5.2 22.0 6.5 L32.4 14.2 Z" fill="#03969D"/>
-  <path d="M21.0 18.6 L22.3 10.6 L28.4 15.1 Z" fill="#CAABD5"/>
-  <path d="M46.5 21.5 L44.4 7.4 Q43.9 5.2 42.0 6.5 L31.6 14.2 Z" fill="#03969D"/>
-  <path d="M43.0 18.6 L41.7 10.6 L35.6 15.1 Z" fill="#CAABD5"/>
-  <!-- headphones -->
-  <rect x="4.4" y="27" width="9.6" height="17" rx="4.8" fill="#83749F"/>
-  <rect x="6.6" y="30.2" width="5.2" height="10.6" rx="2.6" fill="#CAABD5"/>
-  <rect x="50" y="27" width="9.6" height="17" rx="4.8" fill="#83749F"/>
-  <rect x="52.2" y="30.2" width="5.2" height="10.6" rx="2.6" fill="#CAABD5"/>
+
+  <!-- The cream plate the mark sits on, so it keeps its own ground on any
+       background: the header, a browser tab, a home screen icon. -->
+  <rect width="64" height="64" rx="15" fill="#FBF4E2"/>
+
+  <!-- ears: bigger and squarer than before, because a thin triangle
+       disappears first when the mark is scaled down -->
+  <path d="M15.5 26 L17.4 9.8 Q17.7 7.2 20.1 8.6 L33 17 Z" fill="#02848B"/>
+  <path d="M19.4 22.6 L20.6 13.6 L28.2 18.6 Z" fill="#C3A2D0"/>
+  <path d="M48.5 26 L46.6 9.8 Q46.3 7.2 43.9 8.6 L31 17 Z" fill="#02848B"/>
+  <path d="M44.6 22.6 L43.4 13.6 L35.8 18.6 Z" fill="#C3A2D0"/>
+
+  <!-- headphones, kept because they are the one thing that makes it this
+       cat and not any cat, but simplified to two solid shapes -->
+  <rect x="3.6" y="30" width="9" height="16" rx="4.5" fill="#6F6291"/>
+  <rect x="51.4" y="30" width="9" height="16" rx="4.5" fill="#6F6291"/>
+
   <!-- head -->
-  <rect x="11.5" y="13.5" width="41" height="39" rx="17.5" fill="url(#lgHead)"/>
-  <path d="M11.5 25.2 A17.5 17.5 0 0 1 29 13.5 h6 A17.5 17.5 0 0 1 52.5 25.2 Z" fill="url(#lgCrown)"/>
-  <rect x="11.5" y="24.4" width="41" height="1.8" fill="#035C58" opacity="0.28"/>
-  <!-- eyes -->
-  <ellipse cx="24.2" cy="35.4" rx="6.4" ry="7.1" fill="#035C58" opacity="0.22"/>
-  <ellipse cx="24" cy="35" rx="6.4" ry="7.1" fill="url(#lgEye)"/>
-  <ellipse cx="22.1" cy="32.5" rx="2.1" ry="2.4" fill="#FFFFFF" opacity="0.9"/>
-  <ellipse cx="40.2" cy="35.4" rx="6.4" ry="7.1" fill="#035C58" opacity="0.22"/>
-  <ellipse cx="40" cy="35" rx="6.4" ry="7.1" fill="url(#lgEye)"/>
-  <ellipse cx="38.1" cy="32.5" rx="2.1" ry="2.4" fill="#FFFFFF" opacity="0.9"/>
-  <!-- muzzle -->
-  <path d="M32 43.4 l-2.6-2.1 h5.2 Z" fill="#035C58"/>
-  <path d="M32 43.4 v2.2 M32 45.6 q-2.6 2.4 -4.6 0 M32 45.6 q2.6 2.4 4.6 0"
-        fill="none" stroke="#035C58" stroke-width="1.5" stroke-linecap="round" opacity="0.75"/>
-  <!-- cheek vents -->
-  <circle cx="17.4" cy="42.6" r="1.15" fill="#035C58" opacity="0.3"/>
-  <circle cx="46.6" cy="42.6" r="1.15" fill="#035C58" opacity="0.3"/>
+  <rect x="10" y="16" width="44" height="40" rx="18" fill="url(#lgHead)"/>
+  <path d="M10 28 A18 18 0 0 1 28 16 h8 A18 18 0 0 1 54 28 Z" fill="url(#lgVisor)"/>
+
+  <!-- eyes: large, high contrast, one highlight each. At 16px these two
+       shapes are most of what anybody actually sees. -->
+  <ellipse cx="23.6" cy="38.6" rx="6.6" ry="7.4" fill="#2E2545"/>
+  <ellipse cx="21.6" cy="35.8" rx="2.3" ry="2.6" fill="#FBF4E2"/>
+  <ellipse cx="40.4" cy="38.6" rx="6.6" ry="7.4" fill="#2E2545"/>
+  <ellipse cx="38.4" cy="35.8" rx="2.3" ry="2.6" fill="#FBF4E2"/>
+
+  <!-- nose and mouth, one weight, no opacity tricks -->
+  <path d="M32 46.6 l-2.5-2.2 h5 Z" fill="#024E52"/>
+  <path d="M32 46.6 v1.9 M32 48.5 q-2.4 2.2 -4.3 0 M32 48.5 q2.4 2.2 4.3 0"
+        fill="none" stroke="#024E52" stroke-width="1.7" stroke-linecap="round"/>
 </svg>
