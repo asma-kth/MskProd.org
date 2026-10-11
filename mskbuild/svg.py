@@ -29,6 +29,19 @@ def defs(extra=""):
         + extra + '</defs>')
 
 
+def scope_markers(name, markup):
+    """Make the arrowhead marker ids unique to one figure.
+
+    Every diagram emits the same three markers, so a page carrying four
+    diagrams declared id="ah" four times: invalid HTML, and only the first
+    definition was ever reachable. Rewriting both the definition and the
+    reference with the figure's own name makes each figure self contained
+    without threading a prefix through every call that draws an arrow.
+    """
+    return (markup.replace('id="ah', 'id="%s-ah' % name)
+                  .replace('url(#ah', 'url(#%s-ah' % name))
+
+
 def text(x, y, s, size=13, weight=500, anchor="middle", fill="var(--dg-text)",
          mono=False, cls=""):
     fam = ' class="dg-mono"' if mono else ""
@@ -96,9 +109,9 @@ def figure(name, width, height, body, title, desc, caption=None, max_w=760):
         '<figure class="diagram" style="--dg-max:%dpx">'
         '<svg viewBox="0 0 %s %s" role="img" aria-labelledby="%s" aria-describedby="%s" '
         'preserveAspectRatio="xMidYMid meet">'
-        '<title id="%s">%s</title><desc id="%s">%s</desc>%s%s</svg>%s</figure>'
+        '<title id="%s">%s</title><desc id="%s">%s</desc>%s</svg>%s</figure>'
         % (max_w, width, height, tid, did, tid, esc(title), did, esc(desc),
-           defs(), body, cap))
+           scope_markers(name, defs() + body), cap))
 
 def step(n, body, label=""):
     """One stage of a stepped diagram.
@@ -137,6 +150,6 @@ def figure_steps(name, width, height, base, steps, title, desc,
         '<figure class="diagram diagram-steps" data-dg-steps="%d" style="--dg-max:%dpx">'
         '<svg viewBox="0 0 %s %s" role="img" aria-labelledby="%s" aria-describedby="%s" '
         'preserveAspectRatio="xMidYMid meet">'
-        '<title id="%s">%s</title><desc id="%s">%s</desc>%s%s%s</svg>%s%s</figure>'
+        '<title id="%s">%s</title><desc id="%s">%s</desc>%s</svg>%s%s</figure>'
         % (n, max_w, width, height, tid, did, tid, esc(title), did, esc(desc),
-           defs(), base, "".join(steps), controls, cap))
+           scope_markers(name, defs() + base + "".join(steps)), controls, cap))

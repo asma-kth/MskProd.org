@@ -100,6 +100,8 @@ def build_home():
                        "OCR J834. The R093 exam unit in full, plus coursework guidance for R094 and R097."),
         "ks5": ("A Level Computer Science", "/ks5/", "i-brain",
                 "OCR H446. Both components, the NEA, and the depth an A star actually needs."),
+        "data-analytics": ("Data Analytics", "/data-analytics/", "i-chart",
+                           "OCR Cambridge Advanced National. F200 and F201, the two exam units, with graphs and interactive models."),
         "python": ("Python from scratch", "/python/", "i-python",
                    "First line of code through to object oriented programming, tkinter and pygame."),
     }
@@ -482,6 +484,30 @@ def copy_static():
         fh.write(dark_media(t))
 
 
+def check_icons():
+    """Fail the build on an icon name that is not in the sprite.
+
+    An unknown name renders as <use href="#i-nope">, which draws nothing at
+    all and raises no error anywhere, so a typo in a topic's icon is invisible
+    until somebody notices a blank square on a card. Cheaper to catch here.
+    """
+    sprite = os.path.join(ROOT, "static", "img", "icons.svg")
+    with open(sprite, encoding="utf-8") as fh:
+        have = set(re.findall(r'id="(i-[a-z0-9-]+)"', fh.read()))
+    bad = []
+    for course in COURSES:
+        for name, where in ([(course.icon, course.slug)]
+                            + [(u.icon, "%s/%s" % (course.slug, u.slug))
+                               for u in course.units]
+                            + [(t.icon, "%s/%s" % (course.slug, t.slug))
+                               for u in course.units for t in u.topics]):
+            if name and name not in have:
+                bad.append("%s uses %s" % (where, name))
+    if bad:
+        raise SystemExit("Unknown icon names (not in static/img/icons.svg):\n  "
+                         + "\n  ".join(bad))
+
+
 def main():
     if os.path.exists(DIST):
         shutil.rmtree(DIST)
@@ -490,7 +516,7 @@ def main():
     from content import ks4_cs
     modules = [ks4_cs]
     for name in ("aqa_gcse", "edexcel_gcse", "ks3", "ks4_imedia", "ks5",
-                 "python_course"):
+                 "data_analytics", "python_course"):
         try:
             mod = __import__("content." + name, fromlist=["COURSE"])
             modules.append(mod)
@@ -526,6 +552,7 @@ def main():
     assign_page.build(register, add_search)
 
     placements.check(PLACED)
+    check_icons()
 
     from mskbuild import photos as _photos
     _waiting = _photos.pending()

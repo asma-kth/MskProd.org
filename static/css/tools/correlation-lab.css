@@ -1,0 +1,61 @@
+/* Correlation lab. The plot and the readout sit side by side on a wide screen
+   and stack on a phone, because the coefficient has to stay visible while a
+   point is being dragged. */
+.tool[data-tool="correlation-lab"] .cl-wrap {
+  display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-start;
+}
+.tool[data-tool="correlation-lab"] .cl-plot {
+  flex: 1 1 18rem; min-width: 0; max-width: 28rem; height: auto;
+  touch-action: none; cursor: crosshair;
+}
+.tool[data-tool="correlation-lab"] .cl-bg { fill: var(--surface-2); }
+.tool[data-tool="correlation-lab"] .cl-grid {
+  stroke: var(--border); stroke-width: 1; stroke-dasharray: 2 5;
+}
+.tool[data-tool="correlation-lab"] .cl-axis { stroke: var(--border-strong); stroke-width: 1.6; }
+.tool[data-tool="correlation-lab"] .cl-fit { stroke: var(--purple); stroke-width: 2.6; }
+.tool[data-tool="correlation-lab"] .cl-pt {
+  fill: var(--teal); fill-opacity: .85; stroke: var(--surface); stroke-width: 1.4;
+  cursor: grab;
+}
+.tool[data-tool="correlation-lab"] .cl-pt:hover { fill-opacity: 1; r: 7; }
+.tool[data-tool="correlation-lab"] .cl-lab {
+  font-size: 10px; font-weight: 650; fill: var(--ink-3);
+}
+
+.tool[data-tool="correlation-lab"] .cl-side { flex: 1 1 11rem; min-width: 0; }
+.tool[data-tool="correlation-lab"] .cl-r {
+  display: flex; flex-direction: column; gap: .1rem;
+  padding: .7rem .8rem; border-radius: var(--r-s);
+  background: var(--accent-quiet);
+  border: 1px solid color-mix(in srgb, var(--teal) 35%, transparent);
+}
+.tool[data-tool="correlation-lab"] .cl-r-name {
+  font-family: var(--font-mono); font-size: .8rem; font-weight: 700;
+  color: var(--ink-3);
+}
+.tool[data-tool="correlation-lab"] .cl-r-val {
+  font-size: 2rem; font-weight: 750; line-height: 1.05; color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+/* --accent, not --teal: on the pale accent-quiet panel the raw brand teal
+   comes out at about 3:1, which fails AA for text this size. */
+.tool[data-tool="correlation-lab"] .cl-r-word {
+  font-size: .82rem; font-weight: 650; color: var(--accent);
+}
+.tool[data-tool="correlation-lab"] .cl-eqn {
+  margin: .6rem 0 0; font-size: .84rem; color: var(--ink-3);
+}
+.tool[data-tool="correlation-lab"] .cl-eqn code { font-size: .84rem; }
+.tool[data-tool="correlation-lab"] .cl-count {
+  margin: .3rem 0 0; font-size: .78rem; color: var(--ink-3);
+}
+.tool[data-tool="correlation-lab"] .cl-hint {
+  font-size: .82rem;
+}
+.tool[data-tool="correlation-lab"] .cl-warn {
+  margin: .7rem 0 0; padding: .55rem .7rem; font-size: .85rem; line-height: 1.6;
+  color: var(--ink-2); background: color-mix(in srgb, var(--bad) 9%, transparent);
+  border: 1px solid color-mix(in srgb, var(--bad) 32%, transparent);
+  border-radius: var(--r-s);
+}

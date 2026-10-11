@@ -1,0 +1,84 @@
+/* Classifier scorer. The two score distributions have to be legible when they
+   overlap, so the flagged class is drawn solid and the other translucent
+   rather than relying on hue alone. */
+.tool[data-tool="confusion-matrix"] .cm-thf { flex: 1 1 14rem; }
+.tool[data-tool="confusion-matrix"] .cm-thf input[type="range"] { width: 100%; }
+
+.tool[data-tool="confusion-matrix"] .cm-chart {
+  margin: .4rem 0 .3rem; color: var(--ink-3);
+}
+.tool[data-tool="confusion-matrix"] .cm-chart svg { width: 100%; height: auto; }
+.tool[data-tool="confusion-matrix"] .cm-pos { fill: var(--teal); fill-opacity: .85; }
+.tool[data-tool="confusion-matrix"] .cm-neg { fill: var(--purple); fill-opacity: .45; }
+.tool[data-tool="confusion-matrix"] .cm-thresh {
+  stroke: var(--bad); stroke-width: 2.5; stroke-dasharray: 5 4;
+}
+.tool[data-tool="confusion-matrix"] .cm-axis {
+  font-size: 10px; font-weight: 600; fill: var(--ink-3);
+}
+.tool[data-tool="confusion-matrix"] .cm-axis-t { fill: var(--bad); }
+
+.tool[data-tool="confusion-matrix"] .cm-legend {
+  margin: 0 0 .9rem; font-size: .84rem; color: var(--ink-3); line-height: 1.6;
+}
+.tool[data-tool="confusion-matrix"] .cm-key {
+  display: inline-block; width: .7rem; height: .7rem; border-radius: 2px;
+  vertical-align: -1px;
+}
+.tool[data-tool="confusion-matrix"] .cm-key-pos { background: var(--teal); }
+.tool[data-tool="confusion-matrix"] .cm-key-neg { background: var(--purple); opacity: .55; }
+
+.tool[data-tool="confusion-matrix"] .cm-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: .5rem;
+}
+.tool[data-tool="confusion-matrix"] .cm-cell {
+  display: flex; flex-direction: column; gap: .1rem;
+  padding: .6rem .7rem; border-radius: var(--r-s);
+  border: 1px solid var(--border);
+}
+.tool[data-tool="confusion-matrix"] .cm-cell.is-good {
+  background: var(--accent-quiet); border-color: color-mix(in srgb, var(--teal) 35%, transparent);
+}
+.tool[data-tool="confusion-matrix"] .cm-cell.is-bad {
+  background: color-mix(in srgb, var(--bad) 10%, transparent);
+  border-color: color-mix(in srgb, var(--bad) 35%, transparent);
+}
+.tool[data-tool="confusion-matrix"] .cm-cell-name {
+  font-size: .72rem; font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--ink-3);
+}
+.tool[data-tool="confusion-matrix"] .cm-cell-n {
+  font-size: 1.5rem; font-weight: 750; line-height: 1.1; color: var(--ink);
+}
+.tool[data-tool="confusion-matrix"] .cm-cell-why {
+  font-size: .78rem; color: var(--ink-3);
+}
+
+.tool[data-tool="confusion-matrix"] .cm-measures {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  gap: .5rem; margin-top: .6rem;
+}
+.tool[data-tool="confusion-matrix"] .cm-measure {
+  padding: .55rem .65rem; border: 1px solid var(--border);
+  border-radius: var(--r-s); background: var(--surface-2);
+  display: flex; flex-direction: column; gap: .1rem;
+}
+.tool[data-tool="confusion-matrix"] .cm-measure.is-key {
+  border-color: var(--teal); background: var(--accent-quiet);
+}
+.tool[data-tool="confusion-matrix"] .cm-m-name {
+  font-size: .72rem; font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--ink-3);
+}
+.tool[data-tool="confusion-matrix"] .cm-m-val {
+  font-size: 1.25rem; font-weight: 750; color: var(--ink);
+}
+/* The substitution is the teaching: 186/250 has to be readable, so it wraps
+   rather than being clipped by the tile. */
+.tool[data-tool="confusion-matrix"] .cm-m-sub {
+  font-size: .74rem; color: var(--ink-3); background: none; padding: 0;
+  overflow-wrap: anywhere; line-height: 1.5;
+}
+@media (max-width: 30rem) {
+  .tool[data-tool="confusion-matrix"] .cm-grid { grid-template-columns: 1fr; }
+}

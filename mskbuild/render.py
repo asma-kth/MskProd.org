@@ -23,8 +23,6 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DIST = os.path.join(ROOT, "dist")
 
 _ICONS_CACHE = None
-_MASCOT_CACHE = None
-_LOGO_CACHE = None
 
 
 def _asset(name: str) -> str:
@@ -41,20 +39,18 @@ def icons() -> str:
 
 def mascot_svg() -> str:
     """The dock cat: one flat drawing, because it is 44px in a corner."""
-    global _MASCOT_CACHE
-    if _MASCOT_CACHE is None:
-        _MASCOT_CACHE = cat.flat()
-    return _MASCOT_CACHE
+    return cat.flat()
 
 
 def logo_svg(cls: str = "brand-logo") -> str:
     """The same cat's head, on its cream plate. Generated rather than read
-    from a file, so the logo and the mascot cannot drift into two cats."""
-    global _LOGO_CACHE
-    if _LOGO_CACHE is None:
-        _LOGO_CACHE = cat.flat(head_only=True, plate=True,
-                               label="MskProd Computing", cls="")
-    return _LOGO_CACHE.replace('class=""', 'class="%s"' % cls, 1)
+    from a file, so the logo and the mascot cannot drift into two cats.
+
+    Not cached: each instance needs its own gradient ids, and the logo appears
+    twice on every page.
+    """
+    return cat.flat(head_only=True, plate=True,
+                    label="MskProd Computing", cls=cls)
 
 
 def ico(name: str, cls: str = "icon") -> str:
@@ -74,6 +70,7 @@ NAV = [
     ("GCSE CS", "/ks4/computer-science/", "i-cpu"),
     ("iMedia", "/ks4/imedia/", "i-palette"),
     ("A Level", "/ks5/", "i-brain"),
+    ("Data", "/data-analytics/", "i-chart"),
     ("Python", "/python/", "i-python"),
     ("Papers", "/exam-papers/", "i-paper"),
     ("Tools", "/tools/", "i-tools"),
@@ -309,6 +306,7 @@ def footer() -> str:
           <li><a href="/ks4/edexcel-computer-science/">GCSE Computer Science, Edexcel</a></li>
           <li><a href="/ks4/imedia/">Creative iMedia</a></li>
           <li><a href="/ks5/">A Level Computer Science</a></li>
+          <li><a href="/data-analytics/">OCR Data Analytics, F200 and F201</a></li>
           <li><a href="/python/">Python from scratch</a></li>
         </ul>
       </div>
@@ -527,7 +525,7 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
     if topic.quiz:
         toc.append(("quiz", "Knowledge check"))
     if topic.exam:
-        toc.append(("exam", "Exam-style questions"))
+        toc.append(("exam", topic.exam_title))
 
     toc_html = '<div class="toc"><h4>On this page</h4><ol>%s</ol></div>' % "".join(
         '<li><a href="#%s">%s</a></li>' % (i, esc(t)) for i, t in toc)
@@ -587,7 +585,7 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
 </div>""" % (crumbs(trail), "".join(badges), esc(topic.title), markup.inline(topic.blurb),
              "\n".join(sec_html), fact,
              render_quiz(tid, topic.quiz),
-             render_exam(tid, topic.exam),
+             render_exam(tid, topic.exam, topic.exam_title),
              nav_html, toc_html, worksheet_link)
 
     desc = topic.blurb if len(topic.blurb) > 70 else topic.blurb + " Full explanation, a ten question check and five auto marked exam-style questions."

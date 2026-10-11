@@ -56,6 +56,9 @@ class Topic:
     mistakes: List[str] = field(default_factory=list)
     fact: str = ""             # a Pixel fun fact tied to this topic
     minutes: int = 25
+    # R094 and R097 are internally assessed: there is no written paper, so
+    # their written practice is not called "exam-style questions".
+    exam_title: str = "Exam-style questions"
 
 
 @dataclass

@@ -2851,3 +2851,14 @@ def _ks3_collections():
                         "Lists, 2D lists and dictionaries", desc,
                         "If you find yourself writing a comment to remember what index 3 "
                         "was, you wanted a dictionary.", labels=L)
+
+
+# The Creative iMedia diagrams live in their own module because the unit needs
+# far more pictures than any other. Imported last, so the registry is complete
+# by the time anything reads it.
+from . import diagrams_imedia  # noqa: E402,F401
+
+
+# The Data Analytics diagrams and graphs, likewise in their own module: several
+# are real plotted graphs with their own helpers, which do not belong here.
+from . import diagrams_data  # noqa: E402,F401

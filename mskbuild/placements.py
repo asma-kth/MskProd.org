@@ -267,31 +267,147 @@ PLACEMENTS = {
         "How 3D models are built": ["!diagram ks3-3d-pipeline"],
     },
 
+    # ------------------------------------------------- OCR Data Analytics
+    # This course earns the most figures on the site, and the reason is in the
+    # subject: a distribution, a correlation, an overfitted curve and a
+    # confusion matrix are objects you have to see to reason about. Three of
+    # these are real plotted graphs and two are live tools, because the
+    # argument they make, that accuracy is misleading and that one outlier can
+    # carry a whole correlation, lands when the reader moves the slider.
+    ("data-analytics", "understanding-data"): {
+        "Data, information, knowledge and wisdom": ["!diagram data-dikw"],
+        "Types and classifications of data": ["!diagram data-types-tree"],
+        "Data file formats": ["!diagram data-store-choice"],
+    },
+    ("data-analytics", "managing-data"): {
+        "The data lifecycle and the analytics pipeline": ["!diagram data-pipeline"],
+        "Gathering and storing data": ["!diagram data-store-choice",
+                                       "!scene data-stack-3d"],
+        "Transformation, data quality and assurance": ["!diagram data-etl-elt",
+                                                       "!diagram data-cleaning"],
+    },
+    ("data-analytics", "data-across-platforms"): {
+        "APIs and moving data between systems": ["!diagram data-api-request"],
+        "Interoperability and integration patterns": ["!diagram data-etl-elt"],
+        "Access control, security and the cloud": ["!diagram data-access-control"],
+    },
+    ("data-analytics", "legal-considerations"): {
+        "The UK GDPR and the Data Protection Act 2018": ["!diagram data-gdpr"],
+        "The other legislation by name": ["!diagram uk-computing-law"],
+        "Ethics, retention and destruction": ["!diagram data-anonymisation"],
+    },
+    ("data-analytics", "roles-skills-and-attributes"): {
+        "Technical skills": ["!diagram data-distribution",
+                             "!diagram data-correlation",
+                             "!tool correlation-lab"],
+        "Personal attributes and communicating results": ["!diagram data-chart-choice"],
+    },
+    ("data-analytics", "the-scope-of-big-data"): {
+        "What makes data big": ["!diagram data-five-vs"],
+        "Where big data comes from": ["!diagram data-big-data-sources",
+                                      "!scene data-stack-3d"],
+    },
+    ("data-analytics", "big-data-infrastructure"): {
+        "Storage at scale": ["!diagram data-store-choice"],
+        "Network and movement": ["!diagram data-scaling"],
+        "Processing and computing power": ["!scene parallel-cores-3d"],
+    },
+    ("data-analytics", "machine-learning-and-ai"): {
+        "The three kinds of learning, and the tasks": ["!diagram data-ml-types",
+                                                       "!scene neural-network-3d"],
+        "Measuring whether a model works": ["!diagram data-ml-workflow",
+                                            "!diagram data-confusion-matrix",
+                                            "!tool confusion-matrix",
+                                            "!diagram data-overfitting"],
+    },
+    ("data-analytics", "legal-and-ethical-issues"): {
+        "Data protection at big data scale": ["!diagram data-gdpr"],
+        "Bias, fairness and transparency": ["!diagram data-bias-sources"],
+        "Ownership, security and accountability": ["!diagram data-anonymisation"],
+    },
+    ("data-analytics", "environment-and-society"): {
+        "The environmental cost": ["!diagram data-energy"],
+        "Green computing": ["!diagram data-green-computing"],
+    },
+
     # ------------------------------------------------------- Creative iMedia
-    # Every R093, R094 and R097 topic now carries a worked figure. The
-    # pre-production one is deliberately on three topics: the visualisation
-    # diagram, storyboard and wireframe are the most frequently swapped answers
-    # in the course, and all three units examine them.
+    # iMedia earns more figures per topic than any other course, because the
+    # specification is almost entirely about recognising and comparing things
+    # you can see: a storyboard against a visualisation diagram, a low angle
+    # against a high angle, CMYK against RGB. Describing any of those in prose
+    # is strictly harder than drawing it.
     ("ks4/imedia", "the-media-industry"): {
-        "Job roles": ["!diagram imedia-production-pipeline"],
+        "The sectors": ["!diagram imedia-sectors-products"],
+        "Purpose": ["!diagram imedia-purpose-wheel"],
     },
-    ("ks4/imedia", "factors-influencing-product-design"): {
-        "Style, content, layout and media codes": ["!diagram imedia-visual-identity"],
+    ("ks4/imedia", "job-roles-in-media"): {
+        "Pre-production roles": ["!diagram imedia-production-pipeline"],
+        "Production and post-production roles": ["!scene imedia-phases-3d"],
     },
-    ("ks4/imedia", "pre-production-planning"): {
-        "Pre-production documents": ["!diagram imedia-pre-production"],
-        "Work planning, legislation and file management": ["!diagram imedia-file-formats"],
+    ("ks4/imedia", "client-requirements-and-the-brief"): {
+        "What a client brief contains": ["!diagram imedia-brief-anatomy"],
+        "Constraints and limitations": ["!diagram imedia-constraints"],
     },
-    ("ks4/imedia", "distribution-considerations"): {
-        "File properties and compression": ["!diagram imedia-file-formats"],
+    ("ks4/imedia", "target-audience-and-segmentation"): {
+        "Describing an audience": ["!diagram imedia-audience-segments"],
+        "How the audience changes the product": ["!diagram imedia-accessibility"],
+    },
+    ("ks4/imedia", "research-methods-and-sources"): {
+        "Quantitative and qualitative data": ["!diagram imedia-research-matrix"],
+        "Judging a source": ["!diagram imedia-source-check"],
+    },
+    ("ks4/imedia", "style-content-and-layout"): {
+        "Style: colour and typography": ["!diagram imedia-visual-identity"],
+        "Layout and composition": ["!diagram imedia-layout-conventions"],
+        "Media codes and conventions": ["!diagram imedia-camera-codes"],
+    },
+    ("ks4/imedia", "pre-production-documents"): {
+        "Documents for designing and planning": ["!diagram imedia-pre-production",
+                                                 "!diagram imedia-visualisation-anatomy",
+                                                 "!scene imedia-storyboard-3d"],
+        "Wireframes, navigation diagrams and asset tables": [
+            "!diagram imedia-navigation-structures",
+            "!scene imedia-navigation-depth-3d"],
+    },
+    ("ks4/imedia", "work-planning-and-workflow"): {
+        "What a work plan contains": ["!diagram imedia-work-plan"],
+        "Workflow and the production phases": ["!scene imedia-phases-3d"],
+    },
+    ("ks4/imedia", "legislation-and-permissions"): {
+        "Copyright and intellectual property": ["!diagram imedia-licence-check"],
+        "Regulation and certification": ["!diagram uk-computing-law"],
+    },
+    ("ks4/imedia", "file-formats-and-properties"): {
+        "Image formats": ["!diagram imedia-raster-vector",
+                          "!diagram imedia-file-formats"],
+        "Properties, compression and fitness for purpose": [
+            "!diagram imedia-compression-types", "!diagram imedia-colour-modes"],
+    },
+    ("ks4/imedia", "distribution-platforms"): {
+        "Physical and online distribution": ["!diagram imedia-distribution-routes"],
+        "Platforms and what they demand": ["!diagram imedia-streaming-download"],
     },
     ("ks4/imedia", "visual-identity-and-digital-graphics"): {
-        "Developing visual identity": ["!diagram imedia-visual-identity"],
-        "Planning and creating digital graphics": ["!diagram imedia-pre-production"],
+        "What visual identity is": ["!diagram imedia-visual-identity",
+                                    "!diagram imedia-logo-types"],
+        "Planning the graphic": ["!diagram imedia-visualisation-anatomy"],
+    },
+    ("ks4/imedia", "creating-digital-graphics"): {
+        "Raster techniques and exporting": ["!scene graphics-layers-3d",
+                                            "!diagram imedia-raster-vector"],
+        "Reviewing the finished graphic": ["!diagram imedia-review-quality"],
     },
     ("ks4/imedia", "interactive-digital-media"): {
-        "Planning an interactive product": ["!diagram imedia-navigation-structures"],
-        "Creating and reviewing": ["!diagram imedia-pre-production"],
+        "Types of interactive product and their structures": [
+            "!diagram imedia-navigation-structures"],
+        "Navigation diagrams and wireframes": ["!scene imedia-navigation-depth-3d",
+                                               "!diagram imedia-pre-production"],
+        "Interface design and accessibility": ["!diagram imedia-accessibility"],
+    },
+    ("ks4/imedia", "creating-and-testing-interactive-media"): {
+        "Building in the right order": ["!scene graphics-layers-3d"],
+        "Testing": ["!diagram imedia-test-record"],
+        "Reviewing and improving": ["!diagram imedia-review-quality"],
     },
 }
 
@@ -346,9 +462,6 @@ SCENES = {
     },
     ("ks3", "3d-modelling-and-animation"): {
         "How 3D models are built": ["!scene mesh-3d"],
-    },
-    ("ks4/imedia", "visual-identity-and-digital-graphics"): {
-        "Planning and creating digital graphics": ["!scene graphics-layers-3d"],
     },
     ("ks3", "vector-graphics"): {
         "Working with vector shapes": ["!scene graphics-layers-3d"],

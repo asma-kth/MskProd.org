@@ -53,6 +53,17 @@ NEEDS = {"tail": (), "body": ("Body",), "ears": (), "head": ("Head",),
          "visor": ("Visor",), "cans": (), "eyes": ("Eye",), "muzzle": ()}
 
 
+# Each rendered cat needs its own gradient ids. The logo appears twice on
+# every page, in the header and in the footer, so a fixed prefix declared
+# id="clHead" twice per page: invalid HTML, and the second set unreachable.
+_SEQ = [0]
+
+
+def _uid(tag):
+    _SEQ[0] += 1
+    return "%s%d" % (tag, _SEQ[0])
+
+
 def _defs(pfx, which=None):
     """Gradients that put a light source at the top left of the head."""
     if which is not None:
@@ -175,7 +186,7 @@ def _tail(pfx):
 
 def flat(label="Pixel the robot cat", head_only=False, plate=False, cls="cat"):
     """One flat SVG of the whole cat, or just the head for the logo."""
-    pfx = "cl" if head_only else "cf"
+    pfx = _uid("cl" if head_only else "cf")
     parts = [_defs(pfx)]
     if plate:
         parts.append('<rect x="2" y="2" width="96" height="96" rx="23" fill="%s"/>' % CREAM)
@@ -206,7 +217,7 @@ LAYERS = [
 
 def stack(state="awake", size=240, label=None, zzz=False):
     """The cat as layers held apart in 3D, swaying so the depth is visible."""
-    pfx = "c3"
+    pfx = _uid("c3")
     asleep = state == "asleep"
     out = ['<div class="cat3d is-%s" style="--cat-size:%dpx" role="img" aria-label="%s">'
            % (state, size,

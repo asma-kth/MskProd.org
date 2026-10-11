@@ -1588,3 +1588,308 @@ def _embedded():
                         height=380, depth=40, labels=L, scale=0.8,
                         caption="Ask whether the user can install new software on it. If "
                                 "not, it is almost certainly embedded.")
+
+
+# ================================================ Creative iMedia: navigation
+
+@scene("imedia-navigation-depth-3d")
+def _nav_depth():
+    """Navigation depth, drawn as actual depth.
+
+    Depth is the one navigation property that a flat diagram hides. Drawn as
+    levels stacked in space you can count how far the content is from the
+    entry point, which is exactly the thing that decides whether a visitor
+    ever reaches it.
+    """
+    L = ["The home screen is the entry point. Everything is measured from here.",
+         "One click down: the main sections. This is where most visitors stop.",
+         "Two clicks down: the content itself. Still comfortable.",
+         "Four clicks down: almost nobody gets here, however good it is.",
+         "And watch for a screen with no way out, or no way in at all."]
+
+    LEVELS = [(0, "HOME", "the entry point", "teal"),
+              (90, "SECTIONS", "one click from home", "lilac"),
+              (180, "CONTENT", "two clicks from home", "teal"),
+              (270, "BURIED", "four clicks: effectively invisible", "floor")]
+    world = "".join(plane(z, t, s, tone, width=320, height=150)
+                    for z, t, s, tone in LEVELS)
+
+    steps = []
+    for i, (z, t, s_, tone) in enumerate(LEVELS):
+        body = ('<div class="sc-glow sc-glow-at sc-%s" style="--sc-x:0px;'
+                '--sc-y:0px;--sc-z:%dpx;--sc-w:320px;--sc-hh:150px"></div>'
+                % ("teal" if tone == "floor" else tone, z + 2))
+        if i == 1:
+            body += (link3d(-90, 0, 90, 0, 94, "lilac", "menu")
+                     + dot3d(0, 0, 60, "a click", "lilac", 14))
+        if i == 3:
+            body += billboard(0, 92, 300, "every extra click loses visitors")
+        steps.append(stage(i + 1, body, L[i]))
+
+    steps.append(stage(5,
+                       box3d(130, 60, 270, 140, 44, "DEAD END",
+                             "no route out", "lilac", tall=16)
+                       + box3d(-130, -60, 180, 140, 44, "ORPHAN",
+                               "nothing links in", "lilac", tall=16)
+                       + billboard(0, -110, 310,
+                                   "both are obvious on a diagram, invisible in a "
+                                   "half-built product"),
+                       L[4]))
+
+    desc = ("Navigation depth drawn as physical depth. The home screen is the "
+            "bottom plane and the entry point from which everything is measured. "
+            "One level up are the main sections, one click from home, which is "
+            "where most visitors stop. Two levels up is the content itself, still "
+            "comfortably reachable. Four levels up is buried content: however good "
+            "it is, almost nobody reaches it, because every extra click loses "
+            "visitors. Two faults are also shown. A dead end is a screen with no "
+            "route out, so the user becomes stuck. An orphan is a screen nothing "
+            "links to, so it can never be reached at all. Both are immediately "
+            "visible on a navigation diagram drawn before building, and both are "
+            "very hard to spot in a product that is half built.")
+    return figure_scene("imedia-navigation-depth-3d", world=world, steps=steps,
+                        title="How deep is your navigation", desc=desc,
+                        height=400, depth=270, labels=L, scale=0.86,
+                        caption="Three or four clicks from the entry point is the "
+                                "practical limit. Deeper than that and the content "
+                                "may as well not exist.")
+
+
+# ============================================ Creative iMedia: the storyboard
+
+@scene("imedia-storyboard-3d")
+def _storyboard():
+    """A storyboard laid out along time, because that is the axis it uses.
+
+    A visualisation diagram describes one surface; a storyboard describes a
+    sequence. Pushing the frames away from the reader along one axis makes the
+    difference between the two documents structural rather than verbal.
+    """
+    L = ["Frame 1, a wide shot: it establishes where we are.",
+         "Frame 2, a mid shot: we move in, and the dialogue starts.",
+         "Frame 3, a close up: the reaction, held for two seconds.",
+         "Frame 4, a wide shot again, fading out to end the sequence.",
+         "Each frame carries its shot type, its movement, its duration and its sound."]
+
+    FRAMES = [(-150, "1 · WS", "pan left · 4s", "teal"),
+              (-50, "2 · MS", "static · 3s", "lilac"),
+              (50, "3 · CU", "static · 2s", "teal"),
+              (150, "4 · WS", "fade out · 3s", "lilac")]
+    world = board(360, 150, "the sequence, in time order", "floor")
+    world += "".join(box3d(x, 0, 30, 86, 58, t, s, tone, tall=24)
+                     for x, t, s, tone in FRAMES)
+    world += "".join(link3d(x + 44, 0, x + 56, 0, 44, "floor")
+                     for x, _, _, _ in FRAMES[:-1])
+
+    steps = []
+    for i, (x, t, s_, tone) in enumerate(FRAMES):
+        steps.append(stage(i + 1,
+                           '<div class="sc-glow sc-glow-at sc-%s" '
+                           'style="--sc-x:%dpx;--sc-y:0px;--sc-z:92px;'
+                           '--sc-w:86px;--sc-hh:58px"></div>' % (tone, x),
+                           L[i]))
+    steps.append(stage(5,
+                       billboard(0, -96, 150,
+                                 "shot type · camera movement · duration · "
+                                 "dialogue · sound · transition")
+                       + billboard(0, 96, 40,
+                                   "a storyboard is a sequence; a visualisation "
+                                   "diagram is one surface"),
+                       L[4]))
+    desc = ("A storyboard laid out along the axis it actually uses, which is "
+            "time. Four frames stand in order on a board. Frame one is a wide shot "
+            "with a pan left, held for four seconds, which establishes where the "
+            "scene is. Frame two is a mid shot, static, three seconds, where the "
+            "dialogue begins. Frame three is a close up, static, two seconds, "
+            "holding the reaction. Frame four returns to a wide shot and fades out "
+            "over three seconds to end the sequence. Each frame carries the same "
+            "set of annotations: the shot type, the camera movement, the duration, "
+            "the dialogue, the sound and the transition into the next frame. This "
+            "is what separates a storyboard from a visualisation diagram: a "
+            "storyboard describes a sequence over time, while a visualisation "
+            "diagram describes a single static surface.")
+    return figure_scene("imedia-storyboard-3d", world=world, steps=steps,
+                        title="A storyboard runs along time", desc=desc,
+                        height=360, depth=160, labels=L, scale=0.9,
+                        caption="Moving image gets a storyboard. A poster gets a "
+                                "visualisation diagram. The axis is the difference.")
+
+
+# ======================================== Creative iMedia: the three phases
+
+@scene("imedia-phases-3d")
+def _phases():
+    """Pre-production, production and post-production as three floors.
+
+    Each phase hands something specific up to the next one, and the cost of
+    skipping a phase is that the thing it should have handed over has to be
+    invented later. Stacked, the handover is visible.
+    """
+    L = ["Pre-production plans it: brief, research, documents, schedule, licences.",
+         "Production makes it: filming, recording, designing, building.",
+         "Post-production finishes it: editing, mixing, testing, export.",
+         "Each floor hands something specific to the one above it.",
+         "Skip the bottom floor and the decisions do not disappear: they arrive late."]
+
+    PHASES = [(0, "PRE-PRODUCTION", "brief · research · storyboard · plan · licences",
+               "teal"),
+              (110, "PRODUCTION", "filming · recording · designing · building",
+               "lilac"),
+              (220, "POST-PRODUCTION", "edit · mix · grade · test · export",
+               "teal")]
+    world = "".join(plane(z, t, s, tone, width=360, height=150)
+                    for z, t, s, tone in PHASES)
+
+    steps = []
+    for i, (z, t, s_, tone) in enumerate(PHASES):
+        steps.append(stage(i + 1,
+                           '<div class="sc-glow sc-glow-at sc-%s" style="--sc-x:0px;'
+                           '--sc-y:0px;--sc-z:%dpx;--sc-w:360px;--sc-hh:150px"></div>'
+                           % (tone, z + 2), L[i]))
+    steps.append(stage(4,
+                       dot3d(-60, 0, 60, "shot list", "teal")
+                       + dot3d(60, 0, 170, "footage", "lilac")
+                       + billboard(0, -98, 250, "each handover is a dependency"),
+                       L[3]))
+    steps.append(stage(5,
+                       billboard(0, 98, 60,
+                                 "time saved by skipping planning is spent three "
+                                 "times over in post"),
+                       L[4]))
+    desc = ("The three phases of production drawn as three floors. The bottom "
+            "floor is pre-production, which plans the work: the brief, the "
+            "research, the planning documents, the schedule and the asset "
+            "licences. The middle floor is production, which makes it: filming, "
+            "recording, designing and building. The top floor is post-production, "
+            "which finishes it: editing, mixing, grading, testing and exporting. "
+            "Each floor hands something specific to the one above it, and those "
+            "handovers are dependencies: pre-production hands production a shot "
+            "list, and production hands post-production the footage. That is why "
+            "the order cannot be rearranged, and why time apparently saved by "
+            "skipping planning is spent three times over in post-production, when "
+            "every decision that should have been made early has to be made late "
+            "with more already built on top of it.")
+    return figure_scene("imedia-phases-3d", world=world, steps=steps,
+                        title="Pre-production, production, post-production",
+                        desc=desc, height=380, depth=220, labels=L, scale=0.86,
+                        caption="Each phase exists to hand the next one something. "
+                                "That is the whole reason for the order.")
+
+
+# ============================================ Data Analytics: the data stack
+
+@scene("data-stack-3d")
+def _data_stack():
+    """The modern data stack, which really is a stack.
+
+    Every layer takes what the one below it holds and hands something narrower
+    and more trustworthy upward. Drawn flat that is five boxes in a column;
+    stacked, you can see that the dashboard at the top is standing on four
+    layers of work, which is the point students miss.
+    """
+    L = ["At the bottom, the sources: every system that generates data.",
+         "The lake holds it raw, in whatever shape it arrived.",
+         "Transformation cleans, types, joins and deduplicates it.",
+         "The warehouse holds modelled data, ready to be queried.",
+         "And only then can a dashboard be trusted by the people reading it."]
+
+    LAYERS = [(0, "SOURCES", "orders · sensors · APIs · forms · logs",
+               "floor"),
+              (80, "DATA LAKE", "raw, any structure, schema on read", "teal"),
+              (160, "TRANSFORM", "clean · type · join · deduplicate", "lilac"),
+              (240, "WAREHOUSE", "modelled, columnar, queryable", "teal"),
+              (320, "DASHBOARD", "one chart, one decision", "lilac")]
+    world = "".join(plane(z, t, s, tone, width=340, height=140)
+                    for z, t, s, tone in LAYERS)
+
+    steps = []
+    for i, (z, t, s_, tone) in enumerate(LAYERS):
+        body = ('<div class="sc-glow sc-glow-at sc-%s" style="--sc-x:0px;'
+                '--sc-y:0px;--sc-z:%dpx;--sc-w:340px;--sc-hh:140px"></div>'
+                % ("teal" if tone == "floor" else tone, z + 2))
+        if i == 2:
+            body += billboard(0, -94, 170, "most of the work happens here")
+        if i == 4:
+            body += billboard(0, 94, 330,
+                              "a figure nobody trusts is worth less than no figure")
+        steps.append(stage(i + 1, body, L[i]))
+
+    desc = ("The modern data stack drawn as five layers standing on each other. "
+            "At the bottom are the sources: orders, sensors, APIs, forms and logs, "
+            "every system that generates data. Above that the data lake holds it "
+            "raw, in whatever structure it arrived in, with schema applied only on "
+            "read. Above that the transformation layer cleans, types, joins and "
+            "deduplicates it, and this is where most of the actual work happens. "
+            "Above that the warehouse holds the modelled data, stored columnar and "
+            "ready to be queried. Only at the top does a dashboard sit, carrying "
+            "one chart and one decision. The stacking is the point: the dashboard "
+            "that a manager reads is standing on four layers of work, and a figure "
+            "nobody trusts is worth less than no figure at all.")
+    return figure_scene("data-stack-3d", world=world, steps=steps,
+                        title="The data stack, layer by layer", desc=desc,
+                        height=420, depth=320, labels=L, scale=0.84,
+                        caption="The dashboard is the thin layer on top. Almost "
+                                "all the effort is in the two below it.")
+
+
+# ======================================= Data Analytics: a neural network
+
+@scene("neural-network-3d")
+def _neural():
+    """A small network, with its layers actually separated in space.
+
+    A neural network is drawn as a flat graph everywhere, and the flat drawing
+    hides the one thing worth understanding: that it is a sequence of layers,
+    each one transforming what the last one produced. Here the layers sit at
+    different depths and the signal moves forward through them.
+    """
+    L = ["The input layer: one node per feature of the record.",
+         "A hidden layer: each node combines every input, with its own weights.",
+         "A second hidden layer: it combines what the first layer produced.",
+         "The output layer: one number, here the probability of fraud.",
+         "Training adjusts every weight, over and over, to reduce the error."]
+
+    SPEC = [(0, "INPUT", 4, "amount, hour, country, history", "teal"),
+            (100, "HIDDEN 1", 5, "weighted combinations", "lilac"),
+            (200, "HIDDEN 2", 4, "combinations of combinations", "lilac"),
+            (300, "OUTPUT", 1, "probability of fraud", "teal")]
+
+    world = []
+    for z, name, n, note, tone in SPEC:
+        world.append(plane(z, name, note, tone, width=300, height=120))
+        for i in range(n):
+            x = int(-((n - 1) * 46) / 2 + i * 46)
+            world.append(dot3d(x, 0, z + 14, "", tone, 20))
+    world = "".join(world)
+
+    steps = []
+    for i, (z, name, n, note, tone) in enumerate(SPEC):
+        body = ('<div class="sc-glow sc-glow-at sc-%s" style="--sc-x:0px;'
+                '--sc-y:0px;--sc-z:%dpx;--sc-w:300px;--sc-hh:120px"></div>'
+                % (tone, z + 2))
+        steps.append(stage(i + 1, body, L[i]))
+    steps.append(stage(5,
+                       billboard(0, -84, 320, "every connection has a weight")
+                       + billboard(0, 84, 40,
+                                   "training = predict, measure the error, "
+                                   "adjust the weights, repeat"),
+                       L[4]))
+    desc = ("A small neural network with its layers separated in space. The "
+            "input layer has four nodes, one per feature of the record being "
+            "judged: the amount, the hour, the country and the customer's history. "
+            "Above it a first hidden layer of five nodes each combines every input "
+            "using its own set of weights. Above that a second hidden layer of four "
+            "nodes combines what the first layer produced, which is why these are "
+            "called combinations of combinations. At the top a single output node "
+            "produces one number, here the probability that the transaction is "
+            "fraudulent. Every connection between nodes carries a weight, and "
+            "training is the repeated process of predicting, measuring the error "
+            "against the known labels and adjusting all of those weights to reduce "
+            "it. Seeing the layers at different depths is the point: the network is "
+            "a sequence of transformations, each one working on the output of the "
+            "last, rather than a single step.")
+    return figure_scene("neural-network-3d", world=world, steps=steps,
+                        title="A neural network, layer by layer", desc=desc,
+                        height=400, depth=300, labels=L, scale=0.84,
+                        caption="Deep learning is this, with far more layers. "
+                                "The depth in the name is literally this axis.")
