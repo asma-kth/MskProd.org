@@ -368,12 +368,21 @@ PLACEMENTS = {
         "Media codes and conventions": ["!diagram imedia-camera-codes"],
     },
     ("ks4/imedia", "pre-production-documents"): {
+        "Documents for generating ideas": ["!diagram imedia-mindmap-example",
+                                           "!diagram imedia-moodboard-example",
+                                           "!photo moodboard-bakery"],
         "Documents for designing and planning": ["!diagram imedia-pre-production",
                                                  "!diagram imedia-visualisation-anatomy",
-                                                 "!scene imedia-storyboard-3d"],
+                                                 "!photo storyboard-sketch",
+                                                 "!diagram imedia-storyboard-example",
+                                                 "!scene imedia-storyboard-3d",
+                                                 "!diagram imedia-script-example"],
         "Wireframes, navigation diagrams and asset tables": [
             "!diagram imedia-navigation-structures",
-            "!scene imedia-navigation-depth-3d"],
+            "!scene imedia-navigation-depth-3d",
+            "!diagram imedia-asset-table-example"],
+        "What every pre-production document must carry": [
+            "!diagram imedia-doc-essentials"],
     },
     ("ks4/imedia", "work-planning-and-workflow"): {
         "What a work plan contains": ["!diagram imedia-work-plan"],
@@ -396,7 +405,10 @@ PLACEMENTS = {
     ("ks4/imedia", "visual-identity-and-digital-graphics"): {
         "What visual identity is": ["!diagram imedia-visual-identity",
                                     "!diagram imedia-logo-types"],
-        "Planning the graphic": ["!diagram imedia-visualisation-anatomy"],
+        "Interpreting the brief and researching": ["!diagram imedia-moodboard-example",
+                                                   "!photo moodboard-bakery"],
+        "Planning the graphic": ["!diagram imedia-visualisation-anatomy",
+                                 "!diagram imedia-asset-table-example"],
     },
     ("ks4/imedia", "creating-digital-graphics"): {
         "Raster techniques and exporting": ["!scene graphics-layers-3d",
@@ -406,8 +418,8 @@ PLACEMENTS = {
     ("ks4/imedia", "interactive-digital-media"): {
         "Types of interactive product and their structures": [
             "!diagram imedia-navigation-structures"],
-        "Navigation diagrams and wireframes": ["!scene imedia-navigation-depth-3d",
-                                               "!diagram imedia-pre-production"],
+        "Navigation diagrams and wireframes": ["!diagram imedia-wireframe-example",
+                                               "!scene imedia-navigation-depth-3d"],
         "Interface design and accessibility": ["!diagram imedia-accessibility"],
     },
     ("ks4/imedia", "creating-and-testing-interactive-media"): {

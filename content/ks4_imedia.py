@@ -1103,6 +1103,38 @@ One row per asset, and these columns:
 
 The **licence column** is the one that matters. It is the evidence that nothing in the product infringes copyright, and an incomplete one can invalidate the whole piece of work.
 """),
+        Section("What every pre-production document must carry", """
+A drawing is not a document. What turns one into the other is a **header block** saying what this is and who it is for, and **annotations** saying why each decision was taken. Both are assessed, and both are what gets left off.
+
+### The nine things every document carries, whatever kind it is
+
+| Element | Why it is there |
+| **Document type and page number** | So a loose sheet can be put back in the right place |
+| **Project** | So it is filed against the right job |
+| **Client and contact** | So a question reaches the person who can answer it |
+| **Author** | So it reaches you, too |
+| **Version and date** | So nobody builds from the superseded copy |
+| **Purpose** | One line. Every decision is checked against it |
+| **Audience** | One line. Every decision is checked against this as well |
+| **Specification** | The measurable constraints, as numbers: size, format, duration, colour mode |
+| **Assets and licences** | The evidence that the work can lawfully be published |
+| **Sign-off** | A name and a date, after which a change costs money |
+
+### Then the elements specific to that document
+
+| Document | What it must contain beyond the header |
+| **Mood board** | Images each chosen for one stated quality, colour as values, type shown set rather than named, texture and material, one stated direction, an annotation on every item |
+| **Mind map** | A central idea, themed branches, specific twigs, and nothing judged yet |
+| **Visualisation diagram** | Canvas size and orientation, exact colour values, named fonts with weights and sizes, the position of every element, bleed and safe margins for print |
+| **Storyboard** | Per frame: shot type, camera angle, camera movement, duration, dialogue or voiceover, sound, and the transition out |
+| **Script** | Scene headings, and for moving image a two column layout with visual beside audio, speakers in capitals, delivery in brackets, a running time |
+| **Wireframe** | Placement only, no styling, every control annotated with what it does and where it leads, and the error, empty and confirmation screens as well as the happy one |
+| **Navigation diagram** | Every screen as a box, every link as an arrow, no dead ends, no orphans, and nothing buried more than three or four steps deep |
+| **Asset table** | One row per asset with its type, source, format, dimensions, licence, and whether it is cleared |
+| **Work plan** | Tasks, durations, the order, dependencies, milestones, resources and contingency |
+
+!grade The test to apply to your own document :: Hand it to somebody who was not in the room. Can they tell what it is for, who it is for, and what to build, without asking you a single question? If yes it is a document. If no it is a drawing with your handwriting on it.
+"""),
     ],
     keyterms=[
         ("Mood board", "An annotated collage of colours, images and type that establishes the intended look and feel."),

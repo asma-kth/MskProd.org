@@ -1,4 +1,7 @@
-"""Photographs of real hardware, for the topics that describe real objects.
+"""Photographs, and generated example images, for the topics that need them.
+
+Two kinds of picture live here, and the difference is stated on the page
+rather than left for the reader to guess.
 
 A diagram shows how a thing works; a photograph shows what it looks like when
 you are holding it. For hardware topics the exam genuinely asks students to
@@ -10,9 +13,15 @@ because the site carries advertising and so counts as commercial use. Only
 licences that permit that are allowed, the credit is printed under the
 picture, and /attributions/ lists the lot in one place.
 
+The second kind is a generated example image: a mood board, a sheet of
+storyboard sketches, a picture of a document rather than of a thing. These
+exist because a mood board made of grey boxes is not a mood board, and a
+student needs to see one. They are credited as generated, every time, because
+a synthetic image presented as a photograph is a lie however useful it is.
+
 The image files themselves are not in the repository yet. An entry whose file
 is missing is skipped at build time and reported, so the placements below can
-be written in advance and a photograph starts appearing on every one of its
+be written in advance and a picture starts appearing on every one of its
 topics the moment the file lands. tools/optimise_photos.py turns an original
 into the sizes the site serves and writes the dimensions this module reads.
 """
@@ -153,6 +162,33 @@ PHOTOS = {p.slug: p for p in [
       "and output devices of a computer system.",
       "Input brings data in, output sends results back out. Classify by the job it "
       "does, not by what it looks like."),
+
+    # ---------------------------------------------- generated example images
+    # Credited as generated on every page they appear on. The alt text
+    # describes what the picture shows; the credit says where it came from.
+    P("moodboard-bakery",
+      "A mood board laid out as six overlapping rectangular tiles on a cream "
+      "ground: the crust of a sourdough loaf, a panel of dark green painted "
+      "wood, a hand holding a brown paper bread bag, a swatch of unbleached "
+      "paper, pale leaves on white, and morning light falling across a wooden "
+      "counter. The palette throughout is deep green, cream and brown.",
+      "A mood board is made of images, texture and colour rather than of "
+      "description. Every tile here is arguing for the same thing: warm, "
+      "unbranded, hand made, not a chain.",
+      credit="Generated with Canva", licence="Generated image, made for this example"),
+    P("storyboard-sketch",
+      "Six rough pencil storyboard panels in a three by two grid on cream "
+      "paper. Panel one is a wide view of a small bakery shop front at dawn on "
+      "an empty street. Panel two is a mid view of a baker shaping dough at a "
+      "counter. Panel three is a close view of two hands dusting flour over a "
+      "work surface. Panel four is a very close view of the scored crust of one "
+      "loaf filling the frame. Panel five is a mid view of a baker handing a "
+      "paper bag to a customer. Panel six is a wide view of the same shop front "
+      "with two people outside.",
+      "This is a storyboard before it becomes a document. The drawings are "
+      "rough on purpose and they are not the assessed part: the annotations "
+      "that go beside them are.",
+      credit="Generated with Canva", licence="Generated image, made for this example"),
 ]}
 
 

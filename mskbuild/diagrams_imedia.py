@@ -1590,3 +1590,612 @@ def _testrecord():
                   "A believable test record", desc,
                   "Record the failures and the fixes. A log of six passes "
                   "convinces nobody, including the assessor.")
+
+
+# ============================================ what every document carries
+
+@diagram("imedia-doc-essentials")
+def _doc_essentials():
+    """The nine things every pre-production document has to carry.
+
+    Students hand in a drawing and call it a document. The difference is the
+    header block and the annotations, and both are worth marks, so here is a
+    filled-in one rather than a list of bullet points about one.
+    """
+    body = [text(380, 24, "Nine things every pre-production document carries, "
+                 "whatever kind it is", 12, 650, fill=MUTED)]
+
+    # A worked header block, filled in.
+    body.append(box(28, 46, 418, 268, None, fill=FILL, stroke=TEAL, r=10))
+    body.append(box(28, 46, 418, 38, None, fill=TEAL_SOFT, stroke=TEAL, r=10))
+    body.append(text(44, 70, "STORYBOARD", 12, 780, anchor="start", fill=TEAL))
+    body.append(text(430, 70, "page 1 of 2", 9.6, 500, anchor="end",
+                     fill=MUTED))
+    FIELDS = [("Project", "Northgate Bakery — 60 second promo"),
+              ("Client", "Northgate Bakery Ltd (A. Rahimi)"),
+              ("Author", "S. Mihai"),
+              ("Version / date", "v03 · 14 March 2026 · supersedes v02"),
+              ("Purpose", "Drive online orders from local residents"),
+              ("Audience", "Adults 25–55 within 3 miles, on a phone"),
+              ("Specification", "1920×1080 and 1080×1920 · 25 fps · 60 s · MP4 H.264"),
+              ("Assets", "see asset table v03 — all licences cleared"),
+              ("Sign-off", "Client: ______________   Date: __________")]
+    for i, (k, v) in enumerate(FIELDS):
+        y = 92 + i * 24
+        body.append(text(44, y + 12, k, 9.6, 700, anchor="start", fill=TEAL))
+        body.append(line(150, y + 16, 430, y + 16, stroke=LINE, w=0.8,
+                         dash="2 3"))
+        body.append(text(430, y + 12, v, 9.6, 450, anchor="end",
+                         fill="var(--dg-text)"))
+
+    WHY = [("Document type and page", "so a loose sheet can be put back"),
+           ("Project", "so it is filed against the right job"),
+           ("Client and contact", "so the question goes to the right person"),
+           ("Author", "so it does, too"),
+           ("Version and date", "so nobody works from the superseded one"),
+           ("Purpose", "every decision is checked against this line"),
+           ("Audience", "and against this one"),
+           ("Specification", "the measurable constraints, as numbers"),
+           ("Assets and licences", "the evidence the work is legal"),
+           ("Sign-off", "after which a change costs money")]
+    body.append(text(600, 64, "AND WHY EACH ONE IS THERE", 10.5, 750,
+                     fill=MUTED))
+    for i, (k, v) in enumerate(WHY):
+        y = 76 + i * 25
+        body.append(box(466, y, 266, 21, None,
+                        fill=FILL2 if i % 2 == 0 else FILL, stroke="none", r=4))
+        body.append(text(476, y + 15, k, 8.8, 700, anchor="start", fill=TEAL))
+        body.append(text(726, y + 15, v, 8.6, 450, anchor="end", fill=MUTED))
+
+    body.append(box(28, 328, 704, 52, None, fill=WARN_SOFT, stroke=WARN, r=8))
+    body.append(text(380, 348, "And the tenth thing, which is the one that is "
+                     "actually assessed: annotations that say WHY.", 11, 700,
+                     fill=WARN))
+    body.append(text(380, 366, "“Poppins SemiBold 42pt” is a label. "
+                     "“Poppins SemiBold 42pt, because it still reads at "
+                     "arm's length on a phone” is an annotation.", 10,
+                     500, fill=MUTED))
+    desc = ("A filled-in pre-production document header beside the reason for "
+            "each field. The header reads: STORYBOARD, page 1 of 2; project, "
+            "Northgate Bakery 60 second promo; client, Northgate Bakery Limited, "
+            "contact A. Rahimi; author, S. Mihai; version 3 dated 14 March 2026, "
+            "superseding version 2; purpose, drive online orders from local "
+            "residents; audience, adults 25 to 55 within three miles, viewing on "
+            "a phone; specification, 1920 by 1080 and 1080 by 1920, 25 frames "
+            "per second, 60 seconds, MP4 H.264; assets, see asset table version "
+            "3, all licences cleared; and a sign-off line for the client's name "
+            "and date. The reasons given alongside are: the document type and "
+            "page so a loose sheet can be put back; the project so it is filed "
+            "against the right job; the client and contact so a question reaches "
+            "the right person; the author for the same reason; the version and "
+            "date so nobody works from a superseded copy; the purpose and the "
+            "audience because every decision is checked against those two lines; "
+            "the specification because it states the measurable constraints as "
+            "numbers; the assets and licences because they are the evidence the "
+            "work is legal; and the sign-off because after it a change costs "
+            "money. The tenth requirement, and the one that is actually "
+            "assessed, is annotation that says why: naming a typeface is a "
+            "label, while saying it was chosen because it still reads at arm's "
+            "length on a phone is an annotation.")
+    return figure("imedia-essentials", 760, 392, "".join(body),
+                  "What every pre-production document must carry", desc,
+                  "A drawing becomes a document when somebody else could pick "
+                  "it up, know what it is for, and build from it.")
+
+
+# ======================================================= worked storyboard
+
+@diagram("imedia-storyboard-example")
+def _storyboard_example():
+    """A complete storyboard page with every annotation field filled in."""
+    body = [text(380, 22, "Storyboard: Northgate Bakery, 60 second promo "
+                 "· v03 · page 1 of 2", 11.5, 700, fill=MUTED)]
+    FRAMES = [
+        ("1", "WS", "Shop front, dawn, empty street",
+         "Static", "6s", "VO: “Every morning, before the street wakes up…”",
+         "Ambience: distant traffic", "Cut"),
+        ("2", "MS", "Baker shaping a round of dough",
+         "Slow push in", "5s", "VO: “…we start again from nothing.”",
+         "Music in, low", "Cut"),
+        ("3", "CU", "Hands dusting flour over the bench",
+         "Static", "3s", "—",
+         "Flour, cloth, breath", "Cut"),
+        ("4", "ECU", "Scored crust of one loaf, filling frame",
+         "Static", "2s", "—",
+         "Crust crackling, close", "Cut"),
+        ("5", "MS", "Baker hands a paper bag to a customer",
+         "Handheld, slight", "5s", "Dialogue: “Same as always?” “Always.”",
+         "Room tone, shop bell", "Dissolve"),
+        ("6", "WS", "Shop front, now with people outside",
+         "Static", "4s", "VO + caption: “Northgate. Open from six.”",
+         "Music up, then out", "Fade to black"),
+    ]
+    FW, FH = 224, 84
+    for i, (n, shot, content, move, dur, speech, sound, trans) in enumerate(FRAMES):
+        col, row = i % 3, i // 3
+        x = 24 + col * (FW + 20)
+        y = 44 + row * 172
+        # the frame itself
+        body.append(box(x, y, FW, FH, None, fill=FILL2, stroke=LILAC, r=6))
+        body.append(text(x + FW / 2, y + FH / 2 - 4, shot, 17, 780, fill=LILAC))
+        body.append(text(x + FW / 2, y + FH / 2 + 14, content, 8.6, 450,
+                         fill=MUTED))
+        body.append(box(x, y - 2, 26, 20, None, fill=LILAC, stroke=LILAC, r=5))
+        body.append(text(x + 13, y + 12, n, 10.5, 780, fill="#FFFFFF"))
+        # the annotation block beneath it: every field the mark scheme wants
+        rows = [("Shot", shot), ("Camera", move), ("Duration", dur),
+                ("Audio", sound), ("Speech", speech), ("Transition", trans)]
+        for j, (k, v) in enumerate(rows):
+            ry = y + FH + 4 + j * 13
+            body.append(text(x + 2, ry + 9, k, 7.8, 700, anchor="start",
+                             fill=TEAL))
+            body.append(text(x + FW - 2, ry + 9,
+                             v if len(v) < 42 else v[:40] + "…",
+                             7.8, 450, anchor="end", fill="var(--dg-text)"))
+    body.append(box(24, 390, 712, 56, None, fill=TEAL_SOFT, stroke=TEAL, r=8))
+    body.append(text(380, 409, "Six fields under every single frame: shot, "
+                     "camera, duration, audio, speech, transition.", 11, 700,
+                     fill=TEAL))
+    body.append(text(380, 427, "The durations add to 25 seconds, so this is "
+                     "page 1 of 2 and the second page has to account for the "
+                     "other 35.", 10, 500, fill=MUTED))
+    desc = ("A worked storyboard page for a sixty second bakery promotion, "
+            "version 3, page 1 of 2. Six frames, each with a full annotation "
+            "block underneath. Frame 1: a wide shot of the shop front at dawn "
+            "on an empty street, static camera, 6 seconds, ambience of distant "
+            "traffic, voiceover 'every morning, before the street wakes up', "
+            "cut. Frame 2: a mid shot of a baker shaping a round of dough, slow "
+            "push in, 5 seconds, music in low, voiceover 'we start again from "
+            "nothing', cut. Frame 3: a close up of hands dusting flour over the "
+            "bench, static, 3 seconds, sound of flour, cloth and breath, no "
+            "speech, cut. Frame 4: an extreme close up of the scored crust of "
+            "one loaf filling the frame, static, 2 seconds, close crust "
+            "crackling, no speech, cut. Frame 5: a mid shot of the baker "
+            "handing a paper bag to a customer, slight handheld, 5 seconds, "
+            "room tone and a shop bell, dialogue 'same as always' and 'always', "
+            "dissolve. Frame 6: a wide shot of the shop front now with people "
+            "outside, static, 4 seconds, music up then out, voiceover and "
+            "caption 'Northgate, open from six', fade to black. Every frame "
+            "carries the same six fields: shot, camera movement, duration, "
+            "audio, speech and transition. The durations shown total 25 "
+            "seconds, which is why this is page 1 of 2.")
+    return figure("imedia-sb-ex", 760, 458, "".join(body),
+                  "A worked storyboard page with every annotation field", desc,
+                  "The drawings are the part students spend longest on and the "
+                  "part worth fewest marks. The six fields under each frame are "
+                  "the document.")
+
+
+# ========================================================== worked mood board
+
+@diagram("imedia-moodboard-example")
+def _moodboard_example():
+    """An annotated mood board, and what makes it a document rather than a
+    scrapbook."""
+
+    def ink_on(hexv):
+        """Readable text colour for a swatch. A pale tile needs dark type."""
+        r, g, b = (int(hexv[i:i + 2], 16) for i in (1, 3, 5))
+        lum = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255.0
+        return "#17110A" if lum > 0.55 else "#FFFFFF"
+
+    body = [text(380, 22, "Mood board: Northgate Bakery \u00b7 v02 \u00b7 "
+                 "\u201cestablished, hand made, not a chain\u201d", 11.5, 700,
+                 fill=MUTED)]
+    TILES = [
+        (24, 42, 170, 104, "#6B4A2F", "Sourdough crust, close",
+         "texture, not a product shot"),
+        (202, 42, 146, 104, "#2F4A3A", "Dark green painted wood",
+         "the primary colour, found"),
+        (356, 42, 172, 104, "#A98463", "Hand holding a paper bag",
+         "hands in every shot: it is hand made"),
+        (536, 42, 200, 104, "#C9B79C", "Morning light on a counter",
+         "every shot is daylight"),
+        (24, 154, 150, 88, "#D9CBB4", "Unbleached paper swatch",
+         "the actual packaging stock"),
+        (182, 154, 158, 88, "#8C9C84", "Pale leaves on white",
+         "the one accent, used sparingly"),
+    ]
+    for x, y, w, h, col, label, note in TILES:
+        ink = ink_on(col)
+        body.append('<rect x="%d" y="%d" width="%d" height="%d" rx="5" '
+                    'fill="%s" stroke="%s" stroke-width="1"/>'
+                    % (x, y, w, h, col, LINE))
+        body.append(text(x + w / 2, y + h / 2 - 2, label, 9.2, 700, fill=ink))
+        body.append(text(x + w / 2, y + h / 2 + 15, note, 8.2, 500, fill=ink))
+
+    # Colour, with values. A swatch without a value is decoration.
+    body.append(text(360, 172, "PALETTE", 9.6, 750, anchor="start", fill=TEAL))
+    SWATCH = [("#2F4A3A", "primary"), ("#D9CBB4", "ground"),
+              ("#6B4A2F", "ink"), ("#8C9C84", "accent")]
+    for i, (hexv, role) in enumerate(SWATCH):
+        x = 360 + i * 96
+        body.append('<rect x="%d" y="182" width="32" height="32" rx="5" '
+                    'fill="%s" stroke="%s" stroke-width="1"/>'
+                    % (x, hexv, LINE))
+        body.append(text(x + 38, 196, hexv, 8.4, 600, anchor="start",
+                         fill="var(--dg-text)", mono=True))
+        body.append(text(x + 38, 209, role, 8, 450, anchor="start", fill=MUTED))
+
+    body.append(text(24, 266, "TYPE, shown set rather than named", 9.6, 750,
+                     anchor="start", fill=TEAL))
+    body.append(text(24, 298, "Northgate", 22, 500, anchor="start",
+                     fill="var(--dg-text)"))
+    body.append(text(24, 314, "heading: a high contrast serif, because every "
+                     "chain on the high street uses a geometric sans", 8.2,
+                     450, anchor="start", fill=MUTED))
+    body.append(text(430, 296, "Open from six", 13, 450, anchor="start",
+                     fill="var(--dg-text)"))
+    body.append(text(430, 314, "body: a humanist sans, set generously, 16px "
+                     "minimum", 8.2, 450, anchor="start", fill=MUTED))
+
+    CHECK = [("Images", "chosen for one stated quality each, not because they "
+              "are nice"),
+             ("Colour", "as values, never as the word \u201cgreen\u201d"),
+             ("Type", "shown set, at a real size, not named in a list"),
+             ("Texture and material", "paper stock, paint, surface"),
+             ("A stated direction", "one line at the top that the whole board "
+              "argues for"),
+             ("Annotation on every item", "why it is here, and what it rules "
+              "out"),
+             ("Version and date", "because the second board always differs "
+              "from the first")]
+    body.append(text(380, 348, "WHAT MAKES IT A DOCUMENT AND NOT A SCRAPBOOK",
+                     10.5, 750, fill=MUTED))
+    for i, (k, v) in enumerate(CHECK):
+        y = 360 + i * 23
+        body.append(box(24, y, 712, 20, None,
+                        fill=FILL2 if i % 2 == 0 else FILL, stroke="none", r=4))
+        body.append(text(38, y + 14, k, 9.4, 700, anchor="start", fill=TEAL))
+        body.append(text(214, y + 14, v, 9.4, 450, anchor="start", fill=MUTED))
+    body.append(text(380, 540, "An unannotated mood board scores almost "
+                     "nothing. The annotation is the entire assessed part.",
+                     10.8, 700, fill=WARN))
+    desc = ("An annotated mood board for a bakery brief, headed 'established, "
+            "hand made, not a chain', version 2. Six image tiles are laid out "
+            "across the board, each with a note saying why it is there: a close "
+            "shot of sourdough crust chosen as texture rather than as a product "
+            "shot; a panel of dark green painted wood, which is the primary "
+            "colour found rather than invented; a hand holding a paper bag, "
+            "because hands appear in every shot to signal hand made; morning "
+            "light on a counter, establishing that every shot is daylight; an "
+            "unbleached paper swatch, which is the actual packaging stock; and "
+            "pale leaves on white as the single accent, used sparingly. A "
+            "palette strip gives four colours as hex values with their roles: "
+            "2F4A3A primary, D9CBB4 ground, 6B4A2F ink and 8C9C84 accent. Two "
+            "typefaces are shown set rather than named: a high contrast serif "
+            "for headings, chosen because every chain on the high street uses a "
+            "geometric sans, and a humanist sans for body text set generously "
+            "at a 16 pixel minimum. Underneath, what makes this a document "
+            "rather than a scrapbook: images chosen for one stated quality "
+            "each; colour given as values rather than as the word green; type "
+            "shown set at a real size; texture and material included; one "
+            "stated direction at the top that the whole board argues for; an "
+            "annotation on every item saying why it is there and what it rules "
+            "out; and a version and date, because the second board always "
+            "differs from the first. An unannotated mood board scores almost "
+            "nothing, because the annotation is the assessed part.")
+    return figure("imedia-mb-ex", 760, 556, "".join(body),
+                  "A worked, annotated mood board", desc,
+                  "Six images, four colour values, two typefaces set, and a "
+                  "reason beside every one of them.")
+
+
+# ============================================================ worked mind map
+
+@diagram("imedia-mindmap-example")
+def _mindmap_example():
+    """Ideas generation, before anything has been judged."""
+    import math as _m
+    body = [text(380, 24, "Mind map: ways to say “hand made” in sixty "
+                 "seconds", 12, 650, fill=MUTED)]
+    CX, CY = 380, 206
+    body.append(circle(CX, CY, 56, fill=TEAL_SOFT, stroke=TEAL, w=2))
+    body.append(text(CX, CY - 4, "HAND", 13, 780, fill=TEAL))
+    body.append(text(CX, CY + 14, "MADE", 13, 780, fill=TEAL))
+    BRANCHES = [
+        (-150, "People", ["the baker's hands", "a named person",
+                          "the 4am start", "two generations"]),
+        (-90, "Process", ["dough being shaped", "flour in the air",
+                          "the oven door", "nothing machine cut"]),
+        (-30, "Imperfection", ["no two loaves alike", "a cracked crust",
+                               "flour on an apron"]),
+        (30, "Time", ["proving overnight", "before the street wakes",
+                      "same recipe, 40 years"]),
+        (90, "Place", ["the shop front", "the local street",
+                       "regulars by name"]),
+        (150, "Sound", ["crust crackling", "a shop bell",
+                        "no music at the start"]),
+    ]
+    for ang, name, kids in BRANCHES:
+        a = _m.radians(ang)
+        bx, by = CX + 132 * _m.sin(a), CY - 132 * _m.cos(a)
+        body.append(line(CX + 52 * _m.sin(a), CY - 52 * _m.cos(a),
+                         bx - 18 * _m.sin(a), by + 18 * _m.cos(a),
+                         stroke=TEAL, w=1.8))
+        body.append(box(bx - 50, by - 14, 100, 28, None, fill=LILAC_SOFT,
+                        stroke=LILAC, r=14))
+        body.append(text(bx, by + 4, name, 10.4, 700, fill=LILAC))
+        for j, kid in enumerate(kids):
+            ka = _m.radians(ang + (j - (len(kids) - 1) / 2.0) * 13)
+            kx, ky = CX + 232 * _m.sin(ka), CY - 232 * _m.cos(ka)
+            body.append(line(bx + 16 * _m.sin(a), by - 16 * _m.cos(a),
+                             kx - 6 * _m.sin(ka), ky + 6 * _m.cos(ka),
+                             stroke=LINE, w=1.1))
+            anchor = "start" if kx > CX else "end"
+            body.append(text(kx + (8 if kx > CX else -8), ky + 4, kid, 8.8,
+                             450, anchor=anchor, fill="var(--dg-text)"))
+    body.append(box(24, 418, 712, 54, None, fill=FILL, stroke=TEAL, r=8))
+    body.append(text(380, 438, "A mind map is for quantity. Nothing here has "
+                     "been judged yet, and that is the point of doing it "
+                     "first.", 11, 700, fill=TEAL))
+    body.append(text(380, 456, "Central idea in the middle, branches for "
+                     "themes, twigs for specifics. Twenty weak ideas beat two "
+                     "careful ones at this stage.", 10, 500, fill=MUTED))
+    desc = ("A mind map exploring ways to communicate 'hand made' in a sixty "
+            "second film. The central idea, hand made, sits in the middle, with "
+            "six themed branches each carrying specific ideas. People: the "
+            "baker's hands, a named person, the 4am start, two generations. "
+            "Process: dough being shaped, flour in the air, the oven door, "
+            "nothing machine cut. Imperfection: no two loaves alike, a cracked "
+            "crust, flour on an apron. Time: proving overnight, before the "
+            "street wakes, the same recipe for forty years. Place: the shop "
+            "front, the local street, regulars known by name. Sound: crust "
+            "crackling, a shop bell, no music at the start. The purpose of a "
+            "mind map is quantity: nothing on it has been judged yet, which is "
+            "why it comes before the mood board and the concepts, and twenty "
+            "weak ideas at this stage are worth more than two careful ones.")
+    return figure("imedia-mm-ex", 760, 486, "".join(body),
+                  "A worked mind map", desc,
+                  "Do this before you decide anything. The first idea is "
+                  "almost never the best one, and you cannot tell until there "
+                  "are twenty.")
+
+
+# ====================================================== worked AV script
+
+@diagram("imedia-script-example")
+def _script_example():
+    """The two column script: what is seen beside what is heard."""
+    body = [text(380, 22, "Script: Northgate Bakery · v03 · two column "
+                 "audio visual format", 11.5, 700, fill=MUTED)]
+    X0, W1, W2, W3 = 28, 70, 320, 314
+    body.append(box(X0, 42, W1, 26, None, fill=TEAL_SOFT, stroke=TEAL, r=4))
+    body.append(text(X0 + W1 / 2, 59, "TIME", 9.6, 750, fill=TEAL))
+    body.append(box(X0 + W1, 42, W2, 26, None, fill=TEAL_SOFT, stroke=TEAL,
+                    r=4))
+    body.append(text(X0 + W1 + W2 / 2, 59, "VISUAL — what is seen", 9.6,
+                     750, fill=TEAL))
+    body.append(box(X0 + W1 + W2, 42, W3, 26, None, fill=LILAC_SOFT,
+                    stroke=LILAC, r=4))
+    body.append(text(X0 + W1 + W2 + W3 / 2, 59, "AUDIO — what is heard",
+                     9.6, 750, fill=LILAC))
+    ROWS = [
+        ("00:00", ["WS shop front, dawn. Street empty.",
+                   "Light coming up behind the roofline."],
+         ["VO (warm, unhurried): “Every morning,",
+          "before the street wakes up…”",
+          "SFX: distant traffic, one bird."]),
+        ("00:06", ["MS baker at the bench, shaping dough.",
+                   "Slow push in to the hands."],
+         ["VO: “…we start again from nothing.”",
+          "MUSIC: in, low, under the voice."]),
+        ("00:11", ["CU hands dusting flour.",
+                   "ECU scored crust, held two seconds."],
+         ["SFX: flour, cloth, breath.",
+          "SFX: crust crackling, close."]),
+        ("00:16", ["MS baker hands a bag across the counter.",
+                   "Slight handheld. Both faces in frame."],
+         ["CUSTOMER: “Same as always?”",
+          "BAKER: “Always.”",
+          "SFX: shop bell."]),
+        ("00:21", ["WS shop front, people outside now.",
+                   "Caption lower third, then fade."],
+         ["VO: “Northgate. Open from six.”",
+          "MUSIC: up, then out."]),
+    ]
+    y = 70
+    for t, visual, audio in ROWS:
+        h = max(len(visual), len(audio)) * 15 + 14
+        body.append(box(X0, y, W1, h, None, fill=FILL2, stroke=LINE, r=4))
+        body.append(text(X0 + W1 / 2, y + 18, t, 9.4, 650, fill=MUTED,
+                         mono=True))
+        body.append(box(X0 + W1, y, W2, h, None, fill=FILL, stroke=LINE, r=4))
+        for j, ln in enumerate(visual):
+            body.append(text(X0 + W1 + 10, y + 18 + j * 15, ln, 9, 450,
+                             anchor="start", fill="var(--dg-text)"))
+        body.append(box(X0 + W1 + W2, y, W3, h, None, fill=FILL, stroke=LINE,
+                        r=4))
+        for j, ln in enumerate(audio):
+            body.append(text(X0 + W1 + W2 + 10, y + 18 + j * 15, ln, 9, 450,
+                             anchor="start", fill="var(--dg-text)"))
+        y += h + 4
+    body.append(box(28, y + 6, 704, 58, None, fill=TEAL_SOFT, stroke=TEAL,
+                    r=8))
+    body.append(text(380, y + 26, "The two columns line up, so anyone can read "
+                     "across and see what is heard over what is seen.", 11,
+                     700, fill=TEAL))
+    body.append(text(380, y + 44, "Speaker in capitals, delivery in brackets, "
+                     "SFX and MUSIC marked separately, and a running time down "
+                     "the left.", 10, 500, fill=MUTED))
+    desc = ("A two column audio visual script for a bakery promotion, version "
+            "3, with a running time column on the left, a visual column headed "
+            "'what is seen' and an audio column headed 'what is heard'. At "
+            "00:00 the visual is a wide shot of the shop front at dawn with an "
+            "empty street and light coming up behind the roofline, while the "
+            "audio is a warm, unhurried voiceover saying 'every morning, before "
+            "the street wakes up', with distant traffic and one bird as effects. "
+            "At 00:06 the visual is a mid shot of the baker shaping dough with "
+            "a slow push in to the hands, and the audio is the voiceover 'we "
+            "start again from nothing' with music entering low under the voice. "
+            "At 00:11 the visual cuts to a close up of hands dusting flour and "
+            "then an extreme close up of a scored crust held for two seconds, "
+            "with effects of flour, cloth and breath, then crust crackling "
+            "close. At 00:16 the visual is a mid shot, slightly handheld, of "
+            "the baker handing a bag across the counter with both faces in "
+            "frame, and the audio is the customer saying 'same as always', the "
+            "baker replying 'always', and a shop bell. At 00:21 the visual is a "
+            "wide shot of the shop front with people outside and a lower third "
+            "caption that fades, and the audio is the voiceover 'Northgate, "
+            "open from six' with the music coming up and then out. The "
+            "conventions shown are: the two columns aligned so a reader can "
+            "read across, speakers in capitals, delivery notes in brackets, "
+            "sound effects and music marked separately, and a running time down "
+            "the left.")
+    return figure("imedia-scr-ex", 760, y + 76, "".join(body),
+                  "A worked two column audio visual script", desc,
+                  "Two columns, aligned. A single column script for a film "
+                  "cannot show that the line lands over the close up.")
+
+
+# ======================================================= worked wireframe
+
+@diagram("imedia-wireframe-example")
+def _wireframe_example():
+    """A wireframe annotated with what every control does."""
+    body = [text(380, 22, "Wireframe: Northgate Bakery · order page "
+                 "· mobile, 390px · v02", 11.5, 700, fill=MUTED)]
+    PX, PY, PW, PH = 252, 44, 258, 446
+    body.append(box(PX, PY, PW, PH, None, fill=FILL, stroke=LINE, r=14))
+    PARTS = [
+        (12, 40, "logo", "header, persists on every screen", 1),
+        (60, 30, "back  |  basket (2)", "basket count always visible", 2),
+        (98, 96, "[ hero image ]", "one image, 16:9, lazy loaded", 3),
+        (202, 26, "Order for collection", "h1, one per page", 4),
+        (236, 54, "[ date ]   [ time ]", "two selects, not a free text field", 5),
+        (298, 40, "quantity  −  1  +", "44px targets, thumb reach", 6),
+        (346, 34, "[  Continue  ]", "primary action, full width", 7),
+        (388, 44, "nav: shop · orders · account",
+         "bottom nav, within thumb reach", 8),
+    ]
+    for off, h, label, note, n in PARTS:
+        y = PY + off
+        body.append(box(PX + 12, y, PW - 24, h, None, fill=FILL2, stroke=LINE,
+                        r=5, dash="4 3" if "image" in label else None))
+        body.append(text(PX + PW / 2, y + h / 2 + 4, label, 9.4, 550,
+                         fill=MUTED))
+        # numbered callout, alternating side
+        left = n % 2 == 1
+        cx = PX - 16 if left else PX + PW + 16
+        body.append(circle(cx, y + h / 2, 10, fill=TEAL_SOFT, stroke=TEAL))
+        body.append(text(cx, y + h / 2 + 4, str(n), 9.4, 750, fill=TEAL))
+        body.append(line(cx + (10 if left else -10), y + h / 2,
+                         PX + (12 if left else PW - 12), y + h / 2,
+                         stroke=TEAL, w=1, dash="3 3"))
+        tx = cx - 16 if left else cx + 16
+        body.append(text(tx, y + h / 2 + 4, note, 8.8, 450,
+                         anchor="end" if left else "start",
+                         fill="var(--dg-text)"))
+    body.append(box(24, 508, 712, 66, None, fill=WARN_SOFT, stroke=WARN, r=8))
+    body.append(text(380, 530, "No colour, no typeface, no real image. That is "
+                     "deliberate: a wireframe is a conversation about "
+                     "structure.", 11, 700, fill=WARN))
+    body.append(text(380, 548, "And it is not finished until the error state, "
+                     "the empty state and the confirmation screen have been "
+                     "wireframed too.", 10, 500, fill=MUTED))
+    body.append(text(380, 564, "Every control annotated with what it does and "
+                     "which screen it leads to.", 10, 500, fill=MUTED))
+    desc = ("A wireframe of a mobile order page at 390 pixels wide, version 2, "
+            "with eight numbered annotations. One: the logo in a header that "
+            "persists on every screen. Two: a back control and a basket showing "
+            "a count of two, with the count always visible. Three: a single "
+            "hero image placeholder at 16 by 9, lazy loaded. Four: the heading "
+            "'order for collection', the only h1 on the page. Five: a date and "
+            "a time control, both as selects rather than free text fields. Six: "
+            "a quantity stepper with minus, the value 1 and plus, drawn at 44 "
+            "pixel targets within thumb reach. Seven: a full width primary "
+            "Continue button. Eight: a bottom navigation bar with shop, orders "
+            "and account, placed within thumb reach. Everything is drawn in "
+            "grey with no colour, no typeface and no real image, which is "
+            "deliberate, because a wireframe is a conversation about structure "
+            "rather than about appearance. The wireframe is not finished until "
+            "the error state, the empty state and the confirmation screen have "
+            "been wireframed as well, and every control carries an annotation "
+            "saying what it does and which screen it leads to.")
+    return figure("imedia-wf-ex", 760, 588, "".join(body),
+                  "A worked wireframe with interaction annotations", desc,
+                  "Grey boxes on purpose. Add colour and the review turns into "
+                  "an argument about the shade of the button.")
+
+
+# ===================================================== worked asset table
+
+@diagram("imedia-asset-table-example")
+def _asset_table_example():
+    """A completed asset table, including the row that is not yet cleared."""
+    body = [text(380, 22, "Asset table: Northgate Bakery · v03 · "
+                 "every asset, every licence", 11.5, 700, fill=MUTED)]
+    COLS = [(118, "asset"), (74, "type"), (124, "source"), (62, "format"),
+            (96, "dimensions"), (100, "licence"), (130, "cleared?")]
+    ROWS = [
+        (("hero-shopfront", "Video", "Own footage", "MP4", "1920×1080",
+          "Own work", "Yes — 14/03"), True),
+        (("logo-primary", "Vector", "Client supplied", "SVG", "scalable",
+          "Client owned", "Yes — 02/03"), True),
+        (("baker-portrait", "Image", "Own photograph", "JPG", "4000×2667",
+          "Own work", "Release signed 09/03"), True),
+        (("bread-texture", "Image", "Unsplash", "JPG", "3200×2133",
+          "Unsplash licence", "Yes — commercial ok"), True),
+        (("backing-track", "Audio", "Free Music Archive", "MP3", "2:14",
+          "CC BY 4.0", "Yes — credit required"), True),
+        (("heading-font", "Font", "Google Fonts", "WOFF2", "—",
+          "SIL Open Font", "Yes"), True),
+        (("street-shot-02", "Image", "Found on a blog", "JPG", "1200×800",
+          "Unknown", "NO — do not use"), False),
+    ]
+    x0 = (760 - sum(c[0] for c in COLS)) / 2
+    cx = x0
+    for w, label in COLS:
+        body.append(box(cx, 42, w, 24, None, fill=TEAL_SOFT, stroke=TEAL, r=4))
+        body.append(text(cx + w / 2, 58, label, 9.2, 700, fill=TEAL))
+        cx += w
+    for r, (row, ok) in enumerate(ROWS):
+        cx = x0
+        y = 68 + r * 26
+        for (w, _), val in zip(COLS, row):
+            body.append(box(cx, y, w, 24, None,
+                            fill=FILL if ok else WARN_SOFT,
+                            stroke=LINE if ok else WARN, r=4))
+            body.append(text(cx + w / 2, y + 16, val, 8.8, 450,
+                             fill="var(--dg-text)" if ok else WARN))
+            cx += w
+    body.append(box(x0, 256, sum(c[0] for c in COLS), 54, None,
+                    fill=WARN_SOFT, stroke=WARN, r=8))
+    body.append(text(380, 276, "The last row is why the table exists.",
+                     11, 700, fill=WARN))
+    body.append(text(380, 294, "An asset with an unknown licence is not a risk "
+                     "to be managed, it is an asset you cannot use. Replace it "
+                     "now, not in the week of the deadline.", 10, 500,
+                     fill=MUTED))
+    body.append(box(x0, 320, sum(c[0] for c in COLS), 56, None, fill=FILL,
+                    stroke=TEAL, r=8))
+    body.append(text(380, 340, "Fonts and music count. Both are licensed, both "
+                     "are routinely forgotten, and both are easy to check.",
+                     10.6, 700, fill=TEAL))
+    body.append(text(380, 358, "A recognisable person needs a release as well "
+                     "as a licence, and for anyone under 16 that release comes "
+                     "from a parent.", 10, 500, fill=MUTED))
+    desc = ("A completed asset table, version 3, with the columns asset, type, "
+            "source, format, dimensions, licence and cleared. The rows are: "
+            "hero-shopfront, video, own footage, MP4, 1920 by 1080, own work, "
+            "cleared on 14 March; logo-primary, vector, client supplied, SVG, "
+            "scalable, client owned, cleared on 2 March; baker-portrait, image, "
+            "own photograph, JPG, 4000 by 2667, own work, release signed on 9 "
+            "March; bread-texture, image, from Unsplash, JPG, 3200 by 2133, "
+            "Unsplash licence, cleared for commercial use; backing-track, "
+            "audio, from the Free Music Archive, MP3, 2 minutes 14, Creative "
+            "Commons BY 4.0, cleared with credit required; heading-font, font, "
+            "from Google Fonts, WOFF2, SIL Open Font Licence, cleared. The last "
+            "row is marked as a problem: street-shot-02, an image found on a "
+            "blog, JPG, 1200 by 800, licence unknown, not cleared and marked do "
+            "not use. That row is why the table exists: an asset with an "
+            "unknown licence is not a risk to be managed but an asset that "
+            "cannot be used, and it should be replaced immediately rather than "
+            "in the week of the deadline. Two further points: fonts and music "
+            "are both licensed and both routinely forgotten, and a recognisable "
+            "person needs a release as well as a licence, which for anyone "
+            "under sixteen must come from a parent or guardian.")
+    return figure("imedia-at-ex", 760, 388, "".join(body),
+                  "A completed asset table", desc,
+                  "The licence column is the one that is assessed, and the one "
+                  "that stops the work being unusable.")
