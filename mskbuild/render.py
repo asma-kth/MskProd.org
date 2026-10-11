@@ -400,6 +400,23 @@ def render_quiz(topic_slug: str, questions: List[Q], title: str = "Knowledge che
                  ico("i-repeat"), ico("i-shuffle"))
 
 
+def _stem_html(stem: str) -> str:
+    """A question stem, with its scenario separated from what it asks.
+
+    Exam questions are written as a scenario and then an instruction, with a
+    blank line between. Rendered inline that blank line collapses and the two
+    run together as one paragraph, which is not how the paper prints it and
+    not how it reads. Everything before the final block is the scenario.
+    """
+    blocks = [b.strip() for b in re.split(r"\n\s*\n", stem.strip()) if b.strip()]
+    if len(blocks) < 2:
+        return markup.inline(stem.strip())
+    out = ['<span class="examq-scenario">%s</span>' % markup.inline(b)
+           for b in blocks[:-1]]
+    out.append('<span class="examq-ask">%s</span>' % markup.inline(blocks[-1]))
+    return "".join(out)
+
+
 def render_exam(topic_slug: str, questions: List[EQ], title: str = "Exam-style questions",
                 lead: str = "", heading_level: str = "h2") -> str:
     if not questions:
@@ -412,9 +429,11 @@ def render_exam(topic_slug: str, questions: List[EQ], title: str = "Exam-style q
             % (html.escape(json.dumps(p.any), quote=True), "L", markup.inline(p.text))
             for p in q.points)
         cmdbadge = '<span class="badge">%s</span>' % esc(q.command) if q.command else ""
+        fig = ('<div class="examq-figure">%s</div>' % markup.render(q.figure)
+               if getattr(q, "figure", "") else "")
         qs.append("""<div class="examq" data-marks="%d" data-exam-id="%s-e%d">
   <div class="examq-head"><span class="n">%d</span><span class="stem">%s</span><span class="marks">%d %s</span></div>
-  %s
+  %s%s
   <textarea placeholder="Write your answer as you would in the exam." aria-label="Your answer to question %d"></textarea>
   <div class="examq-tools">
     <button class="btn btn-primary btn-sm" type="button" data-mark>%s Mark my answer</button>
@@ -433,8 +452,8 @@ def render_exam(topic_slug: str, questions: List[EQ], title: str = "Exam-style q
       </div>
     </div>
   </div>
-</div>""" % (q.marks, esc(topic_slug), i, i + 1, markup.inline(q.stem), q.marks,
-             "mark" if q.marks == 1 else "marks", cmdbadge, i + 1, ico("i-check"),
+</div>""" % (q.marks, esc(topic_slug), i, i + 1, _stem_html(q.stem), q.marks,
+             "mark" if q.marks == 1 else "marks", cmdbadge, fig, i + 1, ico("i-check"),
              ico("i-paper"), q.marks, pts, markup.inline(q.model),
              esc(topic_slug), i, esc(topic_slug), i))
 

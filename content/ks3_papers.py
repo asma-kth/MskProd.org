@@ -6,8 +6,7 @@ covers the whole year, weighted towards the later units. Every question is
 original, written to the same structure and mark scheme conventions as the GCSE
 papers so that assessment feels familiar long before Year 10.
 """
-from content.papers import Paper
-from mskbuild.models import EQ, MP
+from mskbuild.models import EQ, MP, Paper
 
 # ============================================================ Year 7 Autumn
 

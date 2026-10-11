@@ -5,28 +5,9 @@ so every paper here is written from scratch to match the structure, question
 style, command words and mark allocation of the real assessments. Links to the
 official past papers on each board's own site are given alongside them.
 """
-from dataclasses import dataclass, field
-from typing import List
-
 from mskbuild import render
-from mskbuild.models import EQ, MP
+from mskbuild.models import EQ, MP, Paper
 from mskbuild.render import layout, crumbs, crumbs_ld, ico, esc, write, SITE_URL
-
-
-@dataclass
-class Paper:
-    slug: str
-    title: str
-    course: str
-    board: str
-    code: str
-    minutes: int
-    marks: int
-    blurb: str
-    advice: str
-    questions: List[EQ]
-    calculator: str = "No calculator is permitted."
-    accent: str = "var(--teal)"
 
 
 OFFICIAL = [
@@ -705,8 +686,10 @@ for _p in ALL_PAPERS:
 
 # Durations are scaled from the real papers so the time pressure matches:
 # J277 allows 90 minutes for 80 marks, H446 150 minutes for 140, R093 75 for 70.
+# F200 allows 75 minutes for 60 marks and F201 90 minutes for the same.
 _RATIO = {"J277/01 style": 1.125, "J277/02 style": 1.125,
-          "H446/01 style": 1.071, "H446/02 style": 1.071, "R093 style": 1.071}
+          "H446/01 style": 1.071, "H446/02 style": 1.071, "R093 style": 1.071,
+          "F200 style": 1.25, "F201 style": 1.5}
 for _p in ALL_PAPERS:
     _p.minutes = int(round(_p.marks * _RATIO.get(_p.code, 1.1)))
 
@@ -715,6 +698,15 @@ for _p in ALL_PAPERS:
 # as this page is concerned. They set their own marks and timings.
 from content.ks3_papers import ALL_KS3_PAPERS  # noqa: E402
 ALL_PAPERS = ALL_KS3_PAPERS + ALL_PAPERS
+
+# The Data Analytics papers are also their own module, because six full papers
+# is more text than the rest of this file put together. They are ordinary
+# Papers and set their own marks and timings the same way.
+from content.da_papers import ALL_DA_PAPERS  # noqa: E402
+for _p in ALL_DA_PAPERS:
+    _p.marks = sum(q.marks for q in _p.questions)
+    _p.minutes = int(round(_p.marks * _RATIO.get(_p.code, 1.1)))
+ALL_PAPERS = ALL_PAPERS + ALL_DA_PAPERS
 
 
 def _paper_page(paper):
@@ -791,13 +783,17 @@ def _paper_page(paper):
 def build(register, add_search, *_):
     cards = []
     ks3_cards = []
+    da_cards = []
     for p in ALL_PAPERS:
         path, html = _paper_page(p)
         write(path, html)
         register(path, 0.8, "monthly")
         add_search(p.title, path, "%s practice paper, %d marks" % (p.board, p.marks),
                    (p.title + " " + p.course + " " + p.blurb).lower())
-        (ks3_cards if p.course == "Key Stage 3" else cards).append(
+        bucket = (ks3_cards if p.course == "Key Stage 3"
+                  else da_cards if p.course == "Data Analytics"
+                  else cards)
+        bucket.append(
             '<a class="tile" href="%s">'
             '<span class="tile-icon">%s</span><h3>%s</h3><p>%s</p>'
             '<span class="tile-meta"><span>%d marks</span><span>%d minutes</span><span>%s</span></span></a>'
@@ -831,6 +827,16 @@ def build(register, add_search, *_):
   <div class="section-head">
     <h2>GCSE and A Level papers</h2>
     <p>Each one is timed to the same marks per minute as the real assessment, so the pressure is genuine.</p>
+  </div>
+  <div class="grid grid-2">%s</div>
+</div></section>
+
+<section class="section"><div class="wrap">
+  <div class="section-head">
+    <h2>OCR Data Analytics, the two exam units</h2>
+    <p>Three papers for each externally assessed unit. F200 allows 1 hour 15 minutes for 60 marks and
+    F201 1 hour 30 minutes for 60, and these are timed to match. Several questions print resource
+    material, a chart, an extract or a results table, exactly as the real papers do.</p>
   </div>
   <div class="grid grid-2">%s</div>
 </div></section>
@@ -894,7 +900,7 @@ def build(register, add_search, *_):
         ico("i-paper"), len(ALL_PAPERS),
         sum(len(p.questions) for p in ALL_PAPERS),
         sum(p.marks for p in ALL_PAPERS),
-        "".join(cards), "".join(ks3_cards), links)
+        "".join(cards), "".join(da_cards), "".join(ks3_cards), links)
 
     ld = [crumbs_ld([("Home", "/"), ("Exam papers", None)])]
     write("/exam-papers/", layout(

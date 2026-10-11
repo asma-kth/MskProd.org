@@ -2862,3 +2862,8 @@ from . import diagrams_imedia  # noqa: E402,F401
 # The Data Analytics diagrams and graphs, likewise in their own module: several
 # are real plotted graphs with their own helpers, which do not belong here.
 from . import diagrams_data  # noqa: E402,F401
+
+
+# Resource material for the practice papers: figures that present data without
+# explaining it, kept apart from the teaching diagrams for exactly that reason.
+from . import diagrams_exam  # noqa: E402,F401

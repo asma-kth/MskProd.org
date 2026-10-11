@@ -277,7 +277,7 @@ PLACEMENTS = {
     ("data-analytics", "understanding-data"): {
         "Data, information, knowledge and wisdom": ["!diagram data-dikw"],
         "Types and classifications of data": ["!diagram data-types-tree"],
-        "Data file formats": ["!diagram data-store-choice"],
+        "Data file formats": ["!diagram data-file-formats"],
     },
     ("data-analytics", "managing-data"): {
         "The data lifecycle and the analytics pipeline": ["!diagram data-pipeline"],
@@ -288,13 +288,14 @@ PLACEMENTS = {
     },
     ("data-analytics", "data-across-platforms"): {
         "APIs and moving data between systems": ["!diagram data-api-request"],
-        "Interoperability and integration patterns": ["!diagram data-etl-elt"],
+        "Interoperability and integration patterns": ["!diagram data-interoperability"],
         "Access control, security and the cloud": ["!diagram data-access-control"],
     },
     ("data-analytics", "legal-considerations"): {
         "The UK GDPR and the Data Protection Act 2018": ["!diagram data-gdpr"],
         "The other legislation by name": ["!diagram uk-computing-law"],
-        "Ethics, retention and destruction": ["!diagram data-anonymisation"],
+        "Ethics, retention and destruction": ["!diagram data-retention",
+                                              "!diagram data-anonymisation"],
     },
     ("data-analytics", "roles-skills-and-attributes"): {
         "Technical skills": ["!diagram data-distribution",
@@ -303,18 +304,22 @@ PLACEMENTS = {
         "Personal attributes and communicating results": ["!diagram data-chart-choice"],
     },
     ("data-analytics", "the-scope-of-big-data"): {
-        "What makes data big": ["!diagram data-five-vs"],
+        "What makes data big": ["!diagram data-five-vs",
+                                "!diagram data-units-scale"],
         "Where big data comes from": ["!diagram data-big-data-sources",
                                       "!scene data-stack-3d"],
     },
     ("data-analytics", "big-data-infrastructure"): {
         "Storage at scale": ["!diagram data-store-choice"],
         "Network and movement": ["!diagram data-scaling"],
-        "Processing and computing power": ["!scene parallel-cores-3d"],
+        "Processing and computing power": ["!diagram data-processing-models",
+                                           "!scene parallel-cores-3d",
+                                           "!photo server-rack"],
     },
     ("data-analytics", "machine-learning-and-ai"): {
         "The three kinds of learning, and the tasks": ["!diagram data-ml-types",
                                                        "!scene neural-network-3d"],
+        "AI, machine learning and deep learning": ["!diagram data-ml-applications"],
         "Measuring whether a model works": ["!diagram data-ml-workflow",
                                             "!diagram data-confusion-matrix",
                                             "!tool confusion-matrix",
@@ -328,6 +333,7 @@ PLACEMENTS = {
     ("data-analytics", "environment-and-society"): {
         "The environmental cost": ["!diagram data-energy"],
         "Green computing": ["!diagram data-green-computing"],
+        "Society, work and culture": ["!diagram data-society-impacts"],
     },
 
     # ------------------------------------------------------- Creative iMedia

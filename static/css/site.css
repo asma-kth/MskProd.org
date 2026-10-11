@@ -758,6 +758,28 @@ pre code { background: none; border: 0; padding: 0; color: inherit; white-space:
   background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r-s);
   padding: .12rem .5rem; height: fit-content; margin-top: .2rem;
 }
+/* A question stem is a scenario and then an instruction. Printed on a real
+   paper they are separate blocks, and run together as one paragraph the
+   instruction is easy to miss. */
+.examq-head .stem .examq-scenario,
+.examq-head .stem .examq-ask { display: block; }
+.examq-head .stem .examq-scenario {
+  font-weight: 450; color: var(--ink-2);
+  border-left: 3px solid var(--border-strong);
+  padding: .1rem 0 .1rem .8rem; margin-bottom: .55rem;
+}
+.examq-head .stem .examq-scenario + .examq-scenario { margin-top: -.3rem; }
+
+/* Resource material: a chart to read, a table to find the faults in. It sits
+   between the question and the answer box, indented to the stem. */
+.examq-figure { margin: .2rem 0 .9rem; padding-left: 2.1rem; }
+.examq-figure > :first-child { margin-top: 0; }
+.examq-figure > :last-child { margin-bottom: 0; }
+.examq-figure .diagram { margin-block: .4rem; }
+@media (max-width: 36rem) {
+  .examq-figure { padding-left: 0; }
+}
+
 .examq textarea {
   width: 100%; min-height: 7.5rem; resize: vertical; padding: .85rem 1rem;
   border: 1.5px solid var(--border-strong); border-radius: var(--r-m); font: inherit; font-size: .95rem;

@@ -1888,3 +1888,469 @@ def _sources():
                   "Sources of big data and what each one answers", desc,
                   "One source answers a narrow question. Two joined answer a "
                   "different kind of question, and create a different risk.")
+
+
+# =============================================== F200: data file formats
+
+@diagram("data-file-formats")
+def _formats():
+    """What each format can and cannot hold, and what it is actually for."""
+    body = [text(380, 24, "Choose the format from the job, not from habit",
+                 12, 650, fill=MUTED)]
+    COLS = [(132, "format"), (104, "structure"), (90, "types?"),
+            (90, "nesting?"), (104, "readable?"), (184, "use it for")]
+    ROWS = [("CSV", "structured", "no", "no", "yes",
+             "sharing a small table with anyone", TEAL),
+            ("JSON", "semi", "some", "yes", "yes",
+             "API responses, anything nested", TEAL),
+            ("XML", "semi", "with a schema", "yes", "yes",
+             "documents that must validate", LILAC),
+            ("XLSX", "structured", "yes", "no", "in Excel",
+             "a model a person will use", LILAC),
+            ("SQL table", "structured", "yes", "via joins", "no",
+             "many entities, many users", TEAL),
+            ("Parquet", "columnar", "yes", "yes", "no",
+             "hundreds of millions of rows", TEAL),
+            ("PDF", "unstructured", "no", "no", "yes",
+             "presentation, never as a data source", WARN)]
+    x0 = (760 - sum(c[0] for c in COLS)) / 2
+    cx = x0
+    for w, label in COLS:
+        body.append(box(cx, 46, w, 26, None, fill=FILL2, stroke=LINE, r=4))
+        body.append(text(cx + w / 2, 63, label, 9.8, 700, fill=MUTED))
+        cx += w
+    for r, row in enumerate(ROWS):
+        tone = row[-1]
+        cx = x0
+        y = 74 + r * 30
+        for (w, _), val in zip(COLS, row[:-1]):
+            first = cx == x0
+            body.append(box(cx, y, w, 28, None,
+                            fill=(TEAL_SOFT if tone == TEAL else
+                                  LILAC_SOFT if tone == LILAC else WARN_SOFT)
+                            if first else FILL, stroke=LINE, r=4))
+            body.append(text(cx + w / 2, y + 18, val, 9.6,
+                             700 if first else 450,
+                             fill=tone if first else "var(--dg-text)"))
+            cx += w
+    body.append(box(x0, 294, sum(c[0] for c in COLS), 46, None,
+                    fill=WARN_SOFT, stroke=WARN, r=8))
+    body.append(text(380, 313, "CSV carries no type information at all.",
+                     11, 700, fill=WARN))
+    body.append(text(380, 330, "0123 becomes 123, and 03/04/2026 is March in "
+                     "one tool and April in another. Declare the types on "
+                     "import.", 10, 500, fill=MUTED))
+    desc = ("A table comparing data file formats by structure, whether they "
+            "carry type information, whether they support nesting, whether "
+            "they are human readable, and what each is for. CSV is structured, "
+            "carries no types, cannot nest, is readable, and is for sharing a "
+            "small table with anyone. JSON is semi-structured, carries some "
+            "type information, supports nesting, is readable, and is for API "
+            "responses and anything nested. XML is semi-structured, typed with "
+            "a schema, supports nesting, is readable, and is for documents that "
+            "must validate. XLSX is structured, typed, does not nest, is "
+            "readable only in a spreadsheet application, and is for a model a "
+            "person will use. A SQL table is structured, typed, relates records "
+            "through joins, is not directly readable, and is for many entities "
+            "with many users. Parquet is columnar, typed, supports nesting, is "
+            "not readable, and is for hundreds of millions of rows. PDF is "
+            "unstructured, untyped, does not nest, is readable, and is for "
+            "presentation, never as a data source. The warning underneath is "
+            "that CSV carries no type information at all, so a product code of "
+            "0123 becomes the number 123 and a date written 03/04/2026 is March "
+            "in one tool and April in another, which is why types have to be "
+            "declared on import.")
+    return figure("data-fmt", 760, 352, "".join(body),
+                  "Data file formats compared", desc,
+                  "Nesting, types and who has to read it. Those three answer "
+                  "almost every format question.")
+
+
+# =============================================== F200: units and scale
+
+@diagram("data-units-scale")
+def _units():
+    """What each unit of data actually looks like."""
+    body = [text(380, 24, "The scale, in things you can picture", 12, 650,
+                 fill=MUTED)]
+    UNITS = [("Kilobyte", "KB", "a page of plain text", 0.012, TEAL),
+             ("Megabyte", "MB", "a photograph, a minute of music", 0.055, TEAL),
+             ("Gigabyte", "GB", "a film, or 250 songs", 0.14, TEAL),
+             ("Terabyte", "TB", "a desktop hard drive", 0.3, LILAC),
+             ("Petabyte", "PB", "a large organisation's whole estate", 0.56,
+              LILAC),
+             ("Exabyte", "EB", "a global platform, or the web in 2000", 0.86,
+              WARN),
+             ("Zettabyte", "ZB", "all the data created worldwide in a year",
+              1.0, WARN)]
+    for i, (name, abbr, example, frac, tone) in enumerate(UNITS):
+        y = 50 + i * 42
+        body.append(box(28, y, 150, 34, None,
+                        fill=TEAL_SOFT if tone == TEAL else
+                        (LILAC_SOFT if tone == LILAC else WARN_SOFT),
+                        stroke=tone, r=6))
+        body.append(text(88, y + 22, "%s (%s)" % (name, abbr), 10.5, 700,
+                         fill=tone))
+        body.append(box(190, y + 6, 240, 22, None, fill=FILL2, stroke=LINE,
+                        r=11))
+        body.append('<rect x="190" y="%d" width="%.1f" height="22" rx="11" '
+                    'fill="%s" stroke="%s" stroke-width="1"/>'
+                    % (y + 6, max(10, 240 * frac), 
+                       TEAL_SOFT if tone == TEAL else
+                       (LILAC_SOFT if tone == LILAC else WARN_SOFT), tone))
+        body.append(text(444, y + 22, example, 10, 500, anchor="start",
+                         fill="var(--dg-text)"))
+        if i:
+            body.append(text(180, y + 22, "×1000", 8.4, 600,
+                             anchor="end", fill=MUTED))
+    body.append(box(28, 348, 704, 44, None, fill=FILL, stroke=TEAL, r=8))
+    body.append(text(380, 367, "Each step is a thousand times the one before, "
+                     "which is why intuition fails above about a terabyte.",
+                     10.8, 700, fill=TEAL))
+    body.append(text(380, 384, "The bar lengths here are not to scale: drawn "
+                     "to scale, a kilobyte would be invisible.", 9.8, 500,
+                     fill=MUTED))
+    desc = ("The units of data with an example of each: a kilobyte is a page "
+            "of plain text; a megabyte is a photograph or a minute of music; a "
+            "gigabyte is a film or 250 songs; a terabyte is a desktop hard "
+            "drive; a petabyte is a large organisation's entire data estate; an "
+            "exabyte is a global platform, or the whole web around the year "
+            "2000; a zettabyte is roughly all the data created worldwide in a "
+            "year. Each step is a thousand times the one before it, which is "
+            "why intuition about size breaks down above about a terabyte. The "
+            "bars shown are not drawn to scale, because at true scale a "
+            "kilobyte would be invisible beside a zettabyte.")
+    return figure("data-units", 760, 404, "".join(body),
+                  "The units of data, with an example of each", desc,
+                  "Every step is a factor of a thousand. Big data starts where "
+                  "one machine stops.")
+
+
+# ============================================ F200: interoperability levels
+
+@diagram("data-interoperability")
+def _interop():
+    """Three levels of agreement, and what failure looks like at each."""
+    body = [text(380, 24, "Two systems have to agree at three levels",
+                 12, 650, fill=MUTED)]
+    LEVELS = [
+        ("TECHNICAL", "how it physically moves",
+         "HTTPS, SFTP, the file format, the encoding",
+         "Nothing transfers. It fails loudly, and somebody fixes it.",
+         TEAL, TEAL_SOFT),
+        ("SYNTACTIC", "how it is structured",
+         "field names, order, nesting, date format",
+         "It parses, and values land in the wrong columns. Usually visible.",
+         LILAC, LILAC_SOFT),
+        ("SEMANTIC", "what the values mean",
+         "what counts as a customer, as active, as complete",
+         "Everything imports cleanly and the numbers are wrong. Nothing errors.",
+         WARN, WARN_SOFT),
+    ]
+    for i, (name, q, detail, fail, tone, soft) in enumerate(LEVELS):
+        y = 50 + i * 104
+        body.append(box(28, y, 200, 88, None, fill=soft, stroke=tone, r=10))
+        body.append(text(128, y + 32, name, 12.5, 780, fill=tone))
+        body.append(text(128, y + 52, q, 9.8, 450, fill=MUTED))
+        body.append(box(246, y + 10, 240, 68, None, fill=FILL, stroke=tone,
+                        r=8))
+        body.append(text(366, y + 34, "AGREE ON", 9, 700, fill=tone))
+        body.append(text(366, y + 52, detail, 9.6, 450, fill=MUTED))
+        body.append(line(492, y + 44, 512, y + 44, stroke=tone, arrow=True))
+        body.append(box(518, y + 10, 214, 68, None,
+                        fill=WARN_SOFT if i == 2 else FILL2,
+                        stroke=WARN if i == 2 else LINE, r=8))
+        body.append(text(625, y + 30, "IF NOT", 9, 700,
+                         fill=WARN if i == 2 else MUTED))
+        # wrap the failure text onto two lines
+        words, lines, cur = fail.split(), [], ""
+        for w in words:
+            if len(cur) + len(w) + 1 <= 34:
+                cur = (cur + " " + w).strip()
+            else:
+                lines.append(cur)
+                cur = w
+        lines.append(cur)
+        for j, ln in enumerate(lines[:3]):
+            body.append(text(625, y + 46 + j * 13, ln, 9, 500, fill=MUTED))
+    body.append(text(380, 372, "Semantic failure is the dangerous one, because "
+                     "nothing anywhere reports an error.", 11, 700, fill=WARN))
+    desc = ("Interoperability needs agreement at three levels. Technical "
+            "agreement is how the data physically moves: the protocol, the file "
+            "format and the character encoding. Without it nothing transfers at "
+            "all, which fails loudly and gets fixed. Syntactic agreement is how "
+            "the data is structured: the field names, their order, whether "
+            "records nest and how dates are written. Without it the file parses "
+            "but values land in the wrong columns, which is usually visible on "
+            "inspection. Semantic agreement is what the values mean: what counts "
+            "as a customer, what counts as active, what counts as complete. "
+            "Without it everything imports cleanly and the numbers are simply "
+            "wrong, and nothing anywhere reports an error, which is why semantic "
+            "failure is the dangerous one.")
+    return figure("data-interop", 760, 388, "".join(body),
+                  "The three levels of interoperability", desc,
+                  "The exchange that worked perfectly and produced the wrong "
+                  "total failed at the level nobody checks.")
+
+
+# ================================================ F200: retention and deletion
+
+@diagram("data-retention")
+def _retention():
+    """How long data is kept, and what deleting it actually means."""
+    body = [text(380, 24, "Every dataset needs an end date", 12, 650,
+                 fill=MUTED)]
+    ROWS = [("CCTV footage", "about 30 days", "unless needed for an incident",
+             TEAL),
+            ("Job applications, unsuccessful", "6 to 12 months",
+             "to answer a discrimination claim", TEAL),
+            ("Marketing contacts", "a set period after last engagement",
+             "and removed on request, immediately", LILAC),
+            ("Customer orders", "6 years", "a statutory accounting period",
+             LILAC),
+            ("Employee records", "6 years after leaving",
+             "tax and employment law", TEAL),
+            ("Analytics and logs", "as short as the question allows",
+             "this is the one nobody sets", WARN)]
+    for i, (what, how_long, why, tone) in enumerate(ROWS):
+        y = 48 + i * 40
+        body.append(box(28, y, 236, 32, None,
+                        fill=TEAL_SOFT if tone == TEAL else
+                        (LILAC_SOFT if tone == LILAC else WARN_SOFT),
+                        stroke=tone, r=6))
+        body.append(text(146, y + 21, what, 10.4, 650, fill=tone))
+        body.append(box(276, y, 220, 32, None, fill=FILL, stroke=LINE, r=6))
+        body.append(text(386, y + 21, how_long, 10, 600,
+                         fill="var(--dg-text)"))
+        body.append(text(512, y + 21, why, 9.8, 450, anchor="start",
+                         fill=MUTED))
+    body.append(text(380, 306, "WHAT “DELETED” HAS TO MEAN", 11, 700,
+                     fill=MUTED))
+    STEPS = [("Deleting a file", "only removes the pointer; the blocks remain "
+              "until overwritten", WARN),
+             ("Secure erase", "overwrites, or destroys the key the data was "
+              "encrypted with", TEAL),
+             ("Backups and archives", "are included, or the data is still "
+              "there", WARN),
+             ("Record it", "what was destroyed, when, by whom and under which "
+              "policy", TEAL)]
+    for i, (k, v, tone) in enumerate(STEPS):
+        y = 320 + i * 28
+        body.append(box(28, y, 704, 24, None,
+                        fill=FILL2 if i % 2 == 0 else FILL, stroke="none", r=4))
+        body.append(text(44, y + 16, k, 10, 700, anchor="start", fill=tone))
+        body.append(text(220, y + 16, v, 10, 450, anchor="start", fill=MUTED))
+    body.append(box(28, 438, 704, 40, None, fill=TEAL_SOFT, stroke=TEAL, r=8))
+    body.append(text(380, 462, "“We keep everything in case it is "
+                     "useful” breaches storage limitation, and makes every "
+                     "future breach larger.", 10.8, 700, fill=TEAL))
+    desc = ("Typical retention periods, with the reason for each. CCTV footage "
+            "is usually kept about 30 days unless it is needed for an incident. "
+            "Unsuccessful job applications are kept six to twelve months, long "
+            "enough to answer a discrimination claim. Marketing contacts are "
+            "kept for a set period after last engagement and removed "
+            "immediately on request. Customer orders are kept six years, a "
+            "statutory accounting period. Employee records are kept six years "
+            "after leaving for tax and employment law. Analytics and logs "
+            "should be kept only as long as the question requires, and this is "
+            "the period organisations most often fail to set. Underneath, what "
+            "deletion has to mean: deleting a file only removes the pointer and "
+            "the blocks remain until overwritten; secure erase overwrites the "
+            "data or destroys the key it was encrypted with; backups and "
+            "archives must be included or the data is still held; and the "
+            "destruction should be recorded, noting what was destroyed, when, "
+            "by whom and under which policy. Keeping everything in case it "
+            "proves useful breaches the storage limitation principle and makes "
+            "every future breach larger.")
+    return figure("data-retain", 760, 490, "".join(body),
+                  "Retention periods and what deletion means", desc,
+                  "The cheapest way to protect data is not to still have it.")
+
+
+# ============================================ F201: processing models
+
+@diagram("data-processing-models")
+def _processing():
+    """Four ways to process, and what each one is for."""
+    body = [text(380, 24, "How quickly does the answer stop being useful?",
+                 12, 650, fill=MUTED)]
+    MODELS = [("BATCH", "hours to a day", "a large volume on a schedule",
+               ["monthly billing", "model retraining", "overnight reports"],
+               TEAL, TEAL_SOFT, 0.18),
+              ("MICRO-BATCH", "seconds to minutes", "small batches, often",
+               ["near-live dashboards", "frequent aggregates"],
+               LILAC, LILAC_SOFT, 0.45),
+              ("STREAM", "milliseconds", "each event as it arrives",
+               ["fraud blocking", "sensor alerts", "live routing"],
+               WARN, WARN_SOFT, 0.78),
+              ("INTERACTIVE", "while someone waits", "a human asking a question",
+               ["exploration", "a dashboard filter"],
+               TEAL, TEAL_SOFT, 1.0)]
+    for i, (name, latency, what, uses, tone, soft, _f) in enumerate(MODELS):
+        x = 24 + i * 184
+        body.append(box(x, 52, 172, 190, None, fill=soft, stroke=tone, r=10))
+        body.append(text(x + 86, 78, name, 11.5, 780, fill=tone))
+        body.append(box(x + 14, 90, 144, 24, None, fill=FILL, stroke=tone,
+                        r=12))
+        body.append(text(x + 86, 106, latency, 9.8, 700, fill=tone))
+        body.append(text(x + 86, 132, what, 9.4, 450, fill=MUTED))
+        for j, u in enumerate(uses):
+            body.append(text(x + 86, 156 + j * 18, "• " + u, 9.4, 500,
+                             fill="var(--dg-text)"))
+    body.append(line(40, 268, 720, 268, stroke=LINE, w=1.6, arrow=True))
+    body.append(text(40, 290, "answer needed slowly", 9.6, 600, anchor="start",
+                     fill=MUTED))
+    body.append(text(720, 290, "answer needed immediately", 9.6, 600,
+                     anchor="end", fill=MUTED))
+    body.append(box(24, 306, 708, 44, None, fill=FILL, stroke=TEAL, r=8))
+    body.append(text(378, 325, "The choice is not about volume. It is about "
+                     "how fast the value of the answer decays.", 11, 700,
+                     fill=TEAL))
+    body.append(text(378, 342, "A fraudulent transaction is settled before a "
+                     "nightly batch ever sees it.", 10, 500, fill=MUTED))
+    desc = ("Four processing models arranged by how quickly an answer is "
+            "needed. Batch processes a large volume on a schedule with a "
+            "latency of hours to a day, and suits monthly billing, model "
+            "retraining and overnight reports. Micro-batch processes small "
+            "batches frequently with a latency of seconds to minutes, and suits "
+            "near-live dashboards and frequent aggregates. Stream processing "
+            "handles each event as it arrives with a latency of milliseconds, "
+            "and suits fraud blocking, sensor alerts and live routing. "
+            "Interactive query answers while a person waits, and suits "
+            "exploration and dashboard filtering. The choice between them is "
+            "not about the volume of data but about how fast the value of the "
+            "answer decays: a fraudulent transaction has been authorised and "
+            "settled before a nightly batch ever sees it.")
+    return figure("data-proc", 760, 362, "".join(body),
+                  "Batch, micro-batch, stream and interactive processing", desc,
+                  "Pick the model from how fast the answer goes stale, not "
+                  "from how much data there is.")
+
+
+# ========================================= F201: machine learning in use
+
+@diagram("data-ml-applications")
+def _ml_apps():
+    """What machine learning is actually doing, sector by sector."""
+    body = [text(380, 24, "The same few techniques, across every sector",
+                 12, 650, fill=MUTED)]
+    SECTORS = [
+        ("Retail", "recommendation · demand forecasting · churn",
+         "classification, regression", TEAL),
+        ("Finance", "fraud detection · credit scoring · laundering checks",
+         "classification, anomaly detection", LILAC),
+        ("Healthcare", "image diagnosis · triage · readmission risk",
+         "classification, deep learning", TEAL),
+        ("Manufacturing", "predictive maintenance · visual inspection",
+         "regression, anomaly detection", LILAC),
+        ("Transport", "routing · demand prediction · autonomous control",
+         "reinforcement, regression", TEAL),
+        ("Energy", "load forecasting · grid balancing · fault prediction",
+         "regression, anomaly detection", LILAC),
+        ("Agriculture", "yield prediction · disease detection from imagery",
+         "regression, deep learning", TEAL),
+        ("Public sector", "demand planning · fraud · casework triage",
+         "classification, clustering", LILAC),
+    ]
+    for i, (sector, uses, technique, tone) in enumerate(SECTORS):
+        y = 46 + i * 40
+        body.append(box(28, y, 144, 32, None,
+                        fill=TEAL_SOFT if tone == TEAL else LILAC_SOFT,
+                        stroke=tone, r=6))
+        body.append(text(100, y + 21, sector, 10.6, 700, fill=tone))
+        body.append(box(184, y, 348, 32, None, fill=FILL, stroke=LINE, r=6))
+        body.append(text(358, y + 21, uses, 9.8, 450, fill="var(--dg-text)"))
+        body.append(box(544, y, 188, 32, None, fill=FILL2, stroke=LINE, r=6))
+        body.append(text(638, y + 21, technique, 9.4, 550, fill=MUTED))
+    body.append(box(28, 376, 704, 44, None, fill=TEAL_SOFT, stroke=TEAL, r=8))
+    body.append(text(380, 395, "Almost all of this is classification, "
+                     "regression, clustering or anomaly detection.", 11, 700,
+                     fill=TEAL))
+    body.append(text(380, 412, "The sector changes the data and the cost of "
+                     "being wrong. The technique barely changes at all.",
+                     10, 500, fill=MUTED))
+    desc = ("Machine learning applications by sector, with the techniques "
+            "behind them. Retail: recommendation, demand forecasting and churn "
+            "prediction, using classification and regression. Finance: fraud "
+            "detection, credit scoring and money laundering checks, using "
+            "classification and anomaly detection. Healthcare: image diagnosis, "
+            "triage and readmission risk, using classification and deep "
+            "learning. Manufacturing: predictive maintenance and visual quality "
+            "inspection, using regression and anomaly detection. Transport: "
+            "routing, demand prediction and autonomous control, using "
+            "reinforcement learning and regression. Energy: load forecasting, "
+            "grid balancing and fault prediction, using regression and anomaly "
+            "detection. Agriculture: yield prediction and disease detection "
+            "from imagery, using regression and deep learning. Public sector: "
+            "demand planning, fraud detection and casework triage, using "
+            "classification and clustering. Almost all of it reduces to "
+            "classification, regression, clustering or anomaly detection: the "
+            "sector changes the data and the cost of being wrong, while the "
+            "technique barely changes at all.")
+    return figure("data-mlapp", 760, 432, "".join(body),
+                  "Machine learning applications by sector", desc,
+                  "Learn the four task types properly and every application "
+                  "in the paper becomes one of them.")
+
+
+# ======================================= F201: society, both directions
+
+@diagram("data-society-impacts")
+def _society():
+    """The same capability, with its benefit and its cost side by side."""
+    body = [text(380, 24, "One capability, two consequences", 12, 650,
+                 fill=MUTED)]
+    body.append(text(214, 50, "WHAT IT MAKES POSSIBLE", 11, 750, fill=TEAL))
+    body.append(text(566, 50, "WHAT IT COSTS", 11, 750, fill=WARN))
+    PAIRS = [
+        ("Population health data", "outbreaks detected in days, not months",
+         "the most sensitive data anyone holds, in one place"),
+        ("Personalisation", "people find what is actually relevant to them",
+         "filter bubbles, and a catalogue that appears to shrink"),
+        ("Smart cities", "transport, energy and waste matched to real demand",
+         "continuous monitoring of everyone who lives there"),
+        ("Automation of routine work", "new specialist roles, and tedium removed",
+         "the roles automated are not the roles created"),
+        ("Free services funded by data", "access regardless of ability to pay",
+         "profiling most users never see and cannot inspect"),
+        ("Online public services", "cheaper, available at any hour",
+         "the digital divide deepens for those without access"),
+    ]
+    for i, (what, good, bad) in enumerate(PAIRS):
+        y = 62 + i * 54
+        body.append(box(28, y, 160, 46, None, fill=FILL2, stroke=LINE, r=6))
+        body.append(text(108, y + 28, what, 9.6, 650,
+                         fill="var(--dg-text)"))
+        body.append(box(198, y, 268, 46, None, fill=TEAL_SOFT, stroke=TEAL,
+                        r=6))
+        body.append(text(332, y + 28, good, 9.4, 500, fill=TEAL))
+        body.append(box(476, y, 256, 46, None, fill=WARN_SOFT, stroke=WARN,
+                        r=6))
+        body.append(text(604, y + 28, bad, 9.4, 500, fill=WARN))
+    body.append(box(28, 390, 704, 46, None, fill=FILL, stroke=LINE, r=8))
+    body.append(text(380, 410, "Both columns are true at once, and they are "
+                     "produced by the same system.", 11, 700, fill=MUTED))
+    body.append(text(380, 427, "A question asking you to evaluate wants both, "
+                     "and then a judgement about this particular case.",
+                     10, 500, fill=MUTED))
+    desc = ("Six capabilities with the benefit and the cost of each set side "
+            "by side. Population health data lets outbreaks be detected in days "
+            "rather than months, and concentrates the most sensitive data "
+            "anyone holds in one place. Personalisation helps people find what "
+            "is genuinely relevant to them, and creates filter bubbles in which "
+            "the catalogue appears to shrink. Smart cities match transport, "
+            "energy and waste to real demand, and monitor everyone who lives "
+            "there continuously. Automating routine work removes tedium and "
+            "creates new specialist roles, but the roles automated are not the "
+            "roles created. Services funded by data are free at the point of "
+            "use regardless of ability to pay, and are paid for with profiling "
+            "most users never see and cannot inspect. Online public services "
+            "are cheaper and available at any hour, and deepen the digital "
+            "divide for people without access or skills. Both columns are true "
+            "at the same time and are produced by the same systems, which is "
+            "why a question asking for an evaluation wants both sides and then "
+            "a judgement about the particular case in front of you.")
+    return figure("data-society", 760, 448, "".join(body),
+                  "The benefits and the costs of data at scale", desc,
+                  "Neither column is the answer on its own. The judgement at "
+                  "the end is where the top band is.")

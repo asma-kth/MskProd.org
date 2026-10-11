@@ -32,6 +32,10 @@ class EQ:
     points: List[MP]
     model: str
     command: str = ""     # describe / explain / compare / justify ...
+    # Resource material printed with the question: a chart to read, a table
+    # to find the faults in, a confusion matrix to calculate from. Written in
+    # the same mini-markup as topic content, so "!diagram <name>" works here.
+    figure: str = ""
 
 
 @dataclass
@@ -93,3 +97,25 @@ class Course:
     # topic name has to survive that cut.
     seo: str = ""
     journey: List[Tuple[str, str, str]] = field(default_factory=list)
+
+
+@dataclass
+class Paper:
+    """One practice examination paper.
+
+    Lives here rather than in content/papers.py so that the modules defining
+    papers can import it without importing the module that collects them,
+    which was a circular import waiting to be tripped over.
+    """
+    slug: str
+    title: str
+    course: str
+    board: str
+    code: str
+    minutes: int
+    marks: int
+    blurb: str
+    advice: str
+    questions: List[EQ]
+    calculator: str = "No calculator is permitted."
+    accent: str = "var(--teal)"
