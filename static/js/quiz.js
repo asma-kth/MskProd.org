@@ -208,7 +208,10 @@
   }
 
   function markOne(examq) {
-    var ta = examq.querySelector("textarea");
+    // The answer box is the one directly inside the question. A figure or a model
+    // answer can hold Python blocks, and each of those has an editor textarea of
+    // its own that comes earlier in the page and must not be marked instead.
+    var ta = examq.querySelector(":scope > textarea");
     var result = examq.querySelector(".examq-result");
     var answer = normalise(ta.value);
     var stems = stemSet(ta.value);
@@ -265,9 +268,9 @@
     var r = e.target.closest && e.target.closest("[data-exam-reset]");
     if (r) {
       var eq = r.closest(".examq");
-      eq.querySelector("textarea").value = "";
+      eq.querySelector(":scope > textarea").value = "";
       eq.querySelector(".examq-result").classList.remove("show");
-      eq.querySelector("textarea").focus();
+      eq.querySelector(":scope > textarea").focus();
       return;
     }
 

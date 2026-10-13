@@ -444,7 +444,7 @@ def render_exam(topic_slug: str, questions: List[EQ], title: str = "Exam-style q
     <div class="ms">
       <div class="ms-head">%s Mark scheme<span class="award">0 / %d</span></div>
       <ul>%s</ul>
-      <div class="model-answer"><b>Model answer</b><p>%s</p></div>
+      <div class="model-answer"><b>Model answer</b>%s</div>
       <div class="self-mark">
         <label for="self-%s-%d">Examiner override</label>
         <select data-self id="self-%s-%d"></select>
@@ -454,7 +454,7 @@ def render_exam(topic_slug: str, questions: List[EQ], title: str = "Exam-style q
   </div>
 </div>""" % (q.marks, esc(topic_slug), i, i + 1, _stem_html(q.stem), q.marks,
              "mark" if q.marks == 1 else "marks", cmdbadge, fig, i + 1, ico("i-check"),
-             ico("i-paper"), q.marks, pts, markup.inline(q.model),
+             ico("i-paper"), q.marks, pts, markup.model(q.model),
              esc(topic_slug), i, esc(topic_slug), i))
 
     return """<section class="quiz" id="exam" data-exam-set aria-labelledby="examTitle">
@@ -631,9 +631,9 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
             "about": {"@type": "Thing", "name": topic.title},
             "hasPart": [{
                 "@type": "Question", "eduQuestionType": "Multiple choice",
-                "text": q.stem,
-                "acceptedAnswer": {"@type": "Answer", "text": q.options[q.answer]},
-                "suggestedAnswer": [{"@type": "Answer", "text": o}
+                "text": _plain(q.stem),
+                "acceptedAnswer": {"@type": "Answer", "text": _plain(q.options[q.answer])},
+                "suggestedAnswer": [{"@type": "Answer", "text": _plain(o)}
                                     for i, o in enumerate(q.options) if i != q.answer],
             } for q in topic.quiz[:10]],
         })
@@ -643,6 +643,16 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
                         active="/%s/" % course.slug,
                         topic_id=tid, jsonld=ld,
                         scripts=["/assets/js/quiz.js"], show_progress=True)
+
+
+def _plain(text: str) -> str:
+    """Quiz text for structured data, without the site's own markup.
+
+    The question is authored with `code` and **bold** marks that the page
+    renders. A search engine reading the Quiz markup gets the raw string, so
+    it would see the backticks.
+    """
+    return text.replace("`", "").replace("**", "")
 
 
 def unit_block(course: Course, unit: Unit) -> str:

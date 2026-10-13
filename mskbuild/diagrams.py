@@ -2867,3 +2867,10 @@ from . import diagrams_data  # noqa: E402,F401
 # Resource material for the practice papers: figures that present data without
 # explaining it, kept apart from the teaching diagrams for exactly that reason.
 from . import diagrams_exam  # noqa: E402,F401
+
+
+# The Python course diagrams, for the GCSE and A Level topics. Each is a picture
+# of something the code beside it really does, and every figure in them comes
+# from running the same algorithm.
+from . import diagrams_python  # noqa: E402,F401
+from . import diagrams_python_alevel  # noqa: E402,F401

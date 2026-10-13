@@ -129,6 +129,31 @@ def code_block(code: str, lang: str = "python") -> str:
             '<pre><code>%s</code></pre></div>' % (lab, body))
 
 
+_FENCE = re.compile(r"```(\w*)[ \t]*\n(.*?)\n?```", re.S)
+
+
+def model(text: str) -> str:
+    """A model answer: paragraphs of prose with optional fenced code between them.
+
+    A programming question's model answer is a program, and a program set as one
+    run-on paragraph with its line breaks collapsed is not a model of anything.
+    Text without a fence comes out exactly as it always did.
+    """
+    if "```" not in text:
+        return "<p>%s</p>" % inline(text)
+    out, pos = [], 0
+    for m in _FENCE.finditer(text):
+        lead = text[pos:m.start()].strip()
+        if lead:
+            out.append("<p>%s</p>" % inline(lead))
+        out.append(code_block(m.group(2).rstrip(), m.group(1) or "python"))
+        pos = m.end()
+    tail = text[pos:].strip()
+    if tail:
+        out.append("<p>%s</p>" % inline(tail))
+    return "".join(out)
+
+
 # ----------------------------------------------------------------- blocks
 
 CALLOUTS = {
@@ -266,7 +291,9 @@ def render(src: str) -> str:
         if stripped.startswith("|"):
             rows = []
             while i < n and lines[i].strip().startswith("|"):
-                cells = [c.strip() for c in lines[i].strip().strip("|").split("|")]
+                # A pipe inside a cell is written \| , as the bitwise OR operator needs to be.
+                cells = [c.strip().replace("\\|", "|")
+                         for c in re.split(r"(?<!\\)\|", lines[i].strip().strip("|"))]
                 if not all(re.fullmatch(r":?-{2,}:?", c) for c in cells):
                     rows.append(cells)
                 i += 1

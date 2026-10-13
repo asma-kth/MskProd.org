@@ -4,6 +4,8 @@ Written so that a Year 7 student can start at the beginning and an A Level
 student can pick up at object oriented programming, with everything runnable.
 """
 from mskbuild.models import Topic, Section, Unit, Course, Q, EQ, MP
+from content.python_gcse import TOPICS as GCSE_TOPICS
+from content.python_alevel import TOPICS as ALEVEL_TOPICS
 
 P_FIRST = Topic(
     slug="first-steps",
@@ -3509,6 +3511,8 @@ pygame.quit()
 
 # ================================================================== COURSE
 
+_A = {t.slug: t for t in ALEVEL_TOPICS}
+
 COURSE = Course(
     slug="python",
     seo="Python tutorial",
@@ -3520,7 +3524,7 @@ COURSE = Course(
     goal="Fluency",
     icon="i-python",
     accent="var(--aqua)",
-    blurb="A complete Python course, from your very first line of code through to object oriented programming, desktop applications with tkinter and games with pygame. Every example runs, and every topic has a quiz and written questions.",
+    blurb="A complete Python course, from your very first line of code, through everything the GCSE boards examine in programming, to A Level recursion, data structures, algorithms, databases and the programming project, and on to desktop applications with tkinter and games with pygame. Every example runs in your browser, and every topic has a quiz and written questions.",
     intro="",
     journey=[
         ("Type it out, do not copy and paste",
@@ -3546,9 +3550,32 @@ COURSE = Course(
         Unit("real-programs", "Real Programs",
              "Dictionaries for structured data, files so your program remembers things, and error handling so it does not crash.",
              [P_DATA], icon="i-database", term="Intermediate"),
+        Unit("gcse-python", "GCSE Computer Science in Python",
+             "Everything the three GCSE boards examine in programming, written in Python: exam pseudocode translated, arrays, records and files, subprograms, validation and testing, SQL, searching and sorting, and tracing and debugging.",
+             GCSE_TOPICS, icon="i-flow", term="GCSE: OCR J277, AQA 8525, Edexcel 1CP2"),
         Unit("oop", "Object Oriented Programming",
              "Classes, objects, encapsulation, inheritance and polymorphism. The step from scripts to software.",
              [P_OOP1, P_OOP2], icon="i-cube", term="Intermediate to advanced"),
+        Unit("alevel-programming", "A Level: Programming Techniques",
+             "Recursion and the call stack, the functional paradigm with map, filter and reduce, and object oriented design with composition, abstract classes and UML.",
+             [_A["recursion"], _A["functional-programming"], _A["oop-design"]],
+             icon="i-code", term="A Level: OCR H446, AQA 7517"),
+        Unit("alevel-structures", "A Level: Data Structures",
+             "Stacks and queues built from arrays and pointers, linked lists, hash tables, binary trees and graphs, each with its traversals and its cost.",
+             [_A["stacks-and-queues"], _A["linked-lists-and-hash-tables"], _A["trees-and-graphs"]],
+             icon="i-layers", term="A Level: OCR H446 1.4.2, AQA 7517"),
+        Unit("alevel-algorithms", "A Level: Algorithms and Complexity",
+             "Big-O notation and what makes a problem tractable, the four sorting algorithms compared with counters, and the shortest path algorithms, Dijkstra's and A star.",
+             [_A["big-o-and-complexity"], _A["sorting-algorithms"], _A["dijkstra-and-a-star"]],
+             icon="i-gauge", term="A Level: OCR H446 2.3.1, AQA 7517"),
+        Unit("alevel-data", "A Level: Data and Databases",
+             "Two's complement, bitwise operations and floating point, then relational databases: normalisation, SQL with joins and grouping, and transactions.",
+             [_A["binary-and-bitwise-operations"], _A["relational-databases-and-sql"]],
+             icon="i-binary", term="A Level: OCR H446 1.4.1 and 1.3.2, AQA 7517"),
+        Unit("alevel-software", "A Level: Testing and the Project",
+             "The levels and kinds of testing, unit tests and test driven development, and how to plan, build, test and evaluate the programming project.",
+             [_A["testing-and-tdd"], _A["programming-project"]],
+             icon="i-flag", term="A Level: OCR H446 Component 03, AQA 7517 NEA"),
         Unit("applications", "Applications and Games",
              "Desktop programs with tkinter and games with pygame, each ending in a complete working project.",
              [P_TKINTER, P_PYGAME], icon="i-web", term="Advanced"),
