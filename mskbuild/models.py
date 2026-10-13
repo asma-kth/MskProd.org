@@ -10,6 +10,9 @@ class Q:
     options: List[str]
     answer: int          # index of the correct option
     explain: str         # shown after answering, whatever the student picked
+    # Content is written correct answer first. quizshuffle.apply() reorders the
+    # options once before the build and sets this, so it can never run twice.
+    arranged: bool = False
 
 
 @dataclass

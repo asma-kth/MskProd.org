@@ -523,6 +523,15 @@ def main():
         except ImportError:
             pass
 
+    # Content is written correct answer first. Reorder every quiz once, here,
+    # before anything reads it, so the page, its JSON-LD and the printable
+    # worksheet answer keys all see the same arrangement.
+    from mskbuild import quizshuffle
+    for mod in modules:
+        quizshuffle.apply(mod.COURSE)
+    _spread, _n = quizshuffle.check([m.COURSE for m in modules])
+    print("Quiz answers placed, %d questions: %s" % (_n, _spread))
+
     for mod in modules:
         build_course(mod.COURSE)
 
