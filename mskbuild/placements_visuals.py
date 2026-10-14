@@ -122,3 +122,47 @@ put(PY, "subprograms-and-parameters", "Procedures and functions", "function-mach
 put(PY, "arrays-records-and-files", "One dimensional arrays", "lists-lockers")
 put(PY, "arrays-records-and-files", "Text files", "files-flow")
 put(PY, "pseudocode-to-python", "Data types, casting and operators", "data-types", "operators")
+
+
+# ============================================ algorithms and computational thinking
+# ---- OCR GCSE
+put(OCR, "computational-thinking", "Abstraction", "abstraction-map")
+put(OCR, "computational-thinking", "Decomposition", "decomposition-tree")
+put(OCR, "computational-thinking", "Algorithmic thinking", "ct-four")
+put(OCR, "designing-algorithms", "Flowcharts", "flowchart-symbols")
+put(OCR, "searching-and-sorting", "Linear search", "search-compare")
+put(OCR, "searching-and-sorting", "Bubble sort", "bubble-sort-cards")
+put(OCR, "searching-and-sorting", "Merge sort", "merge-sort-cards")
+put(OCR, "searching-and-sorting", "Insertion sort", "insertion-sort-cards")
+
+# ---- AQA GCSE
+put(AQA, "computational-thinking", "Algorithms and programs", "ct-four")
+put(AQA, "computational-thinking", "Decomposition", "decomposition-tree")
+put(AQA, "computational-thinking", "Abstraction", "abstraction-map")
+put(AQA, "representing-algorithms", "Flowcharts", "flowchart-symbols")
+put(AQA, "searching-algorithms", "Linear search", "search-compare")
+put(AQA, "sorting-algorithms", "Bubble sort", "bubble-sort-cards")
+put(AQA, "sorting-algorithms", "Merge sort", "merge-sort-cards")
+
+# ---- Edexcel GCSE
+put(EDX, "decomposition-and-abstraction", "Decomposition: breaking the problem up", "decomposition-tree")
+put(EDX, "decomposition-and-abstraction", "Abstraction: deciding what to ignore", "abstraction-map")
+put(EDX, "algorithms-flowcharts-and-pseudocode", "Flowcharts", "flowchart-symbols")
+put(EDX, "searching-and-sorting-algorithms", "Linear search and binary search", "search-compare")
+put(EDX, "searching-and-sorting-algorithms", "Bubble sort", "bubble-sort-cards")
+put(EDX, "searching-and-sorting-algorithms", "Merge sort", "merge-sort-cards")
+
+# ---- Key Stage 3
+put(KS3, "computational-thinking", "The four techniques", "ct-four")
+put(KS3, "computational-thinking", "Flowcharts", "flowchart-symbols")
+
+# ---- A Level
+put(ALEVEL, "elements-of-computational-thinking", "Abstractly, ahead and procedurally", "abstraction-map", "decomposition-tree")
+put(ALEVEL, "algorithms-and-complexity", "Big O and searching", "big-o-growth", "search-compare")
+put(ALEVEL, "algorithms-and-complexity", "Sorting algorithms", "merge-sort-cards")
+put(ALEVEL, "algorithms-and-complexity", "Graph and tree algorithms", "shortest-path", "graph-traversal")
+
+# ---- the Python course
+put(PY, "searching-and-sorting", "Linear and binary search", "search-compare")
+put(PY, "searching-and-sorting", "Bubble sort and insertion sort", "bubble-sort-cards", "insertion-sort-cards")
+put(PY, "searching-and-sorting", "Merge sort", "merge-sort-cards")
