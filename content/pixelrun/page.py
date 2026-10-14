@@ -106,7 +106,7 @@ Your function is then run on a set of calls, and each answer is compared with wh
 
 A test passes only when the answer matches exactly. `True` is not `1`, a list is not a tuple, and `"5"` is not `5`. Numbers are compared as numbers, so `2` and `2.0` are the same answer.
 
-!warn Some challenges have rules :: A level about loops asks you to use a loop, a recursion level asks the function to call itself, and a sorting level will not accept `sorted()`. If your answers are right but you broke a rule, the game says so, and it counts as an attempt.
+!warn Some challenges have rules :: The loop challenges ask you to use a loop, the recursion challenges ask the function to call itself, the sorting challenges will not accept `sorted()`, and the binary search counts how many items you look at. If your answers are right but you broke a rule, the game says so, and it counts as an attempt.
 
 ## Attempts, hints and stars
 
@@ -117,7 +117,7 @@ Every challenge gives you **three attempts**. An attempt is a run where your cod
 | 2 stars | Passed after one slip or one hint |
 | 1 star | Passed after more than that |
 
-There are two hints on every challenge, and each one costs a star. A level is worth up to nine stars, and the whole game is worth ninety.
+There are two hints on every challenge, and each one costs a star. Each level is worth up to nine stars, and the whole game is worth ninety.
 
 ## Questions
 
