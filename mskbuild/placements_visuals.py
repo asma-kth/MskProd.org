@@ -222,3 +222,41 @@ put(ALEVEL, "structure-and-function-of-the-processor", "Performance and architec
 put(ALEVEL, "types-of-processor", "RISC and CISC", "risc-cisc")
 put(ALEVEL, "systems-software", "Memory management and scheduling", "scheduling")
 put(ALEVEL, "systems-software", "Types of operating system and other functions", "os-jobs")
+put(ALEVEL, "input-output-and-storage", "Devices and how they work", "input-devices-how", "output-devices-how")
+
+
+# ================================================== networks, security, law and impact
+# ---- OCR GCSE
+put(OCR, "networks-and-topologies", "Factors affecting network performance", "network-factors")
+put(OCR, "protocols-and-layers", "IP addresses and MAC addresses", "ip-mac")
+put(OCR, "protocols-and-layers", "Standards and protocols", "email-protocols")
+put(OCR, "network-security", "Forms of attack", "cyber-threats", "phishing-email")
+put(OCR, "network-security", "Preventing attacks", "cyber-defences", "password-strength")
+put(OCR, "ethical-legal-cultural-environmental", "The four categories", "tech-impact")
+put(OCR, "ethical-legal-cultural-environmental", "Legislation", "licences")
+
+# ---- AQA GCSE
+put(AQA, "protocols-and-layers", "What a protocol is", "email-protocols")
+put(AQA, "cyber-security", "What cyber security is, and social engineering", "phishing-email")
+put(AQA, "cyber-security", "Malicious code and other threats", "cyber-threats")
+put(AQA, "cyber-security", "Detecting and preventing attacks", "cyber-defences", "password-strength")
+put(AQA, "ethical-legal-and-environmental-impacts", "The four Acts", "licences")
+put(AQA, "ethical-legal-and-environmental-impacts", "Ethical and environmental issues", "tech-impact")
+
+# ---- Edexcel GCSE
+put(EDX, "networks-and-network-security", "Protocols and layers", "ip-mac", "email-protocols")
+put(EDX, "networks-and-network-security", "Threats and protection", "cyber-threats", "cyber-defences", "password-strength")
+put(EDX, "legislation-and-privacy", "Software licensing", "licences")
+put(EDX, "legislation-and-privacy", "Privacy in practice", "data-trail")
+put(EDX, "issues-and-impact-of-technology", "Ethical, cultural and privacy issues", "tech-impact")
+
+# ---- Key Stage 3
+put(KS3, "digital-literacy", "Your digital footprint", "data-trail")
+put(KS3, "digital-literacy", "Scams, phishing and misinformation", "phishing-email")
+put(KS3, "digital-literacy", "Protecting yourself", "password-strength")
+put(KS3, "networks-and-cyber-security", "The internet and the web", "email-protocols")
+put(KS3, "networks-and-cyber-security", "Cyber security", "cyber-threats", "cyber-defences")
+put(KS3, "digital-literacy-and-the-law", "Ethics and the impact of technology", "tech-impact")
+
+# ---- A Level
+put(ALEVEL, "legal-moral-and-ethical-issues", "Legislation", "licences")
