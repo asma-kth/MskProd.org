@@ -685,6 +685,11 @@ for _key, _mapping in PHOTO_PLACEMENTS.items():
         assert all(i.startswith("!photo ") for i in _items), (_key, _section)
         _target.setdefault(_section, []).extend(_items)
 
+# The concept illustrations shared across boards are written as calls in their
+# own module, and folded in last so they land after what a section already has.
+from . import placements_visuals as _visuals
+_visuals.merge(PLACEMENTS)
+
 def _duplicate_keys():
     """Find keys written twice in the literal above.
 

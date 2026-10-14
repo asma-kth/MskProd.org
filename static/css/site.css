@@ -1240,14 +1240,14 @@ h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
   --il-bg1: #F4FBFB; --il-bg2: #ECE9F7; --il-dot: rgba(31, 58, 68, .09);
   --il-blob1: #DDF2F2; --il-blob2: #EAE1F4; --il-hole: #F1F4FA;
   --il-band: rgba(255, 255, 255, .5); --il-card: rgba(255, 255, 255, .66); --il-line: rgba(31, 58, 68, .16);
-  --il-ink: #1F3A44; --il-ink2: #4A6470;
+  --il-ink: #1F3A44; --il-ink2: #4A6470; --il-ok: #1B7A4B; --il-bad: #B0302B;
   margin: var(--sp-5) 0; max-width: min(100%, var(--il-max, 820px)); margin-inline: auto;
 }
 [data-theme="dark"] .illus {
   --il-bg1: #14313B; --il-bg2: #1D2444; --il-dot: rgba(255, 255, 255, .07);
   --il-blob1: #1A4048; --il-blob2: #2A2750; --il-hole: #182C3F;
   --il-band: rgba(255, 255, 255, .06); --il-card: rgba(255, 255, 255, .07); --il-line: rgba(255, 255, 255, .2);
-  --il-ink: #EAF4F4; --il-ink2: #B4C9CF;
+  --il-ink: #EAF4F4; --il-ink2: #B4C9CF; --il-ok: #7BE0A6; --il-bad: #FF9A91;
 }
 .illus-art {
   border-radius: var(--r-l); overflow: hidden; border: 1px solid var(--border);
@@ -1257,6 +1257,8 @@ h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
 .illus text { font-family: var(--font-body); }
 .illus .il-ink { fill: var(--il-ink); }
 .illus .il-ink2 { fill: var(--il-ink2); }
+.illus .il-ok { fill: var(--il-ok); }
+.illus .il-bad { fill: var(--il-bad); }
 .illus .il-m { font-family: var(--font-mono); }
 .illus .il-h { font-family: var(--font-display); }
 .illus-steps {

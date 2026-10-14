@@ -21,6 +21,16 @@ REGISTRY = {}
 _SEQ = itertools.count(1)
 
 
+def load_all():
+    """Import every illus_*.py, so that each file's drawings register themselves."""
+    import importlib
+    import os
+    here = os.path.dirname(os.path.abspath(__file__))
+    for f in sorted(os.listdir(here)):
+        if f.startswith("illus_") and f.endswith(".py"):
+            importlib.import_module("mskbuild." + f[:-3])
+
+
 def illustration(name):
     def wrap(fn):
         REGISTRY[name] = fn

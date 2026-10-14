@@ -395,7 +395,7 @@ def _web_request():
     for i, (lab, col) in enumerate((("HTML", "coral"), ("CSS", "sky"), ("JS", "sun"), ("IMG", "mint"))):
         xx = 372 + i * 62
         cv.add(P.doc(cv, xx, 306, .46, 62, 80, 0, "paper", col))
-        cv.add(cv.text(xx + 14.2, 345, lab, 10.5, 800, fill=INK))
+        cv.add(cv.text(xx + 14.2, 354, lab, 11.5, 800, cls="il-ink"))
     cv.add(P.pill(cv, 486, 398, "the files the page is made of", "paper", 14.5))
     cv.add(P.badge(cv, 252, 150, 1), P.badge(cv, 352, 200, 2), P.badge(cv, 360, 298, 3), P.badge(cv, 612, 356, 4), P.badge(cv, 150, 256, 5))
     return figure(

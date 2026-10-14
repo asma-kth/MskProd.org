@@ -235,8 +235,8 @@ def render(src: str) -> str:
         # illustration: !illus <name>
         m = re.match(r"^!illus\s+([a-z0-9-]+)\s*$", stripped)
         if m:
-            from .illus import REGISTRY as _IL
-            from . import illus_net, illus_hw, illus_data, illus_sw, illus_imedia  # noqa: F401  (importing registers the drawings)
+            from .illus import REGISTRY as _IL, load_all
+            load_all()
             name = m.group(1)
             if name not in _IL:
                 raise KeyError("unknown illustration %r (have: %s)"
