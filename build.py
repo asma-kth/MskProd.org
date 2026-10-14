@@ -601,9 +601,14 @@ def main():
     from mskbuild import photos as _photos
     _waiting = _photos.pending()
     if _waiting:
-        print("Photographs pending (%d of %d): their placements render as "
-              "nothing until the files exist.\n  %s"
-              % (len(_waiting), len(_photos.PHOTOS), ", ".join(_waiting)))
+        from mskbuild import illus as _illus
+        _illus.load_all()
+        _drawn = [w for w in _waiting if "pic-" + w in _illus.REGISTRY]
+        _blank = [w for w in _waiting if w not in _drawn]
+        print("Photographs pending (%d of %d). %d show a drawing of the object until the "
+              "file exists, %d show nothing.\n  drawn: %s\n  blank: %s"
+              % (len(_waiting), len(_photos.PHOTOS), len(_drawn), len(_blank),
+                 ", ".join(_drawn) or "none", ", ".join(_blank) or "none"))
 
     build_home()
     copy_static()

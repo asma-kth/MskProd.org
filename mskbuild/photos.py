@@ -204,13 +204,21 @@ def pending():
 
 
 def render(slug):
-    """One photograph as a figure, or nothing if the file is not here yet."""
+    """One photograph as a figure.
+
+    If the file is not here yet, a drawing of the same object stands in for it,
+    credited as a drawing, so the topic is never left without a picture. The
+    photograph replaces the drawing everywhere the moment its file lands.
+    """
     if slug not in PHOTOS:
         raise KeyError("unknown photo %r (have: %s)"
                        % (slug, ", ".join(sorted(PHOTOS))))
     meta = _index().get(slug)
     if not meta:
-        return ""
+        from . import illus
+        illus.load_all()
+        drawn = illus.REGISTRY.get("pic-" + slug)
+        return drawn() if drawn else ""
     p = PHOTOS[slug]
     credit = ""
     if p.credit or p.licence:

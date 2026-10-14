@@ -212,12 +212,16 @@ class Canvas:
 
 # --------------------------------------------------------------- the figure
 
-def figure(name, cv, title, desc, steps, caption=None, max_w=820):
-    """Wrap a drawn canvas in its accessible figure, numbered list and caption."""
+def figure(name, cv, title, desc, steps, caption=None, max_w=820, credit=None):
+    """Wrap a drawn canvas in its accessible figure, numbered list and caption.
+
+    credit is a line printed under the caption, for a drawing that stands in for a photograph.
+    """
     tid, did = "il-%s-t" % name, "il-%s-d" % name
     li = "".join("<li>%s</li>" % esc(s) for s in steps)
     steps_html = ('<ol class="illus-steps" aria-label="What the numbers in the picture show">%s</ol>' % li) if steps else ""
-    cap = '<figcaption>%s</figcaption>' % esc(caption) if caption else ""
+    cr = '<span class="photo-credit">%s</span>' % esc(credit) if credit else ""
+    cap = '<figcaption>%s%s</figcaption>' % (esc(caption), cr) if caption else ""
     return (
         '<figure class="illus" style="--il-max:%dpx">'
         '<div class="illus-art"><svg viewBox="0 0 %d %d" role="img" aria-labelledby="%s" aria-describedby="%s">'
