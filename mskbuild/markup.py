@@ -232,15 +232,16 @@ def render(src: str) -> str:
             i += 1
             continue
 
-        # 3D scene: !scene <name>
-        m = re.match(r"^!scene\s+([a-z0-9-]+)\s*$", stripped)
+        # illustration: !illus <name>
+        m = re.match(r"^!illus\s+([a-z0-9-]+)\s*$", stripped)
         if m:
-            from .scenes import REGISTRY as _SC
+            from .illus import REGISTRY as _IL
+            from . import illus_net, illus_hw, illus_data, illus_sw, illus_imedia  # noqa: F401  (importing registers the drawings)
             name = m.group(1)
-            if name not in _SC:
-                raise KeyError("unknown scene %r (have: %s)"
-                               % (name, ", ".join(sorted(_SC))))
-            out.append(_SC[name]())
+            if name not in _IL:
+                raise KeyError("unknown illustration %r (have: %s)"
+                               % (name, ", ".join(sorted(k for k in _IL if not k.startswith("_")))))
+            out.append(_IL[name]())
             i += 1
             continue
 

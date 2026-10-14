@@ -5,7 +5,7 @@ rather than left for the reader to guess.
 
 A diagram shows how a thing works; a photograph shows what it looks like when
 you are holding it. For hardware topics the exam genuinely asks students to
-recognise and compare physical devices, so both earn their place: the 3D scene
+recognise and compare physical devices, so both earn their place: the illustration
 for the mechanism, the photograph for the object.
 
 Every entry here records where the picture came from and under what licence,

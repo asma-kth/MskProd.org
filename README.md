@@ -48,6 +48,10 @@ mskbuild/
   models.py           Content data classes: Topic, Unit, Course, Q, EQ, MP
   markup.py           Mini markup parser and Python/pseudocode syntax highlighter
   render.py           Page rendering, layout, SEO head, structured data
+  illus.py            Illustration framework: canvas, palette, accessible figure wrapper
+  illus_props.py      Shared parts: devices, chips, people, arrows, numbered badges
+  illus_*.py          The drawn illustrations, grouped by subject (net, hw, data, sw, imedia)
+  placements.py       Which diagram, illustration or tool goes in which section
 content/
   ks3.py              Key Stage 3, Years 7 to 9
   ks4_cs.py           OCR GCSE Computer Science J277
@@ -130,6 +134,32 @@ Topic(
     exam=[EQ("Explain something.", 3, [MP("Point", ["keyword"])], "Model answer.")],
 )
 ```
+
+## Illustrations
+
+Topics that are easier to see than to read (a packet crossing a network, the layers
+of a graphics file, a stack of plates) carry a drawn illustration. Each one is a
+single inline SVG built in code, so it costs a few kilobytes, loads nothing and works
+with scripts off. The panel behind it follows the light or dark theme and the objects
+on it keep their own colours.
+
+A picture never carries the explanation alone. Under it is a numbered list that
+matches the numbered badges drawn into it, then a caption saying what to take away,
+and the SVG holds a full text description for screen readers. On a narrow screen the
+picture keeps a readable size and scrolls sideways.
+
+To add one, write a function in one of the `mskbuild/illus_*.py` files:
+
+```python
+@illustration("my-picture")
+def _my_picture():
+    cv = Canvas(800, 500).backdrop()
+    cv.add(P.card(cv, 14, 34, 380, 440, 20, "A title", "teal"))
+    return figure("my-picture", cv, "Short title", "Full description for a screen reader.",
+                  ["What badge 1 shows.", "What badge 2 shows."], "The one thing to take away.")
+```
+
+then place it with `"!illus my-picture"` in `mskbuild/placements.py`.
 
 ## Deployment
 

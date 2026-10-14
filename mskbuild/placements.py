@@ -16,31 +16,31 @@ PLACEMENTS = {
         "The fetch decode execute cycle": ["!diagram fetch-decode-execute"],
     },
     ("ks4/computer-science", "primary-storage"): {
-        "Why primary memory exists": ["!diagram memory-hierarchy", "!scene memory-hierarchy-3d"],
+        "Why primary memory exists": ["!diagram memory-hierarchy", "!illus memory-hierarchy"],
     },
     ("ks4/computer-science", "units-of-data"): {
         "Calculating file sizes": ["!tool file-size"],
     },
     ("ks4/computer-science", "binary-and-hexadecimal"): {
-        "Binary to denary": ["!diagram binary-place-values", "!scene binary-place-value-3d",
+        "Binary to denary": ["!diagram binary-place-values", "!illus binary-place-value",
                              "!tool base-converter"],
         "Binary addition": ["!diagram binary-addition"],
     },
     ("ks4/computer-science", "storing-images"): {
-        "Bitmap images": ["!diagram image-representation", "!scene image-layers-3d"],
+        "Bitmap images": ["!diagram image-representation", "!illus image-layers"],
         "Calculating image file size": ["!tool file-size"],
     },
     ("ks4/computer-science", "storing-sound"): {
-        "Analogue to digital": ["!diagram sound-sampling", "!scene sound-sampling-3d"],
+        "Analogue to digital": ["!diagram sound-sampling", "!illus sound-sampling"],
         "Calculating sound file size": ["!tool file-size"],
     },
     ("ks4/computer-science", "networks-and-topologies"): {
-        "Client server and peer to peer": ["!diagram client-server-p2p", "!scene client-server-3d"],
-        "Star and mesh topologies": ["!diagram network-topologies", "!scene network-topologies-3d"],
+        "Client server and peer to peer": ["!diagram client-server-p2p", "!illus client-server"],
+        "Star and mesh topologies": ["!diagram network-topologies", "!illus network-topologies"],
     },
     ("ks4/computer-science", "protocols-and-layers"): {
-        "Standards and protocols": ["!diagram packet-switching", "!scene packet-journey-3d"],
-        "Layers": ["!diagram tcp-ip-stack", "!scene tcp-ip-stack-3d"],
+        "Standards and protocols": ["!diagram packet-switching", "!illus packet-journey"],
+        "Layers": ["!diagram tcp-ip-stack", "!illus tcp-ip-stack"],
     },
     ("ks4/computer-science", "boolean-logic"): {
         "The three gates": ["!diagram logic-gates"],
@@ -181,10 +181,10 @@ PLACEMENTS = {
         "Binary and hexadecimal": ["!tool base-converter"],
         "Binary addition and units": ["!diagram binary-addition", "!tool file-size"],
         "Representing text, images and sound": ["!diagram image-representation",
-                                                "!scene image-layers-3d"],
+                                                "!illus image-layers"],
     },
     ("ks3", "networks-and-cyber-security"): {
-        "Networks": ["!diagram network-topologies", "!scene network-topologies-3d"],
+        "Networks": ["!diagram network-topologies", "!illus network-topologies"],
     },
     # ------------------------------- computational thinking, law, character sets
     # Every course that teaches these now has a worked picture rather than three
@@ -282,7 +282,7 @@ PLACEMENTS = {
     ("data-analytics", "managing-data"): {
         "The data lifecycle and the analytics pipeline": ["!diagram data-pipeline"],
         "Gathering and storing data": ["!diagram data-store-choice",
-                                       "!scene data-stack-3d"],
+                                       "!illus data-stack"],
         "Transformation, data quality and assurance": ["!diagram data-etl-elt",
                                                        "!diagram data-cleaning"],
     },
@@ -307,18 +307,18 @@ PLACEMENTS = {
         "What makes data big": ["!diagram data-five-vs",
                                 "!diagram data-units-scale"],
         "Where big data comes from": ["!diagram data-big-data-sources",
-                                      "!scene data-stack-3d"],
+                                      "!illus data-stack"],
     },
     ("data-analytics", "big-data-infrastructure"): {
         "Storage at scale": ["!diagram data-store-choice"],
         "Network and movement": ["!diagram data-scaling"],
         "Processing and computing power": ["!diagram data-processing-models",
-                                           "!scene parallel-cores-3d",
+                                           "!illus parallel-cores",
                                            "!photo server-rack"],
     },
     ("data-analytics", "machine-learning-and-ai"): {
         "The three kinds of learning, and the tasks": ["!diagram data-ml-types",
-                                                       "!scene neural-network-3d"],
+                                                       "!illus neural-network"],
         "AI, machine learning and deep learning": ["!diagram data-ml-applications"],
         "Measuring whether a model works": ["!diagram data-ml-workflow",
                                             "!diagram data-confusion-matrix",
@@ -348,7 +348,7 @@ PLACEMENTS = {
     },
     ("ks4/imedia", "job-roles-in-media"): {
         "Pre-production roles": ["!diagram imedia-production-pipeline"],
-        "Production and post-production roles": ["!scene imedia-phases-3d"],
+        "Production and post-production roles": ["!illus imedia-phases"],
     },
     ("ks4/imedia", "client-requirements-and-the-brief"): {
         "What a client brief contains": ["!diagram imedia-brief-anatomy"],
@@ -375,18 +375,18 @@ PLACEMENTS = {
                                                  "!diagram imedia-visualisation-anatomy",
                                                  "!photo storyboard-sketch",
                                                  "!diagram imedia-storyboard-example",
-                                                 "!scene imedia-storyboard-3d",
+                                                 "!illus imedia-storyboard",
                                                  "!diagram imedia-script-example"],
         "Wireframes, navigation diagrams and asset tables": [
             "!diagram imedia-navigation-structures",
-            "!scene imedia-navigation-depth-3d",
+            "!illus imedia-navigation-depth",
             "!diagram imedia-asset-table-example"],
         "What every pre-production document must carry": [
             "!diagram imedia-doc-essentials"],
     },
     ("ks4/imedia", "work-planning-and-workflow"): {
         "What a work plan contains": ["!diagram imedia-work-plan"],
-        "Workflow and the production phases": ["!scene imedia-phases-3d"],
+        "Workflow and the production phases": ["!illus imedia-phases"],
     },
     ("ks4/imedia", "legislation-and-permissions"): {
         "Copyright and intellectual property": ["!diagram imedia-licence-check"],
@@ -411,7 +411,7 @@ PLACEMENTS = {
                                  "!diagram imedia-asset-table-example"],
     },
     ("ks4/imedia", "creating-digital-graphics"): {
-        "Raster techniques and exporting": ["!scene graphics-layers-3d",
+        "Raster techniques and exporting": ["!illus graphics-layers",
                                             "!diagram imedia-raster-vector"],
         "Reviewing the finished graphic": ["!diagram imedia-review-quality"],
     },
@@ -419,11 +419,11 @@ PLACEMENTS = {
         "Types of interactive product and their structures": [
             "!diagram imedia-navigation-structures"],
         "Navigation diagrams and wireframes": ["!diagram imedia-wireframe-example",
-                                               "!scene imedia-navigation-depth-3d"],
+                                               "!illus imedia-navigation-depth"],
         "Interface design and accessibility": ["!diagram imedia-accessibility"],
     },
     ("ks4/imedia", "creating-and-testing-interactive-media"): {
-        "Building in the right order": ["!scene graphics-layers-3d"],
+        "Building in the right order": ["!illus graphics-layers"],
         "Testing": ["!diagram imedia-test-record"],
         "Reviewing and improving": ["!diagram imedia-review-quality"],
     },
@@ -457,163 +457,164 @@ def apply(course):
 
 
 
-# Scene placements are kept apart from the table above and merged into it,
-# rather than written as more entries in the same literal. A dict literal
-# keeps only the last of a repeated key, and almost every topic that wants a
-# scene already has a line above for its diagrams: written inline, fifteen of
-# them quietly replaced the diagram placements they were meant to join.
-SCENES = {
+# Illustration placements are kept apart from the table above and merged into
+# it, rather than written as more entries in the same literal. A dict literal
+# keeps only the last of a repeated key, and almost every topic that wants an
+# illustration already has a line above for its diagrams: written inline,
+# fifteen of them quietly replaced the diagram placements they were meant to join.
+ILLUSTRATIONS = {
     ("ks5", "types-of-processor"): {
-        "GPUs and parallel systems": ["!scene parallel-cores-3d"],
+        "GPUs and parallel systems": ["!illus parallel-cores"],
     },
     ("ks3", "networks-and-cyber-security"): {
-        "The internet and the web": ["!scene web-request-3d"],
+        "The internet and the web": ["!illus web-request"],
     },
     ("ks4/aqa-computer-science", "data-structures-and-file-handling"): {
-        "Arrays and records": ["!scene array-2d-3d"],
+        "Arrays and records": ["!illus array-2d"],
     },
     ("ks4/computer-science", "networks-and-topologies"): {
-        "LAN and WAN": ["!scene lan-wan-3d"],
+        "LAN and WAN": ["!illus lan-wan"],
     },
     ("ks4/computer-science", "embedded-systems"): {
-        "Embedded versus general purpose": ["!scene embedded-systems-3d"],
+        "Embedded versus general purpose": ["!illus embedded-systems"],
     },
     ("ks3", "3d-modelling-and-animation"): {
-        "How 3D models are built": ["!scene mesh-3d"],
+        "How 3D models are built": ["!illus mesh"],
     },
     ("ks3", "vector-graphics"): {
-        "Working with vector shapes": ["!scene graphics-layers-3d"],
+        "Working with vector shapes": ["!illus graphics-layers"],
     },
     ("ks4/computer-science", "compression"): {
-        "Why compress": ["!scene compression-3d"],
+        "Why compress": ["!illus compression"],
     },
     ("ks4/aqa-computer-science", "data-compression"): {
-        "Why compress at all": ["!scene compression-3d"],
+        "Why compress at all": ["!illus compression"],
     },
     ("ks5", "compression-encryption-and-hashing"): {
-        "Compression": ["!scene compression-3d"],
-        "Encryption and hashing": ["!scene encryption-3d"],
+        "Compression": ["!illus compression"],
+        "Encryption and hashing": ["!illus encryption"],
     },
     ("ks4/computer-science", "network-security"): {
-        "Preventing attacks": ["!scene encryption-3d"],
+        "Preventing attacks": ["!illus encryption"],
     },
     ("ks4/computer-science", "units-of-data"): {
-        "The units": ["!scene units-of-data-3d"],
+        "The units": ["!illus units-of-data"],
     },
     ("ks4/computer-science", "cpu-performance"): {
-        "The three factors": ["!scene cpu-performance-3d"],
+        "The three factors": ["!illus cpu-performance"],
     },
     ("ks4/computer-science", "boolean-logic"): {
-        "Truth tables for combined circuits": ["!scene logic-circuit-3d"],
+        "Truth tables for combined circuits": ["!illus logic-circuit"],
     },
     ("ks4/aqa-computer-science", "boolean-logic"): {
-        "Reading and drawing circuit diagrams": ["!scene logic-circuit-3d"],
+        "Reading and drawing circuit diagrams": ["!illus logic-circuit"],
     },
     ("ks4/edexcel-computer-science", "truth-tables-and-logic"): {
-        "Logic in real systems and real programs": ["!scene logic-circuit-3d"],
+        "Logic in real systems and real programs": ["!illus logic-circuit"],
     },
     ("ks5", "data-types-and-boolean-algebra"): {
-        "Boolean algebra": ["!scene logic-circuit-3d"],
+        "Boolean algebra": ["!illus logic-circuit"],
     },
     ("ks5", "data-structures"): {
-        "Linear structures": ["!scene stack-queue-3d"],
-        "Trees, graphs and hash tables": ["!scene binary-tree-3d"],
+        "Linear structures": ["!illus stack-queue"],
+        "Trees, graphs and hash tables": ["!illus binary-tree"],
     },
     ("ks4/aqa-computer-science", "relational-databases-and-sql"): {
-        "Relational database structure": ["!scene database-tables-3d"],
+        "Relational database structure": ["!illus database-tables"],
     },
     ("ks5", "databases"): {
-        "Structure and normalisation": ["!scene database-tables-3d"],
+        "Structure and normalisation": ["!illus database-tables"],
     },
     ("ks4/computer-science", "systems-software"): {
-        "What system software is": ["!scene abstraction-layers-3d"],
+        "What system software is": ["!illus abstraction-layers"],
     },
     ("ks4/aqa-computer-science", "hardware-software-and-the-operating-system"): {
-        "System software and the operating system": ["!scene abstraction-layers-3d"],
+        "System software and the operating system": ["!illus abstraction-layers"],
     },
     ("ks4/edexcel-computer-science", "software-and-programming-languages"): {
-        "System and application software": ["!scene abstraction-layers-3d"],
+        "System and application software": ["!illus abstraction-layers"],
     },
     ("ks4/computer-science", "primary-storage"): {
-        "Virtual memory": ["!scene virtual-memory-3d"],
+        "Virtual memory": ["!illus virtual-memory"],
     },
     ("ks5", "systems-software"): {
-        "Memory management and scheduling": ["!scene virtual-memory-3d"],
+        "Memory management and scheduling": ["!illus virtual-memory"],
     },
-    # ------------------------------------------------------- 3D scenes
-    # Only on topics whose subject genuinely has layers, stacking or position
-    # in space. Everything else keeps its flat stepped diagram.
+    # ------------------------------------------------------- illustrations
+    # Only on topics whose subject is easier to see than to read: layers,
+    # stacks, hardware, movement through a network. Everything else keeps its
+    # flat stepped diagram.
     ("ks4/computer-science", "architecture-of-the-cpu"): {
-        "Components of the CPU": ["!scene cpu-board-3d"],
+        "Components of the CPU": ["!illus cpu-board"],
     },
     ("ks4/aqa-computer-science", "systems-architecture"): {
-        "The von Neumann architecture": ["!scene cpu-board-3d"],
-        "CPU performance and embedded systems": ["!scene cpu-performance-3d"],
+        "The von Neumann architecture": ["!illus cpu-board"],
+        "CPU performance and embedded systems": ["!illus cpu-performance"],
     },
     ("ks4/edexcel-computer-science", "hardware-and-the-processor"): {
-        "Inside the CPU": ["!scene cpu-board-3d"],
-        "What makes a processor faster": ["!scene cpu-performance-3d"],
+        "Inside the CPU": ["!illus cpu-board"],
+        "What makes a processor faster": ["!illus cpu-performance"],
     },
     ("ks5", "structure-and-function-of-the-processor"): {
-        "Components and registers": ["!scene cpu-board-3d"],
+        "Components and registers": ["!illus cpu-board"],
     },
     ("ks4/aqa-computer-science", "computer-networks"): {
-        "Star and bus topologies": ["!scene network-topologies-3d"],
-        "Networks": ["!scene lan-wan-3d"],
+        "Star and bus topologies": ["!illus network-topologies"],
+        "Networks": ["!illus lan-wan"],
     },
     ("ks4/edexcel-computer-science", "networks-and-network-security"): {
-        "Networks and topologies": ["!scene network-topologies-3d"],
-        "Protocols and layers": ["!scene tcp-ip-stack-3d"],
+        "Networks and topologies": ["!illus network-topologies"],
+        "Protocols and layers": ["!illus tcp-ip-stack"],
     },
     ("ks4/aqa-computer-science", "number-bases-and-units"): {
-        "Converting between the bases": ["!scene binary-place-value-3d"],
-        "Units of information": ["!scene units-of-data-3d"],
+        "Converting between the bases": ["!illus binary-place-value"],
+        "Units of information": ["!illus units-of-data"],
     },
     ("ks4/edexcel-computer-science", "binary-and-hexadecimal"): {
-        "Converting between denary and binary": ["!scene binary-place-value-3d"],
+        "Converting between denary and binary": ["!illus binary-place-value"],
     },
     ("ks4/computer-science", "secondary-storage"): {
-        "The three types": ["!scene secondary-storage-3d"],
+        "The three types": ["!illus secondary-storage"],
     },
     ("ks4/aqa-computer-science", "representing-images"): {
-        "Bitmap images": ["!scene image-layers-3d"],
+        "Bitmap images": ["!illus image-layers"],
     },
     ("ks4/aqa-computer-science", "representing-sound"): {
-        "From analogue to digital": ["!scene sound-sampling-3d"],
+        "From analogue to digital": ["!illus sound-sampling"],
     },
     ("ks4/aqa-computer-science", "protocols-and-layers"): {
-        "Layers": ["!scene tcp-ip-stack-3d"],
+        "Layers": ["!illus tcp-ip-stack"],
     },
     ("ks4/edexcel-computer-science", "representing-text-images-and-sound"): {
-        "Representing images": ["!scene image-layers-3d"],
-        "Representing sound": ["!scene sound-sampling-3d"],
+        "Representing images": ["!illus image-layers"],
+        "Representing sound": ["!illus sound-sampling"],
     },
     ("ks4/edexcel-computer-science", "data-storage-and-compression"): {
-        "Secondary storage": ["!scene secondary-storage-3d"],
-        "Compression": ["!scene compression-3d"],
-        "Units of storage": ["!scene units-of-data-3d"],
+        "Secondary storage": ["!illus secondary-storage"],
+        "Compression": ["!illus compression"],
+        "Units of storage": ["!illus units-of-data"],
     },
     ("ks5", "networks-and-web-technologies"): {
-        "Networks and protocols": ["!scene tcp-ip-stack-3d"],
-        "Web technologies": ["!scene web-request-3d"],
+        "Networks and protocols": ["!illus tcp-ip-stack"],
+        "Web technologies": ["!illus web-request"],
     },
     ("ks5", "input-output-and-storage"): {
-        "Storage": ["!scene secondary-storage-3d"],
+        "Storage": ["!illus secondary-storage"],
     },
 }
 
-for _key, _mapping in SCENES.items():
+for _key, _mapping in ILLUSTRATIONS.items():
     _target = PLACEMENTS.setdefault(_key, {})
     for _section, _items in _mapping.items():
-        # Only scenes belong here. Restating a diagram would add a second copy
-        # of it to a page that already has one, which is how this table went
-        # wrong the first time.
-        assert all(i.startswith("!scene ") for i in _items), (_key, _section)
+        # Only illustrations belong here. Restating a diagram would add a second
+        # copy of it to a page that already has one, which is how this table
+        # went wrong the first time.
+        assert all(i.startswith("!illus ") for i in _items), (_key, _section)
         _target.setdefault(_section, []).extend(_items)
 
 
-# Photographs, merged in the same way and for the same reason as the scenes.
-# A topic that already has a diagram or a scene above keeps it: the picture of
+# Photographs, merged in the same way and for the same reason as the illustrations.
+# A topic that already has a diagram or an illustration above keeps it: the picture of
 # the object and the picture of the mechanism do different jobs. Entries whose
 # image file is not in the repository yet render as nothing, so this table can
 # be written before the photographs are sourced.
@@ -702,7 +703,7 @@ def _duplicate_keys():
         if not isinstance(node, ast.Assign):
             continue
         name = next((getattr(t, "id", "") for t in node.targets), "")
-        if name not in ("PLACEMENTS", "SCENES", "PHOTO_PLACEMENTS"):
+        if name not in ("PLACEMENTS", "ILLUSTRATIONS", "PHOTO_PLACEMENTS"):
             continue
         for key in node.value.keys:
             try:
