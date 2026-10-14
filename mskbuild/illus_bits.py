@@ -7,19 +7,23 @@ from . import illus_props as P
 from . import illus_glyphs as G
 
 
-def bit_row(cv, x, y, s, cw=33, ch=36, gap=4, nib=9, size=18, ones="sky", zeros="slate", op=None):
+def bit_row(cv, x, y, s, cw=33, ch=36, gap=4, nib=9, size=18, ones="sky", zeros="slate", op=None, override=None):
     """A row of bit cells, 1s coloured and 0s pale. s is a string such as "0000 1100".
 
     A space in s starts a new nibble, with a wider gap. ones may be a list with one colour
-    per nibble. Returns (markup, x of every cell, width of the row).
+    per nibble, and override maps a bit's index to its own colour. Returns (markup, x of every
+    cell, width of the row).
     """
-    out, xs, cx, k = "", [], x, 0
+    out, xs, cx, k, idx = "", [], x, 0, 0
     for c in s:
         if c == " ":
             cx += nib - gap
             k += 1
             continue
         col = (ones[min(k, len(ones) - 1)] if isinstance(ones, (list, tuple)) else ones) if c == "1" else zeros
+        if override and idx in override and c == "1":
+            col = override[idx]
+        idx += 1
         cell = P.lift(cv, cx, y, cw, ch, col, 8, 4, hl=False)
         cell += cv.text(cx + cw / 2, y + ch / 2 + size * .36, c, size, 800, fill=INK if col in ("sky", "slate", "sun", "mint", "teal", "coral") else P._on(col), mono=True)
         out += '<g opacity="%s">%s</g>' % (op, cell) if op is not None else cell
