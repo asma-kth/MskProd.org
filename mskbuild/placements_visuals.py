@@ -260,3 +260,20 @@ put(KS3, "digital-literacy-and-the-law", "Ethics and the impact of technology", 
 
 # ---- A Level
 put(ALEVEL, "legal-moral-and-ethical-issues", "Legislation", "licences")
+
+
+# ================================================== Key Stage 3
+put(KS3, "using-computers", "Files and folders", "files-folders")
+put(KS3, "using-computers", "Staying safe and being organised", "password-strength")
+put(KS3, "programming-in-scratch", "Sequence", "scratch-blocks")
+put(KS3, "vector-graphics", "Working with vector shapes", "vector-nodes")
+put(KS3, "vector-graphics", "Designing a good logo", "logo-design")
+put(KS3, "digital-literacy", "Protecting yourself", "two-factor", "report-it")
+put(KS3, "spreadsheets", "Formulas and functions", "spreadsheet-anatomy")
+put(KS3, "spreadsheets", "Modelling, charts and good design", "chart-choice")
+put(KS3, "web-development", "HTML: structure", "html-css-anatomy")
+put(KS3, "app-development", "User interface design", "app-ui-design")
+put(KS3, "app-development", "Testing and evaluation", "test-data")
+put(KS3, "artificial-intelligence", "Bias, error and responsibility", "ai-bias")
+put(KS3, "3d-modelling-and-animation", "Materials, lighting and cameras", "lights-camera")
+put(KS3, "3d-modelling-and-animation", "Animation and rendering", "keyframes")
