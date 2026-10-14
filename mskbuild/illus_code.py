@@ -4,7 +4,7 @@ Most of these are placed on several topics at once, because OCR, AQA, Edexcel,
 Key Stage 3 and the Python course all teach the same variable, the same loop
 and the same function in nearly the same words.
 """
-from .illus import Canvas, PAL, INK, figure, illustration, _n
+from .illus import Canvas, PAL, INK, ARROW, figure, illustration, _n
 from . import illus_props as P
 from . import illus_glyphs as G
 
@@ -220,7 +220,7 @@ def _constructs():
     # selection: a fork
     cv.add(cv.poly([(400, 76), (456, 104), (400, 132), (344, 104)], cv.g("sun"), stroke=PAL["sun"][2], sw=2.4))
     cv.add(cv.text(400, 109, "raining?", 14, 800, fill=INK))
-    cv.add(P.arrow(cv, [(352, 112), (322, 160)], PAL["ink"][1], 3.4, 10), P.arrow(cv, [(448, 112), (478, 160)], PAL["ink"][1], 3.4, 10))
+    cv.add(P.arrow(cv, [(352, 112), (322, 160)], ARROW, 3.4, 10), P.arrow(cv, [(448, 112), (478, 160)], ARROW, 3.4, 10))
     cv.add(cv.text(318, 140, "yes", 13, 800, cls="il-ink"), cv.text(486, 140, "no", 13, 800, cls="il-ink"))
     cv.add(P.lift(cv, 292, 164, 84, 76, "sky", 12, 5, hl=False), G.umbrella(cv, 334, 202, .9))
     cv.add(P.lift(cv, 424, 164, 84, 76, "paper", 12, 5, hl=False), G.sun(cv, 466, 202, 14))
@@ -256,7 +256,7 @@ def _selection():
     cv.add(P.card(cv, 410, 34, 366, 446, 20, "Where does 65 go?", "teal"))
     cv.add(P.lift(cv, 456, 76, 58, 34, "sun", 17, 5, hl=False), cv.text(485, 100, "65", 18, 800, fill=INK, mono=True))
     gates = [("score >= 70", False, "A", 150), ("score >= 60", True, "B", 244), ("else", None, "C", 338)]
-    cv.add(cv.line(485, 116, 485, 380, PAL["ink"][1], 3, op=.35, dash="2 6"))
+    cv.add(cv.line(485, 116, 485, 380, ARROW, 3, op=.35, dash="2 6"))
     for cond, state, res, y in gates:
         dim = state is None
         cv.add(P.lift(cv, 430, y, 110, 48, "paper" if not dim else "slate", 12, 5, hl=False))
@@ -270,7 +270,7 @@ def _selection():
             cv.add(cv.text(660, y + 29, 'skip "A"', 13, 700, anchor="start", cls="il-ink2", mono=True))
         else:
             cv.add(cv.text(560, y + 29, "never reached", 13, 700, anchor="start", cls="il-ink2"))
-    cv.add(P.arrow(cv, [(485, 116), (485, 144)], PAL["ink"][1], 4, 11), P.arrow(cv, [(485, 202), (485, 238)], PAL["ink"][1], 4, 11))
+    cv.add(P.arrow(cv, [(485, 116), (485, 144)], ARROW, 4, 11), P.arrow(cv, [(485, 202), (485, 238)], ARROW, 4, 11))
     cv.add(P.pill(cv, 593, 417, "first True branch wins", "sun", 14, 14, 28, 800))
     cv.add(P.card(cv, 24, 276, 360, 204, 18))
     cv.add(G.warning(cv, 58, 318, .8))
@@ -319,7 +319,7 @@ def _loops():
         cv.add(cv.text(x + 35, 380, "battery = %d" % lvl, 13, 800, cls="il-ink", mono=True))
         cv.add(cv.text(x + 35, 400, "%d > 0  %s" % (lvl, "True" if lvl else "False"), 12.5, 700, cls="il-ok" if lvl else "il-bad", mono=True))
         if i < 3:
-            cv.add(P.arrow(cv, [(x + 82, 339), (x + 94, 339)], PAL["ink"][1], 3, 8))
+            cv.add(P.arrow(cv, [(x + 82, 339), (x + 94, 339)], ARROW, 3, 8))
     cv.add(P.cross(cv, 756, 340, 11), cv.text(756, 372, "stops", 13, 800, cls="il-ink"))
     cv.add(G.warning(cv, 388, 448, .62), cv.text(414, 453, "if battery never changed, the loop would never stop", 12.5, 700, anchor="start", cls="il-ink"))
     cv.add(P.badge(cv, 30, 36, 1), P.badge(cv, 30, 282, 2))
@@ -446,9 +446,9 @@ def _lists():
     out, xs = G.lockers(cv, 53, 262, 6, 104, 108, 14, vals, 0, "sky", None, {1: "sun", 5: "mint"})
     cv.add(out)
     cv.add(P.pill(cv, xs[5], 238, "append", "mint", 13, 10, 24, 800), P.pill(cv, xs[1], 238, "changed", "sun", 13, 10, 24, 800))
-    cv.add(P.arrow(cv, [(xs[2], 236), (xs[2], 258)], PAL["ink"][1], 4, 10))
+    cv.add(P.arrow(cv, [(xs[2], 236), (xs[2], 258)], ARROW, 4, 10))
     cv.add(P.pill(cv, xs[2], 222, "scores[2]", "paper", 13.5, 12, 26, 800))
-    cv.add(cv.path("M%d 416 v8 H%d v-8" % (xs[0] - 40, xs[5] + 40), stroke=PAL["ink"][1], sw=3, op=.6))
+    cv.add(cv.path("M%d 416 v8 H%d v-8" % (xs[0] - 40, xs[5] + 40), stroke=ARROW, sw=3, op=.6))
     cv.add(P.pill(cv, 400, 446, "len(scores) is 6, so the last index is 5", "paper", 14, 14, 28, 750))
     cv.add(P.badge(cv, 40, 44, 1), P.badge(cv, xs[5] + 44, 262, 2), P.badge(cv, xs[1] - 44, 262, 3), P.badge(cv, xs[2] + 54, 226, 4))
     return figure(
@@ -515,7 +515,7 @@ def _function():
     cv.add(G.machine(cv, 470, 182, 170, 96, "area(w, h)", "teal"))
     cv.add(P.lift(cv, 462, 90, 44, 36, "sky", 10, 4, hl=False), cv.text(484, 115, "3", 20, 800, fill=INK, mono=True))
     cv.add(P.lift(cv, 560, 90, 44, 36, "sun", 10, 4, hl=False), cv.text(582, 115, "4", 20, 800, fill=INK, mono=True))
-    cv.add(P.arrow(cv, [(484, 134), (508, 156)], PAL["ink"][1], 3.4, 10), P.arrow(cv, [(582, 134), (572, 156)], PAL["ink"][1], 3.4, 10))
+    cv.add(P.arrow(cv, [(484, 134), (508, 156)], ARROW, 3.4, 10), P.arrow(cv, [(582, 134), (572, 156)], ARROW, 3.4, 10))
     cv.add(P.pill(cv, 533, 76, "arguments in", "paper", 12.5, 10, 22, 750))
     cv.add(P.lift(cv, 700, 238, 56, 38, "green", 10, 4, hl=False), cv.text(728, 264, "12", 20, 800, fill=P._on("green"), mono=True))
     cv.add(P.pill(cv, 700, 286, "returned", "paper", 12.5, 10, 22, 750))
@@ -693,10 +693,10 @@ def _tryexcept():
     for i, (inp, err, outp, col) in enumerate(runs):
         y = 86 + i * 128
         cv.add(P.lift(cv, 498, y, 70, 38, "paper", 10, 4, hl=False), cv.text(533, y + 26, inp, 16, 800, fill=INK, mono=True))
-        cv.add(P.arrow(cv, [(574, y + 19), (606, y + 19)], PAL["ink"][1], 3.4, 10))
+        cv.add(P.arrow(cv, [(574, y + 19), (606, y + 19)], ARROW, 3.4, 10))
         c2 = {"yellow": "sun", "coral": "coral", "green": "green"}[col]
         cv.add(P.pill(cv, 690, y + 19, err, c2, 12, 10, 26, 800))
-        cv.add(P.arrow(cv, [(690, y + 36), (690, y + 60)], PAL["ink"][1], 3.4, 10))
+        cv.add(P.arrow(cv, [(690, y + 36), (690, y + 60)], ARROW, 3.4, 10))
         cv.add(P.lift(cv, 560, y + 64, 200, 36, "dark", 9, 4, hl=False), cv.text(660, y + 88, outp, 14, 800, fill="#E8F0F3", mono=True))
     cv.add(P.badge(cv, 434, 62, 1), P.badge(cv, 434, 154, 2), P.badge(cv, 434, 197, 3), P.badge(cv, 496, 42, 4))
     return figure(
@@ -777,7 +777,7 @@ def _authentication():
         tc = P._on(col)
         cv.add(cv.text(x + 55, 326, a_, 13.5, 800, fill=tc), cv.text(x + 55, 346, b_, 13.5, 800, fill=tc))
         if i < 2:
-            cv.add(P.arrow(cv, [(x + 118, 333), (x + 146, 333)], PAL["ink"][1], 4, 11))
+            cv.add(P.arrow(cv, [(x + 118, 333), (x + 146, 333)], ARROW, 4, 11))
     cv.add(P.pill(cv, 252, 410, "a stolen password alone is not enough", "sun", 13.5, 14, 28, 800))
     cv.add(cv.text(252, 456, "the second factor is something an attacker does not have", 12.5, 700, cls="il-ink2"))
     cv.add(P.badge(cv, 40, 246, 2))

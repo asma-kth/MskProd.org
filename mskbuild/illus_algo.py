@@ -2,7 +2,7 @@
 import math
 import random
 
-from .illus import Canvas, PAL, INK, figure, illustration, _n
+from .illus import Canvas, PAL, INK, ARROW, figure, illustration, _n
 from . import illus_props as P
 from . import illus_glyphs as G
 
@@ -224,25 +224,25 @@ def _flowchart():
         y = 104 + i * 92
         cv.add(fc_shape(cv, k, 92, y, 112 if k != "decision" else 100, 48 if k != "decision" else 62, lab, col, 12.5 if k != "decision" else 12))
         cv.add(cv.text(166, y - 6, name, 15, 800, anchor="start", cls="il-ink"), cv.text(166, y + 14, d, 12, 650, anchor="start", cls="il-ink2"))
-    cv.add(P.arrow(cv, [(60, 440), (130, 440)], PAL["ink"][1], 4, 12), cv.text(166, 445, "flow line: the order", 12, 650, anchor="start", cls="il-ink2"))
+    cv.add(P.arrow(cv, [(60, 440), (130, 440)], ARROW, 4, 12), cv.text(166, 445, "flow line: the order", 12, 650, anchor="start", cls="il-ink2"))
     cv.add(P.badge(cv, 30, 36, 1))
     # an example
     cv.add(P.card(cv, 336, 34, 450, 446, 20, "Example: a ticket price", "plum"))
     cx = 520
     cv.add(fc_shape(cv, "terminal", cx, 84, 100, 34, "Start", "green"))
-    cv.add(P.arrow(cv, [(cx, 104), (cx, 120)], PAL["ink"][1], 3, 9))
+    cv.add(P.arrow(cv, [(cx, 104), (cx, 120)], ARROW, 3, 9))
     cv.add(fc_shape(cv, "io", cx, 140, 156, 38, "INPUT age", "sky"))
-    cv.add(P.arrow(cv, [(cx, 162), (cx, 182)], PAL["ink"][1], 3, 9))
+    cv.add(P.arrow(cv, [(cx, 162), (cx, 182)], ARROW, 3, 9))
     cv.add(fc_shape(cv, "decision", cx, 222, 150, 70, "age < 16 ?", "sun"))
     cv.add(cv.text(cx - 94, 218, "Yes", 12.5, 800, anchor="end", cls="il-ink"), cv.text(cx + 94, 218, "No", 12.5, 800, cls="il-ink"))
     cv.add(cv.path("M%d 222 L%d 222 L%d 262" % (cx - 75, cx - 118, cx - 118), stroke="#4A6470", sw=3))
     cv.add(cv.path("M%d 222 L%d 222 L%d 262" % (cx + 75, cx + 118, cx + 118), stroke="#4A6470", sw=3))
-    cv.add(P.arrow(cv, [(cx - 118, 252), (cx - 118, 268)], PAL["ink"][1], 3, 9), P.arrow(cv, [(cx + 118, 252), (cx + 118, 268)], PAL["ink"][1], 3, 9))
+    cv.add(P.arrow(cv, [(cx - 118, 252), (cx - 118, 268)], ARROW, 3, 9), P.arrow(cv, [(cx + 118, 252), (cx + 118, 268)], ARROW, 3, 9))
     cv.add(fc_shape(cv, "process", cx - 118, 292, 114, 36, "price = 5", "mint"), fc_shape(cv, "process", cx + 118, 292, 114, 36, "price = 8", "mint"))
     cv.add(cv.path("M%d 312 L%d 346 L%d 346" % (cx - 118, cx - 118, cx), stroke="#4A6470", sw=3), cv.path("M%d 312 L%d 346 L%d 346" % (cx + 118, cx + 118, cx), stroke="#4A6470", sw=3))
-    cv.add(P.arrow(cv, [(cx, 346), (cx, 372)], PAL["ink"][1], 3, 9))
+    cv.add(P.arrow(cv, [(cx, 346), (cx, 372)], ARROW, 3, 9))
     cv.add(fc_shape(cv, "io", cx, 392, 170, 38, "OUTPUT price", "sky"))
-    cv.add(P.arrow(cv, [(cx, 414), (cx, 430)], PAL["ink"][1], 3, 9))
+    cv.add(P.arrow(cv, [(cx, 414), (cx, 430)], ARROW, 3, 9))
     cv.add(fc_shape(cv, "terminal", cx, 448, 100, 34, "Stop", "green"))
     cv.add(P.badge(cv, 352, 36, 2), P.badge(cv, cx + 70, 184, 3))
     cv.add(G.code(cv, 640, 90, 134, ["age = input()", "if age < 16:", "  price = 5", "else:", "  price = 8", "print(price)"], None, 11.5, numbers=False))

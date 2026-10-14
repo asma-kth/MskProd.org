@@ -166,3 +166,59 @@ put(ALEVEL, "algorithms-and-complexity", "Graph and tree algorithms", "shortest-
 put(PY, "searching-and-sorting", "Linear and binary search", "search-compare")
 put(PY, "searching-and-sorting", "Bubble sort and insertion sort", "bubble-sort-cards", "insertion-sort-cards")
 put(PY, "searching-and-sorting", "Merge sort", "merge-sort-cards")
+
+
+# ================================================== data representation
+# ---- OCR GCSE
+put(OCR, "binary-and-hexadecimal", "Hexadecimal", "hex-nibbles")
+put(OCR, "binary-and-hexadecimal", "Binary addition", "binary-overflow")
+put(OCR, "binary-and-hexadecimal", "Binary shifts", "binary-shifts")
+put(OCR, "character-encoding", "ASCII", "char-codes")
+put(OCR, "storing-images", "Metadata", "image-metadata")
+
+# ---- AQA GCSE
+put(AQA, "number-bases-and-units", "Converting between the bases", "hex-nibbles")
+put(AQA, "binary-arithmetic-and-shifts", "Overflow", "binary-overflow")
+put(AQA, "binary-arithmetic-and-shifts", "Binary shifts", "binary-shifts")
+put(AQA, "character-encoding", "ASCII", "char-codes")
+put(AQA, "representing-images", "Metadata", "image-metadata")
+put(AQA, "data-compression", "Run length encoding", "rle-encoding")
+put(AQA, "data-compression", "Huffman coding", "huffman-tree")
+
+# ---- Edexcel GCSE
+put(EDX, "binary-and-hexadecimal", "Hexadecimal", "hex-nibbles")
+put(EDX, "representing-text-images-and-sound", "Representing text", "char-codes")
+put(EDX, "representing-text-images-and-sound", "Representing images", "image-metadata")
+
+# ---- Key Stage 3
+put(KS3, "data-representation", "Binary and hexadecimal", "hex-nibbles")
+put(KS3, "data-representation", "Binary addition and units", "binary-overflow")
+put(KS3, "data-representation", "Representing text, images and sound", "char-codes", "image-metadata")
+
+# ---- the Python course
+put(PY, "binary-and-bitwise-operations", "Bitwise operations", "binary-shifts")
+put(PY, "binary-and-bitwise-operations", "Floating point and characters", "char-codes")
+
+
+# ================================================== how the computer system works
+# ---- OCR GCSE
+put(OCR, "systems-software", "The operating system", "os-jobs")
+put(OCR, "systems-software", "Utility software", "utilities")
+
+# ---- AQA GCSE
+put(AQA, "hardware-software-and-the-operating-system", "Hardware and software", "hardware-software")
+put(AQA, "hardware-software-and-the-operating-system", "System software and the operating system", "os-jobs")
+put(AQA, "hardware-software-and-the-operating-system", "Utility software", "utilities")
+
+# ---- Edexcel GCSE
+put(EDX, "software-and-programming-languages", "System and application software", "os-jobs")
+put(EDX, "software-and-programming-languages", "Utility software", "utilities")
+
+# ---- Key Stage 3
+put(KS3, "using-computers", "Hardware and software", "hardware-software")
+
+# ---- A Level
+put(ALEVEL, "structure-and-function-of-the-processor", "Performance and architectures", "pipelining")
+put(ALEVEL, "types-of-processor", "RISC and CISC", "risc-cisc")
+put(ALEVEL, "systems-software", "Memory management and scheduling", "scheduling")
+put(ALEVEL, "systems-software", "Types of operating system and other functions", "os-jobs")

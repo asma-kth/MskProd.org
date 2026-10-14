@@ -63,6 +63,8 @@ PAL = {
 }
 
 INK = "#1F3A44"
+# Lines and arrows drawn straight on the panel take the theme: dark ink on the light panel, light ink on the dark one.
+ARROW = "var(--il-ink2)"
 
 
 def _n(v):

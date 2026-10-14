@@ -1,7 +1,7 @@
 """Networking illustrations."""
 import math
 
-from .illus import Canvas, PAL, INK, figure, illustration, _n
+from .illus import Canvas, PAL, INK, ARROW, figure, illustration, _n
 from . import illus_props as P
 
 
@@ -82,8 +82,8 @@ def _tcpip():
         cv.add(cv.text(400, y + 56, ["message", "segment", "packet", "frame"][i], 14, 600, cls="il-ink2"))
         # which way things move through the stack
         if i < 3:
-            cv.add(cv.poly([(138 - 9, y + th + 4), (138 + 9, y + th + 4), (138, y + th + 14)], PAL["ink"][1], op=.85))
-            cv.add(cv.poly([(662 - 9, y + th + 14), (662 + 9, y + th + 14), (662, y + th + 4)], PAL["ink"][1], op=.85))
+            cv.add(cv.poly([(138 - 9, y + th + 4), (138 + 9, y + th + 4), (138, y + th + 14)], ARROW, op=.85))
+            cv.add(cv.poly([(662 - 9, y + th + 14), (662 + 9, y + th + 14), (662, y + th + 4)], ARROW, op=.85))
     # the wire between the two link layers
     yb = y0 + 3 * step + th + 6
     wire = "M138 %d L138 %d Q138 %d 152 %d L648 %d Q662 %d 662 %d L662 %d" % (yb, yb + 38, yb + 52, yb + 52, yb + 52, yb + 52, yb + 38, yb)
@@ -162,7 +162,7 @@ def _packet_journey():
     cv.add(P.pill(cv, 94, 166, "Sender", "paper", 15))
     for i, col in enumerate(("teal", "coral", "plum", "sun")):
         cv.add(P.envelope(cv, 40 + i * 56, 196, 1, 48, 34, "paper", col, n=[1, 2, 3, 4][i]))
-    cv.add(P.arrow(cv, [(252, 226), (280, 258)], PAL["ink"][1], 4, 11))
+    cv.add(P.arrow(cv, [(252, 226), (280, 258)], ARROW, 4, 11))
     # one packet, opened up
     cv.add(P.card(cv, 14, 262, 218, 216, 16))
     cv.add(cv.text(123, 290, "Inside one packet", 16, 750, cls="il-ink il-h"))
@@ -180,7 +180,7 @@ def _packet_journey():
     cv.add(cv.text(696, 220, "Arrive in any order", 14.5, 750, cls="il-ink il-h"))
     for i, (n, col) in enumerate(((2, "coral"), (1, "teal"), (4, "sun"), (3, "plum"))):
         cv.add(P.envelope(cv, 604 + i * 44, 236, 1, 40, 28, "paper", col, n=n))
-    cv.add(P.arrow(cv, [(690, 276), (690, 316)], PAL["ink"][1], 4, 11))
+    cv.add(P.arrow(cv, [(690, 276), (690, 316)], ARROW, 4, 11))
     cv.add(P.pill(cv, 690, 344, "numbers put them back", "paper", 13.5))
     for i, (n, col) in enumerate(((1, "teal"), (2, "coral"), (3, "plum"), (4, "sun"))):
         cv.add(P.envelope(cv, 604 + i * 44, 372, 1, 40, 28, "paper", col, n=n))
@@ -341,7 +341,7 @@ def _client_server():
     ico_disc = lambda cx, cy: P.disc(cv, cx, cy, 10)
     for i, (label, col, ic) in enumerate((("stores the files", "sun", ico_folder), ("checks logins", "mint", ico_lock), ("runs the backups", "sky", ico_disc))):
         yy = 126 + i * 58
-        cv.add(cv.line(186, yy, 222, yy, PAL["ink"][1], 2.5, op=.45, dash="3 5"))
+        cv.add(cv.line(186, yy, 222, yy, ARROW, 2.5, op=.45, dash="3 5"))
         cv.add(feature(cv, 224, yy, label, col, ic))
     cv.add(P.pill(cv, 204, 304, "every client asks the server", "paper", 14))
     # ---- peer to peer

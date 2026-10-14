@@ -1,7 +1,7 @@
 """Illustrations for software, graphics, machine learning and the data stack."""
 import math
 
-from .illus import Canvas, PAL, INK, figure, illustration, _n
+from .illus import Canvas, PAL, INK, ARROW, figure, illustration, _n
 from . import illus_props as P
 
 
@@ -163,7 +163,7 @@ def _gfx():
     ex = 148
     order = [("bg", 330, "#8061A9"), ("photo", 232, "#2F82C0"), ("logo", 134, "#C78A00"), ("text", 36, "#C84B43")]
     for x in (ex + SHEET_W, ex - SHEET_H * .6):
-        cv.add(cv.line(x, 40, x, 424, PAL["ink"][1], 1.5, op=.28, dash="4 7"))
+        cv.add(cv.line(x, 40, x, 424, ARROW, 1.5, op=.28, dash="4 7"))
     for i, (w, fy, col) in enumerate(order):
         cv.add(cv.shadow(ex + 110, fy + 108, 150, 7, .1))
         cv.add(sheet(cv, w, ex, fy, col))
@@ -228,7 +228,7 @@ def _nn():
     feats = [("amount", "£950"), ("hour", "03:12"), ("country", "overseas"), ("history", "new account")]
     for (n, v), y in zip(feats, layers[0][1]):
         cv.add(cv.text(28, y - 2, n, 14.5, 800, anchor="start", cls="il-ink"), cv.text(28, y + 16, v, 13, 650, anchor="start", cls="il-ink2", mono=True))
-        cv.add(cv.line(122, y, xs[0] - 24, y, PAL["ink"][1], 2, op=.45))
+        cv.add(cv.line(122, y, xs[0] - 24, y, ARROW, 2, op=.45))
     # what comes out
     cv.add(P.arrow(cv, [(xs[3] + 34, 250), (xs[3] + 62, 250)], PAL["coral"][2], 5, 12))
     cv.add(P.tile(cv, 724, 214, 66, 72, "red", "0.93", None, 14, 6, 18, 12, "#FFFFFF"), cv.text(757, 276, "fraud?", 12.5, 800, fill="#FFFFFF"))
@@ -249,7 +249,7 @@ def _nn():
         cv.add(P.pill(cv, x, 468, t, c, 14, 14, 28, 800, anchor="start"))
         x += w
         if i < 3:
-            cv.add(P.arrow(cv, [(x + 5, 468), (x + 26, 468)], PAL["ink"][1], 3, 8, op=.7))
+            cv.add(P.arrow(cv, [(x + 5, 468), (x + 26, 468)], ARROW, 3, 8, op=.7))
             x += 32
     for k, (t, c) in enumerate(titles):
         cx = xs[k] + (-24 if k == 0 else 0)
@@ -312,7 +312,7 @@ def _stack():
     # transformation: messy in, tidy out, four jobs
     cv.add(cv.rect(PX, 218, 444, 80, 10, "#FFFFFF"))
     cv.add(cv.text(PX + 14, 244, "a. khan ", 13, 700, anchor="start", fill="#8A4B3E", mono=True), cv.text(PX + 14, 266, "12.5", 13, 700, anchor="start", fill="#8A4B3E", mono=True))
-    cv.add(P.gear(cv, PX + 150, 254, 20, "sun"), P.arrow(cv, [(PX + 92, 254), (PX + 122, 254)], PAL["ink"][1], 3, 8), P.arrow(cv, [(PX + 178, 254), (PX + 206, 254)], PAL["ink"][1], 3, 8))
+    cv.add(P.gear(cv, PX + 150, 254, 20, "sun"), P.arrow(cv, [(PX + 92, 254), (PX + 122, 254)], INK, 3, 8), P.arrow(cv, [(PX + 178, 254), (PX + 206, 254)], INK, 3, 8))
     cv.add(cv.text(PX + 214, 244, "Aisha Khan", 13, 800, anchor="start", fill="#1F7A4F", mono=True), cv.text(PX + 214, 266, "12.50", 13, 800, anchor="start", fill="#1F7A4F", mono=True))
     x = PX + 322
     cv.add(cv.text(x, 236, "clean · type", 12.5, 750, anchor="start", fill=INK), cv.text(x, 255, "join · de-duplicate", 12.5, 750, anchor="start", fill=INK))

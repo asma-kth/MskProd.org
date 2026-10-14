@@ -1,7 +1,7 @@
 """Illustrations for the iMedia units: navigation, storyboards and the production phases."""
 import math
 
-from .illus import Canvas, PAL, INK, figure, illustration, _n
+from .illus import Canvas, PAL, INK, ARROW, figure, illustration, _n
 from . import illus_props as P
 
 
@@ -150,7 +150,7 @@ def _story():
             cv.add(cv.text(x + 18, yy, lab, 12, 700, anchor="start", cls="il-ink2"), cv.text(x + 70, yy, val, 13, 800, anchor="start", cls="il-ink"))
     # the same four frames along a clock
     cv.add(P.pill(cv, 52, 324, "time", "paper", 13, 12, 24, 800))
-    cv.add(P.arrow(cv, [(92, 324), (770, 324)], PAL["ink"][1], 3, 10, op=.55))
+    cv.add(P.arrow(cv, [(92, 324), (770, 324)], ARROW, 3, 10, op=.55))
     scale = 740 / 12.0
     x = 30
     marks = [(30, "0 s")]
@@ -166,7 +166,7 @@ def _story():
         x += w
         marks.append((x, "%d s" % round(x / scale - 30 / scale)))
     for mx, t in marks:
-        cv.add(cv.line(mx, 380, mx, 392, PAL["ink"][1], 2, op=.55), cv.text(mx if mx not in (30, 770) else mx + (8 if mx == 30 else -8), 410, t, 12.5, 750, cls="il-ink2", mono=True))
+        cv.add(cv.line(mx, 380, mx, 392, ARROW, 2, op=.55), cv.text(mx if mx not in (30, 770) else mx + (8 if mx == 30 else -8), 410, t, 12.5, 750, cls="il-ink2", mono=True))
     cv.add(cv.text(30, 428, "sound track", 12, 700, anchor="start", cls="il-ink2"))
     cv.add(P.badge(cv, 30, 36, 1), P.badge(cv, 224, 36, 2), P.badge(cv, 418, 36, 3), P.badge(cv, 612, 36, 4), P.badge(cv, 102, 296, 5))
     return figure(

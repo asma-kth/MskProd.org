@@ -1,7 +1,7 @@
 """Hardware illustrations: the processor, memory, storage and the units that measure them."""
 import math
 
-from .illus import Canvas, PAL, INK, figure, illustration, _n
+from .illus import Canvas, PAL, INK, ARROW, figure, illustration, _n
 from . import illus_props as P
 
 
@@ -211,7 +211,7 @@ def _memory_hierarchy():
             cv.add(P.ssd(cv, apex[0] - 56, y0 + 40, 112), P.hdd(cv, apex[0] + 58, y0 + 38, 70, 1))
         # the card to the right
         cy = mid + 6
-        cv.add(cv.line(xr(mid) + 4, mid + 4, 470, cy, PAL["ink"][1], 2, op=.35, dash="3 5"))
+        cv.add(cv.line(xr(mid) + 4, mid + 4, 470, cy, ARROW, 2, op=.35, dash="3 5"))
         cv.add(P.lift(cv, 476, cy - 36, 312, 74, col, 14, 5, hl=False))
         cv.add(cv.rect(484, cy - 28, 8, 58, 4, "#fff", op=.55))
         tc = P._on(col)
@@ -386,7 +386,7 @@ def _parallel():
     cv.add(lane(36, 1))
     for k in range(4):
         cv.add(job(X0 + 4 + k * 108, 36, k + 1))
-    cv.add(P.arrow(cv, [(X0, 84), (X0 + W - 6, 84)], PAL["ink"][1], 3, 10, op=.6))
+    cv.add(P.arrow(cv, [(X0, 84), (X0 + W - 6, 84)], ARROW, 3, 10, op=.6))
     cv.add(cv.text(X0 + W - 6, 99, "time", 12.5, 600, anchor="end", cls="il-ink2"))
     # four cores
     cv.add(cv.text(50, 126, "Four cores: four jobs at once", 16, 800, anchor="start", cls="il-ink il-h"))
@@ -402,7 +402,7 @@ def _parallel():
         cv.add(lane(y, i + 1), job(X0 + 4 + i * 108, y, i + 1))
         if i:
             cv.add(hourglass(cv, X0 + 30 + (i - 1) * 54 + 20, y + 17, .9))
-            cv.add(P.arrow(cv, [(X0 + 4 + i * 108 - 4, y - 5), (X0 + 4 + i * 108 + 8, y + 4)], PAL["ink"][1], 2.5, 8))
+            cv.add(P.arrow(cv, [(X0 + 4 + i * 108 - 4, y - 5), (X0 + 4 + i * 108 + 8, y + 4)], ARROW, 2.5, 8))
     cv.add(P.pill(cv, X0 + 360, 380, "Job 3 needs Job 2", "paper", 14, 12, 28, 700))
     cv.add(P.cross(cv, X0 + W - 10, 468, 11), cv.text(X0 + W - 28, 473, "the other cores sit idle", 14.5, 650, anchor="end"))
     # the GPU
@@ -462,7 +462,7 @@ def _virtual_memory():
     cv.add(cv.text(710, 128, "Program D", 17, 800, fill=INK))
     cv.add(cv.text(710, 152, "opening now", 13, 600, fill="#4A6470"))
     cv.add(P.pill(cv, 710, 206, "no room left!", "red", 14, 10, 28, 750))
-    cv.add(P.arrow(cv, [(630, 142), (590, 142), (ox + 134, oy + 36)], PAL["ink"][1], 4, 12, op=.7, dash="6 6"))
+    cv.add(P.arrow(cv, [(630, 142), (590, 142), (ox + 134, oy + 36)], ARROW, 4, 12, op=.7, dash="6 6"))
     # swapping
     cv.add(P.curve_arrow(cv, (ox + 62, oy + 70), (ox + 80, 280), (ox + 80, 330), (ox + 62, 372), PAL["coral"][1], 5.5, 14))
     cv.add(P.curve_arrow(cv, (282, 372), (282, 320), (330, 290), (352, 232), PAL["teal"][1], 5.5, 14, dash="2 9"))

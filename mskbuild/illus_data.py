@@ -1,7 +1,7 @@
 """Illustrations for data representation, data structures and algorithms."""
 import math
 
-from .illus import Canvas, PAL, INK, figure, illustration, _n
+from .illus import Canvas, PAL, INK, ARROW, figure, illustration, _n
 from . import illus_props as P
 
 
@@ -59,14 +59,14 @@ def _image():
     for i in range(9):
         cv.add(cv.line(gx + i * cs, gy, gx + i * cs, gy + 8 * cs, "#10303A", 1, op=.22), cv.line(gx, gy + i * cs, gx + 8 * cs, gy + i * cs, "#10303A", 1, op=.22))
     # sizes
-    cv.add(cv.path("M%d %d L%d %d" % (gx, 66, gx + 8 * cs, 66), stroke=PAL["ink"][1], sw=2.5, op=.6), cv.line(gx, 60, gx, 72, PAL["ink"][1], 2.5, op=.6), cv.line(gx + 8 * cs, 60, gx + 8 * cs, 72, PAL["ink"][1], 2.5, op=.6))
+    cv.add(cv.path("M%d %d L%d %d" % (gx, 66, gx + 8 * cs, 66), stroke=ARROW, sw=2.5, op=.6), cv.line(gx, 60, gx, 72, ARROW, 2.5, op=.6), cv.line(gx + 8 * cs, 60, gx + 8 * cs, 72, ARROW, 2.5, op=.6))
     cv.add(P.pill(cv, gx + 4 * cs, 46, "8 pixels wide", "paper", 14.5, 12, 28, 700))
     cv.add(P.pill(cv, gx + 4 * cs, gy + 8 * cs + 42, "8 tall: 64 pixels in all", "paper", 14.5, 12, 28, 700))
     # the chosen pixel
     pr, pc_ = 5, 3
     px, py = gx + pc_ * cs, gy + pr * cs
     cv.add(cv.rect(px - 3, py - 3, cs + 6, cs + 6, 3, "none", stroke="#FFFFFF", sw=4), cv.rect(px - 3, py - 3, cs + 6, cs + 6, 3, "none", stroke="#1F3A44", sw=2))
-    cv.add(cv.path("M%d %d L%d %d" % (px + cs + 4, py + 6, 420, 120), stroke=PAL["ink"][1], sw=2.5, dash="4 6", op=.7), cv.path("M%d %d L%d %d" % (px + cs + 4, py + cs - 2, 420, 232), stroke=PAL["ink"][1], sw=2.5, dash="4 6", op=.7))
+    cv.add(cv.path("M%d %d L%d %d" % (px + cs + 4, py + 6, 420, 120), stroke=ARROW, sw=2.5, dash="4 6", op=.7), cv.path("M%d %d L%d %d" % (px + cs + 4, py + cs - 2, 420, 232), stroke=ARROW, sw=2.5, dash="4 6", op=.7))
     # zoomed swatch and its three numbers
     cv.add(P.card(cv, 420, 60, 360, 230, 18))
     cv.add(cv.rect(440, 80, 100, 100, 14, "#F0675B"), cv.rect(440, 80, 100, 100, 14, "none", stroke="#fff", sw=4), cv.text(490, 204, "one pixel", 14, 700, cls="il-ink2"))
@@ -144,7 +144,7 @@ def _sound():
         cv.add(cv.line(612, yy, 760, yy, "var(--il-line)", 1.5))
         cv.add(cv.text(598, yy + 5, str(7 - i), 12.5, 700, cls="il-ink2", mono=True, anchor="end"))
     cv.add(cv.circle(640, top + 3 * lh + 22, 7, PAL["coral"][1], stroke="#fff", sw=2))
-    cv.add(P.arrow(cv, [(652, top + 3 * lh + 22), (708, top + 3 * lh)], PAL["ink"][1], 3.5, 11))
+    cv.add(P.arrow(cv, [(652, top + 3 * lh + 22), (708, top + 3 * lh)], ARROW, 3.5, 11))
     cv.add(cv.circle(722, top + 3 * lh, 8, PAL["teal"][1], stroke="#fff", sw=2))
     cv.add(P.pill(cv, 683, 400, "3 bits: 8 levels", "paper", 13.5, 10, 26, 750))
     cv.add(cv.text(683, 438, "more bits: finer steps", 12.5, 600, cls="il-ink2"))
@@ -194,7 +194,7 @@ def _compression():
     letters = "AAAAAABBB"
     for i, ch in enumerate(letters):
         cv.add(P.lift(cv, 308 + i * 22, 104, 20, 26, "sky" if ch == "A" else "sun", 5, 3, hl=False), cv.text(318 + i * 22, 123, ch, 13, 800, fill=INK, mono=True))
-    cv.add(P.arrow(cv, [(400, 146), (400, 172)], PAL["ink"][1], 3.5, 11))
+    cv.add(P.arrow(cv, [(400, 146), (400, 172)], ARROW, 3.5, 11))
     cv.add(P.lift(cv, 360, 180, 44, 30, "sky", 8, 3, hl=False), cv.text(382, 202, "6A", 15, 800, fill=INK, mono=True))
     cv.add(P.lift(cv, 410, 180, 44, 30, "sun", 8, 3, hl=False), cv.text(432, 202, "3B", 15, 800, fill=INK, mono=True))
     cv.add(P.photo(cv, 330, 236, 78, 52, 6), P.pill(cv, 420, 262, "6 MB", "mint", 16, 12, 28, 800, anchor="start"))
@@ -244,15 +244,15 @@ def _encryption():
     cv.add(P.lift(cv, 132, 128, 112, 46, "paper", 12, 5, hl=False), cv.text(188, 160, "HELLO", 22, 800, fill=INK, mono=True))
     cv.add(P.pill(cv, 188, 204, "plaintext", "paper", 14, 12, 26, 700))
     # the lock and key
-    cv.add(P.arrow(cv, [(250, 152), (292, 152)], PAL["ink"][1], 4, 12))
+    cv.add(P.arrow(cv, [(250, 152), (292, 152)], ARROW, 4, 12))
     cv.add(P.key(cv, 300, 52, 1.0, "sun"))
     cv.add(P.padlock(cv, 306, 106, 1.2, "sun"))
     cv.add(P.pill(cv, 340, 204, "key + algorithm", "sun", 13.5, 12, 26, 750))
-    cv.add(P.arrow(cv, [(376, 152), (436, 152)], PAL["ink"][1], 4, 12))
+    cv.add(P.arrow(cv, [(376, 152), (436, 152)], ARROW, 4, 12))
     # ciphertext on the wire
     cv.add(P.lift(cv, 444, 128, 118, 46, "dark", 12, 5, hl=False), cv.text(503, 159, "X#9@Q", 21, 800, fill="#9FE3FF", mono=True))
     cv.add(P.pill(cv, 503, 204, "ciphertext", "paper", 14, 12, 26, 700))
-    cv.add(P.arrow(cv, [(570, 152), (600, 152)], PAL["ink"][1], 4, 12))
+    cv.add(P.arrow(cv, [(570, 152), (600, 152)], ARROW, 4, 12))
     # the eavesdropper
     cv.add(hooded(cv, 412, 234, .72))
     cv.add(P.magnifier(cv, 520, 262, .85, 20))
@@ -260,7 +260,7 @@ def _encryption():
     # the receiver
     cv.add(P.key(cv, 604, 52, 1.0, "sun"))
     cv.add(P.padlock(cv, 612, 106, 1.2, "mint", True))
-    cv.add(P.arrow(cv, [(684, 152), (704, 152)], PAL["ink"][1], 3, 10))
+    cv.add(P.arrow(cv, [(684, 152), (704, 152)], ARROW, 3, 10))
     cv.add(P.lift(cv, 706, 130, 78, 44, "paper", 11, 4, hl=False), cv.text(745, 159, "HELLO", 17, 800, fill=INK, mono=True))
     cv.add(P.pill(cv, 690, 204, "the right key unlocks it", "mint", 13, 12, 26, 750))
     cv.add(P.person(cv, 660, 226, .72, "brown", "brown", "plum", "bun", True))
@@ -399,7 +399,7 @@ def _stack_queue():
     cv.add(P.arrow(cv, [(640, 292), (654, 262), (674, 252)], PAL["teal"][1], 5, 13))
     cv.add(P.pill(cv, 572, 236, "dequeue", "teal", 15, 12, 28, 800))
     cv.add(cv.text(572, 262, "served from the front", 12.5, 650, cls="il-ink2"))
-    cv.add(P.arrow(cv, [(536, 438), (640, 438)], PAL["ink"][1], 4, 12, op=.55))
+    cv.add(P.arrow(cv, [(536, 438), (640, 438)], ARROW, 4, 12, op=.55))
     cv.add(cv.text(430, 444, "BACK", 13, 800, spacing=2, anchor="start", cls="il-ink2"))
     cv.add(cv.text(656, 444, "FRONT", 13, 800, spacing=2, anchor="start", cls="il-ink2"))
     cv.add(P.badge(cv, 36, 40, 1), P.badge(cv, 120, 170, 2), P.badge(cv, 356, 170, 3), P.badge(cv, 440, 40, 4), P.badge(cv, 512, 236, 5))
@@ -447,7 +447,7 @@ def _tree():
     cv.add(P.pill(cv, 78, 168, "37 < 50: go left", "paper", 13.5, 12, 28, 750, anchor="start"))
     cv.add(P.pill(cv, 216, 276, "37 > 30: go right", "paper", 13.5, 12, 28, 750, anchor="start"))
     cv.add(P.pill(cv, 227, 394, "found!", "green", 15, 14, 28, 800))
-    cv.add(cv.path("M84 416 L84 426 L490 426 L490 416", stroke=PAL["ink"][1], sw=2.5, op=.5))
+    cv.add(cv.path("M84 416 L84 426 L490 426 L490 416", stroke=ARROW, sw=2.5, op=.5))
     cv.add(P.pill(cv, 287, 452, "leaves: no children", "lilac", 14, 12, 28, 750))
     # the rule, in miniature
     cv.add(P.card(cv, 576, 34, 210, 200, 20, "The rule", "plum"))
@@ -771,8 +771,8 @@ def _mesh():
     cv.add(cv.text(372, 288, "a flat", 12.5, 650, cls="il-ink2"), cv.text(372, 304, "surface", 12.5, 650, cls="il-ink2"))
     # axes: x across, y deep, z up
     ax, ay = 332, 396
-    cv.add(P.arrow(cv, [(ax, ay), (ax + 46, ay)], PAL["ink"][1], 3, 9), P.arrow(cv, [(ax, ay), (ax, ay - 44)], PAL["ink"][1], 3, 9),
-           P.arrow(cv, [(ax, ay), (ax + 30, ay - 25)], PAL["ink"][1], 3, 9))
+    cv.add(P.arrow(cv, [(ax, ay), (ax + 46, ay)], ARROW, 3, 9), P.arrow(cv, [(ax, ay), (ax, ay - 44)], ARROW, 3, 9),
+           P.arrow(cv, [(ax, ay), (ax + 30, ay - 25)], ARROW, 3, 9))
     cv.add(cv.text(ax + 58, ay + 5, "x", 14, 800, cls="il-ink", mono=True), cv.text(ax - 1, ay - 52, "z", 14, 800, cls="il-ink", mono=True),
            cv.text(ax + 42, ay - 28, "y", 14, 800, cls="il-ink", mono=True))
     cv.add(count_pill(cv, 92, 450, "8 vertices", "dot"), count_pill(cv, 225, 450, "12 edges", "line"), count_pill(cv, 347, 450, "6 faces", "face"))
