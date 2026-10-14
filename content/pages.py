@@ -319,7 +319,7 @@ Corrections are genuinely welcome. If something on this site is wrong, unclear o
 
     # ----------------------------------------------------------- privacy
     privacy = """
-**Last updated: September 2026**
+**Last updated: October 2026**
 
 The short version: the site itself asks nothing of you and keeps your work on your own device. It is paid for by advertising, and those adverts are served by Google, which does set cookies and does collect data about the people who see them. That part is explained in full below.
 
@@ -355,6 +355,7 @@ The following may be stored locally:
 | Which topics you have opened | So the course pages can show a small marker next to topics you have visited |
 | Your light or dark theme choice | So the site looks the way you left it |
 | Whether you asked Pixel to stay quiet | So the mascot respects that |
+| Your Pixel Run progress: the level you reached, your stars, which challenges you have solved, and whether you chose quiz mode or calm mode | So the game can pick up where you stopped |
 
 **This data never leaves your device.** It is not transmitted to any server, it is not accessible to the site owner, and there is no mechanism by which it could be. It is stored by your browser under this website's address and is readable only by this website on this device.
 
@@ -370,7 +371,7 @@ Pixel, the robot cat, runs entirely in your browser. The facts, tips and message
 
 The site's typefaces are served from mskprod.org itself. They used to come from Google Fonts, which meant your browser made a request to Google's servers for every page; that request no longer happens.
 
-The runnable Python examples download the Python engine from a public code network (jsDelivr) the first time you press Run on a page. That request is only made if you press Run.
+The runnable Python examples download the Python engine from a public code network (jsDelivr) the first time you press Run on a page. That request is only made if you press Run. The Pixel Run game makes the same request when you press Start, because it marks your code in your own browser. If you choose quiz mode it makes no request at all. In both cases the code you write stays on your device.
 
 Besides these and the advertising described above, the site makes no other third party requests.
 
@@ -446,7 +447,7 @@ This site is built so that it can be used by everybody, including people using a
 
 ### Motion
 
-+ Animation is decorative only and never conveys information
++ Animation is decorative only and never conveys information. The one exception is the Pixel Run game, where every event is also written out in text
 + All animation, including the mascot, is disabled automatically if your system is set to prefer reduced motion
 + Nothing flashes, blinks or moves unexpectedly
 
@@ -456,6 +457,14 @@ This site is built so that it can be used by everybody, including people using a
 + Explanations are broken into short sections with clear headings
 + Code blocks scroll horizontally within their own container rather than forcing the whole page to scroll
 + Tables scroll within their own container on narrow screens
+
+### The Pixel Run game
+
++ The scene is drawn on a canvas, so each event in it (reaching an obstacle, clearing it, failing it, finishing a level) is also written out and announced to screen readers
++ It is played entirely from the keyboard. Tab indents inside the code box, and Esc followed by Tab leaves it, so focus is never trapped
++ Calm mode removes the scrolling and the jumps, and switches on by itself if your system prefers reduced motion
++ Nothing is against the clock
++ Passing and failing are shown in words as well as colour, and quiz mode replaces typing code with choosing an answer
 
 ### Without JavaScript
 
@@ -468,6 +477,7 @@ Being honest about what is not perfect is more useful than claiming everything i
 + Some tables of technical comparison are wide by nature. They scroll horizontally on a narrow screen, which is a compromise rather than an ideal solution.
 + Diagrams are currently described in text rather than presented visually. This is better for screen reader users but means some concepts that would benefit from an illustration do not yet have one.
 + The exam answer marker requires typing. There is currently no alternative input method for students who would find that difficult, and voice input from the operating system is the only workaround.
++ The Pixel Run scene is a picture on a canvas with no description beyond the text announcements, and its coding challenges need typing unless quiz mode is chosen.
 
 ## Standards
 

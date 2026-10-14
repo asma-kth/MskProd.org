@@ -243,7 +243,7 @@
     var b = e.target.closest && e.target.closest("[data-reset-progress]");
     if (!b) return;
     if (!window.confirm("This clears every saved score and note stored in this browser. Continue?")) return;
-    ["seen", "quiz", "exam", "theme", "mascot", "streak"].forEach(store.del);
+    ["seen", "quiz", "exam", "theme", "mascot", "streak", "pixelrun"].forEach(store.del);
     window.location.reload();
   });
 

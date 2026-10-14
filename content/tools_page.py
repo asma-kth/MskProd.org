@@ -131,7 +131,13 @@ def build(register, add_search):
   %s
   <header class="section-head"><h1>Interactive tools</h1><p class="lead">%s</p></header>
   <div class="grid grid-3">%s</div>
-</div>""" % (crumbs(trail), esc(INTRO), "".join(cards))
+  <header class="section-head" style="margin-top:var(--sp-7)"><h2>Games</h2>
+    <p class="lead">Practice that does not feel like practice.</p></header>
+  <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(min(265px,100%%),1fr))">
+    <a class="tile" href="/pixel-run/"><span class="tile-icon">%s</span><h3>Pixel Run</h3>
+      <p>A platformer where every obstacle is a Python function to write. Ten levels, from print to Dijkstra's algorithm.</p></a>
+  </div>
+</div>""" % (crumbs(trail), esc(INTRO), "".join(cards), ico("i-flag", "icon"))
     path = "/tools/"
     write(path, layout(title="Interactive Computing Tools",
                        description=INTRO, path=path, body=body, active="/tools/",

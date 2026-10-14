@@ -3516,6 +3516,7 @@ _A = {t.slug: t for t in ALEVEL_TOPICS}
 COURSE = Course(
     slug="python",
     seo="Python tutorial",
+    extra_cta=("Play Pixel Run", "/pixel-run/", "i-flag"),
     title="Python from Scratch",
     short="Python",
     stage="All",

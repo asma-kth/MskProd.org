@@ -100,6 +100,9 @@ class Course:
     # topic name has to survive that cut.
     seo: str = ""
     journey: List[Tuple[str, str, str]] = field(default_factory=list)
+    # One extra button in the course hero: (label, href, icon). The Python
+    # course uses it to point at the game that practises it.
+    extra_cta: Tuple[str, str, str] = ()
 
 
 @dataclass

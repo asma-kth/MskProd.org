@@ -85,6 +85,31 @@ def build_course(course):
 
 # ------------------------------------------------------------------ home
 
+def _pixel_run_band():
+    """The home page's way into the game: a picture of it, and two buttons."""
+    return """<section class="section">
+  <div class="wrap">
+    <div class="grid grid-2" style="align-items:center;gap:var(--sp-6)">
+      <div>
+        <span class="eyebrow">%s New: a game</span>
+        <h2>Learn Python by playing</h2>
+        <p class="lead">Pixel the robot cat runs through ten levels, and every obstacle is a Python function for you to write.
+        Pass the tests and she jumps on. Fail three times and you are sent back a level. It runs in your browser,
+        from your first <code>print()</code> to Dijkstra's algorithm.</p>
+        <div class="btn-row" style="margin-top:1.4rem">
+          <a class="btn btn-primary" href="/pixel-run/">%s Play Pixel Run</a>
+          <a class="btn btn-secondary" href="/python/">%s The Python course</a>
+        </div>
+      </div>
+      <figure class="hero-figure">
+        <img src="/assets/img/pixel-run.jpg" width="1200" height="675" loading="lazy" decoding="async"
+             alt="Pixel the robot cat jumping onto a green pipe in a grassy platformer level, with a green tick block above the pipe and gold coins ahead.">
+      </figure>
+    </div>
+  </div>
+</section>""" % (ico("i-flag"), ico("i-play"), ico("i-python"))
+
+
 def build_home():
     cards = []
     meta = {
@@ -103,7 +128,7 @@ def build_home():
         "data-analytics": ("Data Analytics", "/data-analytics/", "i-chart",
                            "OCR Cambridge Advanced National. F200 and F201, the two exam units, with graphs and interactive models."),
         "python": ("Python from scratch", "/python/", "i-python",
-                   "First line of code through to object oriented programming, tkinter and pygame."),
+                   "From your first line of code to GCSE and A Level programming, with a platformer to practise it in."),
     }
     for slug, (title, href, icon, blurb) in meta.items():
         course = next((c for c in COURSES if c.slug == slug), None)
@@ -177,7 +202,9 @@ def build_home():
   </div>
 </section>
 
-<section class="section">
+%s
+
+<section class="section section-alt">
   <div class="wrap">
     <div class="grid grid-2" style="align-items:center;gap:var(--sp-6)">
       <div>
@@ -200,7 +227,7 @@ def build_home():
   </div>
 </section>
 
-<section class="section section-alt">
+<section class="section">
   <div class="wrap">
     <div class="grid grid-2" style="align-items:center;gap:var(--sp-6)">
       <div class="center">%s</div>
@@ -220,6 +247,7 @@ def build_home():
         ico("i-palette"), ico("i-layers"),
         "".join(cards),
         ico("i-book"), ico("i-list"), ico("i-check-circle"), ico("i-paper"),
+        _pixel_run_band(),
         ico("i-arrow-right"),
         render.mascot_svg().replace('<svg ', '<svg style="max-width:260px;margin:0 auto" ', 1),
         ico("i-sparkle"),
@@ -275,7 +303,8 @@ def build_pwa():
 
 
     shell = []
-    for rel in ("css/site.css", "js/app.js", "js/mascot.js", "js/tools.js"):
+    for rel in ("css/site.css", "js/app.js", "js/mascot.js", "js/tools.js",
+                "css/game.css", "js/game.js", "js/game-art.js"):
         f = os.path.join(DIST, "assets", rel)
         if os.path.exists(f):
             with open(f, "rb") as fh:
@@ -477,11 +506,14 @@ def copy_static():
     with open(os.path.join(dst, "img", "favicon.svg"), "w", encoding="utf-8") as fh:
         fh.write(_cat.flat(head_only=True, plate=True, label="MskProd Computing"))
 
-    tools_css = os.path.join(css_dir, "tools.css")
-    with open(tools_css, encoding="utf-8") as fh:
-        t = fh.read()
-    with open(tools_css, "w", encoding="utf-8") as fh:
-        fh.write(dark_media(t))
+    # The tools bundle and the game each carry their own dark rules, so each
+    # gets the same prefers-color-scheme mirror as the main stylesheet.
+    for name in ("tools.css", "game.css"):
+        extra_css = os.path.join(css_dir, name)
+        with open(extra_css, encoding="utf-8") as fh:
+            t = fh.read()
+        with open(extra_css, "w", encoding="utf-8") as fh:
+            fh.write(dark_media(t))
 
 
 def check_icons():
@@ -550,6 +582,9 @@ def main():
 
     from content import tools_page
     tools_page.build(register, add_search)
+
+    from content.pixelrun import page as pixelrun_page
+    pixelrun_page.build(register, add_search)
 
     from content import progress_page
     progress_page.build(register, add_search)
