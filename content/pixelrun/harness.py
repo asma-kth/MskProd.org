@@ -14,12 +14,36 @@ HARNESS = r'''
 import ast, copy, json, sys, time
 
 def __game_same(got, expected):
-    # True is not 1, and a list is not a tuple, but 2 and 2.0 are the same answer
+    # True is not 1, and a list is not a tuple, but 2 and 2.0 are the same answer,
+    # and a Counter or a defaultdict is a perfectly good dict
     if isinstance(expected, bool) or isinstance(got, bool):
-        return type(got) is type(expected) and got == expected
+        return isinstance(got, type(expected)) and got == expected
     if isinstance(expected, (int, float)):
         return isinstance(got, (int, float)) and abs(got - expected) <= 1e-9 * max(1, abs(expected))
-    return type(got) is type(expected) and got == expected
+    return isinstance(got, type(expected)) and got == expected
+
+class __GameCounted(list):
+    """A list that counts how many of its items the student's code looks at."""
+    def __init__(self, items):
+        list.__init__(self, items)
+        self.probes = 0
+    def __getitem__(self, i):
+        self.probes += 1
+        return list.__getitem__(self, i)
+    def __iter__(self):
+        for x in list.__iter__(self):
+            self.probes += 1
+            yield x
+    def __contains__(self, x):
+        self.probes += len(self)
+        return list.__contains__(self, x)
+
+def __game_args(text):
+    try:
+        return ast.literal_eval(text)
+    except (ValueError, SyntaxError):
+        # a long list written as list(range(...)); this text is the game's own
+        return eval(text, {"__builtins__": {}, "list": list, "range": range})
 
 def __game_rules(tree, fn, rules):
     func = None
@@ -40,7 +64,7 @@ def __game_rules(tree, fn, rules):
                        for n in ast.walk(func)):
                 return rule["why"]
         elif kind == "loop":
-            if not any(isinstance(n, (ast.For, ast.While)) for n in ast.walk(func)):
+            if not any(isinstance(n, (ast.For, ast.While, ast.comprehension)) for n in ast.walk(func)):
                 return rule["why"]
         elif kind == "forbid":
             names = set(rule["names"])
@@ -93,18 +117,32 @@ def __game_check(src, fn, tests_json, rules_json):
         return json.dumps({"phase": "missing",
                            "message": "Your code needs to define a function called %s." % fn})
     results = []
+    probe_rule = None
+    probe_fail = ""
+    for rule in rules:
+        if rule["kind"] == "probes":
+            probe_rule = rule
     for t in tests:
-        args = ast.literal_eval(t["a"])
+        args = __game_args(t["a"])
         expected = ast.literal_eval(t["e"])
         state["deadline"] = time.time() + 2
         got, err = None, None
+        call_args = list(copy.deepcopy(args))
+        counted = None
+        if probe_rule is not None and isinstance(call_args[probe_rule["arg"]], list):
+            counted = __GameCounted(call_args[probe_rule["arg"]])
+            call_args[probe_rule["arg"]] = counted
         sys.settrace(guard)
         try:
-            got = f(*copy.deepcopy(args))
+            got = f(*call_args)
         except BaseException as e:
             err = "%s: %s" % (type(e).__name__, e)
         finally:
             sys.settrace(None)
+        if counted is not None and not probe_fail:
+            limit = probe_rule["per_log2"] * (len(counted) + 1).bit_length() + probe_rule["plus"]
+            if counted.probes > limit:
+                probe_fail = probe_rule["why"]
         ok = err is None and __game_same(got, expected)
         shown = err if err is not None else repr(got)
         results.append({"call": t["c"], "expected": t["e"], "got": shown[:160], "ok": ok,
@@ -114,7 +152,8 @@ def __game_check(src, fn, tests_json, rules_json):
                 results.append({"call": rest["c"], "expected": rest["e"],
                                 "got": "not run, because an earlier test timed out", "ok": False, "err": True})
             break
-    return json.dumps({"phase": "tests", "results": results, "rule": __game_rules(tree, fn, rules)})
+    return json.dumps({"phase": "tests", "results": results,
+                       "rule": __game_rules(tree, fn, rules) or probe_fail})
 '''
 
 

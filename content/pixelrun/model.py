@@ -65,12 +65,37 @@ def forbid(names, why):
     return {"kind": "forbid", "names": list(names), "why": why}
 
 
+def probes(arg, why, per_log2=4, plus=4):
+    """The list in argument `arg` may only be looked at about log2(n) times.
+
+    Allowed looks are per_log2 * log2(n + 1) + plus, so a binary search passes on
+    a long list and a scan from the front does not.
+    """
+    return {"kind": "probes", "arg": arg, "per_log2": per_log2, "plus": plus, "why": why}
+
+
 def calls(name, why=None):
     return {"kind": "calls", "name": name,
             "why": why or "Use the %s() function that is already in the starter code." % name}
 
 
 # --------------------------------------------------------------- expected
+
+class Expr:
+    """A test argument written as a short expression, for the rare case where the
+    literal would run to pages: Expr("list(range(0, 2000, 2))")."""
+
+    def __init__(self, text):
+        self.text = text
+        self.value = eval(text, {"__builtins__": {}, "list": list, "range": range})
+
+    def __repr__(self):
+        return self.text
+
+
+def realise(args):
+    return tuple(a.value if isinstance(a, Expr) else a for a in args)
+
 
 def call_text(fn, args):
     return "%s(%s)" % (fn, ", ".join(repr(a) for a in args))
@@ -81,7 +106,7 @@ def solve(ch):
     ns = {}
     exec(compile(ch.solution, "solution of " + ch.id, "exec"), ns)
     f = ns[ch.fn]
-    return [f(*copy.deepcopy(args)) for args in ch.tests]
+    return [f(*copy.deepcopy(realise(args))) for args in ch.tests]
 
 
 def test_records(ch):

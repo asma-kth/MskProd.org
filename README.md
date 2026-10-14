@@ -54,6 +54,7 @@ content/
   ks4_imedia.py       OCR Creative iMedia J834
   ks5.py              OCR A Level Computer Science H446
   python_course.py    Python from first program to OOP, tkinter and pygame
+  pixelrun/           Pixel Run, the Python platformer: levels, fifty challenges, marker
   papers.py           Original practice papers with mark schemes
   pages.py            About, privacy, accessibility, how to revise, glossary
 static/
@@ -61,8 +62,52 @@ static/
   js/app.js           Theme, navigation, search, progress
   js/quiz.js          Quiz engine and exam answer auto marker
   js/mascot.js        Pixel, the robot cat
+  js/game.js          Pixel Run: rules, console, Python marking
+  js/game-art.js      Pixel Run: everything drawn on the canvas
+  css/game.css        Pixel Run styles
   img/                Logo, favicon, mascot, icon sprite, share image
 ```
+
+## Pixel Run, the game
+
+`/pixel-run/` is a platformer in ten levels. Pixel runs by herself, and at each of
+three obstacles per level the student writes a Python function. If every test
+passes she jumps on. Three failed attempts, or giving up, and the obstacle wins:
+the solution is shown and the student goes back to the previous level. Python runs
+in the student's browser (Pyodide), so nothing they type leaves their device.
+
+Challenges live in `content/pixelrun/bank_a.py` (levels 1 to 5) and `bank_b.py`
+(levels 6 to 10), five per level. Expected values are never written down, they are
+computed by running the solution.
+
+```python
+C("greet", 1, "A polite greeting",
+  "The story, one line.",
+  "The task. Write `greet(name)`. It returns ...",
+  "greet",                                         # the function the student writes
+  "def greet(name):\n    pass\n",                  # starter code
+  "def greet(name):\n    return 'Hello, ' + name\n",    # the reference solution
+  [("Asha",), ("Ben",), ("",)],                    # argument tuples to test with
+  ["def greet(name):\n    return 'Hello ' + name\n"],   # plausible mistakes
+  ["A nudge.", "`return 'Hello, ' + name`"],       # two hints, the last one the key line
+  [loop()])                                        # optional rules
+```
+
+`python3 build.py` proves the whole bank before it writes the page and stops if
+anything is unsound: every solution must pass its tests and rules, every starter
+must fail, and every listed mistake must fail by a test or a rule. Rules can demand
+a loop (`loop()`), recursion (`recursive()`), a call to a given function
+(`calls("square")`), or forbid names (`forbid(["max"], "why")`, including `"in"`,
+`"**"` and `"[::-1]"`). `probes(0, "why")` limits how many items of a list argument
+the code may look at, which is how the binary search level refuses a scan from the
+front; a long list can be written as `Expr("list(range(0, 2000, 2))")`.
+
+`python3 tools/check_pixelrun.py --mutate` also breaks each solution in small ways
+(a `+` becomes a `-`, a `<` becomes `<=`, a line is deleted) and lists the changed
+copies that its tests fail to notice. Today those are all equivalent to the
+original, such as which of two equal values is returned first.
+
+Progress is stored in the browser under `mskprod:pixelrun`.
 
 ## Adding a topic
 

@@ -91,7 +91,7 @@ BANK = [
       "seconds_to_clock",
       "def seconds_to_clock(total):\n    # use // for whole hours and % for what is left over\n    pass\n",
       "def seconds_to_clock(total):\n    hours = total // 3600\n    minutes = (total % 3600) // 60\n    seconds = total % 60\n    return f\"{hours}:{minutes:02d}:{seconds:02d}\"\n",
-      [(0,), (59,), (3600,), (3725,), (86399,), (61,)],
+      [(0,), (59,), (3600,), (3725,), (86399,), (61,), (4200,)],
       ["def seconds_to_clock(total):\n    hours = total // 3600\n    minutes = (total % 3600) // 60\n    seconds = total % 60\n    return str(hours) + \":\" + str(minutes) + \":\" + str(seconds)\n",
        "def seconds_to_clock(total):\n    return \"%d:%02d\" % (total // 60, total % 60)\n"],
       ["Hours are total // 3600. What is left after taking the hours away is total % 3600, and the minutes come from that.",

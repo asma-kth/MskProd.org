@@ -4,7 +4,7 @@ and the A Level data structures.
 As in bank_a, no expected value is typed here. The solution runs, and whatever
 it returns is the answer the tests hold the student to.
 """
-from .model import Challenge, loop, forbid, recursive, calls
+from .model import Challenge, Expr, forbid, probes, recursive, calls
 
 C = Challenge
 
@@ -143,19 +143,22 @@ BANK = [
        "def linear_search(items, target):\n    found = -1\n    for i in range(len(items)):\n        if items[i] == target:\n            found = i\n    return found\n"],
       ["Loop with the index, so you can return it. Return -1 only after the loop has finished without finding anything.",
        "`for i in range(len(items)): if items[i] == target: return i`"],
-      [loop(), forbid(["index", "find", "in"], "Write the search yourself, one item at a time. index and in do it for you.")]),
+      [forbid(["index", "find", "in"], "Write the search yourself, one item at a time. index and in do it for you.")]),
     C("binary_search", 8, "Halve the range",
       "A long ladder of sorted rungs. Checking every rung would take all night, so split the ladder in half instead.",
       "Write `binary_search(items, target)`. `items` is **sorted**. Return the index of `target`, or `-1`. Keep a `low` and a `high`, look at the middle, and throw away the half that cannot contain the target.",
       "binary_search",
       "def binary_search(items, target):\n    low = 0\n    high = len(items) - 1\n    # while low <= high: find the middle, compare, move low or high\n    return -1\n",
       "def binary_search(items, target):\n    low = 0\n    high = len(items) - 1\n    while low <= high:\n        mid = (low + high) // 2\n        if items[mid] == target:\n            return mid\n        elif items[mid] < target:\n            low = mid + 1\n        else:\n            high = mid - 1\n    return -1\n",
-      [([1, 3, 5, 7, 9, 11], 7), ([1, 3, 5, 7, 9, 11], 1), ([1, 3, 5, 7, 9, 11], 11), ([1, 3, 5, 7, 9, 11], 4), ([], 5), ([5], 5), ([5], 6), ([2, 4, 6, 8, 10, 12, 14, 16], 16)],
+      [([1, 3, 5, 7, 9, 11], 7), ([1, 3, 5, 7, 9, 11], 1), ([1, 3, 5, 7, 9, 11], 11), ([1, 3, 5, 7, 9, 11], 4), ([], 5), ([5], 5), ([5], 6), ([2, 4, 6, 8, 10, 12, 14, 16], 16),
+       (Expr("list(range(0, 2000, 2))"), 1998), (Expr("list(range(0, 2000, 2))"), 777)],
       ["def binary_search(items, target):\n    low = 0\n    high = len(items) - 1\n    while low < high:\n        mid = (low + high) // 2\n        if items[mid] == target:\n            return mid\n        elif items[mid] < target:\n            low = mid + 1\n        else:\n            high = mid - 1\n    return -1\n",
-       "def binary_search(items, target):\n    low = 0\n    high = len(items) - 1\n    while low <= high:\n        mid = (low + high) // 2\n        if items[mid] == target:\n            return mid\n        elif items[mid] < target:\n            low = mid\n        else:\n            high = mid\n    return -1\n"],
+       "def binary_search(items, target):\n    low = 0\n    high = len(items) - 1\n    while low <= high:\n        mid = (low + high) // 2\n        if items[mid] == target:\n            return mid\n        elif items[mid] < target:\n            low = mid\n        else:\n            high = mid\n    return -1\n",
+       "def binary_search(items, target):\n    for i in range(len(items)):\n        if items[i] == target:\n            return i\n    return -1\n"],
       ["The middle is (low + high) // 2. If the middle is too small the target is above it, so low becomes mid + 1.",
        "`while low <= high: ... low = mid + 1 ... high = mid - 1`"],
-      [loop(), forbid(["index", "find"], "Do the halving yourself. index looks at every item in order.")]),
+      [forbid(["index", "find"], "Do the halving yourself. index looks at every item in order."),
+       probes(0, "Your function finds the answer, but it looks at far too many items. A binary search halves the range every time, so even a list of a thousand needs only about ten looks.")]),
     C("bubble_pass", 8, "One bubble pass",
       "A line of ice blocks, swapped neighbour by neighbour. Do exactly one sweep.",
       "Write `bubble_pass(items)`. It makes **one** pass of a bubble sort over the list: compare each pair of neighbours from the left, and swap them if they are in the wrong order. Return the list after that single pass. `bubble_pass([3, 1, 2])` is `[1, 2, 3]` but `bubble_pass([3, 2, 1])` is `[2, 1, 3]`.",
@@ -273,8 +276,7 @@ BANK = [
        "def is_balanced(text):\n    pairs = {')': '(', ']': '[', '}': '{'}\n    stack = []\n    for ch in text:\n        if ch in pairs:\n            if not stack or stack.pop() != pairs[ch]:\n                return False\n        else:\n            stack.append(ch)\n    return True\n",
        "def is_balanced(text):\n    pairs = {')': '(', ']': '[', '}': '{'}\n    stack = []\n    for ch in text:\n        if ch in pairs:\n            if stack.pop() != pairs[ch]:\n                return False\n        else:\n            stack.append(ch)\n    return len(stack) == 0\n"],
       ["An opener is pushed. A closer must match the top of the stack, which you pop off. At the end the stack must be empty.",
-       "For a closer: if the stack is empty, or stack.pop() is not its opener, return False."],
-      [loop()]),
+       "For a closer: if the stack is empty, or stack.pop() is not its opener, return False."]),
     C("bfs_order", 10, "Breadth first",
       "A map of the castle's rooms. The scout visits every room, nearest first.",
       "Write `bfs_order(graph, start)`. The graph is a dictionary from each room to the list of rooms it connects to. Return the list of rooms in **breadth first** order starting at `start`: use a queue, visit neighbours in the order listed, and never visit a room twice.",
@@ -289,8 +291,7 @@ BANK = [
       ["def bfs_order(graph, start):\n    visited = [start]\n    stack = [start]\n    while stack:\n        room = stack.pop()\n        for nxt in graph[room]:\n            if nxt not in visited:\n                visited.append(nxt)\n                stack.append(nxt)\n    return visited\n",
        "def bfs_order(graph, start):\n    visited = [start]\n    queue = [start]\n    while queue:\n        room = queue.pop(0)\n        for nxt in graph[room]:\n            visited.append(nxt)\n            queue.append(nxt)\n    return visited\n"],
       ["A queue is first in, first out: take from the front with pop(0), add to the back with append.",
-       "while queue: room = queue.pop(0); for each unvisited neighbour: mark it visited and append it"],
-      [loop()]),
+       "while queue: room = queue.pop(0); for each unvisited neighbour: mark it visited and append it"]),
     C("dijkstra", 10, "The cheapest route",
       "Corridors in the castle have different lengths. What is the shortest total distance from the gate to the throne room?",
       "Write `dijkstra(graph, start, goal)`. The graph maps each node to a dictionary of `{neighbour: distance}`. Return the length of the shortest route from `start` to `goal`, or `-1` if there is no route.",
@@ -307,8 +308,7 @@ BANK = [
       ["def dijkstra(graph, start, goal):\n    here = start\n    total = 0\n    while here != goal:\n        if not graph[here]:\n            return -1\n        nxt = min(graph[here], key=lambda k: graph[here][k])\n        total += graph[here][nxt]\n        here = nxt\n    return total\n",
        "def dijkstra(graph, start, goal):\n    dist = {start: 0}\n    done = []\n    while True:\n        current = None\n        for node in dist:\n            if node not in done and (current is None or dist[node] < dist[current]):\n                current = node\n        if current is None:\n            return -1\n        if current == goal:\n            return dist[current]\n        done.append(current)\n        for nxt in graph[current]:\n            dist[nxt] = dist[current] + graph[current][nxt]\n"],
       ["Keep the best known distance to each node. Always finish the unfinished node that is closest, then see whether going through it improves a neighbour.",
-       "`d = dist[current] + graph[current][nxt]; if nxt not in dist or d < dist[nxt]: dist[nxt] = d`"],
-      [loop()]),
+       "`d = dist[current] + graph[current][nxt]; if nxt not in dist or d < dist[nxt]: dist[nxt] = d`"]),
     C("twos_complement", 10, "Negative binary",
       "The castle's lock stores numbers in two's complement. Write the pattern it expects.",
       "Write `twos_complement(value, bits)`. It returns the two's complement of `value` as a string of exactly `bits` binary digits. `twos_complement(5, 8)` is `\"00000101\"` and `twos_complement(-5, 8)` is `\"11111011\"`. The value always fits in the number of bits.",

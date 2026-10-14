@@ -635,7 +635,7 @@
       try { res = mark(ch, code); } catch (err) { res = { phase: "crash", message: String(err && err.message || err) }; }
       S.busy = false;
       if (run) { run.disabled = false; run.textContent = "Run tests"; }
-      afterMark(ch, res);
+      afterMark(ch, res, code);
     }, 40);
   }
 
@@ -650,7 +650,7 @@
     return h("li", { class: ok ? "is-pass" : "is-fail" }, kids);
   }
 
-  function afterMark(ch, res) {
+  function afterMark(ch, res, code) {
     var box = $("#pr-results");
     if (!box) return;
     clear(box);
@@ -672,6 +672,15 @@
       : passed + " of " + rows.length + " tests passed.";
     box.appendChild(h("p", { class: "pr-msg" }, [h("strong", null, summary)]));
     if (res.rule) box.appendChild(h("p", { class: "pr-msg" }, res.rule));
+    // the most common first mistake: printing the answer instead of returning it
+    var gaveNone = rows.some(function (r) { return !r.ok && r.got === "None"; });
+    if (gaveNone && !/\breturn\b/.test(code)) {
+      box.appendChild(h("p", { class: "pr-msg" }, [
+        h("strong", null, "Tip: "), "your function gave back ", h("code", null, "None"), ", which is what a function with no ",
+        h("code", null, "return"), " gives back. ", h("code", null, "print"), " only shows a value on the screen. ",
+        h("code", null, "return"), " hands it to the code that called the function."
+      ]));
+    }
     var shown = 0, list = h("ul", { class: "pr-tests" });
     rows.forEach(function (r) {
       var detail = !r.ok && shown < 2;

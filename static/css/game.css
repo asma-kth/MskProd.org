@@ -95,7 +95,7 @@
   .pr-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: var(--sp-4); }
 }
 .pr-story { font-style: italic; color: var(--ink-3); }
-.pr-task code, .pr-story code, .pr-hint code, .pr-key code, .pr-examples code, .pr-tests code, .pr-q code, .pr-opt code {
+.pr-msg code, .pr-task code, .pr-story code, .pr-hint code, .pr-key code, .pr-examples code, .pr-tests code, .pr-q code, .pr-opt code {
   font-family: var(--font-mono); font-size: .86em; background: var(--surface-sunk); color: var(--ink);
   padding: .08em .35em; border-radius: 6px; overflow-wrap: anywhere;
 }
