@@ -497,6 +497,9 @@ def flashcards(terms, limit: int = 8) -> str:
 
 # ================================================================== pages
 
+from .illus_banners import banner as banner_for, course_banner
+
+
 def topic_page(course: Course, unit: Unit, topic: Topic,
                prev_link=None, next_link=None) -> tuple:
     """Return (path, html) for one topic page."""
@@ -578,6 +581,7 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
   <div class="topic-layout">
     <article class="prose">
       <header class="topic-header">
+        %s
         <div class="badge-row">%s</div>
         <h1>%s</h1>
         <p class="lead">%s</p>
@@ -597,7 +601,7 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
       </div>
     </aside>
   </div>
-</div>""" % (crumbs(trail), "".join(badges), esc(topic.title), markup.inline(topic.blurb),
+</div>""" % (crumbs(trail), banner_for(course.slug, topic.slug), "".join(badges), esc(topic.title), markup.inline(topic.blurb),
              "\n".join(sec_html), fact,
              render_quiz(tid, topic.quiz),
              render_exam(tid, topic.exam, topic.exam_title),
@@ -715,6 +719,7 @@ def course_page(course: Course) -> tuple:
     </div>
   </div>
 </div></section>
+<div class="wrap course-banner">%s</div>
 %s
 <div class="wrap">%s</div>""" % (
         crumbs(trail),
@@ -726,7 +731,7 @@ def course_page(course: Course) -> tuple:
         ('\n        <a class="btn btn-secondary" href="%s">%s %s</a>'
          % (course.extra_cta[1], ico(course.extra_cta[2]), esc(course.extra_cta[0]))) if course.extra_cta else "",
         total_topics, total_quiz, total_marks, esc(course.goal or "Top"),
-        journey, units_html)
+        course_banner(course.slug), journey, units_html)
 
     ld = [crumbs_ld(trail), {
         "@context": "https://schema.org", "@type": "Course",

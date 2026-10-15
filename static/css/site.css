@@ -1236,30 +1236,49 @@ h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
    Drawn scenes (mskbuild/illus*.py). The panel behind each picture follows the
    page theme; the objects drawn on it keep their own colours in both. The
    numbered list under a picture matches the numbered badges drawn into it. */
-.illus {
+.illus, .topic-banner {
   --il-bg1: #F4FBFB; --il-bg2: #ECE9F7; --il-dot: rgba(31, 58, 68, .09);
   --il-blob1: #DDF2F2; --il-blob2: #EAE1F4; --il-hole: #F1F4FA;
   --il-band: rgba(255, 255, 255, .5); --il-card: rgba(255, 255, 255, .66); --il-line: rgba(31, 58, 68, .16);
   --il-ink: #1F3A44; --il-ink2: #4A6470; --il-ok: #1B7A4B; --il-bad: #B0302B;
-  margin: var(--sp-5) 0; max-width: min(100%, var(--il-max, 820px)); margin-inline: auto;
 }
-[data-theme="dark"] .illus {
+[data-theme="dark"] .illus, [data-theme="dark"] .topic-banner {
   --il-bg1: #14313B; --il-bg2: #1D2444; --il-dot: rgba(255, 255, 255, .07);
   --il-blob1: #1A4048; --il-blob2: #2A2750; --il-hole: #182C3F;
   --il-band: rgba(255, 255, 255, .06); --il-card: rgba(255, 255, 255, .07); --il-line: rgba(255, 255, 255, .2);
   --il-ink: #EAF4F4; --il-ink2: #B4C9CF; --il-ok: #7BE0A6; --il-bad: #FF9A91;
 }
+.illus { margin: var(--sp-5) 0; max-width: min(100%, var(--il-max, 820px)); margin-inline: auto; }
+
+/* The picture across the top of a topic page. It is decoration: aria-hidden, no words in it,
+   and cropped to its middle on a phone so the main object stays in view. */
+.topic-banner {
+  margin: 0 0 var(--sp-4); border-radius: var(--r-l); overflow: hidden;
+  border: 1px solid var(--border); box-shadow: var(--shadow-1); background: var(--il-bg1);
+}
+.topic-banner > svg { display: block; width: 100%; height: auto; }
+@media (max-width: 640px) {
+  /* a phone shows the middle of the picture, so its edges fade out instead of being cut mid-object */
+  .topic-banner > svg {
+    height: 92px;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 13%, #000 87%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 13%, #000 87%, transparent 100%);
+  }
+}
+.course-banner { margin-top: calc(-1 * var(--sp-4)); margin-bottom: var(--sp-6); }
+.course-banner .topic-banner { margin: 0 auto; max-width: 900px; }
+@media print { .topic-banner, .course-banner { display: none; } }
 .illus-art {
   border-radius: var(--r-l); overflow: hidden; border: 1px solid var(--border);
   box-shadow: var(--shadow-1); background: var(--il-bg1);
 }
 .illus-art > svg { display: block; width: 100%; height: auto; }
-.illus text { font-family: var(--font-body); }
-.illus .il-ink { fill: var(--il-ink); }
-.illus .il-ink2 { fill: var(--il-ink2); }
+.illus text, .topic-banner text { font-family: var(--font-body); }
+.illus .il-ink, .topic-banner .il-ink { fill: var(--il-ink); }
+.illus .il-ink2, .topic-banner .il-ink2 { fill: var(--il-ink2); }
 .illus .il-ok { fill: var(--il-ok); }
 .illus .il-bad { fill: var(--il-bad); }
-.illus .il-m { font-family: var(--font-mono); }
+.illus .il-m, .topic-banner .il-m { font-family: var(--font-mono); }
 .illus .il-h { font-family: var(--font-display); }
 .illus-steps {
   counter-reset: il; list-style: none; margin: var(--sp-3) 0 0; padding: 0;

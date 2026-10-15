@@ -50,8 +50,13 @@ mskbuild/
   render.py           Page rendering, layout, SEO head, structured data
   illus.py            Illustration framework: canvas, palette, accessible figure wrapper
   illus_props.py      Shared parts: devices, chips, people, arrows, numbered badges
-  illus_*.py          The drawn illustrations, grouped by subject (net, hw, data, sw, imedia)
+  illus_glyphs.py     More parts: code window, console, variable box, lockers, bug, flag
+  illus_*.py          The drawn illustrations, grouped by subject (code, algo, bits, machine,
+                      devices, secure, netx, society, ks3a-c, alevel1-4, oop, apps, imedia2, data2, more)
+  illus_pictures.py   Drawn hardware pictures that stand in for photographs until the files exist
+  illus_banners.py    The decorative picture at the top of every topic page
   placements.py       Which diagram, illustration or tool goes in which section
+  placements_visuals.py  The same, written as calls, for illustrations placed on many topics
 content/
   ks3.py              Key Stage 3, Years 7 to 9
   ks4_cs.py           OCR GCSE Computer Science J277
@@ -159,7 +164,44 @@ def _my_picture():
                   ["What badge 1 shows.", "What badge 2 shows."], "The one thing to take away.")
 ```
 
-then place it with `"!illus my-picture"` in `mskbuild/placements.py`.
+then place it with `put(course, "topic-slug", "Section title", "my-picture")` in
+`mskbuild/placements_visuals.py`. A call adds to the end of a section and cannot silently
+replace what is there. `placements.apply()` raises if the topic or section does not exist, so
+a typo fails the build instead of dropping a picture.
+
+### Checking them
+
+`tools/check_illustrations.py` opens every drawing in a real browser, in the light and the
+dark theme, and checks that no text runs off the picture or onto other text, that no text
+spills out of the pill or tile it sits in, and that every piece of text has at least 4.5 to 1
+contrast against what is actually behind it (3 to 1 for large text). It exits with status 1
+if anything is found, so it can gate a build:
+
+```
+pip install playwright pillow && playwright install chromium
+python3 build.py
+python3 tools/check_illustrations.py                 # every picture, both themes
+python3 tools/check_illustrations.py cpu-board mesh  # just these
+```
+
+Lines and arrows drawn straight on the panel use `ARROW` (from `illus.py`), which follows the
+theme. Text that sits on the panel uses the `il-ink` and `il-ink2` classes for the same reason;
+text on a coloured object keeps a fixed colour chosen for that object.
+
+### Photographs and the drawings that stand in for them
+
+`mskbuild/photos.py` lists the photographs the hardware topics want. Until a photograph's file
+exists, `photos.render()` draws the matching `pic-<name>` picture from `illus_pictures.py`,
+credited under it as a drawing, so no topic is left bare. When the file lands (see
+`tools/optimise_photos.py`) the photograph replaces the drawing on every page it appears on.
+The build prints which photographs are still pending and which of those show a drawing.
+
+### Topic banners
+
+Every topic page opens with a picture from `illus_banners.py`. It is decoration only: `aria-hidden`,
+no words in it, hidden when printing, and cropped to its middle with faded edges on a phone.
+`motif_for()` picks one of the motifs from the topic's slug, with a default for each course, so a
+new topic gets a sensible banner without anyone choosing one.
 
 ## Deployment
 

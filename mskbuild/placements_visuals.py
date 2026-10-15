@@ -328,3 +328,86 @@ put(IMEDIA, "interactive-digital-media", "Interface design and accessibility", "
 put(DATA, "roles-skills-and-attributes", "The roles", "data-roles")
 put(DATA, "the-scope-of-big-data", "The impacts of big data", "big-data-impacts")
 put(DATA, "legal-and-ethical-issues", "Bias, fairness and transparency", "ai-bias")
+
+
+# ================================================== the thinnest topics
+# ---- tracing
+put(OCR, "designing-algorithms", "Trace tables", "trace-table-walk")
+put(AQA, "representing-algorithms", "Trace tables", "trace-table-walk")
+put(EDX, "algorithms-flowcharts-and-pseudocode", "Trace tables", "trace-table-walk")
+put(KS3, "computational-thinking", "Pseudocode and testing", "trace-table-walk")
+put(PY, "tracing-and-debugging", "Trace tables", "trace-table-walk")
+
+# ---- casting
+put(OCR, "data-types-and-casting", "Casting", "casting")
+put(AQA, "programming-fundamentals", "Data types", "casting")
+put(EDX, "programming-fundamentals-in-python", "Variables, constants and data types", "casting")
+put(KS3, "introduction-to-python", "Input and data types", "casting")
+put(PY, "variables-and-data-types", "Data types", "casting")
+put(PY, "input-and-operators", "Input", "casting")
+
+# ---- compression
+put(OCR, "compression", "Choosing between them", "lossy-lossless")
+put(AQA, "data-compression", "Why compress at all", "lossy-lossless")
+put(EDX, "data-storage-and-compression", "Compression", "lossy-lossless")
+put(ALEVEL, "compression-encryption-and-hashing", "Compression", "lossy-lossless")
+put(KS3, "understanding-computers", "Units and how everything is stored", "lossy-lossless")
+
+# ---- the environment
+put(OCR, "ethical-legal-cultural-environmental", "The four categories", "tech-lifecycle")
+put(AQA, "ethical-legal-and-environmental-impacts", "Ethical and environmental issues", "tech-lifecycle")
+put(EDX, "issues-and-impact-of-technology", "Environmental impact", "tech-lifecycle")
+put(KS3, "artificial-intelligence", "The wider impact of computing", "tech-lifecycle")
+
+# ---- sorting in depth, A Level
+put(PY, "sorting-algorithms", "Quick sort", "quick-sort-cards")
+put(PY, "sorting-algorithms", "Stability, and the sort you will actually use", "sort-stability")
+put(ALEVEL, "algorithms-and-complexity", "Sorting algorithms", "quick-sort-cards", "sort-stability")
+put(PY, "stacks-and-queues", "Stacks", "stack-queue")
+put(PY, "dijkstra-and-a-star", "Dijkstra's shortest path algorithm", "shortest-path")
+put(PY, "trees-and-graphs", "Breadth first and depth first traversal", "graph-traversal")
+put(PY, "big-o-and-complexity", "Counting steps, not seconds", "big-o-growth")
+
+# ---- computational methods
+put(ALEVEL, "programming-techniques-and-methods", "Computational methods", "computational-methods")
+put(ALEVEL, "programming-techniques-and-methods", "Programming techniques", "hanoi")
+
+# ---- Python: loops, strings, lists, selection
+put(PY, "loops", "while loops", "while-loops")
+put(PY, "string-manipulation", "String methods", "string-methods")
+put(PY, "lists", "Lists", "list-methods")
+put(PY, "selection", "Patterns that keep selection readable", "selection-flatten")
+put(KS3, "python-loops-and-lists", "Loops", "while-loops")
+put(KS3, "python-loops-and-lists", "Lists", "list-methods")
+put(OCR, "additional-programming-techniques", "String manipulation", "string-methods")
+put(EDX, "lists-strings-and-files-in-python", "Strings", "string-methods")
+put(AQA, "data-structures-and-file-handling", "String handling", "string-methods")
+
+
+# ================================================== the last gaps
+# ---- file sizes
+put(OCR, "units-of-data", "Calculating file sizes", "file-size-formulas")
+put(OCR, "storing-images", "Calculating image file size", "file-size-formulas")
+put(AQA, "number-bases-and-units", "Units of information", "file-size-formulas")
+put(AQA, "representing-sound", "Calculating sound file size", "file-size-formulas")
+put(EDX, "data-storage-and-compression", "Units of storage", "file-size-formulas")
+put(KS3, "understanding-computers", "Units and how everything is stored", "file-size-formulas")
+
+# ---- algorithms
+put(OCR, "designing-algorithms", "Flowcharts", "flowchart-to-code")
+put(AQA, "representing-algorithms", "Flowcharts", "flowchart-to-code")
+put(EDX, "algorithms-flowcharts-and-pseudocode", "Flowcharts", "flowchart-to-code")
+put(KS3, "computational-thinking", "Flowcharts", "flowchart-to-code")
+put(PY, "pseudocode-to-python", "Translating whole algorithms", "flowchart-to-code")
+put(PY, "stacks-and-queues", "Expressions: infix, postfix and the shunting yard", "postfix-stack")
+put(ALEVEL, "data-structures", "Linear structures", "postfix-stack")
+put(PY, "sorting-algorithms", "Counting the work", "sort-compare")
+put(ALEVEL, "algorithms-and-complexity", "Sorting algorithms", "sort-compare")
+put(PY, "dijkstra-and-a-star", "A* search", "a-star-heuristic")
+put(ALEVEL, "algorithms-and-complexity", "Graph and tree algorithms", "a-star-heuristic")
+
+# ---- testing and applications in Python, and SQL at GCSE
+put(PY, "testing-and-tdd", "Unit tests with unittest", "unittest-run")
+put(PY, "tkinter-gui-programming", "Widgets and layout", "tk-grid")
+put(AQA, "relational-databases-and-sql", "SQL: retrieving data", "sql-anatomy")
+put(OCR, "additional-programming-techniques", "SQL", "sql-anatomy")
