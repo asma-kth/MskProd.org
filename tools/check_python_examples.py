@@ -44,6 +44,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 
 NEW_MODULES = ["content.python_gcse", "content.python_alevel", "content.python_advanced"]
+SLOW_MS = 2500        # the budget for one block under Pyodide
 
 
 def blocks_of(body, wanted="python"):
@@ -197,6 +198,14 @@ def main():
                 mismatches += 1
                 problems.append("%s: CPython and Pyodide disagree\n      cpython : %r\n      pyodide : %r"
                                 % (b["id"], a["out"].strip()[:90], p["out"].strip()[:90]))
+
+    if use_pyodide:
+        # A student's laptop can be several times slower than this machine, and the Run
+        # button stops a program after ten seconds, so a block that is slow here is a
+        # block that may fail for a student.
+        slow = sorted(((r["ms"], i) for i, r in py.items() if r.get("ms", 0) > SLOW_MS), reverse=True)
+        for ms, ident in slow:
+            problems.append("%s: took %.1f s in Pyodide, over the %.1f s budget" % (ident, ms / 1000, SLOW_MS / 1000))
 
     if "--show" in sys.argv:
         for b in blocks:

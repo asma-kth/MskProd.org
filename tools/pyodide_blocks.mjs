@@ -40,12 +40,13 @@ for (const b of blocks) {
   py.globals.set("__msk_src", b.code);
   py.globals.set("__msk_feed", JSON.stringify(b.feed || []));
   let ok = true, err = "";
+  const started = performance.now();
   try { py.runPython("__msk_run(__msk_src, __msk_feed)"); }
   catch (e) {
     ok = false;
     const lines = String(e.message || e).trim().split("\n").filter((l) => l.trim());
     err = lines[lines.length - 1];
   }
-  results.push({ id: b.id, ok, out, err });
+  results.push({ id: b.id, ok, out, err, ms: Math.round(performance.now() - started) });
 }
 process.stdout.write(JSON.stringify(results));

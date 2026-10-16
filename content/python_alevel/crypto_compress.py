@@ -7,7 +7,7 @@ EXPECT = {}
 TOPIC = Topic(
     slug="compression-encryption-hashing",
     title="Compression, Encryption and Hashing",
-    spec="A Level 21",
+    spec="A Level 19",
     icon="i-lock",
     minutes=70,
     blurb="Data exchange from the inside. Write run length encoding, dictionary coding and Huffman coding, break a Caesar cipher by frequency analysis, use the unbreakable one-time pad, build RSA and Diffie-Hellman with tiny numbers, and learn why passwords are salted and stretched, with every algorithm short enough to read.",
@@ -371,7 +371,8 @@ def factor(n):
     return n, 1, steps
 
 print(factor(3233))
-print(factor(1000003 * 1000033))
+print(factor(10007 * 10009))
+print(factor(100003 * 100019))
 ```
 
 Each extra digit makes the search about three times longer. Real RSA keys are **2048 bits**, about 617 digits, and no known method factors them in a lifetime.

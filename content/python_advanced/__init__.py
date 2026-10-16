@@ -3,7 +3,19 @@
 One module per topic, grouped into units in content/python_course.py.
 INPUTS and EXPECT are only read by tools/check_python_examples.py.
 """
-MODULES = []
+from . import names_memory, generators, decorators, special_methods, errors_logging, stdlib, practice, simulation, ml_scratch
+
+MODULES = [
+    names_memory,
+    generators,
+    decorators,
+    special_methods,
+    errors_logging,
+    stdlib,
+    practice,
+    simulation,
+    ml_scratch,
+]
 TOPICS = [m.TOPIC for m in MODULES]
 INPUTS = {m.TOPIC.slug: getattr(m, "INPUTS", {}) for m in MODULES}
 EXPECT = {m.TOPIC.slug: getattr(m, "EXPECT", {}) for m in MODULES}

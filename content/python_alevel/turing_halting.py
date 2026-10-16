@@ -7,7 +7,7 @@ EXPECT = {}
 TOPIC = Topic(
     slug="turing-machines-and-halting",
     title="Turing Machines and the Limits of Computation",
-    spec="A Level 18",
+    spec="A Level 16",
     icon="i-brain",
     minutes=60,
     blurb="The simplest computer that can compute anything, simulated in Python. Build and trace Turing machines, see why programs can be data, watch the proof that no program can decide whether another will finish, then meet tractable and intractable problems, abstraction and automation.",
@@ -222,8 +222,8 @@ print("forever():", run_limited(forever(), 1000))
 print("collatz(27) with a limit of 100:", run_limited(collatz(27), 100))
 print("collatz(27) with a limit of 200:", run_limited(collatz(27), 200))
 
-longest = max(range(1, 10000), key=lambda n: sum(1 for _ in collatz(n)))
-print("below 10000, the longest is", longest, "with", sum(1 for _ in collatz(longest)), "steps")
+longest = max(range(1, 1000), key=lambda n: sum(1 for _ in collatz(n)))
+print("below 1000, the longest is", longest, "with", sum(1 for _ in collatz(longest)), "steps")
 ```
 
 Running a program for a while can prove that it **does** halt. It can never prove that it does not: when the limit is reached, the program might still stop on the very next step. That is why a timeout is a guess, not an answer. (The Run button on this site stops a program after ten seconds for the same reason.)

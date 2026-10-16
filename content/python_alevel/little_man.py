@@ -7,7 +7,7 @@ EXPECT = {}
 TOPIC = Topic(
     slug="little-man-computer",
     title="Build a Processor: the Little Man Computer",
-    spec="A Level 19",
+    spec="A Level 17",
     icon="i-cpu",
     minutes=65,
     blurb="Write a working processor in Python. Build a Little Man Computer emulator with the real registers, run the fetch-decode-execute cycle, write assembly programs with loops and decisions, build the assembler that turns labels into addresses, then add addressing modes and see how pipelining overlaps instructions.",
@@ -82,7 +82,7 @@ The **Little Man Computer** (LMC) is a deliberately tiny processor with the same
 | `INP` | 901 | waits for an input and puts it in the accumulator |
 | `OUT` | 902 | outputs the accumulator |
 | `HLT` | 000 | stops |
-| `DAT` | | not an instruction: sets aside a mailbox for data |
+| `DAT` | none | not an instruction: sets aside a mailbox for data |
 
 Programs are written in **assembly language**: one mnemonic per instruction, with **labels** instead of addresses. The **assembler** turns that into numbers. Here is a complete emulator: an assembler and a processor. Read the `run` function with the table above, and the register names in the previous section.
 
