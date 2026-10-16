@@ -30,6 +30,8 @@ Conventions the content follows, and this tool enforces:
     fail with exactly that error.
   * A block whose output legitimately varies (random numbers, timings) starts
     with `# varies` and is only checked for not crashing.
+  * A `pylocal` block is Python the browser cannot run (threads, sockets,
+    asyncio). It gets no Run button, so it is only compiled here, to catch typos.
 """
 import json
 import os
@@ -41,11 +43,11 @@ import tempfile
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 
-NEW_MODULES = ["content.python_gcse", "content.python_alevel"]
+NEW_MODULES = ["content.python_gcse", "content.python_alevel", "content.python_advanced"]
 
 
-def blocks_of(body):
-    """Yield every ```python fenced block in a section body."""
+def blocks_of(body, wanted="python"):
+    """Yield every fenced block of one language in a section body."""
     lines = body.split("\n")
     i = 0
     while i < len(lines):
@@ -56,12 +58,12 @@ def blocks_of(body):
             while i < len(lines) and not lines[i].startswith("```"):
                 buf.append(lines[i])
                 i += 1
-            if lang == "python":
+            if lang == wanted:
                 yield "\n".join(buf)
         i += 1
 
 
-def collect(everything):
+def collect(everything, wanted="python"):
     import importlib
     out = []
     if everything:
@@ -86,7 +88,7 @@ def collect(everything):
     for t in topics:
         n = 0
         for s in t.sections:
-            for code in blocks_of(s.body):
+            for code in blocks_of(s.body, wanted):
                 n += 1
                 key = "#%d" % n
                 out.append({"id": "%s %s (%s)" % (t.slug, key, s.title[:28]), "code": code,
@@ -98,7 +100,7 @@ def collect(everything):
         for k, q in enumerate(t.exam):
             for what, text in (("model", q.model), ("figure", q.figure)):
                 key = "exam %d %s" % (k + 1, what)
-                for code in blocks_of(text):
+                for code in blocks_of(text, wanted):
                     out.append({"id": "%s %s" % (t.slug, key), "code": code,
                                 "feed": feeds.get(t.slug, {}).get(key),
                                 "raises": expects.get(t.slug, {}).get(key)})
@@ -161,6 +163,12 @@ def main():
     if not blocks:
         sys.exit("no Python blocks found")
     problems = []
+    local = collect("--all" in sys.argv, "pylocal")
+    for b in local:
+        try:
+            compile(b["code"], b["id"], "exec")
+        except SyntaxError as e:
+            problems.append("%s: does not compile (%s, line %s)" % (b["id"], e.msg, e.lineno))
     results = {}
     for b in blocks:
         raises, varies = expectation(b["code"], b.get("raises"))
@@ -197,9 +205,9 @@ def main():
             print((r["out"] or r["err"]).rstrip())
     ran = len(blocks)
     expected_fail = sum(1 for b in blocks if expectation(b["code"], b.get("raises"))[0])
-    print("%d Python blocks%s: %d ran cleanly, %d fail on purpose, %d problems"
+    print("%d Python blocks%s: %d ran cleanly, %d fail on purpose, %d on-your-computer blocks compile, %d problems"
           % (ran, " under CPython and Pyodide" if use_pyodide else " under CPython",
-             ran - expected_fail, expected_fail, len(problems)))
+             ran - expected_fail, expected_fail, len(local), len(problems)))
     for p in problems[:40]:
         print("  -", p)
     sys.exit(1 if problems else 0)

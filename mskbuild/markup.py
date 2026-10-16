@@ -8,7 +8,9 @@ Block syntax
     - item                          -> unordered list
     1. item                         -> ordered list
     | a | b |                       -> table, first row is the header
-    ```python  ... ```              -> highlighted code block
+    ```python  ... ```              -> highlighted code block, with a Run button
+    ```pylocal ... ```              -> highlighted Python the browser cannot run (threads, sockets),
+                                       labelled as needing your own computer, with no Run button
     ```pseudo  ... ```              -> OCR reference language / pseudocode
     ```text    ... ```              -> plain preformatted block
     !key Title :: body              -> key idea callout
@@ -116,13 +118,13 @@ def _highlight(code: str, lang: str) -> str:
     return esc
 
 
-LANG_LABEL = {"python": "Python", "pseudo": "OCR reference language", "text": "",
+LANG_LABEL = {"python": "Python", "pylocal": "Python (on your computer)", "pseudo": "OCR reference language", "text": "",
               "sql": "SQL", "html": "HTML", "css": "CSS", "js": "JavaScript",
               "assembly": "Assembly", "trace": "Trace table"}
 
 
 def code_block(code: str, lang: str = "python") -> str:
-    body = _highlight(code, lang) if lang in ("python", "pseudo") else html.escape(code, quote=False)
+    body = _highlight(code, lang) if lang in ("python", "pylocal", "pseudo") else html.escape(code, quote=False)
     label = LANG_LABEL.get(lang, lang.upper() if lang else "")
     lab = '<span class="code-label">%s</span>' % label if label else ""
     return ('<div class="code-block">%s<button class="code-copy" type="button">Copy</button>'

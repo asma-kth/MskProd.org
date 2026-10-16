@@ -6,6 +6,7 @@ student can pick up at object oriented programming, with everything runnable.
 from mskbuild.models import Topic, Section, Unit, Course, Q, EQ, MP
 from content.python_gcse import TOPICS as GCSE_TOPICS
 from content.python_alevel import TOPICS as ALEVEL_TOPICS
+from content.python_advanced import TOPICS as ADVANCED_TOPICS
 
 P_FIRST = Topic(
     slug="first-steps",
@@ -3512,6 +3513,7 @@ pygame.quit()
 # ================================================================== COURSE
 
 _A = {t.slug: t for t in ALEVEL_TOPICS}
+_V = {t.slug: t for t in ADVANCED_TOPICS}
 
 COURSE = Course(
     slug="python",
@@ -3562,17 +3564,25 @@ COURSE = Course(
              [_A["recursion"], _A["functional-programming"], _A["oop-design"]],
              icon="i-code", term="A Level: OCR H446, AQA 7517"),
         Unit("alevel-structures", "A Level: Data Structures",
-             "Stacks and queues built from arrays and pointers, linked lists, hash tables, binary trees and graphs, each with its traversals and its cost.",
-             [_A["stacks-and-queues"], _A["linked-lists-and-hash-tables"], _A["trees-and-graphs"]],
+             "Stacks and queues built from arrays and pointers, linked lists, hash tables, binary trees and graphs, each with its traversals and its cost, then heaps, tries and disjoint sets.",
+             [_A["stacks-and-queues"], _A["linked-lists-and-hash-tables"], _A["trees-and-graphs"], _A["heaps-tries-and-disjoint-sets"]],
              icon="i-layers", term="A Level: OCR H446 1.4.2, AQA 7517"),
         Unit("alevel-algorithms", "A Level: Algorithms and Complexity",
-             "Big-O notation and what makes a problem tractable, the four sorting algorithms compared with counters, and the shortest path algorithms, Dijkstra's and A star.",
-             [_A["big-o-and-complexity"], _A["sorting-algorithms"], _A["dijkstra-and-a-star"]],
+             "Big-O notation and what makes a problem tractable, the four sorting algorithms compared with counters, the shortest path algorithms, Dijkstra's and A star, and the greedy and dynamic programming strategies.",
+             [_A["big-o-and-complexity"], _A["sorting-algorithms"], _A["dijkstra-and-a-star"], _A["dynamic-programming-and-greedy"]],
              icon="i-gauge", term="A Level: OCR H446 2.3.1, AQA 7517"),
         Unit("alevel-data", "A Level: Data and Databases",
              "Two's complement, bitwise operations and floating point, then relational databases: normalisation, SQL with joins and grouping, and transactions.",
              [_A["binary-and-bitwise-operations"], _A["relational-databases-and-sql"]],
              icon="i-binary", term="A Level: OCR H446 1.4.1 and 1.3.2, AQA 7517"),
+        Unit("alevel-theory", "A Level: Theory of Computation",
+             "Finite state machines and regular expressions, Backus-Naur form with a small compiler built stage by stage, and Turing machines with the limits of what any computer can do.",
+             [_A["finite-state-machines-and-regex"], _A["grammars-parsing-and-compilers"], _A["turing-machines-and-halting"]],
+             icon="i-brain", term="A Level: AQA 7517 4.4, OCR H446 1.2 and 2.1"),
+        Unit("alevel-systems", "A Level: Machines, Systems and Security",
+             "A working processor with its registers and fetch-decode-execute loop, how an operating system schedules programs and what goes wrong when they share data, compression, encryption and hashing written from scratch, and networks and the web from packets up to a web server.",
+             [_A["little-man-computer"], _A["scheduling-and-concurrency"], _A["compression-encryption-hashing"], _A["networks-and-the-web"]],
+             icon="i-cpu", term="A Level: OCR H446 1.1 to 1.3, AQA 7517 4.7 and 4.9"),
         Unit("alevel-software", "A Level: Testing and the Project",
              "The levels and kinds of testing, unit tests and test driven development, and how to plan, build, test and evaluate the programming project.",
              [_A["testing-and-tdd"], _A["programming-project"]],
