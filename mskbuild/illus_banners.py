@@ -427,10 +427,151 @@ def _people(cv):
     cv.add(spark(cv, 100, 24), spark(cv, 700, 20, 5))
 
 
+# ------------------------------------------------------------------ A Level and advanced Python
+
+def _state(cv, x, y, color, r=24, double=False):
+    """A state of a finite state machine: a circle, ringed twice if it accepts."""
+    out = cv.circle(x, y + 3, r, "#10303A", op=.16)
+    if double:
+        out += cv.circle(x, y, r + 6, "#FFFFFF", stroke=PAL[color][2], sw=2.4)
+    return out + cv.circle(x, y, r, cv.g(color), stroke=PAL[color][2], sw=2)
+
+
+@motif("automata")
+def _automata(cv):
+    cv.add(shelf(cv))
+    cv.add(P.arrow(cv, [(92, 70), (158, 70)], "#25B3BB", 3, 10))
+    for x, c, d in ((190, "sky", False), (330, "mint", False), (470, "sun", True)):
+        cv.add(_state(cv, x, 70, c, 24, d))
+    cv.add(P.arrow(cv, [(216, 70), (300, 70)], "#25B3BB", 3, 10), P.arrow(cv, [(356, 70), (436, 70)], "#25B3BB", 3, 10))
+    cv.add(P.curve_arrow(cv, (176, 48), (160, 4), (222, 4), (204, 48), "#25B3BB", 3, 9))
+    cv.add(P.pill(cv, 258, 52, "0", "paper", 13, 9, 22, 800), P.pill(cv, 396, 52, "1", "paper", 13, 9, 22, 800))
+    for i, v in enumerate("1011"):
+        cv.add(P.lift(cv, 580 + i * 42, 62, 36, 34, "sun" if v == "1" else "sky", 8, 3, hl=False), cv.text(598 + i * 42, 86, v, 18, 800, fill=INK, mono=True))
+    cv.add(cv.poly([(598, 46), (610, 46), (604, 58)], PAL["plum"][1]))
+
+
+@motif("compiler")
+def _compiler(cv):
+    cv.add(shelf(cv))
+    for i, (t, c) in enumerate((("2", "sky"), ("+", "sun"), ("3", "sky"))):
+        cv.add(P.lift(cv, 90 + i * 50, 70, 42, 34, c, 8, 3, hl=False), cv.text(111 + i * 50, 93, t, 18, 800, fill=INK, mono=True))
+    cv.add(P.arrow(cv, [(250, 88), (306, 88)], "#25B3BB", 3, 9))
+    cv.add(cv.line(400, 36, 366, 72, "#8AA0AC", 2.4), cv.line(400, 36, 434, 72, "#8AA0AC", 2.4))
+    for x, y, t, c in ((400, 30, "+", "sun"), (366, 78, "2", "sky"), (434, 78, "3", "sky")):
+        cv.add(cv.circle(x, y, 17, cv.g(c), stroke=PAL[c][2], sw=2), cv.text(x, y + 6, t, 16, 800, fill=INK, mono=True))
+    cv.add(P.arrow(cv, [(470, 88), (524, 88)], "#25B3BB", 3, 9))
+    for i, t in enumerate(("push 2", "push 3", "add")):
+        cv.add(P.lift(cv, 540, 20 + i * 32, 110, 26, ("mint", "mint", "coral")[i], 7, 3, hl=False), cv.text(595, 38 + i * 32, t, 13, 800, fill=INK, mono=True))
+    cv.add(spark(cv, 700, 40), spark(cv, 730, 78, 5))
+
+
+@motif("turing")
+def _turing(cv):
+    cv.add(shelf(cv))
+    for i, v in enumerate(("1", "0", "1", "1", "0", "", "")):
+        x = 100 + i * 78
+        cv.add(P.lift(cv, x, 74, 70, 38, "paper" if v == "" else ("sun" if v == "1" else "sky"), 8, 3, hl=False))
+        if v:
+            cv.add(cv.text(x + 35, 100, v, 22, 800, fill=INK, mono=True))
+    cx = 100 + 2 * 78 + 35
+    cv.add(cv.poly([(cx - 13, 56), (cx + 13, 56), (cx, 72)], PAL["plum"][1]))
+    cv.add(P.lift(cv, cx - 36, 14, 72, 38, "lilac", 9, 4, hl=False), cv.text(cx, 40, "q1", 17, 800, fill=INK, mono=True))
+    cv.add(P.gear(cv, 690, 56, 24, "sun"), P.gear(cv, 726, 90, 15, "sky", 6))
+
+
+@motif("scheduler")
+def _scheduler(cv):
+    cv.add(shelf(cv))
+    runs = (("P1", "sky", 70), ("P2", "mint", 44), ("P3", "sun", 90), ("P1", "sky", 50), ("P2", "mint", 70), ("P3", "sun", 56), ("P1", "sky", 40))
+    x = 90
+    for name, c, w in runs:
+        cv.add(P.lift(cv, x, 52, w - 4, 40, c, 6, 3, hl=False), cv.text(x + (w - 4) / 2, 78, name, 14, 800, fill=INK, mono=True))
+        x += w
+    cv.add(cv.line(90, 106, x, 106, "#8AA0AC", 2.4))
+    for tx in range(90, int(x) + 1, 50):
+        cv.add(cv.line(tx, 100, tx, 112, "#8AA0AC", 2))
+    cv.add(G.stopwatch(cv, 700, 62, 28, -50), spark(cv, 650, 24))
+
+
+@motif("crypto")
+def _crypto(cv):
+    cv.add(shelf(cv))
+    cv.add(P.lift(cv, 80, 54, 120, 42, "paper", 10, 4, hl=False), cv.text(140, 82, "hello", 20, 800, fill=INK, mono=True))
+    cv.add(P.arrow(cv, [(206, 75), (262, 75)], "#25B3BB", 3, 10))
+    cv.add(P.padlock(cv, 290, 28, 1.0, "sun"), P.key(cv, 360, 74, .9, "sun"))
+    cv.add(P.arrow(cv, [(448, 75), (504, 75)], "#25B3BB", 3, 10))
+    cv.add(P.lift(cv, 512, 54, 120, 42, "coral", 10, 4, hl=False), cv.text(572, 82, "q9#Zf", 19, 800, fill=INK, mono=True))
+    cv.add(cv.circle(700, 66, 30, cv.g("mint"), stroke=PAL["mint"][2], sw=2.4), cv.text(700, 78, "#", 34, 800, fill=INK, mono=True))
+    cv.add(spark(cv, 660, 24), spark(cv, 748, 100, 5))
+
+
+@motif("pipeline")
+def _pipeline(cv):
+    cv.add(shelf(cv))
+    for i, (name, c) in enumerate((("read", "sky"), ("parse", "mint"), ("filter", "sun"), ("use", "coral"))):
+        x = 90 + i * 160
+        cv.add(P.lift(cv, x, 62, 108, 44, c, 10, 4, hl=False), cv.text(x + 54, 90, name, 16, 800, fill=INK, mono=True))
+        if i < 3:
+            cv.add(P.arrow(cv, [(x + 114, 84), (x + 154, 84)], "#25B3BB", 3, 9))
+            cv.add(cv.rect(x + 120, 48, 28, 20, 5, "#FFFFFF", stroke="#9FB3BE", sw=1.4), cv.line(x + 134, 68, x + 134, 80, "#9FB3BE", 1.6, dash="3 3"))
+    cv.add(spark(cv, 40, 30), spark(cv, 760, 34, 5))
+
+
+@motif("wrap")
+def _wrap(cv):
+    cv.add(shelf(cv))
+    cv.add(cv.rect(270, 12, 260, 98, 18, "#EEE2F8", stroke="#8061A9", sw=2.4))
+    cv.add(cv.rect(332, 40, 136, 52, 12, "#C9EAFB", stroke="#2F82C0", sw=2.4), cv.text(400, 74, "f()", 22, 800, fill=INK, mono=True))
+    cv.add(cv.circle(300, 34, 15, cv.g("sun"), stroke=PAL["sun"][2], sw=2), cv.text(300, 41, "@", 19, 800, fill=INK, mono=True))
+    cv.add(P.arrow(cv, [(150, 66), (258, 66)], "#25B3BB", 3, 10), P.arrow(cv, [(542, 66), (650, 66)], "#25B3BB", 3, 10))
+    cv.add(spark(cv, 100, 36), spark(cv, 700, 34, 5))
+
+
+@motif("toolbox")
+def _toolbox(cv):
+    cv.add(shelf(cv))
+    cv.add(cv.path("M360 44 Q360 18 384 18 L416 18 Q440 18 440 44", stroke="#4A5A64", sw=7))
+    cv.add(cv.rect(310, 44, 180, 68, 10, cv.g("coral", "deep")), cv.rect(310, 44, 180, 24, 10, cv.g("coral")), cv.rect(392, 58, 16, 16, 4, "#FFE9A8", stroke="#DFA000", sw=1.6))
+    cv.add(P.gear(cv, 220, 82, 26, "sun"), P.magnifier(cv, 140, 54, .9, 18))
+    cv.add(P.folder(cv, 560, 48, .75, "sky"), P.pill(cv, 680, 44, "json", "mint", 14, 12, 26, 800), P.pill(cv, 700, 84, "re", "sun", 14, 14, 26, 800))
+    cv.add(spark(cv, 280, 26), spark(cv, 520, 28, 5))
+
+
+@motif("git")
+def _git(cv):
+    cv.add(shelf(cv))
+    cv.add(cv.line(90, 44, 710, 44, "#25B3BB", 6), cv.path("M250 44 C290 44 300 92 350 92 L470 92 C520 92 530 44 570 44", stroke="#8061A9", sw=6))
+    for x, y, c in ((110, 44, "sun"), (250, 44, "sun"), (570, 44, "sun"), (690, 44, "sun"), (350, 92, "lilac"), (470, 92, "lilac")):
+        cv.add(cv.circle(x, y, 13, cv.g(c), stroke=PAL[c][2], sw=2.4))
+    cv.add(P.pill(cv, 740, 22, "main", "teal", 13, 10, 22, 800))
+
+
+@motif("dice")
+def _dice(cv):
+    import random
+    cv.add(shelf(cv))
+    for x, y, rot, pips in ((150, 62, -10, ((-13, -13), (13, -13), (0, 0), (-13, 13), (13, 13))), (236, 70, 12, ((-13, -13), (0, 0), (13, 13)))):
+        body = cv.rect(-26, -26, 52, 52, 10, "#FFFFFF", stroke="#9FB3BE", sw=2) + "".join(cv.circle(px, py, 5, INK) for px, py in pips)
+        cv.add(cv.group(body, x, y, rot=rot))
+    for i, h in enumerate((8, 16, 28, 42, 54, 42, 28, 16, 8)):
+        cv.add(cv.rect(340 + i * 28, FLOOR - h, 22, h, 4, cv.g(("sky", "mint", "sun")[i % 3])))
+    rng = random.Random(5)
+    cv.add(cv.path("M650 112 L650 18 A94 94 0 0 1 744 112 Z", fill="#C9F3E0", stroke="#2F9F77", sw=2))
+    for _ in range(46):
+        x, y = rng.random() * 94, rng.random() * 94
+        cv.add(cv.circle(650 + x, 112 - y, 3, "#2F9F77" if x * x + y * y <= 94 * 94 else "#C84B43"))
+
+
 # ------------------------------------------------------------------ choosing a motif
 
 # the first rule whose word appears in the slug wins; the order is deliberate
 RULES = [
+    # words that sit inside longer ones come first: "loops" holds "oop", "job-roles" holds "roles", "representing-algorithms" holds "representing"
+    ("loops", "code"), ("job-roles", "people"), ("representing-algorithms", "algorithm"), ("decomposition", "algorithm"),
+    ("heaps", "data-structures"), ("dynamic-programming", "algorithm"), ("finite-state", "automata"), ("grammars", "compiler"), ("turing", "turing"),
+    ("little-man", "cpu"), ("scheduling", "scheduler"), ("encryption", "crypto"), ("iterators", "pipeline"), ("decorators", "wrap"),
+    ("exceptions", "testing"), ("standard-library", "toolbox"), ("professional", "git"), ("simulation", "dice"),
     ("cpu", "cpu"), ("processor", "cpu"), ("architecture", "cpu"), ("embedded", "cpu"), ("systems-architecture", "cpu"),
     ("primary-storage", "memory"), ("memory", "memory"),
     ("secondary-storage", "storage"), ("units-of-data", "storage"), ("input-output", "storage"), ("data-storage", "storage"),

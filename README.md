@@ -15,10 +15,12 @@ No accounts, no cookies, no adverts, no tracking.
 | --- | --- | --- | --- |
 | Key Stage 3 Computing | National Curriculum | 17 | 170 |
 | GCSE Computer Science | OCR J277 | 25 | 250 |
-| Creative iMedia | OCR J834 | 6 | 60 |
+| GCSE Computer Science | AQA 8525 | 23 | 230 |
+| GCSE Computer Science | Edexcel 1CP2 | 15 | 150 |
+| Creative iMedia | OCR J834 | 15 | 150 |
 | A Level Computer Science | OCR H446 | 16 | 160 |
-| Python from Scratch | — | 11 | 110 |
-| Practice exam papers | — | 5 papers | 76 questions |
+| Data Analytics | OCR Cambridge Advanced National | 10 | 100 |
+| Python from Scratch | GCSE, A Level and beyond | 51 | 510 |
 
 ## Building the site
 
@@ -52,7 +54,9 @@ mskbuild/
   illus_props.py      Shared parts: devices, chips, people, arrows, numbered badges
   illus_glyphs.py     More parts: code window, console, variable box, lockers, bug, flag
   illus_*.py          The drawn illustrations, grouped by subject (code, algo, bits, machine,
-                      devices, secure, netx, society, ks3a-c, alevel1-4, oop, apps, imedia2, data2, more)
+                      devices, secure, netx, society, ks3a-c, alevel1-4, oop, apps, imedia2, data2, more,
+                      pyalevel_a/b for the A Level Python topics, pyadv_a/b for advanced Python,
+                      simulation and machine learning)
   illus_pictures.py   Drawn hardware pictures that stand in for photographs until the files exist
   illus_banners.py    The decorative picture at the top of every topic page
   placements.py       Which diagram, illustration or tool goes in which section
@@ -62,7 +66,11 @@ content/
   ks4_cs.py           OCR GCSE Computer Science J277
   ks4_imedia.py       OCR Creative iMedia J834
   ks5.py              OCR A Level Computer Science H446
-  python_course.py    Python from first program to OOP, tkinter and pygame
+  python_course.py    The Python course: its units, in order, and which topic modules feed them
+  python_gcse/        Python topics for the GCSE boards (one module per topic)
+  python_alevel/      Python topics for A Level: structures, algorithms, theory of computation,
+                      processors, operating systems, networks, cryptography
+  python_advanced/    Advanced Python, simulation and machine learning
   pixelrun/           Pixel Run, the Python platformer: levels, fifty challenges, marker
   papers.py           Original practice papers with mark schemes
   pages.py            About, privacy, accessibility, how to revise, glossary
@@ -76,6 +84,40 @@ static/
   css/game.css        Pixel Run styles
   img/                Logo, favicon, mascot, icon sprite, share image
 ```
+
+## The Python course
+
+`/python/` takes a student from a first program to GCSE and A Level programming, the theory of
+computation, how processors, operating systems and networks work, then advanced Python, simulation
+and machine learning. The units are listed in `content/python_course.py`; each topic is a module in
+`content/python_gcse/`, `content/python_alevel/` or `content/python_advanced/`.
+
+Every ```` ```python ```` block gets a **Run** button and runs in the student's browser (Pyodide), so
+the course promises that every example runs, and `tools/check_python_examples.py` holds it to that.
+CI runs it before every build. The rules the examples follow:
+
+* A block is self contained and deterministic: nothing leans on an earlier block, and random
+  numbers come from a seeded `random.Random`.
+* `# raises: ErrorName` on the first line marks a block that must fail with exactly that error.
+  `# varies` marks output that legitimately changes (timings, unseeded random numbers).
+* A topic module's `INPUTS` dict gives the answers typed into `input()`, and `EXPECT` names the
+  error a block must fail with when a visible marker would give the answer away.
+* Threads, sockets, asyncio, Flask, multiprocessing and a few other things cannot run in a browser.
+  They go in a ```` ```pylocal ```` block: highlighted Python labelled "Python (on your computer)", with
+  no Run button. The checker only compiles those. Where the idea can be shown without the real
+  thing, the lesson simulates it instead (generator schedulers, an in memory HTTP server, a
+  channel that loses packets) so that it stays runnable.
+
+```bash
+python3 tools/check_python_examples.py            # the new topics, under CPython
+python3 tools/check_python_examples.py --all      # every topic in the course
+python3 tools/check_python_examples.py --pyodide  # also run each block in the browser's own engine
+```
+
+`--pyodide` needs `npm install pyodide@<version>` somewhere and `PYODIDE_DIR` pointing at
+`node_modules/pyodide`. It compares each block's output with CPython's and flags any block that
+takes longer than 2.5 seconds, because a Run that is slow on a phone looks broken, and because the
+in browser engine stops a program after ten seconds.
 
 ## Pixel Run, the game
 

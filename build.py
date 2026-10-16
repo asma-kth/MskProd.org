@@ -128,7 +128,7 @@ def build_home():
         "data-analytics": ("Data Analytics", "/data-analytics/", "i-chart",
                            "OCR Cambridge Advanced National. F200 and F201, the two exam units, with graphs and interactive models."),
         "python": ("Python from scratch", "/python/", "i-python",
-                   "From your first line of code to GCSE and A Level programming, with a platformer to practise it in."),
+                   "From your first line of code to GCSE and A Level programming, advanced Python, simulation and machine learning, with a platformer to practise it in."),
     }
     for slug, (title, href, icon, blurb) in meta.items():
         course = next((c for c in COURSES if c.slug == slug), None)

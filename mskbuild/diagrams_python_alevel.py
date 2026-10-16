@@ -386,10 +386,9 @@ def _hash_table():
         body.append(box(kx, y, 90, 34, n, fill=soft, stroke=tone, r=6, label_size=12.5))
         body.append(path("M%s %s L%s %s" % (kx + 90, y + 17, 220, y + 17), stroke=tone, w=1.8, arrow=True))
         ty = slot_y + index[n] * 52
-        body.append(path("M316 %s C 360 %s, 380 %s, %s %s" % (y + 17 if False else 150 + k * 22, 150 + k * 22, ty + 17,
+        body.append(path("M316 %s C 360 %s, 380 %s, %s %s" % (150 + k * 22, 150 + k * 22, ty + 17,
                                                              slot_x - 4, ty + 17),
                          stroke=tone, w=1.8, arrow=True, marker="ah-alt" if tone == LILAC else "ah"))
-        body.append(chip(352, 150 + k * 22 if False else 0, "", fill=PAPER, stroke=PAPER)) if False else None
     for i in range(size):
         y = slot_y + i * 52
         tone, soft = colors.get(i, (LINE, FILL))
