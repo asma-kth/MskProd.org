@@ -70,6 +70,27 @@ TOOLS = {
                 "and every cell is checked the moment you leave it. Step through the "
                 "answer afterwards to see exactly where a value changed.",
     },
+    "confusion-matrix": {
+        "title": "Classifier scorer",
+        "icon": "i-table",
+        "blurb": "Move the threshold and watch precision and recall trade against "
+                 "each other.",
+        "long": "Pick a scenario, drag the threshold across two overlapping score "
+                "distributions, and the confusion matrix, accuracy, precision, "
+                "recall and F1 all update as cases move from one cell to another. "
+                "The point it makes is the one the exam asks: on an imbalanced "
+                "problem, accuracy measures the imbalance.",
+    },
+    "correlation-lab": {
+        "title": "Correlation lab",
+        "icon": "i-chart",
+        "blurb": "Add and drag points on a scatter plot and watch the coefficient "
+                 "respond.",
+        "long": "Load a preset or build your own cloud of points, then drag one a "
+                "long way from the rest. The correlation coefficient, the strength "
+                "description and the line of best fit recalculate live, which is "
+                "the quickest way to see how much damage a single outlier does.",
+    },
     "lmc": {
         "title": "Little Man Computer",
         "icon": "i-cpu",
@@ -83,7 +104,7 @@ TOOLS = {
 
 # The order tools appear in on the /tools/ hub page.
 ORDER = ["base-converter", "file-size", "logic-simulator", "sort-visualiser",
-         "trace-table", "lmc"]
+         "trace-table", "lmc", "confusion-matrix", "correlation-lab"]
 
 
 def _read(path):

@@ -4,20 +4,27 @@ from mskbuild.render import (layout, crumbs, crumbs_ld, ico, esc, write,
                              SITE_URL, SITE_NAME, mascot_svg)
 
 
-def _page(path, title, description, crumb, body_md, extra="", greeting="", ld=None):
+def _page(path, title, description, crumb, body_md, extra="", ld=None, slots=None):
+    """slots maps a placeholder paragraph in body_md to HTML put in its place,
+    for the odd control, such as a button, that the markup cannot express."""
     trail = [("Home", "/"), (crumb, None)]
+    rendered = markup.render(body_md)
+    for name, fragment in (slots or {}).items():
+        if "<p>%s</p>" % name not in rendered:
+            raise ValueError("%s: no placeholder %s" % (path, name))
+        rendered = rendered.replace("<p>%s</p>" % name, fragment)
     body = """<div class="wrap">
   %s
-  <div class="wrap-narrow" style="width:100%%;margin-inline:auto">
-    <article class="prose" style="padding-bottom:var(--sp-8)">
+  <div class="page-panel">
+    <article class="prose">
       <header class="topic-header"><h1>%s</h1><p class="lead">%s</p></header>
       %s
       %s
     </article>
   </div>
-</div>""" % (crumbs(trail), esc(title), esc(description), markup.render(body_md), extra)
+</div>""" % (crumbs(trail), esc(title), esc(description), rendered, extra)
     return path, layout(title=title, description=description, path=path,
-                        body=body, greeting=greeting,
+                        body=body,
                         jsonld=(ld or []) + [crumbs_ld(trail)])
 
 
@@ -228,8 +235,7 @@ def build(register, add_search, courses):
     path, html = _page(
         "/how-to-revise/", "How to Revise Properly",
         "What actually works in revision, based on evidence rather than on what feels productive, plus exam technique worth several grades.",
-        "How to revise", HOW_TO_REVISE,
-        greeting="This page is worth more than any single topic on the site. Most students never change how they revise, and that is exactly why changing it works so well.")
+        "How to revise", HOW_TO_REVISE)
     write(path, html)
     register(path, 0.8, "monthly")
     add_search("How to revise properly", path, "Evidence based revision technique",
@@ -257,8 +263,7 @@ def build(register, add_search, courses):
         "Every key term across Key Stage 3, GCSE and A Level computing, each defined in one sentence you could write in an exam.",
         "Glossary",
         "Definitions written the way a mark scheme wants them: one sentence, precise, and using the vocabulary the examiner is looking for. Type in the box to filter, and cover the definition and say it out loud before you read it.",
-        extra=extra,
-        greeting="Do not read this list. Cover a definition, say it out loud, then check. Retrieval is what makes it stick.")
+        extra=extra)
     write(path, html)
     register(path, 0.7, "monthly")
     add_search("Computing glossary", path, "%d key terms defined" % len(GLOSSARY),
@@ -310,10 +315,9 @@ Corrections are genuinely welcome. If something on this site is wrong, unclear o
 """
     path, html = _page(
         "/about/", "About MskProd Computing",
-        "A free revision site for UK computing students at Key Stage 3, GCSE and A Level, covering OCR, AQA and Edexcel, with no accounts, adverts or tracking.",
+        "A free revision site for UK computing students at Key Stage 3, GCSE and A Level, covering OCR J277, AQA 8525, Edexcel 1CP2, Creative iMedia and A Level H446. No account needed.",
         "About", about % (total_topics, total_quiz),
         extra='<div class="center" style="max-width:220px;margin:var(--sp-6) auto 0">%s</div>' % mascot_svg(),
-        greeting="I am Pixel. I live in the corner of every page, and I run entirely on your own device. Nothing you do here is sent anywhere.",
         ld=[{"@context": "https://schema.org", "@type": "AboutPage",
              "name": "About " + SITE_NAME, "url": SITE_URL + "/about/"}])
     write(path, html)
@@ -322,7 +326,7 @@ Corrections are genuinely welcome. If something on this site is wrong, unclear o
 
     # ----------------------------------------------------------- privacy
     privacy = """
-**Last updated: September 2026**
+**Last updated: October 2026**
 
 The short version: the site itself asks nothing of you and keeps your work on your own device. It is paid for by advertising, and those adverts are served by Google, which does set cookies and does collect data about the people who see them. That part is explained in full below.
 
@@ -355,15 +359,17 @@ The following may be stored locally:
 | What | Why |
 | Your quiz scores | So you can see which topics you have completed and how you did |
 | Your exam-style answer marks | So your progress on written questions is not lost when you close the tab |
+| Your answers and the time left on a timed exam paper | So a paper you are part way through is still there if you close the tab or lose power |
 | Which topics you have opened | So the course pages can show a small marker next to topics you have visited |
 | Your light or dark theme choice | So the site looks the way you left it |
 | Whether you asked Pixel to stay quiet | So the mascot respects that |
+| Your Pixel Run progress: the level you reached, your stars, which challenges you have solved, and whether you chose quiz mode or calm mode | So the game can pick up where you stopped |
 
 **This data never leaves your device.** It is not transmitted to any server, it is not accessible to the site owner, and there is no mechanism by which it could be. It is stored by your browser under this website's address and is readable only by this website on this device.
 
 You can delete all of it at any time by clearing site data for this website in your browser settings, or by using the button below.
 
-<p><button class="btn btn-secondary" type="button" data-reset-progress>Clear everything this site has stored on my device</button></p>
+RESETBUTTON
 
 ## The mascot
 
@@ -371,9 +377,9 @@ Pixel, the robot cat, runs entirely in your browser. The facts, tips and message
 
 ## Third party services
 
-The site loads its typefaces from **Google Fonts**. When your browser requests those font files it makes a request to Google's servers, which as with any web request involves your IP address and browser information being visible to Google. If you would prefer to avoid it, most browsers and privacy extensions can block requests to fonts.googleapis.com, and the site remains fully readable and fully functional with a fallback typeface.
+The site's typefaces are served from mskprod.org itself. They used to come from Google Fonts, which meant your browser made a request to Google's servers for every page; that request no longer happens.
 
-The runnable Python examples download the Python engine from a public code network (jsDelivr) the first time you press Run on a page. That request is only made if you press Run.
+The runnable Python examples download the Python engine from a public code network (jsDelivr) the first time you press Run on a page. That request is only made if you press Run. The Pixel Run game makes the same request when you press Start, because it marks your code in your own browser. If you choose quiz mode it makes no request at all. In both cases the code you write stays on your device.
 
 Besides these and the advertising described above, the site makes no other third party requests.
 
@@ -409,9 +415,10 @@ If you have a question about privacy on this site, please get in touch through t
         "/privacy/", "Privacy Policy",
         "The site owner collects no personal data and your quiz scores never leave your device. The site is funded by Google adverts, which do set cookies. Explained in full here.",
         "Privacy", privacy,
-        greeting="Short version: your scores never leave your device. The adverts are Google's, and they do use cookies. It is all explained here.",
         ld=[{"@context": "https://schema.org", "@type": "WebPage",
-             "name": "Privacy Policy", "url": SITE_URL + "/privacy/"}])
+             "name": "Privacy Policy", "url": SITE_URL + "/privacy/"}],
+        slots={"RESETBUTTON": '<p><button class="btn btn-secondary" type="button" data-reset-progress>'
+                              'Clear everything this site has stored on my device</button></p>'})
     write(path, html)
     register(path, 0.5, "yearly")
     add_search("Privacy policy", path, "What is stored, what Google collects for adverts, and your rights",
@@ -450,7 +457,7 @@ This site is built so that it can be used by everybody, including people using a
 
 ### Motion
 
-+ Animation is decorative only and never conveys information
++ Animation is decorative only and never conveys information. The one exception is the Pixel Run game, where every event is also written out in text
 + All animation, including the mascot, is disabled automatically if your system is set to prefer reduced motion
 + Nothing flashes, blinks or moves unexpectedly
 
@@ -460,6 +467,14 @@ This site is built so that it can be used by everybody, including people using a
 + Explanations are broken into short sections with clear headings
 + Code blocks scroll horizontally within their own container rather than forcing the whole page to scroll
 + Tables scroll within their own container on narrow screens
+
+### The Pixel Run game
+
++ The scene is drawn on a canvas, so each event in it (reaching an obstacle, clearing it, failing it, finishing a level) is also written out and announced to screen readers
++ It is played entirely from the keyboard. Tab indents inside the code box, and Esc followed by Tab leaves it, so focus is never trapped
++ Calm mode removes the scrolling and the jumps, and switches on by itself if your system prefers reduced motion
++ Nothing is against the clock
++ Passing and failing are shown in words as well as colour, and quiz mode replaces typing code with choosing an answer
 
 ### Without JavaScript
 
@@ -472,6 +487,7 @@ Being honest about what is not perfect is more useful than claiming everything i
 + Some tables of technical comparison are wide by nature. They scroll horizontally on a narrow screen, which is a compromise rather than an ideal solution.
 + Diagrams are currently described in text rather than presented visually. This is better for screen reader users but means some concepts that would benefit from an illustration do not yet have one.
 + The exam answer marker requires typing. There is currently no alternative input method for students who would find that difficult, and voice input from the operating system is the only workaround.
++ The Pixel Run scene is a picture on a canvas with no description beyond the text announcements, and its coding challenges need typing unless quiz mode is chosen.
 
 ## Standards
 
@@ -484,9 +500,45 @@ If any part of this site is difficult or impossible for you to use, please say s
     path, html = _page(
         "/accessibility/", "Accessibility",
         "How this site is built to be usable by everybody, what has been done, what standard it aims for, and what is not yet perfect.",
-        "Accessibility", access,
-        greeting="If any part of this site is hard for you to use, that is a bug. Please report it.")
+        "Accessibility", access)
     write(path, html)
     register(path, 0.5, "yearly")
     add_search("Accessibility", path, "Accessibility statement",
                "accessibility screen reader keyboard contrast wcag")
+
+
+# ============================================================== ATTRIBUTIONS
+
+def build_attributions(write, register):
+    """Credit every photograph in one place.
+
+    Only built once there are photographs to credit: an empty page listing
+    nothing would be a thin page with no reason to exist. The credit under
+    each picture is what the licence actually requires; this page is so that
+    somebody checking can see the whole set at once.
+    """
+    from mskbuild import photos as ph
+    have = ph.available()
+    if not have:
+        return
+    items = []
+    for slug in sorted(have):
+        p = have[slug]
+        bits = [x for x in (p.credit, p.licence) if x]
+        src = (' &middot; <a href="%s" rel="nofollow noopener">source</a>' % esc(p.source)
+               if p.source else "")
+        items.append('<li><b>%s</b><span>%s%s</span></li>'
+                     % (esc(p.caption.split(".")[0]),
+                        esc(" \u00b7 ".join(bits)) or "credit pending", src))
+    extra = ('<ul class="attribution-list">%s</ul>' % "".join(items))
+    path, html = _page(
+        "/attributions/", "Image attributions",
+        "Where the photographs on this site came from, and the licence each one "
+        "is used under.",
+        "Attributions",
+        "Every photograph on this site is used under a licence that permits "
+        "commercial use, and each one is credited underneath the picture it "
+        "appears on. They are all listed here as well.\n",
+        extra=extra)
+    write(path, html)
+    register(path, 0.3, "monthly")

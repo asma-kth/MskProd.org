@@ -102,7 +102,7 @@ The Little Man Computer is a complete processor with one accumulator, one hundre
 }
 
 
-def _page(path, title, description, trail, body_md, greeting=""):
+def _page(path, title, description, trail, body_md):
     body = """<div class="wrap">
   %s
   <div class="wrap-narrow" style="width:100%%;margin-inline:auto">
@@ -113,7 +113,7 @@ def _page(path, title, description, trail, body_md, greeting=""):
   </div>
 </div>""" % (crumbs(trail), esc(title), esc(description), markup.render(body_md))
     return path, layout(title=title, description=description, path=path, body=body,
-                        active="/tools/", greeting=greeting,
+                        active="/tools/",
                         jsonld=[crumbs_ld(trail)])
 
 
@@ -131,13 +131,16 @@ def build(register, add_search):
   %s
   <header class="section-head"><h1>Interactive tools</h1><p class="lead">%s</p></header>
   <div class="grid grid-3">%s</div>
-</div>""" % (crumbs(trail), esc(INTRO), "".join(cards))
+  <header class="section-head" style="margin-top:var(--sp-7)"><h2>Games</h2>
+    <p class="lead">Practice that does not feel like practice.</p></header>
+  <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(min(265px,100%%),1fr))">
+    <a class="tile" href="/pixel-run/"><span class="tile-icon">%s</span><h3>Pixel Run</h3>
+      <p>A platformer where every obstacle is a Python function to write. Ten levels, from print to Dijkstra's algorithm.</p></a>
+  </div>
+</div>""" % (crumbs(trail), esc(INTRO), "".join(cards), ico("i-flag", "icon"))
     path = "/tools/"
     write(path, layout(title="Interactive Computing Tools",
                        description=INTRO, path=path, body=body, active="/tools/",
-                       greeting="Pick one and break it. You learn far more from a circuit "
-                                "that gives the wrong answer than from one that works "
-                                "first time.",
                        jsonld=[crumbs_ld(trail)]))
     register(path, 0.8, "monthly")
     add_search("Interactive tools", path, "Six tools you can actually use",

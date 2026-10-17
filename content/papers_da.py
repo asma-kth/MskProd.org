@@ -1,0 +1,290 @@
+"""OCR Cambridge Advanced National in IT, Data Analytics: F200 Paper D and F201 Paper D.
+
+Each is 60 marks, sampled across the five topic areas of its unit, and ends
+with a 10 mark discussion, like the other Data Analytics papers. Where the
+topic allows it the questions are closed, tables, calculations and tick boxes,
+so they mark exactly; the rest are written answers against a mark scheme.
+"""
+from mskbuild.examkit import tick, rows, ans, boxes, calc, write
+from mskbuild.models import Paper
+
+CALC = "A calculator may be used."
+DISCUSS = "The 10 mark question is an extended response. In the real exam it is marked in levels; here every relevant point you make earns a mark, up to 10."
+
+JOURNEYS = """**Figure 1**: an extract from Coastline Buses' journey records
+
+| JourneyID | Date | Route | Boarding stop | Fare (£) | Journey time (min) |
+|---|---|---|---|---|---|
+| 1043 | 2026-03-02 | 7 | Harbour Street | 2.00 | 24 |
+| 1044 | 2026-03-02 | 7 | Bus Station | 2.00 | 22 |
+| 1045 | 2026-03-02 | 12 | Castle Road | 1.50 | 18 |
+| 1045 | 2026-03-02 | 12 | Castle Road | 1.50 | 18 |
+| 1046 | 31/02/2026 | 7 | Harbour Street | | 25 |
+| 1047 | 2026-03-03 | 7 | Bus Station | 2.00 | 900 |"""
+
+F200_D = Paper(
+    slug="f200-paper-d",
+    title="Data Analytics F200 Paper D: Fundamentals of Data Analytics",
+    course="Data Analytics", board="OCR", code="F200",
+    minutes=75, marks=60, accent="var(--teal)", spec="DA", full=True,
+    blurb="A full length F200 paper built around a bus company's journey data: types and levels of data, data quality in an extract, averages and percentage change, ETL, interoperability, access control, the data protection principles and rights, the roles, and a 10 mark discussion of redesigning timetables.",
+    advice="Use the resource material: the marks are for what is in the extract, not for general statements about data. Show your working in calculations.",
+    calculator=CALC, instructions=[DISCUSS],
+    questions=[
+        rows("Coastline Buses runs bus services in a coastal region. Tick (✓) one box in each row to show the level of measurement of each item of its data.",
+             ["Nominal", "Ordinal", "Interval", "Ratio"],
+             [("The route number a passenger travelled on", "Nominal"), ("A satisfaction rating: poor, fair, good or excellent", "Ordinal"),
+              ("The temperature inside the bus in °C", "Interval"), ("The journey time in minutes", "Ratio")],
+             model="A route number is a label with no order, so it is nominal. Ratings are ordered with uneven gaps, ordinal. Celsius has equal gaps but no true zero, interval. Time has a true zero, ratio.",
+             label="1"),
+        rows("Tick (✓) one box in each row to show how each type of data the company holds is structured.",
+             ["Structured", "Semi-structured", "Unstructured"],
+             [("A table of ticket sales with fixed columns", "Structured"), ("A JSON feed of bus locations from an API", "Semi-structured"),
+              ("CCTV video recorded on the buses", "Unstructured"), ("Passengers' complaints, typed as free text", "Unstructured")],
+             marks=2, model="Fixed columns are structured, JSON has tags but no fixed schema, and video and free text have no model at all.",
+             label="2"),
+        tick("Which **one** file format is semi-structured and commonly used to send data through an API?", ["*JSON", "CSV", "XLSX", "MP4"],
+             "JSON holds nested, labelled data without a fixed schema, which is why APIs use it.", label="3(a)"),
+        ans("State the term for data that describes other data, such as the date a file was created and who created it.",
+            ["metadata", "meta data", "meta-data"], model="Metadata.", width=12, label="3(b)"),
+        rows("Figure 1 shows an extract from the company's journey records. Tick (✓) one box in each row to show the dimension of data quality each problem affects.",
+             ["Accuracy", "Completeness", "Uniqueness", "Validity"],
+             [("Journey 1045 is recorded twice", "Uniqueness"), ("Journey 1046 has no fare", "Completeness"),
+              ("Journey 1046 is dated 31/02/2026", "Validity"), ("Journey 1047 took 900 minutes on a route that takes about 25", "Accuracy")],
+             model="A repeated record breaks uniqueness, a blank field completeness, an impossible date validity, and a value that cannot match reality accuracy.",
+             figure=JOURNEYS, label="4(a)"),
+        write("Explain the difference between validation and verification, giving an example of each for the journey data.", 4, [
+            ("Validation is an automatic check that data is sensible and follows the rules, when it is entered", ["validation", "automatic", "rules", "sensible", "reasonable", "allowed"]),
+            ("Example of validation: a range check on journey time, or a format check on the date", ["range check", "format check", "presence check", "type check", "date format", "journey time", "between"]),
+            ("Verification checks that data matches the source it was copied from, that it was entered correctly", ["verification", "matches", "source", "original", "copied", "entered correctly", "transcri"]),
+            ("Example of verification: double entry, or checking against the ticket machine's record", ["double entry", "entered twice", "visual check", "proofread", "ticket machine", "compare", "check against"]),
+        ], "Validation is an automatic check that data is reasonable and follows the rules: a range check would reject a journey time of 900 minutes on route 7, and a format check would reject 31/02/2026. Validation cannot tell whether sensible data is correct. Verification checks that data matches its source, for example by entering it twice and comparing, or by checking a record against the ticket machine's own log, so a mistyped fare of 2.50 instead of 2.00 would be caught.",
+              command="Explain", label="4(b)"),
+        boxes("The journey times, in minutes, for route 7 on one morning were:\n\n22, 25, 19, 25, 31, 24, 26\n\nCalculate each of these. Give the mean to 1 decimal place.",
+              [("Mean", ["24.6"], "min"), ("Median", ["25"], "min"), ("Mode", ["25"], "min"), ("Range", ["12"], "min")], numeric=True,
+              model="Mean: 172 / 7 = 24.6. In order the times are 19, 22, 24, 25, 25, 26, 31, so the median, the middle value, is 25. The mode, the most common, is 25. The range is 31 - 19 = 12.",
+              label="5(a)"),
+        write("Explain why the median can be a better average than the mean for journey times.", 2, [
+            ("The median is not affected by extreme values (outliers)", ["outlier", "extreme", "not affected", "unaffected", "unusual"]),
+            ("such as one journey delayed by a breakdown, which would pull the mean up", ["breakdown", "delay", "pull", "skew", "drag", "one very long", "distort"]),
+        ], "One journey held up by a breakdown or an accident could take an hour and pull the mean up, making every journey look slower. The median is the middle value, so a single extreme journey barely moves it.",
+              command="Explain", label="5(b)"),
+        calc("The number of journeys rose from 48,000 in March to 54,000 in April. Calculate the percentage increase. Show your working.",
+             ["12.5"], 2, [("Works out the increase, 6,000, and divides it by 48,000", ["6000", "6,000", "6 000", "/ 48000", "/48000", "/ 48,000", "0.125"])],
+             model="54,000 - 48,000 = 6,000. 6,000 / 48,000 = 0.125. 0.125 x 100 = 12.5%.", unit="%", tol=0.01, label="5(c)"),
+        write("The data shows a strong positive correlation between sales at the bus station café and passenger numbers. Explain why this does not show that the café brings in passengers.", 2, [
+            ("Correlation does not prove causation", ["correlation", "causation", "does not prove", "doesn't prove", "not cause"]),
+            ("A third factor, such as summer tourists or school holidays, could increase both", ["third", "another factor", "tourist", "summer", "holiday", "season", "both", "weather"]),
+        ], "Correlation does not show causation. Both figures are probably driven by a third factor, such as tourists in the summer, who both take more buses and buy more from the café.",
+              command="Explain", label="5(d)"),
+        rows("The company copies its data into a data warehouse. Tick (✓) one box in each row to show the stage of ETL described.",
+             ["Extract", "Transform", "Load"],
+             [("Data is copied out of the ticket machines' database", "Extract"),
+              ("Dates are converted to one format and duplicates are removed", "Transform"),
+              ("The cleaned data is written into the data warehouse", "Load")],
+             model="Extract takes the data out, transform cleans and reshapes it, and load writes it to the destination.", label="6(a)"),
+        tick("Which **one** storage option keeps data of any structure in its raw form, and applies a schema only when the data is read?",
+             ["*Data lake", "Data warehouse", "Data mart", "Spreadsheet"],
+             "A data lake stores everything raw, with schema on read. A warehouse applies its schema when data is written.", label="6(b)"),
+        rows("A partner company sends the bus company data about joint tickets. Tick (✓) one box in each row to show the level of interoperability at which each problem occurs.",
+             ["Technical", "Syntactic", "Semantic"],
+             [("The partner can only send files over SFTP, which the bus company's system cannot receive", "Technical"),
+              ("The partner's dates are in a different format, so they land in the wrong field", "Syntactic"),
+              ("The partner counts a return ticket as two journeys, but the bus company counts it as one", "Semantic")],
+             model="A transport the systems cannot share is technical, a structure that does not match is syntactic, and a different meaning is semantic.",
+             label="6(c)"),
+        rows("Tick (✓) one box in each row to show the access control described.",
+             ["Multi-factor authentication", "Least privilege", "Audit logging", "Role-based access control"],
+             [("A code from a phone app is needed as well as the password", "Multi-factor authentication"),
+              ("Each person has only the access their job needs", "Least privilege"),
+              ("A record is kept of who looked at which records, and when", "Audit logging"),
+              ("Permissions are given to job roles, and staff are given roles", "Role-based access control")],
+             marks=2, model="A second factor is MFA, minimum access is least privilege, a record of access is audit logging, and permissions by role is RBAC.",
+             label="7(a)"),
+        write("Explain **two** advantages to the bus company of storing its data in the cloud rather than on its own servers.", 4, [
+            ("Storage and computing can be scaled up and down quickly", ["scal", "quickly", "minutes", "grow", "more storage"]),
+            ("So the company pays only for what it uses, rather than buying servers up front", ["pay for what", "pay as", "no upfront", "up front", "capital", "cost"]),
+            ("The provider maintains, patches and backs up the platform", ["maintain", "patch", "update", "provider", "backup", "back up"]),
+            ("Resilience: data is held in several locations, so it survives a failure and can be accessed from anywhere", ["resilien", "several locations", "multiple", "regions", "failure", "anywhere", "available"]),
+        ], "Cloud storage can be scaled up in minutes when the company starts collecting GPS data from every bus, and scaled down again, so it pays only for what it uses instead of buying servers up front. The provider also maintains and patches the platform and keeps copies in several data centres, so the data survives a hardware failure without the company employing its own specialists.",
+              command="Explain", label="7(b)"),
+        tick("Which **three** of these are principles of data protection under the Data Protection Act 2018 and UK GDPR?",
+             ["*Data minimisation", "*Storage limitation", "*Purpose limitation", "Maximum retention", "Data monetisation", "Open access"],
+             "The seven principles are lawfulness, fairness and transparency; purpose limitation; data minimisation; accuracy; storage limitation; integrity and confidentiality; and accountability.",
+             label="8(a)"),
+        rows("Passengers with a smartcard can exercise their rights over their personal data. Tick (✓) one box in each row to show the right being used.",
+             ["Access", "Rectification", "Erasure", "Portability"],
+             [("A passenger asks for a copy of all the data held about them", "Access"),
+              ("A passenger asks for their incorrect address to be corrected", "Rectification"),
+              ("A passenger asks for their data to be deleted", "Erasure"),
+              ("A passenger asks for their journey history in a machine-readable file, to give to another company", "Portability")],
+             marks=2, model="A copy is access, a correction is rectification, deletion is erasure, and a machine-readable copy to move elsewhere is portability.",
+             label="8(b)"),
+        write("The company wants to publish the number of passengers boarding at each stop. Explain how it can do this without disclosing personal data.", 3, [
+            ("Aggregate the data: publish counts for each stop, not individual journeys", ["aggregat", "count", "total", "not individual", "group"]),
+            ("Remove identifiers such as smartcard numbers, and generalise times into bands", ["remove", "identifier", "smartcard", "card number", "generalis", "band", "hour"]),
+            ("Suppress small counts, because a stop with one or two passengers could identify a person", ["suppress", "small", "minimum", "one or two", "identify", "re-identif", "hide"]),
+        ], "Publish totals for each stop rather than individual journeys, with smartcard numbers removed and times grouped into bands such as hours. Counts below a minimum, say ten, should be suppressed, because a quiet stop used by one regular passenger could otherwise reveal when that person travels.",
+              command="Explain", label="8(c)"),
+        rows("Tick (✓) one box in each row to show the job role described.",
+             ["Data analyst", "Data scientist", "Data engineer", "Data protection officer"],
+             [("Builds and maintains the pipelines that move data into the warehouse", "Data engineer"),
+              ("Builds a statistical model to predict passenger demand", "Data scientist"),
+              ("Produces weekly reports and dashboards that answer managers' questions", "Data analyst"),
+              ("Makes sure the company complies with data protection law", "Data protection officer")],
+             marks=2, model="Engineers build pipelines, scientists build models, analysts report, and the data protection officer oversees compliance.",
+             label="9(a)"),
+        tick("Which **one** type of chart is most suitable for showing how passenger numbers changed month by month over two years?",
+             ["*Line chart", "Pie chart", "Scatter plot", "Histogram"],
+             "A line chart shows change over time.", label="9(b)"),
+        write("Coastline Buses wants to use its ticket, GPS and passenger survey data to redesign its timetables.\n\nDiscuss how the company should prepare and analyse the data and present its findings, and the legal issues it must consider.", 10, [
+            ("Define the question first, such as which routes and times are over or under capacity", ["question", "purpose", "over capacity", "under capacity", "which routes", "aim", "objective"]),
+            ("Combine the sources, agreeing what a journey means in each so they can be joined", ["combine", "join", "merge", "link", "same meaning", "definition", "semantic"]),
+            ("Clean the data: remove duplicates, standardise formats and handle missing values", ["clean", "duplicate", "format", "missing", "standardis"]),
+            ("Investigate outliers, such as breakdown delays, rather than deleting them", ["outlier", "breakdown", "investigate", "unusual", "extreme"]),
+            ("Store it securely in a warehouse, with least privilege access", ["warehouse", "secure", "least privilege", "access control", "store"]),
+            ("Analyse demand by route, day and hour, using medians and trends, remembering correlation is not causation", ["analys", "trend", "median", "hour", "day", "compare", "correlation", "peak"]),
+            ("Present to managers clearly: suitable charts, plain language and clear recommendations", ["chart", "dashboard", "plain", "managers", "non-technical", "recommend", "visual"]),
+            ("Smartcard data is personal data, so the company needs a lawful basis and must respect purpose limitation", ["personal data", "lawful basis", "purpose limitation", "data protection", "gdpr"]),
+            ("Minimise and anonymise or pseudonymise before analysis, and keep data no longer than necessary", ["anonymis", "pseudonymis", "minimis", "aggregat", "retention", "no longer than"]),
+            ("A justified conclusion or recommendation", ["conclusion", "overall", "therefore", "recommend", "should"]),
+        ], "The company should first define the question precisely: which routes, days and times are over or under capacity, and where journeys run late. It can then combine the three sources, ticket sales for demand, GPS for actual journey times and surveys for passengers' views, after agreeing definitions so they join correctly, for example whether a return ticket counts as one journey or two.\n\nThe data must be cleaned before analysis: duplicates removed, dates standardised and missing fares handled. Outliers, such as a 900 minute journey, should be investigated rather than deleted, because a real breakdown pattern matters for a timetable. The cleaned data should be loaded into the warehouse, with access limited to the staff who need it.\n\nAnalysis should compare demand by route, day and hour, using medians so that occasional delays do not distort typical journey times, and trends across months to allow for seasonal tourists. The findings should be presented to managers in plain language with a few clear charts, such as a line chart of demand through the day, and specific recommendations, such as an extra bus on route 7 at 8am.\n\nLegally, smartcard journeys are personal data under the Data Protection Act 2018 and UK GDPR. The company needs a lawful basis, and using ticketing data for planning must be compatible with the purpose it was collected for. It should minimise the data, pseudonymise or aggregate it before analysis, keep it secure and delete it when it is no longer needed, and survey respondents must have been told how their answers would be used.\n\nOverall, careful preparation and aggregation let the company plan timetables from real demand while protecting passengers' privacy.",
+              command="Discuss", label="10"),
+    ],
+)
+
+
+FRAUD = """**Figure 2**: the fraud model's results on 1,000 test orders
+
+| | Predicted fraud | Predicted genuine |
+|---|---|---|
+| **Actually fraud** | 40 | 20 |
+| **Actually genuine** | 10 | 930 |"""
+
+F201_D = Paper(
+    slug="f201-paper-d",
+    title="Data Analytics F201 Paper D: Big Data and Machine Learning",
+    course="Data Analytics", board="OCR", code="F201",
+    minutes=90, marks=60, accent="var(--purple)", spec="DA", full=True,
+    blurb="A full length F201 paper built around a supermarket chain: the five Vs, stream and edge processing, transfer times, replication, types of machine learning, a confusion matrix to calculate from, overfitting, the law on loyalty data, the digital divide, PUE, and a 10 mark discussion of personalised offers.",
+    advice="Several questions print a results table: use its numbers. Show your working in every calculation.",
+    calculator=CALC, instructions=[DISCUSS],
+    questions=[
+        rows("FreshCart is a national supermarket chain. Tick (✓) one box in each row to show the characteristic of big data described.",
+             ["Volume", "Velocity", "Variety", "Veracity", "Value"],
+             [("Millions of transactions a day add terabytes of data every month", "Volume"),
+              ("Fridge sensors send a reading every second, which must be acted on at once", "Velocity"),
+              ("The data includes tables, JSON from the app, product photos and customer reviews", "Variety"),
+              ("Some loyalty card sign-ups contain made-up names and wrong ages", "Veracity"),
+              ("The data is only worth keeping if it improves decisions, such as stock levels", "Value")],
+             model="Amount is volume, speed is velocity, mixed forms are variety, uncertain accuracy is veracity, and usefulness is value.",
+             label="1"),
+        write("Explain how combining FreshCart's sales data with open weather data could add value.", 3, [
+            ("Weather affects what people buy, such as barbecue food and ice cream in hot weather", ["weather", "hot", "barbecue", "bbq", "ice cream", "rain", "cold", "sunny"]),
+            ("So demand for these products can be predicted from the forecast", ["predict", "forecast", "demand", "anticipate", "expect"]),
+            ("So stores can order the right stock, reducing waste and empty shelves", ["stock", "order", "waste", "shortage", "empty shelves", "run out", "sales"]),
+        ], "What people buy depends on the weather: sales of barbecue food, salad and ice cream rise in hot weather and soup sells in the cold. Combining past sales with past weather lets FreshCart predict demand from the forecast, so each store orders the right stock, wasting less fresh food and selling out less often.",
+              command="Explain", label="2"),
+        write("Explain why the fridge sensor data should be processed as a stream rather than in a nightly batch.", 3, [
+            ("Stream processing handles each reading as it arrives", ["as it arrives", "immediately", "each reading", "continuous", "real time", "real-time"]),
+            ("So a failing fridge raises an alert at once", ["alert", "warn", "notif", "at once", "straight away", "quickly"]),
+            ("A nightly batch would find the fault hours later, after the food had spoiled", ["hours", "next day", "too late", "spoil", "waste", "unsafe", "overnight"]),
+        ], "Stream processing handles each reading the moment it arrives, so if a fridge starts to warm up, staff are alerted within seconds and can move the food. A nightly batch would only spot the problem the next morning, by which time the food would have to be thrown away.",
+              command="Explain", label="3(a)"),
+        write("Explain what is meant by edge processing, and give **one** benefit of using it for the stores' sensors.", 3, [
+            ("Processing data close to where it is created, such as on a device in the store, rather than in a central data centre", ["close to", "near", "where it is", "on the device", "in the store", "locally", "rather than"]),
+            ("Benefit: much less data is sent over the network, because only summaries or alerts are sent", ["less data", "bandwidth", "summar", "only alerts", "network", "cost"]),
+            ("Benefit: faster responses, and the store keeps working if its connection fails", ["faster", "latency", "quick", "connection", "offline", "internet fails", "respond"]),
+        ], "Edge processing analyses data close to where it is produced, on a small computer in the store, instead of sending every reading to a central data centre. Only alerts and summaries need to be sent, so far less data crosses the network, and the store can react immediately, even if its internet connection is down.",
+              command="Explain", label="3(b)"),
+        tick("Which **one** type of database is best suited to storing timestamped readings from thousands of sensors?",
+             ["*Time series database", "Graph database", "Key-value store", "Spreadsheet"],
+             "A time series database is optimised for timestamped measurements.", label="4(a)"),
+        calc("FreshCart must move 40 TB of archived data to a cloud provider over a link with an average throughput of 1 Gbps. Calculate how many hours the transfer will take, to 1 decimal place. Use 1 TB = 10^12 bytes and 1 Gbps = 10^9 bits per second. Show your working.",
+             ["88.9"], 3, [
+                 ("Converts to bits: 40 x 10^12 x 8 = 3.2 x 10^14 bits", ["320", "3.2 x 10", "3.2x10", "x 8", "* 8", "×8", "× 8", "bits"]),
+                 ("Divides by 10^9 to give 320,000 seconds", ["320000", "320,000", "320 000", "seconds", "/ 3600", "/3600"])],
+             model="40 TB = 40 x 10^12 x 8 = 3.2 x 10^14 bits. 3.2 x 10^14 / 10^9 = 320,000 seconds. 320,000 / 3600 = 88.9 hours, nearly four days.",
+             unit="hours", tol=0.06, label="4(b)"),
+        write("Explain why FreshCart keeps copies of its data in several data centres.", 2, [
+            ("If one data centre fails, the data is still available from another", ["fail", "still available", "backup", "resilien", "outage", "disaster", "lost"]),
+            ("And requests can be served from a centre close to the user, or shared between centres, so access is faster", ["faster", "closer", "load", "share", "latency", "spread"]),
+        ], "If one data centre fails or loses power, the data is still available from another, so the website and the stores keep working. Requests can also be served from the nearest centre or spread between them, which makes access faster.",
+              command="Explain", label="4(c)"),
+        rows("Tick (✓) one box in each row to show the type of machine learning described.", ["Supervised", "Unsupervised", "Reinforcement"],
+             [("Predicting whether a customer will cancel their delivery subscription, learning from past customers who did and did not", "Supervised"),
+              ("Grouping customers by what they buy, without being told what the groups are", "Unsupervised"),
+              ("Learning to plan delivery routes by being rewarded for faster deliveries", "Reinforcement")],
+             model="Learning from labelled outcomes is supervised, finding groups without labels is unsupervised, and learning from rewards is reinforcement.",
+             label="5(a)"),
+        rows("Tick (✓) one box in each row to show the set of data described.", ["Training set", "Validation set", "Test set"],
+             [("The data the model learns from", "Training set"), ("Used to tune the model and to compare versions of it", "Validation set"),
+              ("Used once, at the end, to estimate how well the model will perform on new data", "Test set")],
+             model="The model learns from the training set, is tuned on the validation set and is judged once on the test set.",
+             label="5(b)"),
+        boxes("FreshCart's model predicts whether an online order is fraudulent. Figure 2 shows its results on 1,000 test orders. Calculate each measure as a percentage, to 1 decimal place.",
+              [("Accuracy", ["97.0"], "%"), ("Precision", ["80.0"], "%"), ("Recall", ["66.7"], "%")], numeric=True,
+              figure=FRAUD,
+              model="Accuracy = (40 + 930) / 1000 = 97.0%. Precision = 40 / (40 + 10) = 80.0%. Recall = 40 / (40 + 20) = 66.7%.",
+              label="6(a)"),
+        write("Using your answers, explain what the recall figure means for FreshCart.", 2, [
+            ("A third of fraudulent orders are not caught: 20 of the 60", ["third", "20 of", "33", "missed", "not caught", "not detected", "get through"]),
+            ("These cost FreshCart money, so it may need to catch more, even if that flags more genuine orders", ["cost", "money", "loss", "lower the threshold", "more genuine", "precision", "flag more"]),
+        ], "A recall of 66.7% means the model misses a third of fraudulent orders: 20 of the 60 got through. Each costs FreshCart money, so it may want to make the model flag more orders, accepting that more genuine ones will be checked by mistake.",
+              command="Explain", label="6(b)"),
+        tick("Which **one** measure matters most when missing a fraudulent order costs far more than wrongly checking a genuine one?",
+             ["*Recall", "Precision", "Accuracy", "Training time"],
+             "Recall is the proportion of real fraud the model catches.", label="6(c)"),
+        write("A model scored 99% accuracy on its training data but only 81% on the test set. Explain what this shows, and describe **one** way to improve it.", 3, [
+            ("The model is overfitting", ["overfit", "over-fit", "over fit"]),
+            ("It has learned the training data, including its noise, too closely, so it does not generalise to new data", ["memoris", "too closely", "noise", "generalis", "new data", "unseen"]),
+            ("Fix: more training data, a simpler model, fewer features, regularisation or stopping training earlier", ["more data", "more training data", "simpler", "fewer features", "regularis", "early stopping", "stop training", "cross-validation", "cross validation"]),
+        ], "The gap shows overfitting: the model has learned the details and noise of its training data so closely that it does not generalise to orders it has not seen. Training it on more data, or using a simpler model with fewer features, would make it learn the general pattern instead.",
+              command="Explain", label="6(d)"),
+        write("FreshCart collected loyalty card data to give points, and now wants to use it to train a model that sets personalised prices. Explain why it must check whether data protection law allows this.", 3, [
+            ("Loyalty card data identifies customers, so it is personal data under the Data Protection Act 2018 and UK GDPR", ["personal data", "identif", "data protection", "gdpr"]),
+            ("Purpose limitation: data collected for one purpose cannot simply be used for a new, incompatible one", ["purpose limitation", "new purpose", "different purpose", "collected for", "incompatible"]),
+            ("It needs a lawful basis, such as consent, and must tell customers how their data is used (transparency)", ["lawful basis", "consent", "transparen", "tell customers", "inform", "privacy notice"]),
+        ], "Loyalty card data identifies customers and their shopping habits, so it is personal data. Under purpose limitation, data collected to award points cannot simply be reused for a different purpose such as setting prices; FreshCart needs a lawful basis for the new use, such as customers' consent, and must tell them clearly how their data will be used.",
+              command="Explain", label="7(a)"),
+        rows("Tick (✓) one box in each row to show the law that applies.",
+             ["Privacy and Electronic Communications Regulations", "Equality Act 2010", "Computer Misuse Act 1990", "Data Protection Act 2018"],
+             [("Cookies that track customers on the website need their consent", "Privacy and Electronic Communications Regulations"),
+              ("A pricing model offers worse prices to customers of one ethnic group", "Equality Act 2010"),
+              ("An employee accesses the customer database without permission", "Computer Misuse Act 1990"),
+              ("Customer data is kept for longer than necessary", "Data Protection Act 2018")],
+             model="Cookies are covered by PECR, discrimination by the Equality Act, unauthorised access by the Computer Misuse Act, and keeping data too long by data protection law.",
+             label="7(b)"),
+        write("FreshCart plans to offer its discounts only through its smartphone app. Explain how this could disadvantage some customers.", 3, [
+            ("Some customers do not have a smartphone or the skills to use the app, such as some older or poorer people", ["smartphone", "older", "elderly", "poor", "low income", "skills", "can't use", "cannot use", "no phone"]),
+            ("This is the digital divide", ["digital divide", "divide", "excluded", "exclusion"]),
+            ("So they pay more for the same shopping, which is unfair, and those groups can least afford it", ["pay more", "higher prices", "unfair", "afford", "miss out", "lose"]),
+        ], "Not everyone has a smartphone or feels confident using an app, particularly some older people and people on low incomes. This digital divide means they would pay more for the same shopping, which is unfair, and falls hardest on the customers who can least afford it.",
+              command="Explain", label="8(a)"),
+        calc("One of FreshCart's data centres used 1.8 GWh of electricity last year in total, of which its IT equipment used 1.2 GWh. Calculate its power usage effectiveness (PUE). Show your working.",
+             ["1.5"], 2, [("Divides the total energy by the IT equipment's energy", ["1.8 / 1.2", "1.8/1.2", "1.8 ÷ 1.2", "total / it", "total energy"])],
+             model="PUE = total energy / IT equipment energy = 1.8 / 1.2 = 1.5.", tol=0.001, label="8(b)"),
+        write("State what a PUE of 1.0 would mean.", 1, [
+            ("All the energy is used by the IT equipment, with none used for cooling, lighting or other overheads", ["all the energy", "all energy", "no overhead", "none for cooling", "only the it", "100%", "perfect"]),
+        ], "Every unit of energy would go to the IT equipment, with nothing used for cooling or other overheads.",
+              command="State", label="8(c)"),
+        tick("Which **two** of these are environmental costs of big data?",
+             ["*The electricity used to run and cool data centres", "*Electronic waste from servers that are replaced", "Faster home deliveries", "More personalised offers"],
+             "Energy use and e-waste are environmental costs. Faster deliveries and personalised offers are benefits.", label="8(d)"),
+        write("FreshCart plans to use its loyalty card, online shopping and in-store camera data, with machine learning, to personalise offers and to set stock levels.\n\nDiscuss the benefits and risks of this plan, including the legal, ethical and environmental issues, and recommend what FreshCart should do.", 10, [
+            ("Benefit: personalised offers that customers value, increasing loyalty and sales", ["personalis", "loyalty", "sales", "relevant offers", "customers value"]),
+            ("Benefit: more accurate stock levels, reducing food waste and empty shelves", ["stock", "waste", "empty shelves", "shortage", "demand"]),
+            ("Combining the sources gives a fuller picture, but brings challenges of variety and veracity", ["combin", "variety", "veracity", "join", "fuller picture", "single view"]),
+            ("Camera data and shopping habits are personal data, some possibly special category; a lawful basis, transparency and a DPIA are needed", ["personal data", "special category", "lawful", "transparen", "dpia", "impact assessment", "data protection"]),
+            ("Customers may feel watched: in-store cameras tracking them is intrusive", ["privacy", "intrusive", "watched", "surveillance", "creepy", "tracking"]),
+            ("Bias: a model may treat some groups unfairly, which could breach the Equality Act", ["bias", "unfair", "discriminat", "equality act", "certain groups"]),
+            ("Solely automated decisions with significant effects need safeguards such as human review", ["automated", "human review", "human in the loop", "explain", "challenge", "article 22"]),
+            ("Security: a breach of combined data would be very damaging", ["breach", "security", "hack", "leak", "encrypt", "access control"]),
+            ("Environmental: training models and storing data use energy and cause e-waste", ["energy", "electricity", "carbon", "e-waste", "environment", "pue", "data centre"]),
+            ("A justified recommendation", ["recommend", "should", "conclusion", "overall", "therefore"]),
+        ], "The plan offers real benefits. Personalised offers that match what each customer buys make the loyalty scheme more valuable to them and increase sales, and predicting demand from sales history lets each store hold the right stock, cutting food waste and empty shelves. Combining loyalty, online and in-store data gives a far fuller picture than any one source, though the variety of formats and doubtful accuracy of some sign-up data must be dealt with first.\n\nThe risks are mostly legal and ethical. Shopping habits and camera images are personal data, and images used to identify people are biometric, special category data, so FreshCart needs a lawful basis, must tell customers clearly what it does and should carry out a data protection impact assessment. Many customers would find cameras that track them around the store intrusive, which could damage trust. A model trained on past data may treat some groups less favourably, which could breach the Equality Act, so its decisions should be tested for bias, and any decision with a significant effect on a customer should not be made solely by the model. Combining so much data also makes a breach far more damaging, so access must be tightly controlled. Environmentally, storing the data and training models use a great deal of electricity in data centres, adding to the chain's carbon footprint.\n\nI recommend that FreshCart goes ahead with stock forecasting, which uses aggregated sales data and carries little privacy risk, and offers personalised discounts only to customers who opt in, using loyalty and online data but not in-store cameras, with regular bias testing, human oversight and an efficient, low-PUE data centre.",
+              command="Discuss", label="9"),
+    ],
+)
+
+PAPERS = [F200_D, F201_D]

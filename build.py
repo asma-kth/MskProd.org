@@ -7,6 +7,7 @@ fully crawlable and works without JavaScript. Run with: python3 build.py
 import hashlib
 import json
 import os
+import re
 import shutil
 import sys
 from datetime import date
@@ -84,6 +85,31 @@ def build_course(course):
 
 # ------------------------------------------------------------------ home
 
+def _pixel_run_band():
+    """The home page's way into the game: a picture of it, and two buttons."""
+    return """<section class="section">
+  <div class="wrap">
+    <div class="grid grid-2" style="align-items:center;gap:var(--sp-6)">
+      <div>
+        <span class="eyebrow">%s New: a game</span>
+        <h2>Learn Python by playing</h2>
+        <p class="lead">Pixel the robot cat runs through ten levels, and every obstacle is a Python function for you to write.
+        Pass the tests and she jumps on. Fail three times and you are sent back a level. It runs in your browser,
+        from your first <code>print()</code> to Dijkstra's algorithm.</p>
+        <div class="btn-row" style="margin-top:1.4rem">
+          <a class="btn btn-primary" href="/pixel-run/">%s Play Pixel Run</a>
+          <a class="btn btn-secondary" href="/python/">%s The Python course</a>
+        </div>
+      </div>
+      <figure class="hero-figure">
+        <img src="/assets/img/pixel-run.jpg" width="1200" height="675" loading="lazy" decoding="async"
+             alt="Pixel the robot cat jumping onto a green pipe in a grassy platformer level, with a green tick block above the pipe and gold coins ahead.">
+      </figure>
+    </div>
+  </div>
+</section>""" % (ico("i-flag"), ico("i-play"), ico("i-python"))
+
+
 def build_home():
     cards = []
     meta = {
@@ -99,8 +125,10 @@ def build_home():
                        "OCR J834. The R093 exam unit in full, plus coursework guidance for R094 and R097."),
         "ks5": ("A Level Computer Science", "/ks5/", "i-brain",
                 "OCR H446. Both components, the NEA, and the depth an A star actually needs."),
+        "data-analytics": ("Data Analytics", "/data-analytics/", "i-chart",
+                           "OCR Cambridge Advanced National. F200 and F201, the two exam units, with graphs and interactive models."),
         "python": ("Python from scratch", "/python/", "i-python",
-                   "First line of code through to object oriented programming, tkinter and pygame."),
+                   "From your first line of code to GCSE and A Level programming, advanced Python, simulation and machine learning, with a platformer to practise it in."),
     }
     for slug, (title, href, icon, blurb) in meta.items():
         course = next((c for c in COURSES if c.slug == slug), None)
@@ -174,7 +202,9 @@ def build_home():
   </div>
 </section>
 
-<section class="section">
+%s
+
+<section class="section section-alt">
   <div class="wrap">
     <div class="grid grid-2" style="align-items:center;gap:var(--sp-6)">
       <div>
@@ -197,7 +227,7 @@ def build_home():
   </div>
 </section>
 
-<section class="section section-alt">
+<section class="section">
   <div class="wrap">
     <div class="grid grid-2" style="align-items:center;gap:var(--sp-6)">
       <div class="center">%s</div>
@@ -217,6 +247,7 @@ def build_home():
         ico("i-palette"), ico("i-layers"),
         "".join(cards),
         ico("i-book"), ico("i-list"), ico("i-check-circle"), ico("i-paper"),
+        _pixel_run_band(),
         ico("i-arrow-right"),
         render.mascot_svg().replace('<svg ', '<svg style="max-width:260px;margin:0 auto" ', 1),
         ico("i-sparkle"),
@@ -230,20 +261,21 @@ def build_home():
     }, {
         "@context": "https://schema.org", "@type": "WebSite",
         "name": SITE_NAME, "url": SITE_URL, "inLanguage": "en-GB",
-        "potentialAction": {"@type": "SearchAction",
-                            "target": {"@type": "EntryPoint", "urlTemplate": SITE_URL + "/search/?q={search_term_string}"},
-                            "query-input": "required name=search_term_string"},
     }]
     write("/", layout(
-        title="MskProd Computing | UK computing revision for KS3, GCSE and A Level",
+        title="GCSE, KS3 and A Level Computing Revision",
         description="Free computing revision for UK students. KS3, OCR GCSE Computer Science J277, Creative iMedia J834, OCR A Level H446 and a full Python course. Explanations, quizzes, auto marked exam questions and practice papers.",
         path="/", body=body, active="/",
-        greeting="Hello. I am Pixel. Pick your key stage below, and tap me any time for a fun fact or a revision tip.",
         jsonld=ld))
     register("/", 1.0, "weekly")
 
 
 # --------------------------------------------------------------- offline
+
+def _cat_offline():
+    from mskbuild import cat
+    return cat.stack("asleep", 230, zzz=True)
+
 
 def build_pwa():
     """Write the service worker, the offline fallback page and assetlinks.
@@ -256,21 +288,23 @@ def build_pwa():
     write("/offline/", layout(
         title="Offline",
         description="You are offline and this page has not been saved to this device yet.",
-        path="/offline/",
-        body="""<div class="wrap" style="padding:var(--sp-8) 0;max-width:44rem">
+        path="/offline/", noindex=True,
+        body="""<div class="wrap"><div class="empty-screen">
+  %s
   <h1>You are offline</h1>
-  <p class="lead">This page has not been opened on this device before, so there is no saved
-  copy to show you.</p>
-  <p>Anything you have already read stays available offline. Open the menu and pick a topic
-  you have visited before, or reconnect and try again.</p>
-  <div class="btn-row" style="margin-top:var(--sp-5)">
+  <p class="lead">This page has not been opened on this device before, so there is no
+    saved copy to show you.</p>
+  <p>Anything you have already read is still here. Pick a topic you have visited
+    before, or reconnect and try again.</p>
+  <div class="btn-row">
     <a class="btn btn-primary" href="/">Go to the home page</a>
   </div>
-</div>"""))
-    register("/offline/", 0.1, "yearly")
+</div></div>""" % _cat_offline()))
+
 
     shell = []
-    for rel in ("css/site.css", "js/app.js", "js/mascot.js", "js/tools.js"):
+    for rel in ("css/site.css", "js/app.js", "js/mascot.js", "js/tools.js",
+                "css/game.css", "js/game.js", "js/game-art.js"):
         f = os.path.join(DIST, "assets", rel)
         if os.path.exists(f):
             with open(f, "rb") as fh:
@@ -336,7 +370,7 @@ def build_sitemap():
         "categories": ["education"],
         # Matches the frosted header and the top of the page gradient, so the
         # Android status bar and splash screen line up with the site.
-        "theme_color": "#E8FBFB", "background_color": "#CBF0F2",
+        "theme_color": "#FDFAF0", "background_color": "#FBF6E9",
         "icons": [
             {"src": "/assets/img/favicon.svg", "sizes": "any", "type": "image/svg+xml"},
             {"src": "/assets/img/icon-192.png", "sizes": "192x192", "type": "image/png",
@@ -378,17 +412,20 @@ def build_sitemap():
         % json.dumps(moved, separators=(",", ":")))
 
     # 404
-    body = """<div class="wrap" style="padding:var(--sp-8) 0;text-align:center;max-width:640px">
-  <div style="max-width:180px;margin:0 auto var(--sp-4)">%s</div>
-  <h1>That page does not exist</h1>
-  <p class="lead" style="margin-inline:auto">Pixel has checked twice. The link may be old, or there may be a typo in the address.</p>
-  <div class="btn-row" style="justify-content:center;margin-top:var(--sp-4)">
+    from mskbuild import cat
+    body = """<div class="wrap"><div class="empty-screen">
+  %s
+  <h1>Nothing here to wake up for</h1>
+  <p class="lead">That page does not exist. The link may be old, or there may be a
+    typo in the address.</p>
+  <div class="btn-row">
     <a class="btn btn-primary" href="/">Back to the home page</a>
     <a class="btn btn-secondary" href="#" data-search-open>Search the site</a>
   </div>
-</div>""" % render.mascot_svg()
+</div></div>""" % cat.stack("asleep", 260, zzz=True)
     with open(os.path.join(DIST, "404.html"), "w", encoding="utf-8") as fh:
-        fh.write(layout(title="Page not found", description="That page could not be found on MskProd Computing.",
+        fh.write(layout(title="Page not found", noindex=True,
+                        description="That page could not be found on MskProd Computing.",
                         path="/404.html", body=body, extra_head=redirect_js))
 
 
@@ -403,6 +440,36 @@ def build_manifest():
     os.makedirs(out, exist_ok=True)
     with open(os.path.join(out, "progress.json"), "w", encoding="utf-8") as fh:
         json.dump({"courses": MANIFEST}, fh, separators=(",", ":"))
+
+
+
+def dark_media(css):
+    """Make the dark theme work before, and without, JavaScript.
+
+    Every dark rule in the stylesheet is written as [data-theme="dark"] X, and
+    that attribute is only set by app.js, which is deferred. A reader whose
+    system is set to dark therefore gets a flash of the light theme on every
+    page load, and with JavaScript off never gets the dark theme at all.
+
+    Rather than rewrite 38 hand written rules and have the next one forget,
+    each is mirrored here into a prefers-color-scheme block, guarded so an
+    explicit [data-theme="light"] still wins. The attribute keeps working, so
+    nothing else has to change.
+    """
+    rules = re.findall(r'(\[data-theme="dark"\][^{}]*)\{([^{}]*)\}', css)
+    if not rules:
+        return css
+    out = ['\n\n/* Generated by build.py: the dark rules above, repeated for readers',
+           '   whose system asks for dark before any script has run. An explicit',
+           '   data-theme="light" still overrides them. */',
+           '@media (prefers-color-scheme: dark) {']
+    for sel, body in rules:
+        sel = ", ".join(
+            s.strip().replace('[data-theme="dark"]', ':root:not([data-theme="light"])', 1)
+            for s in sel.split(","))
+        out.append("  %s {%s}" % (sel, body.strip()))
+    out.append("}\n")
+    return css + "\n".join(out)
 
 
 def copy_static():
@@ -420,6 +487,58 @@ def copy_static():
     with open(os.path.join(dst, "css", "tools.css"), "w", encoding="utf-8") as fh:
         fh.write(tool_reg.bundle(ROOT, "css"))
 
+    # The @font-face rules go at the head of the one stylesheet every page
+    # already loads, so self hosting the fonts costs no extra request.
+    css_dir = os.path.join(dst, "css")
+    fonts_css = os.path.join(css_dir, "fonts.css")
+    site_css = os.path.join(css_dir, "site.css")
+    with open(fonts_css, encoding="utf-8") as fh:
+        head = fh.read()
+    with open(site_css, encoding="utf-8") as fh:
+        rest = fh.read()
+    with open(site_css, "w", encoding="utf-8") as fh:
+        fh.write(dark_media(head + "\n" + rest))
+    os.remove(fonts_css)
+
+    # The favicon is the same cat, generated from the same source as the logo
+    # and the mascot, so a change to the character reaches the browser tab too.
+    from mskbuild import cat as _cat
+    with open(os.path.join(dst, "img", "favicon.svg"), "w", encoding="utf-8") as fh:
+        fh.write(_cat.flat(head_only=True, plate=True, label="MskProd Computing"))
+
+    # The tools bundle and the game each carry their own dark rules, so each
+    # gets the same prefers-color-scheme mirror as the main stylesheet.
+    for name in ("tools.css", "game.css"):
+        extra_css = os.path.join(css_dir, name)
+        with open(extra_css, encoding="utf-8") as fh:
+            t = fh.read()
+        with open(extra_css, "w", encoding="utf-8") as fh:
+            fh.write(dark_media(t))
+
+
+def check_icons():
+    """Fail the build on an icon name that is not in the sprite.
+
+    An unknown name renders as <use href="#i-nope">, which draws nothing at
+    all and raises no error anywhere, so a typo in a topic's icon is invisible
+    until somebody notices a blank square on a card. Cheaper to catch here.
+    """
+    sprite = os.path.join(ROOT, "static", "img", "icons.svg")
+    with open(sprite, encoding="utf-8") as fh:
+        have = set(re.findall(r'id="(i-[a-z0-9-]+)"', fh.read()))
+    bad = []
+    for course in COURSES:
+        for name, where in ([(course.icon, course.slug)]
+                            + [(u.icon, "%s/%s" % (course.slug, u.slug))
+                               for u in course.units]
+                            + [(t.icon, "%s/%s" % (course.slug, t.slug))
+                               for u in course.units for t in u.topics]):
+            if name and name not in have:
+                bad.append("%s uses %s" % (where, name))
+    if bad:
+        raise SystemExit("Unknown icon names (not in static/img/icons.svg):\n  "
+                         + "\n  ".join(bad))
+
 
 def main():
     if os.path.exists(DIST):
@@ -429,12 +548,26 @@ def main():
     from content import ks4_cs
     modules = [ks4_cs]
     for name in ("aqa_gcse", "edexcel_gcse", "ks3", "ks4_imedia", "ks5",
-                 "python_course"):
+                 "data_analytics", "python_course"):
         try:
             mod = __import__("content." + name, fromlist=["COURSE"])
             modules.append(mod)
         except ImportError:
             pass
+
+    # Content is written correct answer first. Reorder every quiz once, here,
+    # before anything reads it, so the page, its JSON-LD and the printable
+    # worksheet answer keys all see the same arrangement.
+    from mskbuild import quizshuffle
+    for mod in modules:
+        quizshuffle.apply(mod.COURSE)
+    _spread, _n = quizshuffle.check([m.COURSE for m in modules])
+    print("Quiz answers placed, %d questions: %s" % (_n, _spread))
+
+    # Key Stage 3 units link to their unit exams, so attach those links
+    # before any topic page is written.
+    from content import papers
+    papers.attach_exam_links()
 
     for mod in modules:
         build_course(mod.COURSE)
@@ -442,17 +575,17 @@ def main():
     try:
         from content import pages
         pages.build(register, add_search, COURSES)
+        pages.build_attributions(write, register)
     except ImportError:
         pass
 
-    try:
-        from content import papers
-        papers.build(register, add_search)
-    except ImportError:
-        pass
+    papers.build(register, add_search)
 
     from content import tools_page
     tools_page.build(register, add_search)
+
+    from content.pixelrun import page as pixelrun_page
+    pixelrun_page.build(register, add_search)
 
     from content import progress_page
     progress_page.build(register, add_search)
@@ -464,6 +597,19 @@ def main():
     assign_page.build(register, add_search)
 
     placements.check(PLACED)
+    check_icons()
+
+    from mskbuild import photos as _photos
+    _waiting = _photos.pending()
+    if _waiting:
+        from mskbuild import illus as _illus
+        _illus.load_all()
+        _drawn = [w for w in _waiting if "pic-" + w in _illus.REGISTRY]
+        _blank = [w for w in _waiting if w not in _drawn]
+        print("Photographs pending (%d of %d). %d show a drawing of the object until the "
+              "file exists, %d show nothing.\n  drawn: %s\n  blank: %s"
+              % (len(_waiting), len(_photos.PHOTOS), len(_drawn), len(_blank),
+                 ", ".join(_drawn) or "none", ", ".join(_blank) or "none"))
 
     build_home()
     copy_static()

@@ -61,8 +61,6 @@ def build(register, add_search):
     path = "/assign/"
     write(path, layout(
         title="Set a Revision Assignment", description=LEAD, path=path, body=body,
-        greeting="Teachers: three topics and a deadline beats twenty topics and good "
-                 "intentions. Students: if somebody sent you here, the list is above.",
         scripts=["/assets/js/assign.js"],
         jsonld=[crumbs_ld(trail)]))
     register(path, 0.6, "monthly")

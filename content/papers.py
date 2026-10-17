@@ -5,28 +5,12 @@ so every paper here is written from scratch to match the structure, question
 style, command words and mark allocation of the real assessments. Links to the
 official past papers on each board's own site are given alongside them.
 """
-from dataclasses import dataclass, field
-from typing import List
+import json
+import os
 
 from mskbuild import render
-from mskbuild.models import EQ, MP
+from mskbuild.models import EQ, MP, Paper
 from mskbuild.render import layout, crumbs, crumbs_ld, ico, esc, write, SITE_URL
-
-
-@dataclass
-class Paper:
-    slug: str
-    title: str
-    course: str
-    board: str
-    code: str
-    minutes: int
-    marks: int
-    blurb: str
-    advice: str
-    questions: List[EQ]
-    calculator: str = "No calculator is permitted."
-    accent: str = "var(--teal)"
 
 
 OFFICIAL = [
@@ -703,144 +687,312 @@ ALL_PAPERS = [J277_P1, J277_P2, H446_P1, H446_P2, R093_P1]
 for _p in ALL_PAPERS:
     _p.marks = sum(q.marks for q in _p.questions)
 
-# Durations are scaled from the real papers so the time pressure matches:
-# J277 allows 90 minutes for 80 marks, H446 150 minutes for 140, R093 75 for 70.
+# These first papers are shorter than the real ones, so their time is scaled to
+# the real paper's marks per minute: J277 allows 90 minutes for 80 marks, H446
+# 150 minutes for 140, R093 90 for 70.
 _RATIO = {"J277/01 style": 1.125, "J277/02 style": 1.125,
-          "H446/01 style": 1.071, "H446/02 style": 1.071, "R093 style": 1.071}
+          "H446/01 style": 1.071, "H446/02 style": 1.071, "R093 style": 1.286}
 for _p in ALL_PAPERS:
     _p.minutes = int(round(_p.marks * _RATIO.get(_p.code, 1.1)))
+    _p.spec = _p.code.split("/")[0].split()[0]
 
-# The Key Stage 3 end of unit assessments live in their own module because they
-# are not written to a board specification, but they are ordinary papers as far
-# as this page is concerned. They set their own marks and timings.
+# Key Stage 3: the end of year assessments, and two exams for every unit.
 from content.ks3_papers import ALL_KS3_PAPERS  # noqa: E402
-ALL_PAPERS = ALL_KS3_PAPERS + ALL_PAPERS
+from content.ks3_exams import all_exams  # noqa: E402
+for _p in ALL_KS3_PAPERS:
+    _p.spec = "KS3"
+KS3_UNIT_EXAMS = all_exams()
+
+# The Data Analytics papers are their own module. Each is the real length,
+# 60 marks, in the real time: 1 hour 15 minutes for F200, 1 hour 30 for F201.
+from content.da_papers import ALL_DA_PAPERS  # noqa: E402
+for _p in ALL_DA_PAPERS:
+    _p.marks = sum(q.marks for q in _p.questions)
+    _p.code = _p.code.replace(" style", "")
+    _p.minutes = {"F200": 75, "F201": 90}[_p.code]
+    _p.spec = _p.code
+    _p.full = True
+
+# Full length papers modelled on each board's past papers: the real marks, the
+# real time allowed and the real structure, checked at build time.
+from content.papers_full import FULL_PAPERS  # noqa: E402
+
+ALL_PAPERS = ALL_KS3_PAPERS + KS3_UNIT_EXAMS + ALL_PAPERS + ALL_DA_PAPERS + FULL_PAPERS
+
+from mskbuild import examarrange  # noqa: E402
+examarrange.arrange_all(ALL_PAPERS)
+
+
+def attach_exam_links():
+    """Give every Key Stage 3 unit links to its two unit exams.
+
+    Called before the topic pages are built, so each unit's page can show them."""
+    from content import ks3
+    topics = {t.slug: t for u in ks3.COURSE.units for t in u.topics}
+    links = {}
+    for p in KS3_UNIT_EXAMS:
+        letter = p.slug.rsplit("-", 1)[1].upper()
+        links.setdefault(p.unit, []).append(("Unit Exam %s" % letter, "/exam-papers/%s/" % p.slug,
+                                             "Two timed exams on this unit, marked automatically: %d marks in %d minutes each."
+                                             % (p.marks, p.minutes)))
+    for unit, items in links.items():
+        topics[unit].exams = items
+
+
+def duration(minutes):
+    """Minutes written the way a paper's front cover writes them: 1 hour 30 minutes."""
+    h, m = divmod(int(minutes), 60)
+    parts = []
+    if h:
+        parts.append("%d hour%s" % (h, "" if h == 1 else "s"))
+    if m:
+        parts.append("%d minute%s" % (m, "" if m == 1 else "s"))
+    return " ".join(parts) or "0 minutes"
+
+
+def _sections(paper):
+    """[(section title, marks)] in paper order, from the questions that open each section."""
+    out = []
+    for q in paper.questions:
+        if q.section:
+            out.append([q.section, 0])
+        if out:
+            out[-1][1] += q.marks
+    return out
 
 
 def _paper_page(paper):
     path = "/exam-papers/%s/" % paper.slug
     trail = [("Home", "/"), ("Exam papers", "/exam-papers/"), (paper.title, None)]
+    has_code = any(q.kind == "code" for q in paper.questions)
 
     qs = render.render_exam(paper.slug, paper.questions,
                             title="Questions",
-                            lead="Write a full answer to every question, then mark the whole paper at the end. Marking as you go teaches you far less.",
+                            lead="Answer every question, then finish the paper to have it marked. Marking as you go teaches you far less.",
                             heading_level="h2")
+
+    sections = _sections(paper)
+    cover_rows = [("Time allowed", duration(paper.minutes)), ("Total marks", "%d" % paper.marks)]
+    if sections:
+        cover_rows.append(("Sections", "; ".join("%s, %d marks" % (t, m) for t, m in sections)))
+    cover_rows.append(("Calculator", paper.calculator))
+    lines = ["Answer <b>all</b> the questions.",
+             "The number of marks for each question is shown in brackets. Use it as a guide to how much to write.",
+             "The clock at the top counts down from the real time allowed. When it reaches zero the paper is locked and marked, as it would be collected in the exam hall."]
+    lines += [esc(x) for x in paper.instructions]
+    lines.append(esc(paper.advice))
+    cover = """<div class="card paper-cover">
+      <h2 style="font-size:var(--step-1);margin-bottom:.6rem">Instructions</h2>
+      <dl>%s</dl>
+      <ul>%s</ul>
+    </div>""" % ("".join("<dt>%s</dt><dd>%s</dd>" % (esc(k), esc(v)) for k, v in cover_rows),
+                 "".join("<li>%s</li>" % x for x in lines))
+
+    bar = """<div class="paper-bar" data-paper-bar data-paper="%s" data-minutes="%d">
+      <div class="paper-bar-inner">
+        <span class="pb-clock"><small>Time left</small><b data-pb-clock>%s</b></span>
+        <span class="pb-meta">Answered <b data-pb-done>0 of %d</b></span>
+        <span class="pb-meta"><b>%d</b> marks</span>
+        <span class="pb-score" data-pb-score aria-live="polite"></span>
+        <span class="pb-actions">
+          <button class="btn btn-primary btn-sm" type="button" data-pb-start>Start the exam</button>
+          <button class="btn btn-secondary btn-sm" type="button" data-pb-pause hidden>Pause</button>
+          <button class="btn btn-secondary btn-sm" type="button" data-pb-finish>Finish and mark</button>
+          <button class="btn btn-secondary btn-sm" type="button" data-pb-again hidden>Sit it again</button>
+        </span>
+      </div>
+    </div>""" % (esc(paper.slug), paper.minutes,
+                 "%d:%02d:00" % divmod(paper.minutes, 60) if paper.minutes >= 60 else "%d:00" % paper.minutes,
+                 len(paper.questions), paper.marks)
+
+    if paper.full:
+        about = ("This is an original paper modelled on the real %s %s past papers: the same structure, the same balance of "
+                 "topics, the same command words and mark tariffs, %d marks in %s, exactly as the real paper allows. It is "
+                 "not a past paper. Real past papers are the copyright of the exam board and cannot be republished here, so "
+                 "links to the official papers on the board's own site are on the <a href=\"/exam-papers/\">exam papers page</a>."
+                 % (esc(paper.board), esc(paper.code), paper.marks, duration(paper.minutes)))
+    elif paper.spec == "KS3":
+        about = ("This is an original Key Stage 3 assessment. Most questions are closed, so the marking is exact, and the "
+                 "written answers are marked against a mark scheme in the same style as a GCSE paper, so the format is "
+                 "familiar long before it counts.")
+    else:
+        about = ("This is an original paper written to match the structure, question style, command words and mark "
+                 "allocation of the real %s %s assessment, with the time scaled to the same marks per minute. It is not a "
+                 "past paper. Real past papers are the copyright of the exam board and cannot be republished here, so links "
+                 "to the official papers on the board's own site are provided on the <a href=\"/exam-papers/\">exam papers page</a>."
+                 % (esc(paper.board), esc(paper.code)))
+
+    harness = ""
+    if has_code:
+        with open(os.path.join(render.ROOT, "mskbuild", "codemark.py"), encoding="utf-8") as fh:
+            # JSON, because nothing inside a script element is unescaped: the
+            # text has to reach Python exactly as it is in the file.
+            harness = ('<script type="application/json" id="msk-codemark">%s</script>'
+                       % json.dumps(fh.read()).replace("</", "<\\/"))
 
     body = """<div class="wrap">
   %s
   <div class="wrap-narrow" style="width:100%%;max-width:900px;margin-inline:auto">
+    %s
     <header class="topic-header">
       <div class="badge-row">
         <span class="badge badge-spec">%s %s</span>
-        <span class="badge">%s %d minutes</span>
+        <span class="badge">%s %s</span>
         <span class="badge">%s %d marks</span>
-        <span class="badge">%s Original paper</span>
+        <span class="badge">%s %s</span>
       </div>
       <h1>%s</h1>
       <p class="lead">%s</p>
     </header>
 
-    <div class="card" style="margin-bottom:var(--sp-5)">
-      <div class="grid grid-2" style="gap:var(--sp-4);align-items:center">
-        <div data-timer="%d">
-          <h3 style="font-size:var(--step-1);margin-bottom:.4rem">Exam timer</h3>
-          <p style="margin:0 0 .8rem;color:var(--ink-3);font-size:.92rem">Sit this to the clock. Working under time pressure is a separate skill from knowing the content, and it is the one most students never practise.</p>
-          <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap">
-            <span data-timer-face style="font-family:var(--font-mono);font-size:2rem;font-weight:700;color:var(--accent-strong)">00:00</span>
-            <button class="btn btn-primary btn-sm" type="button" data-timer-btn>Start</button>
-            <button class="btn btn-secondary btn-sm" type="button" data-timer-reset>Reset</button>
-          </div>
-        </div>
-        <div>
-          <h3 style="font-size:var(--step-1);margin-bottom:.4rem">Instructions</h3>
-          <ul style="margin:0;font-size:.93rem;color:var(--ink-3);padding-left:1.2rem">
-            <li>Answer <b>every</b> question.</li>
-            <li>The marks tell you how many creditworthy points are wanted.</li>
-            <li>%s</li>
-            <li>%s</li>
-          </ul>
-        </div>
-      </div>
-    </div>
+    %s
 
     %s
 
     <div class="note note-exam" style="margin-top:var(--sp-6)">
       <div class="note-title">%s About this paper</div>
-      <p>This is an original paper written to match the structure, question style, command words and mark allocation of the real %s %s assessment. It is not a past paper. Real past papers are the copyright of the exam board and cannot be republished here, so links to the official papers on the board's own site are provided on the <a href="/exam-papers/">exam papers page</a>.</p>
+      <p>%s</p>
     </div>
   </div>
-</div>""" % (crumbs(trail), esc(paper.board), esc(paper.code), ico("i-clock"), paper.minutes,
-             ico("i-paper"), paper.marks, ico("i-pen"), esc(paper.title), esc(paper.blurb),
-             paper.minutes, esc(paper.calculator), esc(paper.advice), qs,
-             ico("i-info"), esc(paper.board), esc(paper.code))
+</div>%s""" % (crumbs(trail), bar, esc(paper.board), esc(paper.code), ico("i-clock"), duration(paper.minutes),
+             ico("i-paper"), paper.marks, ico("i-pen"), "Full length paper" if paper.full else "Original paper",
+             esc(paper.title), esc(paper.blurb), cover, qs, ico("i-info"), about, harness)
 
     ld = [crumbs_ld(trail), {
         "@context": "https://schema.org", "@type": "LearningResource",
         "name": paper.title, "description": paper.blurb,
         "url": SITE_URL + path, "learningResourceType": "Practice examination",
         "educationalLevel": paper.course, "inLanguage": "en-GB",
-        "isAccessibleForFree": True,
+        "isAccessibleForFree": True, "timeRequired": "PT%dM" % paper.minutes,
     }]
-    greeting = ("Sit this one properly. Timer on, no notes, every question answered. "
-                "Ninety minutes done honestly teaches you more than a week of rereading.")
+    scripts = (["/assets/js/pyrun.js"] if has_code else []) + ["/assets/js/quiz.js"]
     return path, layout(title=paper.title,
                         description=paper.blurb,
-                        path=path, body=body, active="/exam-papers/",
-                        greeting=greeting, jsonld=ld,
-                        scripts=["/assets/js/quiz.js"], show_progress=True)
+                        path=path, body=body, active="/exam-papers/", jsonld=ld,
+                        scripts=scripts, show_progress=True)
+
+
+# The papers page lists each specification with the real format of its exams.
+SPECS = [
+    ("J277", "OCR GCSE Computer Science (J277)",
+     "Two written papers, each 1 hour 30 minutes and 80 marks: J277/01 Computer systems, and J277/02 Computational thinking, "
+     "algorithms and programming, which has a 50 mark Section A and a 30 mark Section B. No calculator."),
+    ("8525", "AQA GCSE Computer Science (8525)",
+     "Paper 1, Computational thinking and programming skills, is 2 hours and 90 marks, sat in C#, Python or VB.NET; these are the "
+     "Python version, 8525/1B. Paper 2, Computing concepts, is 1 hour 45 minutes and 90 marks. No calculator."),
+    ("1CP2", "Pearson Edexcel GCSE Computer Science (1CP2)",
+     "Paper 1, Principles of computer science, is a 1 hour 30 minute written paper of 75 marks in five 15 mark questions, with no "
+     "calculator. Paper 2, Application of computational thinking, is a 2 hour onscreen exam of 75 marks in Python 3: here the "
+     "programs are run and marked as you go."),
+    ("H446", "OCR A Level Computer Science (H446)",
+     "Two written papers, each 2 hours 30 minutes and 140 marks: H446/01 Computer systems, and H446/02 Algorithms and programming, "
+     "which ends with a scenario based Section B. No calculator."),
+    ("R093", "OCR Cambridge National Creative iMedia (R093)",
+     "One written paper, 1 hour 30 minutes and 70 marks: a 10 mark Section A of short questions, then a 60 mark Section B built "
+     "around a single client scenario."),
+    ("DA", "OCR Cambridge Advanced National in IT: Data Analytics (F200 and F201)",
+     "F200 Fundamentals of data analytics is 1 hour 15 minutes and 60 marks. F201 Big data and machine learning is 1 hour 30 minutes "
+     "and 60 marks. Several questions print resource material, a chart, an extract or a results table, as the real papers do."),
+]
+
+OFFICIAL = OFFICIAL + [
+    ("AQA GCSE Computer Science 8525", "https://www.aqa.org.uk/subjects/computer-science/gcse/computer-science-8525"),
+    ("Pearson Edexcel GCSE Computer Science 1CP2", "https://qualifications.pearson.com/en/qualifications/edexcel-gcses/computer-science-2020.html"),
+]
+
+
+def _tile(p, path):
+    return ('<a class="tile" href="%s">'
+            '<span class="tile-icon">%s</span><h3>%s</h3><p>%s</p>'
+            '<span class="tile-meta"><span>%d marks</span><span>%s</span><span>%s</span></span></a>'
+            % (path, ico("i-paper"), esc(p.title), esc(p.blurb), p.marks, duration(p.minutes),
+               "Full length" if p.full else esc(p.board + " " + p.code)))
 
 
 def build(register, add_search, *_):
-    cards = []
-    ks3_cards = []
+    from mskbuild import papercheck
+    letters = papercheck.validate(ALL_PAPERS)
+    print("Exam papers proved: %d papers, %d marks; tick box answers %s" % (
+        len(ALL_PAPERS), sum(p.marks for p in ALL_PAPERS),
+        " ".join("%s %d" % (k, letters[k]) for k in sorted(letters)) or "none"))
+
+    tiles = {}
     for p in ALL_PAPERS:
         path, html = _paper_page(p)
         write(path, html)
-        register(path, 0.8, "monthly")
-        add_search(p.title, path, "%s practice paper, %d marks" % (p.board, p.marks),
-                   (p.title + " " + p.course + " " + p.blurb).lower())
-        (ks3_cards if p.course == "Key Stage 3" else cards).append(
-            '<a class="tile" href="%s">'
-            '<span class="tile-icon">%s</span><h3>%s</h3><p>%s</p>'
-            '<span class="tile-meta"><span>%d marks</span><span>%d minutes</span><span>%s</span></span></a>'
-            % (path, ico("i-paper"), esc(p.title), esc(p.blurb),
-               p.marks, p.minutes, esc(p.board + " " + p.code)))
+        register(path, 0.8 if p.spec != "KS3" else 0.6, "monthly")
+        add_search(p.title, path, "%s practice paper, %d marks, %s" % (p.board, p.marks, duration(p.minutes)),
+                   (p.title + " " + p.course + " " + p.code + " " + p.blurb).lower())
+        key = "DA" if p.spec in ("F200", "F201") else p.spec
+        if p.unit:
+            key = "KS3-unit"
+        tiles.setdefault(key, []).append(_tile(p, path))
+
+    spec_html = []
+    for key, title, about in SPECS:
+        if not tiles.get(key):
+            continue
+        spec_html.append("""<section class="section" id="%s"><div class="wrap">
+  <div class="section-head"><h2>%s</h2><p>%s</p></div>
+  <div class="grid grid-2">%s</div>
+</div></section>""" % (key.lower(), esc(title), esc(about), "".join(tiles[key])))
+
+    # Key Stage 3 unit exams: a compact list per year, two exams per unit.
+    from content import ks3
+    by_unit = {}
+    for p in KS3_UNIT_EXAMS:
+        by_unit.setdefault(p.unit, []).append(p)
+    years = []
+    for u in ks3.COURSE.units:
+        items = []
+        for t in u.topics:
+            exams = by_unit.get(t.slug, [])
+            if not exams:
+                continue
+            items.append('<li><span>%s</span><span class="unit-exam-links">%s</span></li>' % (
+                esc(t.title), " ".join('<a href="/exam-papers/%s/">Exam %s</a>' % (p.slug, p.slug.rsplit("-", 1)[1].upper())
+                                       for p in exams)))
+        if items:
+            years.append('<div class="card unit-exams"><h3>%s</h3><ul>%s</ul></div>' % (esc(u.title), "".join(items)))
 
     links = "".join(
         '<li><a href="%s" target="_blank" rel="noopener">%s %s</a></li>' % (url, esc(name), ico("i-external"))
         for name, url in OFFICIAL)
 
+    full = [p for p in ALL_PAPERS if p.full]
     body = """<div class="wrap">%s</div>
 <section class="hero"><div class="wrap">
   <div class="hero-grid">
     <div>
       <span class="eyebrow">%s Practice papers</span>
-      <h1>Sit a full paper. Mark it honestly.</h1>
-      <p class="lead">Original full length papers written to match the real format exactly, each with a built in timer,
-      a complete mark scheme and a model answer for every question. Doing one properly teaches you more in ninety
-      minutes than a week of rereading notes.</p>
+      <h1>Sit a full paper. Have it marked.</h1>
+      <p class="lead">Full length papers for every specification, modelled on the real past papers: the same marks, the same
+      time allowed and the same structure, with a countdown clock at the top and marking done for you. Closed questions are marked
+      exactly, programs are run, and written answers are checked against a full mark scheme with a model answer.</p>
     </div>
     <div class="stat-row">
-      <div class="stat"><b>%d</b><span>Papers</span></div>
-      <div class="stat"><b>%d</b><span>Questions</span></div>
+      <div class="stat"><b>%d</b><span>Papers and exams</span></div>
+      <div class="stat"><b>%d</b><span>Full length papers</span></div>
       <div class="stat"><b>%d</b><span>Marks to practise</span></div>
       <div class="stat"><b>Free</b><span>No sign up</span></div>
     </div>
   </div>
 </div></section>
 
-<section class="section"><div class="wrap">
+%s
+
+<section class="section section-alt" id="ks3-units"><div class="wrap">
   <div class="section-head">
-    <h2>GCSE and A Level papers</h2>
-    <p>Each one is timed to the same marks per minute as the real assessment, so the pressure is genuine.</p>
+    <h2>Key Stage 3 unit exams</h2>
+    <p>Two exams for every unit, Exam A and Exam B, each 25 marks in 25 minutes and marked automatically. Most questions are
+    closed, so the marking is exact. Sit one, revise from what you dropped, then sit the other.</p>
   </div>
-  <div class="grid grid-2">%s</div>
+  <div class="grid grid-3">%s</div>
 </div></section>
 
-<section class="section section-alt"><div class="wrap">
+<section class="section" id="ks3"><div class="wrap">
   <div class="section-head">
-    <h2>Key Stage 3 end of unit assessments</h2>
+    <h2>Key Stage 3 end of year assessments</h2>
     <p>Two assessment points a year across Years 7, 8 and 9, written in the same style as a GCSE paper
     so that the format is completely familiar long before it counts.</p>
   </div>
@@ -852,10 +1004,10 @@ def build(register, add_search, *_):
     <div class="col-block">
       <h2 style="font-size:var(--step-2)">Why these are original papers</h2>
       <p style="color:var(--ink-3)">Real past papers belong to the exam boards and are protected by copyright, so they
-      cannot lawfully be republished on this site. Every paper here is instead written from scratch to match the real
-      thing on the measures that matter: the structure, the balance of topics, the command words, the mark allocations
-      and the timing. Each comes with a full mark scheme written in the same style as a real one, plus a model answer,
-      so you can mark your own work properly.</p>
+      cannot lawfully be republished on this site. Every paper here is instead written from scratch and modelled on the
+      real ones on the measures that matter: the structure, the balance of topics, the command words, the mark allocations,
+      the total marks and the time allowed. Each comes with a full mark scheme written in the same style as a real one,
+      plus a model answer.</p>
       <p style="color:var(--ink-3);margin-bottom:0">Use these alongside the official past papers, not instead of them.
       The official papers are free to download from each board's own website.</p>
     </div>
@@ -877,11 +1029,11 @@ def build(register, add_search, *_):
   </div>
   <div class="journey">
     <div class="journey-step"><div class="journey-dot">1</div><div class="journey-body">
-      <h3>Do it in one sitting, timed, with no notes</h3>
-      <p>Stopping to look something up turns an exam into an open book exercise. If you cannot answer it, leave a gap and move on, exactly as you would in May.</p></div></div>
+      <h3>Do it in one sitting, against the clock, with no notes</h3>
+      <p>Press Start and let the clock run. Stopping to look something up turns an exam into an open book exercise. If you cannot answer a question, leave it and move on, exactly as you would in May.</p></div></div>
     <div class="journey-step"><div class="journey-dot">2</div><div class="journey-body">
-      <h3>Mark it against the mark scheme, not against your feelings</h3>
-      <p>Award a mark only where you actually made the point. Being generous to yourself now costs you real marks later.</p></div></div>
+      <h3>Read the mark scheme, not just the score</h3>
+      <p>Every question shows its mark scheme once the paper is marked. The unticked lines are the marks you dropped, and they say exactly what an examiner wanted.</p></div></div>
     <div class="journey-step"><div class="journey-dot">3</div><div class="journey-body">
       <h3>Write down every mark you dropped and why</h3>
       <p>Not the question, the reason. Did you not know it, misread the command word, run out of time, or know it but fail to say it clearly? Each of those needs a different fix.</p></div></div>
@@ -889,24 +1041,21 @@ def build(register, add_search, *_):
       <h3>Revise from that list, not from the specification</h3>
       <p>Your dropped marks are your revision plan. Going back to page one and reading everything again is comfortable and almost useless.</p></div></div>
     <div class="journey-step"><div class="journey-dot">5</div><div class="journey-body">
-      <h3>Redo the questions you got wrong, a week later</h3>
-      <p>Not the whole paper. Just those questions, from memory. If you can now answer them fully, the gap is genuinely closed.</p></div></div>
+      <h3>Sit the paper again a week later</h3>
+      <p>Press Sit it again and answer from memory. If you can now earn the marks you dropped, the gap is genuinely closed.</p></div></div>
   </div>
 </div></section>""" % (
         crumbs([("Home", "/"), ("Exam papers", None)]),
-        ico("i-paper"), len(ALL_PAPERS),
-        sum(len(p.questions) for p in ALL_PAPERS),
-        sum(p.marks for p in ALL_PAPERS),
-        "".join(cards), "".join(ks3_cards), links)
+        ico("i-paper"), len(ALL_PAPERS), len(full), sum(p.marks for p in ALL_PAPERS),
+        "\n".join(spec_html), "".join(years), "".join(tiles.get("KS3", [])), links)
 
     ld = [crumbs_ld([("Home", "/"), ("Exam papers", None)])]
     write("/exam-papers/", layout(
         title="Practice Exam Papers",
-        description="Original full length practice papers for OCR GCSE Computer Science J277, OCR A Level H446 and Creative iMedia R093, each with a timer, a complete mark scheme and model answers, plus links to the official past papers.",
+        description="Full length practice papers for OCR J277, AQA 8525, Edexcel 1CP2, OCR A Level H446, Creative iMedia R093 and OCR Data Analytics, with the real marks and timings, a countdown clock and automatic marking, plus two unit exams for every Key Stage 3 unit.",
         path="/exam-papers/", body=body, active="/exam-papers/",
-        greeting="Papers are where revision turns into marks. Pick one, set the timer, and do it properly with no notes.",
         jsonld=ld))
     register("/exam-papers/", 0.9, "monthly")
     add_search("Practice exam papers", "/exam-papers/",
-               "Original full papers with mark schemes",
-               "exam papers past papers practice mark scheme timed j277 h446 r093")
+               "Full length papers, timed and marked",
+               "exam papers past papers practice mark scheme timed j277 8525 1cp2 h446 r093 f200 f201 ks3 unit exam")

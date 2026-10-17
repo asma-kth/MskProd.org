@@ -24,26 +24,29 @@
   --deep-ink:   #023B39;
 
   /* The ground ----------------------------------------------------------- */
-  --grad-page: linear-gradient(135deg, #CBF0F2 0%, #A3E2E7 42%, #79D0D7 100%);
+  /* Cream rather than white or teal. A slightly warm, slightly darker ground
+     cuts the glare of a white screen, which is what makes a long page of
+     revision easier to sit in front of. */
+  --grad-page: linear-gradient(135deg, #FDFAF0 0%, #FAF3E1 45%, #F3E8CD 100%);
   --grad-brand: linear-gradient(135deg, var(--teal-deep), var(--deep));
   --grad-lilac: linear-gradient(135deg, var(--lilac), var(--purple));
   --grad-soft:  linear-gradient(135deg, var(--aqua-soft), var(--lilac-soft));
 
   /* Glass ---------------------------------------------------------------- */
-  --glass:        rgba(255, 255, 255, 0.62);
-  --glass-strong: rgba(255, 255, 255, 0.78);
-  --glass-edge:   rgba(255, 255, 255, 0.55);
+  --glass:        rgba(255, 253, 246, 0.66);
+  --glass-strong: rgba(255, 253, 246, 0.82);
+  --glass-edge:   rgba(255, 252, 242, 0.62);
   --glass-blur:   blur(16px) saturate(150%);
 
   /* Solid surfaces for reading ------------------------------------------- */
-  --surface:      #FFFFFF;
-  --surface-2:    #F4F8F9;
-  --surface-sunk: #EAF2F3;
-  --bg:      #EAF7F8;
-  --bg-alt:  #F6FBFB;
+  --surface:      #FFFDF7;
+  --surface-2:    #F8F2E3;
+  --surface-sunk: #F1E8D3;
+  --bg:      #FBF6E9;
+  --bg-alt:  #FDFBF4;
 
-  --border:        #DCE8E9;
-  --border-strong: #BFD5D7;
+  --border:        #E8DEC8;
+  --border-strong: #D4C6A8;
 
   /* Ink ------------------------------------------------------------------ */
   --ink:       #0F2026;
@@ -54,7 +57,7 @@
 
   --accent:        var(--teal-deep);
   --accent-strong: var(--deep);
-  --accent-quiet:  #DCEFF0;
+  --accent-quiet:  #E2EFE2;
   --focus-ring:    #024E52;
 
   /* Marking states ------------------------------------------------------- */
@@ -257,10 +260,10 @@ kbd {
 /* ----------------------------------------------------------------- header */
 .site-header {
   position: sticky; top: 0; z-index: 90;
-  background: rgba(255, 255, 255, .72);
+  background: rgba(255, 253, 246, .76);
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
-  border-bottom: 1px solid rgba(255, 255, 255, .45);
+  border-bottom: 1px solid rgba(212, 198, 168, .45);
 }
 [data-theme="dark"] .site-header {
   background: rgba(14, 31, 35, .72); border-bottom-color: rgba(255,255,255,.09);
@@ -394,18 +397,18 @@ kbd {
 [data-theme="dark"] .btn-primary { color: #06231F; }
 [data-theme="dark"] .btn-primary:hover { color: #06231F; }
 .btn-secondary {
-  background: rgba(255,255,255,.75); color: var(--ink); border-color: var(--glass-edge);
+  background: rgba(255,253,246,.8); color: var(--ink); border-color: var(--glass-edge);
   -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
   box-shadow: var(--shadow-1);
 }
 [data-theme="dark"] .btn-secondary { background: rgba(255,255,255,.09); }
-.btn-secondary:hover { background: #fff; color: var(--ink); }
+.btn-secondary:hover { background: #FFFDF7; color: var(--ink); }
 [data-theme="dark"] .btn-secondary:hover { background: rgba(255,255,255,.16); }
 /* A ghost button has no panel behind it, so it is read against the darkest
    stop of the page gradient and needs the deepest ink in the ramp. */
 .btn-ghost { background: transparent; color: var(--deep-ink); border-color: transparent; padding-inline: .7rem; }
 [data-theme="dark"] .btn-ghost { color: var(--accent-strong); }
-.btn-ghost:hover { background: rgba(255,255,255,.5); }
+.btn-ghost:hover { background: rgba(255,253,246,.62); }
 [data-theme="dark"] .btn-ghost:hover { background: rgba(255,255,255,.08); }
 .btn-lilac {
   background: var(--grad-lilac); color: #241A2C;
@@ -585,6 +588,19 @@ pre code { background: none; border: 0; padding: 0; color: inherit; white-space:
   .topic-layout { grid-template-columns: 1fr; padding: var(--sp-5) var(--sp-4); }
   .topic-aside { position: static !important; order: -1; }
 }
+/* The standalone pages (about, privacy, accessibility, how to revise, the
+   glossary) used to set their prose straight onto the page gradient, where a
+   teal link reads at 3.21:1 against the darkest stop. They get the same solid
+   panel a topic page uses, which fixes the contrast and makes them look like
+   the rest of the site. */
+.page-panel {
+  max-width: 1080px; margin: 0 auto var(--sp-8);
+  background: var(--surface); border: 1px solid var(--glass-edge);
+  border-radius: var(--r-xl); padding: var(--sp-6); box-shadow: var(--shadow-2);
+}
+@media (max-width: 1040px) { .page-panel { padding: var(--sp-5) var(--sp-4); } }
+.page-panel > .prose { max-width: var(--measure); margin-inline: auto; }
+
 .topic-aside { position: sticky; top: 5.6rem; display: grid; gap: var(--sp-3); }
 .toc { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r-m); padding: var(--sp-4); }
 .toc h4 { font-size: .76rem; text-transform: uppercase; letter-spacing: .12em; color: var(--ink-muted); margin-bottom: .7rem; font-family: var(--font-body); }
@@ -651,8 +667,9 @@ pre code { background: none; border: 0; padding: 0; color: inherit; white-space:
 .unit-row:hover { border-color: rgba(255,255,255,.85); color: inherit; transform: translateX(4px); }
 @media (prefers-reduced-motion: reduce) { .unit-row:hover { transform: none; } }
 .unit-num {
-  width: 2.1rem; height: 2.1rem; border-radius: var(--r-s); display: grid; place-items: center;
+  min-width: 2.1rem; height: 2.1rem; padding: 0 .5rem; border-radius: var(--r-s); display: grid; place-items: center;
   background: var(--grad-soft); color: var(--accent-strong); font-weight: 680; font-size: .82rem; font-family: var(--font-mono);
+  white-space: nowrap;
 }
 .unit-row b { display: block; font-weight: 620; font-size: .99rem; line-height: 1.35; }
 .unit-row small { color: var(--ink-muted); font-size: .82rem; display: block; line-height: 1.45; }
@@ -733,7 +750,8 @@ pre code { background: none; border: 0; padding: 0; color: inherit; white-space:
 .examq-head .n {
   flex: none; font-family: var(--font-mono); font-size: .82rem; color: var(--purple-deep);
   background: color-mix(in srgb, var(--lilac) 26%, transparent); border-radius: var(--r-s);
-  width: 1.75rem; height: 1.75rem; display: grid; place-items: center; font-weight: 650; margin-top: .12rem;
+  min-width: 1.75rem; height: 1.75rem; padding: 0 .35rem; white-space: nowrap;
+  display: grid; place-items: center; font-weight: 650; margin-top: .12rem;
 }
 [data-theme="dark"] .examq-head .n { color: var(--lilac); }
 .examq-head .stem { font-weight: 600; line-height: 1.55; flex: 1; max-width: none; }
@@ -742,6 +760,36 @@ pre code { background: none; border: 0; padding: 0; color: inherit; white-space:
   background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r-s);
   padding: .12rem .5rem; height: fit-content; margin-top: .2rem;
 }
+/* A question stem is a scenario and then an instruction. Printed on a real
+   paper they are separate blocks, and run together as one paragraph the
+   instruction is easy to miss. */
+.examq-head .stem .examq-scenario,
+.examq-head .stem .examq-ask { display: block; }
+.examq-head .stem .examq-scenario {
+  font-weight: 450; color: var(--ink-2);
+  border-left: 3px solid var(--border-strong);
+  padding: .1rem 0 .1rem .8rem; margin-bottom: .55rem;
+}
+.examq-head .stem .examq-scenario + .examq-scenario { margin-top: -.3rem; }
+/* Requirements as bullet points, and example output, inside a stem. */
+.examq-head .stem .examq-list { display: block; margin: .35rem 0 .15rem; padding-left: 1.3rem; font-weight: 500; }
+.examq-head .stem .examq-li { display: list-item; list-style: disc; margin: .14rem 0; }
+.examq-head .stem .examq-pre {
+  display: block; white-space: pre; overflow-x: auto; font-family: var(--font-mono); font-size: .84rem;
+  font-weight: 400; line-height: 1.5; background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--r-s); padding: .55rem .75rem; margin: .45rem 0 .2rem;
+}
+
+/* Resource material: a chart to read, a table to find the faults in. It sits
+   between the question and the answer box, indented to the stem. */
+.examq-figure { margin: .2rem 0 .9rem; padding-left: 2.1rem; }
+.examq-figure > :first-child { margin-top: 0; }
+.examq-figure > :last-child { margin-bottom: 0; }
+.examq-figure .diagram { margin-block: .4rem; }
+@media (max-width: 36rem) {
+  .examq-figure { padding-left: 0; }
+}
+
 .examq textarea {
   width: 100%; min-height: 7.5rem; resize: vertical; padding: .85rem 1rem;
   border: 1.5px solid var(--border-strong); border-radius: var(--r-m); font: inherit; font-size: .95rem;
@@ -1047,10 +1095,10 @@ a.pill:hover { color: var(--accent); background: #fff; }
    paints solid black with no stroke. */
 .diagram {
   --dg-paper:      var(--surface);
-  --dg-fill:       #FFFFFF;
-  --dg-fill-2:     #F1F7F8;
-  --dg-line:       #9FBCC0;
-  --dg-line-soft:  #CFE0E2;
+  --dg-fill:       #FFFDF7;
+  --dg-fill-2:     #F7F1E1;
+  --dg-line:       #A99A78;
+  --dg-line-soft:  #DFD3B8;
   --dg-text:       var(--ink);
   --dg-ink:        var(--ink);
   --dg-muted:      var(--ink-3);
@@ -1166,3 +1214,501 @@ h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
 /* Worksheet model answers can contain a long unbreakable run, such as a
    spreadsheet formula with no spaces, which cannot wrap at any screen width. */
 .ws-ms-model, .ws-ms li, .model-answer p { overflow-wrap: anywhere; }
+
+/* ====================================================== photographs
+   A photograph of real hardware, for topics where the exam asks students to
+   recognise a physical object. Always lazily loaded and always carrying its
+   own width and height, so nothing on the page jumps while it arrives. */
+.photo {
+  margin: var(--sp-5) 0; max-width: min(100%, 640px); margin-inline: auto;
+}
+.photo img {
+  width: 100%; height: auto; display: block; border-radius: var(--r-m);
+  background: var(--surface-2); border: 1px solid var(--border);
+  box-shadow: var(--shadow-1);
+}
+.photo figcaption {
+  margin-top: var(--sp-3); font-size: .88rem; color: var(--ink-3);
+  line-height: 1.55; text-align: left;
+}
+/* The credit has to be legible, not hidden. It is the condition the licence
+   is granted on. */
+.photo-credit {
+  display: block; margin-top: .3rem; font-size: .76rem; color: var(--ink-muted);
+}
+.attribution-list { display: grid; gap: var(--sp-4); margin-top: var(--sp-4); }
+.attribution-list li { list-style: none; }
+.attribution-list b { display: block; font-weight: 650; color: var(--ink); }
+.attribution-list span { font-size: .88rem; color: var(--ink-3); }
+
+/* ===================================================== illustrations
+   Drawn scenes (mskbuild/illus*.py). The panel behind each picture follows the
+   page theme; the objects drawn on it keep their own colours in both. The
+   numbered list under a picture matches the numbered badges drawn into it. */
+.illus, .topic-banner {
+  --il-bg1: #F4FBFB; --il-bg2: #ECE9F7; --il-dot: rgba(31, 58, 68, .09);
+  --il-blob1: #DDF2F2; --il-blob2: #EAE1F4; --il-hole: #F1F4FA;
+  --il-band: rgba(255, 255, 255, .5); --il-card: rgba(255, 255, 255, .66); --il-line: rgba(31, 58, 68, .16);
+  --il-ink: #1F3A44; --il-ink2: #4A6470; --il-ok: #1B7A4B; --il-bad: #B0302B;
+}
+[data-theme="dark"] .illus, [data-theme="dark"] .topic-banner {
+  --il-bg1: #14313B; --il-bg2: #1D2444; --il-dot: rgba(255, 255, 255, .07);
+  --il-blob1: #1A4048; --il-blob2: #2A2750; --il-hole: #182C3F;
+  --il-band: rgba(255, 255, 255, .06); --il-card: rgba(255, 255, 255, .07); --il-line: rgba(255, 255, 255, .2);
+  --il-ink: #EAF4F4; --il-ink2: #B4C9CF; --il-ok: #7BE0A6; --il-bad: #FF9A91;
+}
+.illus { margin: var(--sp-5) 0; max-width: min(100%, var(--il-max, 820px)); margin-inline: auto; }
+
+/* The picture across the top of a topic page. It is decoration: aria-hidden, no words in it,
+   and cropped to its middle on a phone so the main object stays in view. */
+.topic-banner {
+  margin: 0 0 var(--sp-4); border-radius: var(--r-l); overflow: hidden;
+  border: 1px solid var(--border); box-shadow: var(--shadow-1); background: var(--il-bg1);
+}
+.topic-banner > svg { display: block; width: 100%; height: auto; }
+@media (max-width: 640px) {
+  /* a phone shows the middle of the picture, so its edges fade out instead of being cut mid-object */
+  .topic-banner > svg {
+    height: 92px;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 13%, #000 87%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 13%, #000 87%, transparent 100%);
+  }
+}
+.course-banner { margin-top: calc(-1 * var(--sp-4)); margin-bottom: var(--sp-6); }
+.course-banner .topic-banner { margin: 0 auto; max-width: 900px; }
+@media print { .topic-banner, .course-banner { display: none; } }
+.illus-art {
+  border-radius: var(--r-l); overflow: hidden; border: 1px solid var(--border);
+  box-shadow: var(--shadow-1); background: var(--il-bg1);
+}
+.illus-art > svg { display: block; width: 100%; height: auto; }
+.illus text, .topic-banner text { font-family: var(--font-body); }
+.illus .il-ink, .topic-banner .il-ink { fill: var(--il-ink); }
+.illus .il-ink2, .topic-banner .il-ink2 { fill: var(--il-ink2); }
+.illus .il-ok { fill: var(--il-ok); }
+.illus .il-bad { fill: var(--il-bad); }
+.illus .il-m, .topic-banner .il-m { font-family: var(--font-mono); }
+.illus .il-h { font-family: var(--font-display); }
+.illus-steps {
+  counter-reset: il; list-style: none; margin: var(--sp-3) 0 0; padding: 0;
+  display: grid; gap: .55rem var(--sp-4); grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+}
+.illus-steps li {
+  counter-increment: il; display: flex; gap: .65rem; align-items: flex-start;
+  font-size: .9rem; line-height: 1.5; color: var(--ink-2); margin: 0;
+}
+.illus-steps li::before {
+  content: counter(il); flex: none; width: 1.6rem; height: 1.6rem; border-radius: 50%;
+  background: var(--grad-brand); color: #fff; font-weight: 800; font-size: .82rem;
+  display: inline-flex; align-items: center; justify-content: center; margin-top: .05rem;
+}
+[data-theme="dark"] .illus-steps li::before { color: #06231F; }
+.illus figcaption {
+  margin-top: var(--sp-3); font-size: .88rem; color: var(--ink-3); line-height: 1.55; text-align: left;
+}
+.illus-hint { display: none; margin: .4rem 0 0; font-size: .8rem; color: var(--ink-3); }
+@media (max-width: 640px) {
+  /* a picture with labels in it is no use shrunk to a thumbnail: let it scroll */
+  .illus-art { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .illus-art > svg { min-width: 640px; }
+  .illus-hint { display: block; }
+}
+
+/* ======================================================= Pixel in 3D
+   The cat cut into layers and held apart on the Z axis. The container sways
+   a few degrees and the layers move at different rates against each other,
+   so the ears and the headphones shift relative to the face. That parallax
+   is the whole effect: without it this is just a drawing. */
+.cat3d {
+  position: relative; width: var(--cat-size, 240px); height: var(--cat-size, 240px);
+  perspective: 620px; margin-inline: auto;
+}
+.cat3d-world {
+  position: absolute; inset: 0; transform-style: preserve-3d;
+  animation: catSway 7s ease-in-out infinite alternate;
+}
+.cat3d-layer {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  transform: translateZ(var(--z, 0px));
+  transform-style: preserve-3d; overflow: visible;
+}
+@keyframes catSway {
+  from { transform: rotateY(-13deg) rotateX(5deg); }
+  to   { transform: rotateY(13deg) rotateX(-3deg); }
+}
+
+/* Asleep: he breathes, his ears sag, and the Zs drift up. */
+.cat3d.is-asleep .cat3d-world { animation: catSway 9s ease-in-out infinite alternate; }
+.cat3d.is-asleep .cat3d-head,
+.cat3d.is-asleep .cat3d-visor,
+.cat3d.is-asleep .cat3d-eyes,
+.cat3d.is-asleep .cat3d-muzzle,
+.cat3d.is-asleep .cat3d-cans {
+  animation: catBreathe 4s ease-in-out infinite;
+}
+.cat3d.is-asleep .cat3d-ears { animation: catEarSag 9s ease-in-out infinite alternate; }
+@keyframes catBreathe {
+  0%, 100% { transform: translateZ(var(--z, 0px)) translateY(0) scale(1); }
+  50%      { transform: translateZ(var(--z, 0px)) translateY(1.4%) scale(1.018); }
+}
+@keyframes catEarSag {
+  from { transform: translateZ(var(--z, 0px)) rotate(0deg); }
+  to   { transform: translateZ(var(--z, 0px)) rotate(-2.5deg); }
+}
+.cat3d-zzz {
+  position: absolute; left: 68%; top: 6%; display: flex; gap: .35em;
+  font-family: var(--font-display); font-weight: 700; color: var(--purple-deep);
+  pointer-events: none;
+}
+.cat3d-zzz span {
+  font-size: calc(var(--cat-size, 240px) * .1); opacity: 0;
+  animation: catZ 3.6s ease-in-out infinite;
+}
+.cat3d-zzz span:nth-child(2) { animation-delay: 1.2s; font-size: calc(var(--cat-size, 240px) * .082); }
+.cat3d-zzz span:nth-child(3) { animation-delay: 2.4s; font-size: calc(var(--cat-size, 240px) * .064); }
+@keyframes catZ {
+  0%   { opacity: 0; transform: translate(0, 0) rotate(-6deg) scale(.7); }
+  25%  { opacity: .9; }
+  100% { opacity: 0; transform: translate(42%, -120%) rotate(14deg) scale(1.1); }
+}
+
+/* Nothing here is information, so when stillness is asked for it all stops
+   and the cat simply sits there, which is exactly as useful. */
+@media (prefers-reduced-motion: reduce) {
+  .cat3d-world, .cat3d-layer, .cat3d-zzz span { animation: none !important; }
+  .cat3d-world { transform: rotateY(-8deg) rotateX(3deg); }
+  .cat3d-zzz span { opacity: .75; }
+}
+
+/* ------------------------------------------------- the waking-up screen
+   Only ever shown when a page has genuinely not arrived yet. It is added by
+   app.js after a delay, so a fast load never sees it: a loading screen on a
+   page that was already there is just a slower page. */
+.page-loader {
+  position: fixed; inset: 0; z-index: 400; display: grid; place-content: center;
+  gap: var(--sp-4); justify-items: center; text-align: center;
+  background: var(--grad-page); opacity: 0; visibility: hidden;
+  transition: opacity .25s ease, visibility .25s ease;
+}
+.page-loader.is-on { opacity: 1; visibility: visible; }
+.page-loader p {
+  margin: 0; font-family: var(--font-display); font-weight: 650;
+  font-size: 1.05rem; color: var(--ink-2);
+}
+.page-loader .loader-bar {
+  width: min(220px, 60vw); height: 6px; border-radius: 3px;
+  background: var(--surface-sunk); overflow: hidden;
+}
+.page-loader .loader-bar i {
+  display: block; width: 40%; height: 100%; border-radius: 3px;
+  background: var(--grad-brand); animation: loaderSlide 1.25s ease-in-out infinite;
+}
+@keyframes loaderSlide {
+  from { transform: translateX(-110%); } to { transform: translateX(290%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-loader .loader-bar i { animation: none; width: 100%; opacity: .5; }
+}
+
+/* ------------------------------------------------------- the empty screens
+   404 and offline. Both are "there is nothing here yet", so both get the
+   same sleeping cat rather than a shrug and a back button. */
+.empty-screen {
+  display: grid; justify-items: center; text-align: center; gap: var(--sp-3);
+  padding: var(--sp-7) 0 var(--sp-8); max-width: 44rem; margin-inline: auto;
+}
+.empty-screen h1 { margin: 0; }
+.empty-screen .lead { margin: 0 auto; max-width: 34rem; }
+.empty-screen .btn-row { justify-content: center; margin-top: var(--sp-3); }
+
+/* ==========================================================================
+   Printable worksheets
+   ========================================================================== */
+.ws-actions {
+  margin: var(--sp-4) 0 var(--sp-5); display: flex; gap: .6rem; flex-wrap: wrap;
+  align-items: center;
+}
+.ws-actions .muted { flex: 1 1 20rem; margin: 0; font-size: .85rem; }
+.worksheet {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-m); padding: var(--sp-5) var(--sp-5) var(--sp-4);
+  max-width: 52rem; margin: 0 auto var(--sp-8);
+}
+.ws-head {
+  display: flex; gap: 1.4rem; flex-wrap: wrap; justify-content: space-between;
+  border-bottom: 2px solid var(--ink); padding-bottom: .9rem; margin-bottom: 1.4rem;
+}
+.ws-title { min-width: 0; flex: 1 1 20rem; }
+.ws-course {
+  margin: 0 0 .2rem; font-size: .78rem; font-weight: 660; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--ink-muted);
+}
+.ws-head h1 { margin: 0 0 .35rem; font-size: 1.5rem; line-height: 1.2; }
+.ws-meta { margin: 0; font-size: .84rem; color: var(--ink-3); }
+.ws-fields { flex: 0 1 13rem; display: grid; gap: .35rem; align-content: start; }
+.ws-fields p { margin: 0; display: flex; gap: .5rem; align-items: baseline; font-size: .82rem; }
+.ws-fields span { color: var(--ink-muted); min-width: 3rem; }
+.ws-fields b { flex: 1; border-bottom: 1px solid var(--ink-muted); min-height: 1.2em; font-weight: 500; }
+
+.ws-section { margin-bottom: 1.8rem; }
+.ws-section h2 {
+  font-size: 1.05rem; margin: 0 0 .25rem; padding-bottom: .3rem;
+  border-bottom: 1px solid var(--border-strong);
+}
+.ws-section h3 { font-size: .95rem; margin: 1.2rem 0 .5rem; }
+.ws-lead { margin: 0 0 1rem; font-size: .84rem; color: var(--ink-3); }
+.ws-list { list-style: none; margin: 0; padding: 0; }
+.ws-q { margin: 0 0 1.15rem; break-inside: avoid; }
+.ws-stem { display: flex; gap: .55rem; align-items: baseline; font-size: .94rem; }
+.ws-n { font-weight: 700; min-width: 1.4rem; }
+.ws-marks {
+  margin-left: auto; flex: none; font-size: .78rem; font-weight: 660;
+  color: var(--ink-muted); white-space: nowrap;
+}
+.ws-cmd {
+  display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--accent-strong); margin-right: .4rem;
+}
+.ws-opts { list-style: none; margin: .4rem 0 0 1.95rem; padding: 0; display: grid; gap: .18rem; }
+.ws-opts li { display: flex; gap: .5rem; font-size: .89rem; }
+.ws-opt {
+  flex: none; width: 1.35rem; height: 1.35rem; border: 1px solid var(--ink-muted);
+  border-radius: 50%; display: grid; place-items: center; font-size: .72rem; font-weight: 660;
+}
+.ws-lines { margin: .5rem 0 0 1.95rem; display: grid; gap: .95rem; }
+.ws-lines span { display: block; border-bottom: 1px solid var(--border-strong); height: 0; }
+.ws-answers { display: flex; flex-wrap: wrap; gap: .4rem; }
+.ws-ans {
+  display: inline-flex; gap: .35rem; align-items: baseline; border: 1px solid var(--border);
+  border-radius: var(--r-s); padding: .25rem .55rem; font-size: .86rem;
+}
+.ws-ans b { color: var(--ink-muted); font-weight: 600; }
+.ws-ms { margin-bottom: 1rem; break-inside: avoid; }
+.ws-ms-head { margin: 0; font-size: .9rem; display: flex; gap: .5rem; }
+.ws-ms-note { margin: .15rem 0 .25rem; font-size: .78rem; color: var(--ink-muted); }
+.ws-ms ul { margin: 0 0 .4rem 1.2rem; padding: 0; font-size: .86rem; }
+.ws-ms ul li { margin: .1rem 0; }
+.ws-ms-model { margin: 0; font-size: .84rem; color: var(--ink-2); }
+.ws-fig { margin: .55rem 0 0 1.95rem; }
+.ws-fig table, .ws-ms-model table { border-collapse: collapse; width: auto; font-size: .86rem; margin: 0 0 .6rem; }
+.ws-fig th, .ws-fig td, .ws-ms-model th, .ws-ms-model td {
+  border: 1px solid var(--border-strong); padding: .3rem .8rem; text-align: left;
+}
+.ws-fig th, .ws-ms-model th { background: var(--surface-2); font-weight: 650; }
+.ws-fig .table-scroll { overflow-x: auto; }
+.ws-fig .code-block, .ws-ms-model .code-block { margin-bottom: .6rem; }
+.ws-foot {
+  border-top: 1px solid var(--border); padding-top: .6rem; margin-top: 1.4rem;
+  font-size: .74rem; color: var(--ink-muted);
+}
+
+@media print {
+  .no-print, .site-footer, .search-shell, .mascot-dock, .site-header, .crumbs,
+  .progress-bar, .skip-link { display: none !important; }
+  html, body { background: #fff !important; color: #000 !important; }
+  .worksheet {
+    border: 0; padding: 0; max-width: none; margin: 0; background: #fff; color: #000;
+  }
+  .worksheet a { color: #000; text-decoration: none; }
+  .ws-break { break-before: page; }
+  .ws-lines span { border-bottom-color: #999; }
+  .ws-opt, .ws-fields b { border-color: #666; }
+  .ws-course, .ws-meta, .ws-lead, .ws-marks, .ws-ms-note, .ws-foot { color: #444 !important; }
+  /* A code block is pale text on a dark ground, and printers drop backgrounds
+     by default, which would leave the text invisible. */
+  .worksheet .code-block, .worksheet .code-block pre {
+    background: #fff !important; color: #000 !important; border: 1px solid #999;
+    box-shadow: none; border-radius: 0;
+  }
+  .worksheet .code-block code, .worksheet .code-block code span { color: #000 !important; }
+  .worksheet .code-copy, .worksheet .code-label, .worksheet .pyrun-bar,
+  .worksheet .pyrun-out, .worksheet .pyrun-input { display: none !important; }
+  @page { margin: 16mm 14mm; }
+}
+
+/* ==========================================================================
+   Runnable Python
+   These rules were lost in the move to the printed guide design, so the Run,
+   Edit and Reset buttons on every Python page rendered as bare browser
+   buttons and the output box as plain text. The buttons are fully styled here
+   instead of leaning on the tool stylesheet, which a page only loads when it
+   mounts a tool.
+   ========================================================================== */
+.code-block:has(.pyrun-bar) pre { margin-bottom: 0; border-radius: var(--r-m) var(--r-m) 0 0; }
+.pyrun-bar {
+  display: flex; align-items: center; gap: .45rem; flex-wrap: wrap;
+  padding: .55rem .8rem; background: var(--surface-2);
+  border: 1px solid var(--border); border-top: 0;
+}
+.pyrun-bar .tool-btn {
+  font: inherit; font-size: .82rem; font-weight: 600; padding: .34rem .85rem;
+  border-radius: var(--r-pill); border: 1px solid var(--border-strong);
+  background: var(--surface); color: var(--ink-2); cursor: pointer;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.pyrun-bar .tool-btn:hover { background: var(--accent-quiet); color: var(--accent); border-color: transparent; }
+.pyrun-bar .tool-btn.is-primary { background: var(--grad-brand); color: #fff; border-color: transparent; }
+.pyrun-bar .tool-btn.is-primary:hover { color: #fff; filter: brightness(1.08); }
+[data-theme="dark"] .pyrun-bar .tool-btn.is-primary,
+[data-theme="dark"] .pyrun-bar .tool-btn.is-primary:hover { color: #06231F; }
+.pyrun-bar .tool-btn:disabled { opacity: .5; cursor: not-allowed; }
+.pyrun-bar .tool-btn:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.pyrun-note { font-size: .78rem; color: var(--ink-muted); }
+.pyrun-note.is-bad { color: var(--bad); }
+.pyrun-editor {
+  display: block; width: 100%; border: 1px solid var(--border);
+  background: var(--surface); color: var(--ink); font-family: var(--font-mono);
+  font-size: .86rem; line-height: 1.7; padding: .9rem 1rem; resize: vertical;
+}
+.pyrun-editor:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: -2px; }
+.pyrun-input { padding: .6rem .8rem; border: 1px solid var(--border); border-top: 0; background: var(--surface-2); }
+.pyrun-input textarea {
+  width: 100%; font-family: var(--font-mono); font-size: .84rem; padding: .4rem .55rem;
+  border: 1px solid var(--border-strong); border-radius: var(--r-s);
+  background: var(--surface); color: var(--ink); resize: vertical;
+}
+.tool-label { display: block; font-size: .8rem; font-weight: 600; color: var(--ink-3); margin-bottom: .3rem; }
+.pyrun-out {
+  margin: 0; padding: .8rem 1rem; border: 1px solid var(--border); border-top: 0;
+  background: var(--surface-sunk); color: var(--ink-2); overflow-x: auto;
+  border-radius: 0 0 var(--r-m) var(--r-m); box-shadow: none;
+}
+.pyrun-out code {
+  font-family: var(--font-mono); font-size: .84rem; line-height: 1.65;
+  color: var(--ink-2); background: none; border: 0; padding: 0; white-space: pre-wrap;
+}
+.pyrun-out.is-error code { color: var(--bad); }
+/* display:block above would otherwise beat the hidden attribute these rely on */
+.pyrun-editor[hidden], .pyrun-input[hidden], .pyrun-out[hidden], .pyrun-bar[hidden] { display: none; }
+
+/* ==========================================================================
+   Exam papers: closed questions, programs, sections and the timed paper bar
+   ========================================================================== */
+.xq-section {
+  margin: var(--sp-6) 0 var(--sp-3); padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-m); background: var(--surface-2); border: 1px solid var(--border);
+}
+.xq-section:first-child { margin-top: 0; }
+.xq-section h3 { margin: 0; font-size: var(--step-1); display: flex; align-items: baseline; gap: .7rem; flex-wrap: wrap; }
+.xq-section h3 span { font-size: .85rem; font-weight: 600; color: var(--ink-3); }
+.xq-section p { margin: .4rem 0 0; font-size: .92rem; color: var(--ink-3); max-width: none; }
+.xq-lead {
+  margin: var(--sp-5) 0 var(--sp-2); padding: .8rem 1rem; border-left: 4px solid var(--teal);
+  background: var(--surface); border-radius: 0 var(--r-s) var(--r-s) 0; font-size: .95rem;
+}
+.xq-lead + .examq { border-top: 0; padding-top: var(--sp-2); }
+.xq-lead > :first-child { margin-top: 0; }
+.xq-lead > :last-child { margin-bottom: 0; }
+
+.xq-opts { display: grid; gap: .45rem; margin: .3rem 0 .2rem; padding-left: 2.1rem; }
+.xq-opt {
+  display: flex; align-items: flex-start; gap: .65rem; cursor: pointer;
+  padding: .55rem .75rem; border: 1px solid var(--border); border-radius: var(--r-s);
+  background: var(--surface); font-size: .95rem; line-height: 1.5;
+}
+.xq-opt:hover { border-color: var(--border-strong); }
+.xq-opt input { margin-top: .25rem; width: 1.05rem; height: 1.05rem; accent-color: var(--accent-strong); flex: none; }
+.xq-letter { font-weight: 700; color: var(--ink-3); min-width: 1.1rem; }
+.xq-opt.is-right { border-color: var(--ok); background: var(--ok-bg); }
+.xq-opt.is-wrong { border-color: var(--bad); background: var(--bad-bg); }
+.xq-hint { margin: .35rem 0 0 2.1rem; font-size: .82rem; color: var(--ink-muted); }
+
+.xq-matrix-wrap, .examq .table-wrap { margin: .3rem 0 .2rem 2.1rem; }
+.xq-matrix, .xq-grid { border-collapse: collapse; font-size: .92rem; min-width: 60%; }
+.xq-matrix th, .xq-matrix td, .xq-grid th, .xq-grid td {
+  border: 1px solid var(--border-strong); padding: .45rem .7rem; text-align: left; vertical-align: middle;
+}
+.xq-matrix thead th, .xq-grid thead th { background: var(--surface-2); font-weight: 650; }
+.xq-matrix td { text-align: center; width: 5.5rem; }
+.xq-cell { display: inline-flex; padding: .25rem; cursor: pointer; }
+.xq-cell input { width: 1.1rem; height: 1.1rem; accent-color: var(--accent-strong); }
+.xq-matrix td.is-right { background: var(--ok-bg); }
+.xq-matrix td.is-wrong { background: var(--bad-bg); }
+.xq-grid td { min-width: 4.5rem; }
+
+.xq-blanks { display: grid; gap: .5rem; margin: .3rem 0 .2rem 2.1rem; }
+.xq-blank-row { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; font-size: .95rem; }
+.xq-blank-label { color: var(--ink-2); }
+.xq-unit { color: var(--ink-3); font-size: .9rem; }
+.xq-blank {
+  font: inherit; font-family: var(--font-mono); font-size: .92rem; padding: .35rem .55rem;
+  border: 1px solid var(--border-strong); border-radius: var(--r-s);
+  background: var(--surface); color: var(--ink); max-width: 100%;
+}
+.xq-blank:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+.xq-blank.is-right { border-color: var(--ok); background: var(--ok-bg); }
+.xq-blank.is-wrong { border-color: var(--bad); background: var(--bad-bg); }
+.xq-grid .xq-blank { width: 100%; min-width: 3.5rem; }
+.xq-working-label { display: block; margin: .3rem 0 .25rem 2.1rem; font-size: .82rem; font-weight: 600; color: var(--ink-3); }
+.examq textarea.xq-working { margin-left: 2.1rem; width: calc(100% - 2.1rem); min-height: 4.5rem; }
+
+.xq-code { margin: .3rem 0 .2rem 2.1rem; }
+.xq-code-bar {
+  display: flex; align-items: center; gap: .45rem; flex-wrap: wrap; padding: .5rem .8rem;
+  background: var(--surface-2); border: 1px solid var(--border); border-bottom: 0;
+  border-radius: var(--r-m) var(--r-m) 0 0;
+}
+.xq-file { font-family: var(--font-mono); font-size: .82rem; font-weight: 700; color: var(--ink-2); margin-right: auto; }
+.xq-code-bar .tool-btn {
+  font: inherit; font-size: .82rem; font-weight: 600; padding: .3rem .8rem; border-radius: var(--r-pill);
+  border: 1px solid var(--border-strong); background: var(--surface); color: var(--ink-2); cursor: pointer;
+}
+.xq-code-bar .tool-btn:hover { background: var(--accent-quiet); color: var(--accent); border-color: transparent; }
+.xq-code-bar .tool-btn:disabled { opacity: .5; cursor: not-allowed; }
+.examq textarea.xq-code-area {
+  display: block; width: 100%; margin: 0; border-radius: 0; border: 1px solid var(--border);
+  font-family: var(--font-mono); font-size: .86rem; line-height: 1.65; tab-size: 4; white-space: pre;
+  overflow-x: auto; min-height: 12rem; background: var(--surface); color: var(--ink);
+}
+.xq-code-in { padding: .55rem .8rem; border: 1px solid var(--border); border-top: 0; background: var(--surface-2); }
+.xq-code-in textarea {
+  width: 100%; font-family: var(--font-mono); font-size: .84rem; padding: .35rem .5rem; min-height: 2.4rem;
+  border: 1px solid var(--border-strong); border-radius: var(--r-s); background: var(--surface); color: var(--ink);
+}
+.xq-code-out {
+  margin: 0; padding: .7rem 1rem; border: 1px solid var(--border); border-top: 0;
+  background: var(--surface-sunk); border-radius: 0 0 var(--r-m) var(--r-m); overflow-x: auto;
+}
+.xq-code-out code { font-family: var(--font-mono); font-size: .84rem; white-space: pre-wrap; color: var(--ink-2); background: none; border: 0; padding: 0; }
+.xq-code-out.is-error code { color: var(--bad); }
+.xq-code-out[hidden] { display: none; }
+.ms li .xq-why { display: block; font-size: .82rem; color: var(--ink-3); margin-top: .15rem; }
+.ms li { flex-wrap: wrap; }
+.ms li > span:last-child:not(.tick) { flex: 1; min-width: 0; }
+.ms li.xq-rule .tick { visibility: hidden; }
+.ms li.xq-rule.broken { color: var(--bad); }
+@media (max-width: 640px) {
+  .xq-opts, .xq-hint, .xq-blanks, .xq-code, .xq-matrix-wrap, .examq .table-wrap, .xq-working-label { margin-left: 0; padding-left: 0; }
+  .examq textarea.xq-working { margin-left: 0; width: 100%; }
+}
+
+/* the paper bar: sticky under the site header, counting down the real time */
+.paper-bar {
+  position: sticky; top: 4.45rem; z-index: 80; margin: 0 0 var(--sp-4);
+  background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--r-m);
+  box-shadow: var(--shadow-2);
+}
+.paper-bar-inner { display: flex; align-items: center; gap: .6rem 1.1rem; flex-wrap: wrap; padding: .6rem .9rem; }
+.pb-clock { display: inline-flex; align-items: baseline; gap: .5rem; }
+.pb-clock small { font-size: .78rem; font-weight: 650; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-3); }
+.pb-clock b { font-family: var(--font-mono); font-size: 1.45rem; font-weight: 700; color: var(--accent-strong); font-variant-numeric: tabular-nums; }
+.paper-bar.is-low .pb-clock b { color: var(--bad); }
+.pb-meta { font-size: .86rem; color: var(--ink-3); }
+.pb-meta b { color: var(--ink); }
+.pb-score { font-family: var(--font-mono); font-weight: 700; color: var(--ok); }
+.pb-actions { margin-left: auto; display: flex; gap: .5rem; flex-wrap: wrap; }
+.pb-actions [hidden] { display: none; }
+.paper-bar.is-done .pb-clock b { color: var(--ink-3); }
+[data-exam-set].is-locked .examq-tools { display: none; }
+.paper-cover { margin-bottom: var(--sp-5); }
+.paper-cover dl { display: grid; grid-template-columns: max-content 1fr; gap: .35rem 1rem; margin: 0 0 var(--sp-3); font-size: .95rem; }
+.paper-cover dt { font-weight: 650; color: var(--ink-2); }
+.paper-cover dd { margin: 0; color: var(--ink); }
+.paper-cover ul { margin: 0; padding-left: 1.2rem; font-size: .93rem; color: var(--ink-3); }
+@media print { .paper-bar { display: none; } }
+.unit-exams h3 { font-size: var(--step-1); margin-bottom: .5rem; }
+.unit-exams ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .35rem; }
+.unit-exams li { display: flex; justify-content: space-between; gap: .6rem; align-items: baseline; font-size: .93rem; padding: .3rem 0; border-bottom: 1px solid var(--border); }
+.unit-exams li:last-child { border-bottom: 0; }
+.unit-exam-links { display: inline-flex; gap: .7rem; flex: none; }
+.unit-exam-links a { font-weight: 650; }

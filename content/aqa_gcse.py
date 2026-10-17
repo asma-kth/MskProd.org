@@ -4025,6 +4025,7 @@ This topic is where the largest marks are, and where the most are thrown away.
 
 COURSE = Course(
     slug="ks4/aqa-computer-science",
+    seo="AQA 8525 GCSE revision",
     title="AQA GCSE Computer Science",
     short="AQA GCSE CS",
     stage="KS4",

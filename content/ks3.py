@@ -3899,6 +3899,7 @@ The top level here is about **explaining trade offs**.
 
 COURSE = Course(
     slug="ks3",
+    seo="KS3 Computing revision",
     title="Key Stage 3 Computing",
     short="Key Stage 3",
     stage="KS3",

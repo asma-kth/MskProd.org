@@ -1,0 +1,12 @@
+Poppins, Inter and JetBrains Mono are distributed under the SIL Open Font
+License, Version 1.1, which permits them to be used, studied, modified and
+redistributed freely so long as they are not sold by themselves.
+
+Poppins        Copyright 2020 The Poppins Project Authors
+               https://github.com/itfoundry/Poppins
+Inter          Copyright 2016 The Inter Project Authors
+               https://github.com/rsms/inter
+JetBrains Mono Copyright 2020 The JetBrains Mono Project Authors
+               https://github.com/JetBrains/JetBrainsMono
+
+The full licence text is at https://scripts.sil.org/OFL

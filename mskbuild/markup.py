@@ -2,11 +2,15 @@
 
 Block syntax
 ------------
+    !photo <slug>                   -> a photograph, if its file is present
+    ## Heading                      -> h2 section heading, with an id
     ### Heading                     -> h4 sub heading
     - item                          -> unordered list
     1. item                         -> ordered list
     | a | b |                       -> table, first row is the header
-    ```python  ... ```              -> highlighted code block
+    ```python  ... ```              -> highlighted code block, with a Run button
+    ```pylocal ... ```              -> highlighted Python the browser cannot run (threads, sockets),
+                                       labelled as needing your own computer, with no Run button
     ```pseudo  ... ```              -> OCR reference language / pseudocode
     ```text    ... ```              -> plain preformatted block
     !key Title :: body              -> key idea callout
@@ -24,6 +28,8 @@ Inline syntax
 """
 import html
 import re
+
+from .util import slugify
 
 def _slot(i: int) -> str:
     """Placeholder built from control characters.
@@ -112,17 +118,47 @@ def _highlight(code: str, lang: str) -> str:
     return esc
 
 
-LANG_LABEL = {"python": "Python", "pseudo": "OCR reference language", "text": "",
+# Exam papers print programs that must not be runnable, since running one would
+# give the answer away: "pycode" is Python with no Run button, "aqa" is AQA
+# pseudo-code and "scratch" is Scratch blocks written out as text.
+LANG_LABEL = {"python": "Python", "pylocal": "Python (on your computer)", "pseudo": "OCR reference language", "text": "",
+              "pycode": "Python code", "aqa": "AQA pseudo-code", "scratch": "Scratch blocks",
               "sql": "SQL", "html": "HTML", "css": "CSS", "js": "JavaScript",
               "assembly": "Assembly", "trace": "Trace table"}
 
 
 def code_block(code: str, lang: str = "python") -> str:
-    body = _highlight(code, lang) if lang in ("python", "pseudo") else html.escape(code, quote=False)
+    hl = {"pycode": "python", "aqa": "pseudo"}.get(lang, lang)
+    body = _highlight(code, hl) if hl in ("python", "pylocal", "pseudo") else html.escape(code, quote=False)
     label = LANG_LABEL.get(lang, lang.upper() if lang else "")
     lab = '<span class="code-label">%s</span>' % label if label else ""
     return ('<div class="code-block">%s<button class="code-copy" type="button">Copy</button>'
             '<pre><code>%s</code></pre></div>' % (lab, body))
+
+
+_FENCE = re.compile(r"```(\w*)[ \t]*\n(.*?)\n?```", re.S)
+
+
+def model(text: str) -> str:
+    """A model answer: paragraphs of prose with optional fenced code between them.
+
+    A programming question's model answer is a program, and a program set as one
+    run-on paragraph with its line breaks collapsed is not a model of anything.
+    Text without a fence comes out exactly as it always did.
+    """
+    if "```" not in text:
+        return "<p>%s</p>" % inline(text)
+    out, pos = [], 0
+    for m in _FENCE.finditer(text):
+        lead = text[pos:m.start()].strip()
+        if lead:
+            out.append("<p>%s</p>" % inline(lead))
+        out.append(code_block(m.group(2).rstrip(), m.group(1) or "python"))
+        pos = m.end()
+    tail = text[pos:].strip()
+    if tail:
+        out.append("<p>%s</p>" % inline(tail))
+    return "".join(out)
 
 
 # ----------------------------------------------------------------- blocks
@@ -168,6 +204,16 @@ def render(src: str) -> str:
             continue
 
         # heading
+        # The standalone pages (about, privacy, accessibility, how to revise)
+        # are authored as whole documents and use ## for their sections. That
+        # was never implemented, so every one of their headings rendered as
+        # literal "## Why this site exists" text on the live site.
+        if stripped.startswith("## "):
+            text = stripped[3:]
+            out.append('<h2 id="%s">%s</h2>' % (slugify(text), inline(text)))
+            i += 1
+            continue
+
         if stripped.startswith("### "):
             out.append("<h4>%s</h4>" % inline(stripped[4:]))
             i += 1
@@ -182,6 +228,27 @@ def render(src: str) -> str:
                 raise KeyError("unknown diagram %r (have: %s)"
                                % (name, ", ".join(sorted(_DG))))
             out.append(_DG[name]())
+            i += 1
+            continue
+
+        # photograph: !photo <slug>
+        m = re.match(r"^!photo\s+([a-z0-9-]+)\s*$", stripped)
+        if m:
+            from . import photos as _PH
+            out.append(_PH.render(m.group(1)))
+            i += 1
+            continue
+
+        # illustration: !illus <name>
+        m = re.match(r"^!illus\s+([a-z0-9-]+)\s*$", stripped)
+        if m:
+            from .illus import REGISTRY as _IL, load_all
+            load_all()
+            name = m.group(1)
+            if name not in _IL:
+                raise KeyError("unknown illustration %r (have: %s)"
+                               % (name, ", ".join(sorted(k for k in _IL if not k.startswith("_")))))
+            out.append(_IL[name]())
             i += 1
             continue
 
@@ -232,7 +299,9 @@ def render(src: str) -> str:
         if stripped.startswith("|"):
             rows = []
             while i < n and lines[i].strip().startswith("|"):
-                cells = [c.strip() for c in lines[i].strip().strip("|").split("|")]
+                # A pipe inside a cell is written \| , as the bitwise OR operator needs to be.
+                cells = [c.strip().replace("\\|", "|")
+                         for c in re.split(r"(?<!\\)\|", lines[i].strip().strip("|"))]
                 if not all(re.fullmatch(r":?-{2,}:?", c) for c in cells):
                     rows.append(cells)
                 i += 1

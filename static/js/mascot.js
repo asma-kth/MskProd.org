@@ -116,14 +116,12 @@
     else if (kind === "quiet") { store.set("mascot", { quiet: Date.now() }); say("Understood. I will stay out of the way. Tap me any time you want a fact or a nudge.", "Pixel says"); }
   });
 
-  /* First greeting: contextual, once per page load, and never if the student
-     asked for quiet in the last day. */
+  /* Pixel does not speak first. He used to open a bubble on every page load,
+     a second and a half in, which landed on top of the thing the reader had
+     just started reading. He is still there to tap for a fact or a tip; he
+     simply waits to be asked. */
   var pref = store.get("mascot", {});
-  var quiet = pref.quiet && (Date.now() - pref.quiet) < 86400000;
-  var greeting = document.body.getAttribute("data-cat-greeting");
-  if (!quiet && greeting) {
-    setTimeout(function () { say(greeting, "Pixel says"); }, 1600);
-  } else if (!quiet) {
+  if (!(pref.quiet && (Date.now() - pref.quiet) < 86400000)) {
     var ping = document.createElement("span");
     ping.className = "mascot-ping";
     btn.appendChild(ping);

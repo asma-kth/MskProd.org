@@ -3080,6 +3080,7 @@ Paper 2 gives marks for a program that works and for a program that is readable,
 
 COURSE = Course(
     slug="ks4/edexcel-computer-science",
+    seo="Edexcel 1CP2 GCSE revision",
     title="Edexcel GCSE Computer Science",
     short="Edexcel GCSE CS",
     stage="KS4",

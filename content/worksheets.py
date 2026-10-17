@@ -14,11 +14,23 @@ def _lines(n):
     return '<div class="ws-lines">%s</div>' % ("".join('<span></span>' for _ in range(n)))
 
 
+def _model_html(text):
+    """A model answer for the printed mark scheme, with code laid out as code."""
+    if "```" not in text:
+        return '<p class="ws-ms-model"><b>Model answer.</b> %s</p>' % markup.inline(text)
+    return ('<div class="ws-ms-model"><p><b>Model answer.</b></p>%s</div>'
+            % markup.model(text))
+
+
 def _worksheet(course, unit, topic):
     path = "/%s/%s/worksheet/" % (course.slug, topic.slug)
     # The same topic name appears in several courses, so the course short name
     # is needed or three worksheets end up sharing one <title>.
-    title = "%s worksheet, %s" % (topic.title, course.short)
+    # Board and code only here. The topic name plus the word worksheet is what
+    # wins this search, so the suffix has to stay short enough to leave room.
+    board = {"Pearson Edexcel": "Edexcel", "National Curriculum": "KS3"}.get(course.board, course.board)
+    title = "%s worksheet | %s" % (topic.title,
+                                   " ".join(x for x in (board, course.code) if x) or course.short)
     trail = [("Home", "/"), (course.short, "/%s/" % course.slug),
              (topic.title, "/%s/%s/" % (course.slug, topic.slug)),
              ("Worksheet", None)]
@@ -62,10 +74,15 @@ def _worksheet(course, unit, topic):
     b_items = []
     for i, q in enumerate(topic.exam):
         cmd = '<span class="ws-cmd">%s</span>' % esc(q.command) if q.command else ""
+        # A question can carry resource material, such as the program to trace.
+        # It has to print with the question or the question cannot be answered.
+        fig = ('<div class="ws-fig">%s</div>' % markup.render(q.figure)
+               if getattr(q, "figure", "") else "")
         b_items.append(
             '<li class="ws-q"><div class="ws-stem"><span class="ws-n">%d</span>'
-            '<span>%s%s</span><span class="ws-marks">%d</span></div>%s</li>'
-            % (i + 1, cmd, markup.inline(q.stem), q.marks, _lines(max(3, q.marks * 2))))
+            '<span>%s%s</span><span class="ws-marks">%d</span></div>%s%s</li>'
+            % (i + 1, cmd, markup.inline(q.stem), q.marks, fig,
+               _lines(max(3, q.marks * 2))))
     section_b = ('<section class="ws-section ws-break"><h2>Section B</h2>'
                  '<p class="ws-lead">Answer in the space provided. The number of marks '
                  'tells you how many separate points to make.</p>'
@@ -86,10 +103,9 @@ def _worksheet(course, unit, topic):
                 '<div class="ws-ms"><p class="ws-ms-head"><b>%d</b> %s '
                 '<span class="ws-marks">%d</span></p>'
                 '<p class="ws-ms-note">One mark for each of the following, to a maximum '
-                'of %d.</p><ul>%s</ul>'
-                '<p class="ws-ms-model"><b>Model answer.</b> %s</p></div>'
+                'of %d.</p><ul>%s</ul>%s</div>'
                 % (i + 1, markup.inline(q.stem), q.marks, q.marks, pts,
-                   markup.inline(q.model)))
+                   _model_html(q.model)))
         ms.append('<h3>Section B</h3>%s' % "".join(rows))
     mark_scheme = ('<section class="ws-section ws-break"><h2>Mark scheme</h2>%s</section>'
                    % "".join(ms)) if ms else ""
@@ -162,9 +178,6 @@ def build(register, add_search, courses):
     path = "/worksheets/"
     write(path, layout(title="Printable Computing Worksheets", description=lead,
                        path=path, body=body,
-                       greeting="Printing a worksheet and doing it with a pen beats "
-                                "clicking through a quiz, because writing an answer out "
-                                "is closer to what the exam actually asks of you.",
                        jsonld=[crumbs_ld(trail)]))
     register(path, 0.7, "monthly")
     add_search("Printable worksheets", path, "Every topic as a printable worksheet",

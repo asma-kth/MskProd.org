@@ -4,6 +4,9 @@ Written so that a Year 7 student can start at the beginning and an A Level
 student can pick up at object oriented programming, with everything runnable.
 """
 from mskbuild.models import Topic, Section, Unit, Course, Q, EQ, MP
+from content.python_gcse import TOPICS as GCSE_TOPICS
+from content.python_alevel import TOPICS as ALEVEL_TOPICS
+from content.python_advanced import TOPICS as ADVANCED_TOPICS
 
 P_FIRST = Topic(
     slug="first-steps",
@@ -3509,8 +3512,13 @@ pygame.quit()
 
 # ================================================================== COURSE
 
+_A = {t.slug: t for t in ALEVEL_TOPICS}
+_V = {t.slug: t for t in ADVANCED_TOPICS}
+
 COURSE = Course(
     slug="python",
+    seo="Python tutorial",
+    extra_cta=("Play Pixel Run", "/pixel-run/", "i-flag"),
     title="Python from Scratch",
     short="Python",
     stage="All",
@@ -3519,7 +3527,7 @@ COURSE = Course(
     goal="Fluency",
     icon="i-python",
     accent="var(--aqua)",
-    blurb="A complete Python course, from your very first line of code through to object oriented programming, desktop applications with tkinter and games with pygame. Every example runs, and every topic has a quiz and written questions.",
+    blurb="A complete Python course, from your very first line of code, through everything the GCSE boards examine in programming, to A Level recursion, data structures, algorithms, the theory of computation, how processors, operating systems and networks work, databases and the programming project, then advanced Python, simulation and machine learning, desktop applications with tkinter and games with pygame. Nearly every example runs in your browser, and every topic has a quiz and written questions.",
     intro="",
     journey=[
         ("Type it out, do not copy and paste",
@@ -3545,9 +3553,50 @@ COURSE = Course(
         Unit("real-programs", "Real Programs",
              "Dictionaries for structured data, files so your program remembers things, and error handling so it does not crash.",
              [P_DATA], icon="i-database", term="Intermediate"),
+        Unit("gcse-python", "GCSE Computer Science in Python",
+             "Everything the three GCSE boards examine in programming, written in Python: exam pseudocode translated, arrays, records and files, subprograms, validation and testing, SQL, searching and sorting, and tracing and debugging.",
+             GCSE_TOPICS, icon="i-flow", term="GCSE: OCR J277, AQA 8525, Edexcel 1CP2"),
         Unit("oop", "Object Oriented Programming",
              "Classes, objects, encapsulation, inheritance and polymorphism. The step from scripts to software.",
              [P_OOP1, P_OOP2], icon="i-cube", term="Intermediate to advanced"),
+        Unit("alevel-programming", "A Level: Programming Techniques",
+             "Recursion and the call stack, the functional paradigm with map, filter and reduce, and object oriented design with composition, abstract classes and UML.",
+             [_A["recursion"], _A["functional-programming"], _A["oop-design"]],
+             icon="i-code", term="A Level: OCR H446, AQA 7517"),
+        Unit("alevel-structures", "A Level: Data Structures",
+             "Stacks and queues built from arrays and pointers, linked lists, hash tables, binary trees and graphs, each with its traversals and its cost, then heaps, tries and disjoint sets.",
+             [_A["stacks-and-queues"], _A["linked-lists-and-hash-tables"], _A["trees-and-graphs"], _A["heaps-tries-and-disjoint-sets"]],
+             icon="i-layers", term="A Level: OCR H446 1.4.2, AQA 7517"),
+        Unit("alevel-algorithms", "A Level: Algorithms and Complexity",
+             "Big-O notation and what makes a problem tractable, the four sorting algorithms compared with counters, the shortest path algorithms, Dijkstra's and A star, and the greedy and dynamic programming strategies.",
+             [_A["big-o-and-complexity"], _A["sorting-algorithms"], _A["dijkstra-and-a-star"], _A["dynamic-programming-and-greedy"]],
+             icon="i-gauge", term="A Level: OCR H446 2.3.1, AQA 7517"),
+        Unit("alevel-data", "A Level: Data and Databases",
+             "Two's complement, bitwise operations and floating point, then relational databases: normalisation, SQL with joins and grouping, and transactions.",
+             [_A["binary-and-bitwise-operations"], _A["relational-databases-and-sql"]],
+             icon="i-binary", term="A Level: OCR H446 1.4.1 and 1.3.2, AQA 7517"),
+        Unit("alevel-theory", "A Level: Theory of Computation",
+             "Finite state machines and regular expressions, Backus-Naur form with a small compiler built stage by stage, and Turing machines with the limits of what any computer can do.",
+             [_A["finite-state-machines-and-regex"], _A["grammars-parsing-and-compilers"], _A["turing-machines-and-halting"]],
+             icon="i-brain", term="A Level: AQA 7517 4.4, OCR H446 1.2 and 2.1"),
+        Unit("alevel-systems", "A Level: Machines, Systems and Security",
+             "A working processor with its registers and fetch-decode-execute loop, how an operating system schedules programs and what goes wrong when they share data, compression, encryption and hashing written from scratch, and networks and the web from packets up to a web server.",
+             [_A["little-man-computer"], _A["scheduling-and-concurrency"], _A["compression-encryption-hashing"], _A["networks-and-the-web"]],
+             icon="i-cpu", term="A Level: OCR H446 1.1 to 1.3, AQA 7517 4.7 and 4.9"),
+        Unit("alevel-software", "A Level: Testing and the Project",
+             "The levels and kinds of testing, unit tests and test driven development, and how to plan, build, test and evaluate the programming project.",
+             [_A["testing-and-tdd"], _A["programming-project"]],
+             icon="i-flag", term="A Level: OCR H446 Component 03, AQA 7517 NEA"),
+        Unit("advanced-python", "Advanced Python",
+             "How Python really works and how professionals use it: names, objects and memory, generators, closures and decorators, special methods, dataclasses and type hints, exceptions and logging, the standard library, and the habits of version control, testing and profiling.",
+             [_V["names-objects-and-memory"], _V["iterators-and-generators"], _V["closures-decorators-and-context-managers"],
+              _V["special-methods-dataclasses-and-typing"], _V["exceptions-logging-and-defensive-code"],
+              _V["the-standard-library-toolbox"], _V["working-like-a-professional"]],
+             icon="i-sparkle", term="Advanced: beyond the exam specifications"),
+        Unit("modelling-ml", "Modelling and Machine Learning",
+             "Simulation with random numbers, Monte Carlo sampling, epidemics, cellular automata and queues, then machine learning written with no libraries: nearest neighbours, gradient descent, a perceptron and a small neural network.",
+             [_V["simulation-and-modelling"], _V["machine-learning-from-scratch"]],
+             icon="i-brain", term="Advanced: simulation and AI"),
         Unit("applications", "Applications and Games",
              "Desktop programs with tkinter and games with pygame, each ending in a complete working project.",
              [P_TKINTER, P_PYGAME], icon="i-web", term="Advanced"),

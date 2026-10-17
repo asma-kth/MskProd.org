@@ -28,6 +28,7 @@
     "    g['input'] = _input",
     "    deadline = time.time() + 10",
     "    def guard(frame, event, arg):",
+    "        frame.f_trace_opcodes = True",
     "        if time.time() > deadline:",
     "            raise TimeoutError('Stopped after 10 seconds. That almost always means "
       + "a loop with no way out: check the condition and anything that should be "
@@ -41,6 +42,22 @@
   ].join("\n");
 
   var pyodide = null, loading = null;
+
+  /* A traceback from Pyodide includes frames from Pyodide's own code, which are
+     noise to a student. Keep the frames in their program and the error itself. */
+  function cleanTrace(text) {
+    var out = [], keep = false;
+    String(text).split("\n").forEach(function (l) {
+      if (/^Traceback/.test(l)) { out.push(l); keep = false; return; }
+      var file = /^\s+File "([^"]*)"/.exec(l);
+      if (file) { keep = file[1] === "your program"; if (keep) out.push(l); return; }
+      if (/^\s/.test(l)) { if (keep) out.push(l); return; }
+      if (l.indexOf("PythonError") === 0) return;
+      out.push(l);
+      keep = false;
+    });
+    return out.join("\n").trim();
+  }
 
   function el(tag, cls, txt) {
     var n = document.createElement(tag);
@@ -180,13 +197,8 @@
         out.hidden = false;
         outCode.textContent = lines.join("\n");
         if (failed) {
-          /* Pyodide prefixes the JS side of the trace, which is noise to a
-             student. Keep the Python part only. */
-          var m = failed.split("\n").filter(function (l) {
-            return l.indexOf("pyodide") < 0 && l.indexOf("  File \"<exec>\"") < 0;
-          });
           if (outCode.textContent) outCode.textContent += "\n";
-          outCode.textContent += m.join("\n").trim();
+          outCode.textContent += cleanTrace(failed);
           out.classList.add("is-error");
         } else {
           out.classList.remove("is-error");
@@ -203,6 +215,44 @@
       });
     });
   }
+
+  /* Shared with the exam marker, which runs and marks programs typed into
+     programming questions. run() resolves with what the program printed. */
+  var runs = 0;
+  function runSource(src, feed, files) {
+    return boot(function () {}).then(function (py) {
+      var lines = [];
+      files = files || {};
+      /* Each run gets an empty folder holding only the question's data files,
+         so a file written by an earlier run cannot be mistaken for this one's. */
+      var dir = "/tmp/msk-run-" + (++runs);
+      try {
+        py.FS.mkdirTree(dir);
+        py.FS.chdir(dir);
+        Object.keys(files).forEach(function (n) { py.FS.writeFile(n, files[n]); });
+      } catch (e) { /* run in the default folder */ }
+      py.setStdout({ batched: function (s) { lines.push(s); } });
+      py.setStderr({ batched: function (s) { lines.push(s); } });
+      py.globals.set("__msk_src", src);
+      py.globals.set("__msk_feed", feed || []);
+      var failed = null;
+      try {
+        py.runPython("__msk_run(__msk_src, __msk_feed)");
+      } catch (e) {
+        failed = cleanTrace(e.message || e);
+      }
+      py.setStdout({});
+      py.setStderr({});
+      try {
+        py.FS.readdir(".").forEach(function (n) {
+          if (n === "." || n === ".." || files.hasOwnProperty(n)) return;
+          lines.push("\n--- " + n + " (written by your program) ---\n" + py.FS.readFile(n, { encoding: "utf8" }));
+        });
+      } catch (e) { /* nothing to show */ }
+      return { output: lines.join("\n"), error: failed };
+    });
+  }
+  window.MskPython = { boot: boot, run: runSource };
 
   function isPython(block) {
     var label = block.querySelector(".code-label");

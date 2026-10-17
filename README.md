@@ -15,10 +15,12 @@ No accounts, no cookies, no adverts, no tracking.
 | --- | --- | --- | --- |
 | Key Stage 3 Computing | National Curriculum | 17 | 170 |
 | GCSE Computer Science | OCR J277 | 25 | 250 |
-| Creative iMedia | OCR J834 | 6 | 60 |
+| GCSE Computer Science | AQA 8525 | 23 | 230 |
+| GCSE Computer Science | Edexcel 1CP2 | 15 | 150 |
+| Creative iMedia | OCR J834 | 15 | 150 |
 | A Level Computer Science | OCR H446 | 16 | 160 |
-| Python from Scratch | — | 11 | 110 |
-| Practice exam papers | — | 5 papers | 76 questions |
+| Data Analytics | OCR Cambridge Advanced National | 10 | 100 |
+| Python from Scratch | GCSE, A Level and beyond | 51 | 510 |
 
 ## Building the site
 
@@ -48,21 +50,146 @@ mskbuild/
   models.py           Content data classes: Topic, Unit, Course, Q, EQ, MP
   markup.py           Mini markup parser and Python/pseudocode syntax highlighter
   render.py           Page rendering, layout, SEO head, structured data
+  illus.py            Illustration framework: canvas, palette, accessible figure wrapper
+  illus_props.py      Shared parts: devices, chips, people, arrows, numbered badges
+  illus_glyphs.py     More parts: code window, console, variable box, lockers, bug, flag
+  illus_*.py          The drawn illustrations, grouped by subject (code, algo, bits, machine,
+                      devices, secure, netx, society, ks3a-c, alevel1-4, oop, apps, imedia2, data2, more,
+                      pyalevel_a/b for the A Level Python topics, pyadv_a/b for advanced Python,
+                      simulation and machine learning)
+  illus_pictures.py   Drawn hardware pictures that stand in for photographs until the files exist
+  illus_banners.py    The decorative picture at the top of every topic page
+  placements.py       Which diagram, illustration or tool goes in which section
+  placements_visuals.py  The same, written as calls, for illustrations placed on many topics
 content/
   ks3.py              Key Stage 3, Years 7 to 9
   ks4_cs.py           OCR GCSE Computer Science J277
   ks4_imedia.py       OCR Creative iMedia J834
   ks5.py              OCR A Level Computer Science H446
-  python_course.py    Python from first program to OOP, tkinter and pygame
-  papers.py           Original practice papers with mark schemes
+  python_course.py    The Python course: its units, in order, and which topic modules feed them
+  python_gcse/        Python topics for the GCSE boards (one module per topic)
+  python_alevel/      Python topics for A Level: structures, algorithms, theory of computation,
+                      processors, operating systems, networks, cryptography
+  python_advanced/    Advanced Python, simulation and machine learning
+  pixelrun/           Pixel Run, the Python platformer: levels, fifty challenges, marker
+  papers.py           The exam papers page, and the first practice papers
+  papers_full.py      Full length papers for each board (papers_j277.py, papers_aqa.py, ...)
+  ks3_exams*.py       Key Stage 3 unit exams, two for every unit
   pages.py            About, privacy, accessibility, how to revise, glossary
 static/
   css/site.css        Design system, light and dark themes
   js/app.js           Theme, navigation, search, progress
   js/quiz.js          Quiz engine and exam answer auto marker
   js/mascot.js        Pixel, the robot cat
+  js/game.js          Pixel Run: rules, console, Python marking
+  js/game-art.js      Pixel Run: everything drawn on the canvas
+  css/game.css        Pixel Run styles
   img/                Logo, favicon, mascot, icon sprite, share image
 ```
+
+## Exam papers
+
+`/exam-papers/` holds timed papers that mark themselves. Each Key Stage 3 unit has two unit exams
+(`content/ks3_exams_y7.py` to `_y9.py`), 25 marks in 25 minutes. Each specification has full length
+papers with the real paper's total marks, time allowed and sections (`content/papers_j277.py`,
+`papers_aqa.py`, `papers_edexcel.py` and the others listed in `content/papers_full.py`).
+
+A bar at the top of the paper counts down from the real time allowed. Answers are saved in the
+browser as they are typed; when time runs out the paper locks and is marked, and Finish marks it early.
+
+Questions are written with the helpers in `mskbuild/examkit.py`, so a paper reads like the paper:
+
+| Helper | Question | Marked by |
+|---|---|---|
+| `tick`, `rows` | tick boxes; one tick per row | the answer key |
+| `ans`, `boxes`, `table` | typed answers, alone or in a table | exact match, with numeric tolerance where set |
+| `calc` | an answer with working | the answer, or method marks found in the working |
+| `write` | a written answer | mark points, with the examiner override |
+| `prog` | a Python program to write or amend | running it against one check per mark |
+| `sql` | one SQL statement | running it against the tables printed in the question |
+
+`mskbuild/papercheck.py` proves every paper at build time and stops the build if anything is
+unsound: a full paper whose marks, time or section totals differ from the official figures, an
+answer key that does not fit its options, or a programming question whose model solution fails a
+check, whose starter code already scores full marks, or whose listed wrong answers do not lose a
+mark. Programs are marked by `mskbuild/codemark.py`, and the same file runs in the browser under
+Pyodide, so the mark the build proved is the mark a student is given. `mskbuild/examarrange.py`
+places the tick box answers so that no letter is favoured.
+
+## The Python course
+
+`/python/` takes a student from a first program to GCSE and A Level programming, the theory of
+computation, how processors, operating systems and networks work, then advanced Python, simulation
+and machine learning. The units are listed in `content/python_course.py`; each topic is a module in
+`content/python_gcse/`, `content/python_alevel/` or `content/python_advanced/`.
+
+Every ```` ```python ```` block gets a **Run** button and runs in the student's browser (Pyodide), so
+the course promises that every example runs, and `tools/check_python_examples.py` holds it to that.
+CI runs it before every build. The rules the examples follow:
+
+* A block is self contained and deterministic: nothing leans on an earlier block, and random
+  numbers come from a seeded `random.Random`.
+* `# raises: ErrorName` on the first line marks a block that must fail with exactly that error.
+  `# varies` marks output that legitimately changes (timings, unseeded random numbers).
+* A topic module's `INPUTS` dict gives the answers typed into `input()`, and `EXPECT` names the
+  error a block must fail with when a visible marker would give the answer away.
+* Threads, sockets, asyncio, Flask, multiprocessing and a few other things cannot run in a browser.
+  They go in a ```` ```pylocal ```` block: highlighted Python labelled "Python (on your computer)", with
+  no Run button. The checker only compiles those. Where the idea can be shown without the real
+  thing, the lesson simulates it instead (generator schedulers, an in memory HTTP server, a
+  channel that loses packets) so that it stays runnable.
+
+```bash
+python3 tools/check_python_examples.py            # the new topics, under CPython
+python3 tools/check_python_examples.py --all      # every topic in the course
+python3 tools/check_python_examples.py --pyodide  # also run each block in the browser's own engine
+```
+
+`--pyodide` needs `npm install pyodide@<version>` somewhere and `PYODIDE_DIR` pointing at
+`node_modules/pyodide`. It compares each block's output with CPython's and flags any block that
+takes longer than 2.5 seconds, because a Run that is slow on a phone looks broken, and because the
+in browser engine stops a program after ten seconds.
+
+## Pixel Run, the game
+
+`/pixel-run/` is a platformer in ten levels. Pixel runs by herself, and at each of
+three obstacles per level the student writes a Python function. If every test
+passes she jumps on. Three failed attempts, or giving up, and the obstacle wins:
+the solution is shown and the student goes back to the previous level. Python runs
+in the student's browser (Pyodide), so nothing they type leaves their device.
+
+Challenges live in `content/pixelrun/bank_a.py` (levels 1 to 5) and `bank_b.py`
+(levels 6 to 10), five per level. Expected values are never written down, they are
+computed by running the solution.
+
+```python
+C("greet", 1, "A polite greeting",
+  "The story, one line.",
+  "The task. Write `greet(name)`. It returns ...",
+  "greet",                                         # the function the student writes
+  "def greet(name):\n    pass\n",                  # starter code
+  "def greet(name):\n    return 'Hello, ' + name\n",    # the reference solution
+  [("Asha",), ("Ben",), ("",)],                    # argument tuples to test with
+  ["def greet(name):\n    return 'Hello ' + name\n"],   # plausible mistakes
+  ["A nudge.", "`return 'Hello, ' + name`"],       # two hints, the last one the key line
+  [loop()])                                        # optional rules
+```
+
+`python3 build.py` proves the whole bank before it writes the page and stops if
+anything is unsound: every solution must pass its tests and rules, every starter
+must fail, and every listed mistake must fail by a test or a rule. Rules can demand
+a loop (`loop()`), recursion (`recursive()`), a call to a given function
+(`calls("square")`), or forbid names (`forbid(["max"], "why")`, including `"in"`,
+`"**"` and `"[::-1]"`). `probes(0, "why")` limits how many items of a list argument
+the code may look at, which is how the binary search level refuses a scan from the
+front; a long list can be written as `Expr("list(range(0, 2000, 2))")`.
+
+`python3 tools/check_pixelrun.py --mutate` also breaks each solution in small ways
+(a `+` becomes a `-`, a `<` becomes `<=`, a line is deleted) and lists the changed
+copies that its tests fail to notice. Today those are all equivalent to the
+original, such as which of two equal values is returned first.
+
+Progress is stored in the browser under `mskprod:pixelrun`.
 
 ## Adding a topic
 
@@ -85,6 +212,69 @@ Topic(
     exam=[EQ("Explain something.", 3, [MP("Point", ["keyword"])], "Model answer.")],
 )
 ```
+
+## Illustrations
+
+Topics that are easier to see than to read (a packet crossing a network, the layers
+of a graphics file, a stack of plates) carry a drawn illustration. Each one is a
+single inline SVG built in code, so it costs a few kilobytes, loads nothing and works
+with scripts off. The panel behind it follows the light or dark theme and the objects
+on it keep their own colours.
+
+A picture never carries the explanation alone. Under it is a numbered list that
+matches the numbered badges drawn into it, then a caption saying what to take away,
+and the SVG holds a full text description for screen readers. On a narrow screen the
+picture keeps a readable size and scrolls sideways.
+
+To add one, write a function in one of the `mskbuild/illus_*.py` files:
+
+```python
+@illustration("my-picture")
+def _my_picture():
+    cv = Canvas(800, 500).backdrop()
+    cv.add(P.card(cv, 14, 34, 380, 440, 20, "A title", "teal"))
+    return figure("my-picture", cv, "Short title", "Full description for a screen reader.",
+                  ["What badge 1 shows.", "What badge 2 shows."], "The one thing to take away.")
+```
+
+then place it with `put(course, "topic-slug", "Section title", "my-picture")` in
+`mskbuild/placements_visuals.py`. A call adds to the end of a section and cannot silently
+replace what is there. `placements.apply()` raises if the topic or section does not exist, so
+a typo fails the build instead of dropping a picture.
+
+### Checking them
+
+`tools/check_illustrations.py` opens every drawing in a real browser, in the light and the
+dark theme, and checks that no text runs off the picture or onto other text, that no text
+spills out of the pill or tile it sits in, and that every piece of text has at least 4.5 to 1
+contrast against what is actually behind it (3 to 1 for large text). It exits with status 1
+if anything is found, so it can gate a build:
+
+```
+pip install playwright pillow && playwright install chromium
+python3 build.py
+python3 tools/check_illustrations.py                 # every picture, both themes
+python3 tools/check_illustrations.py cpu-board mesh  # just these
+```
+
+Lines and arrows drawn straight on the panel use `ARROW` (from `illus.py`), which follows the
+theme. Text that sits on the panel uses the `il-ink` and `il-ink2` classes for the same reason;
+text on a coloured object keeps a fixed colour chosen for that object.
+
+### Photographs and the drawings that stand in for them
+
+`mskbuild/photos.py` lists the photographs the hardware topics want. Until a photograph's file
+exists, `photos.render()` draws the matching `pic-<name>` picture from `illus_pictures.py`,
+credited under it as a drawing, so no topic is left bare. When the file lands (see
+`tools/optimise_photos.py`) the photograph replaces the drawing on every page it appears on.
+The build prints which photographs are still pending and which of those show a drawing.
+
+### Topic banners
+
+Every topic page opens with a picture from `illus_banners.py`. It is decoration only: `aria-hidden`,
+no words in it, hidden when printing, and cropped to its middle with faded edges on a phone.
+`motif_for()` picks one of the motifs from the topic's slug, with a default for each course, so a
+new topic gets a sensible banner without anyone choosing one.
 
 ## Deployment
 
