@@ -16,6 +16,9 @@ A check is a Python expression worth one mark, evaluated with these names:
     after(name, *args)   call a function, then return its arguments, to see what
                          it changed in place (a list it was meant to update)
     read(name, inputs, files)  run the program, then return a file it wrote
+    test(code)           run a few lines of test code after the program, such as
+                         making an object and calling its methods; returns the
+                         value the test code puts in a variable called result
     has(text, *parts)    every part appears in the text (case and spacing ignored)
     nums(text)           the numbers in a piece of text, as floats
     lines(text)          the non-blank lines of a piece of text
@@ -63,6 +66,9 @@ def _guarded(fn, limit=LIMIT):
     deadline = time.time() + limit
 
     def guard(frame, event, arg):
+        # Opcode events as well as line events: a loop written on one line,
+        # such as while True: pass, never starts a new line.
+        frame.f_trace_opcodes = True
         if time.time() > deadline:
             raise Timeout("it ran for more than %g seconds, so it probably has a loop that never ends" % limit)
         return guard
@@ -183,6 +189,13 @@ class Program:
         self.call(name, *args)
         return args
 
+    def test(self, code):
+        """Run test code in a copy of the program's namespace; return its result."""
+        g = dict(self.ns())
+        with contextlib.redirect_stdout(io.StringIO()):
+            _guarded(lambda: exec(code, g))
+        return g.get("result")
+
     def printed(self, name, *args):
         fn = self.ns()[name]
         buf = io.StringIO()
@@ -195,7 +208,7 @@ def _env(p):
     src = _strip_comments(p.source)
     funcs = {n.name: n for n in ast.walk(p.tree) if isinstance(n, ast.FunctionDef)}
     return {
-        "run": p.run, "ns": p.ns, "call": p.call, "printed": p.printed, "read": p.read, "after": p.after,
+        "run": p.run, "ns": p.ns, "call": p.call, "printed": p.printed, "read": p.read, "after": p.after, "test": p.test,
         "has": has, "nums": nums, "lines": lines, "norm": norm,
         "src": src,
         "uses": lambda *pats: any(re.search(pt, src) for pt in pats),

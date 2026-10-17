@@ -881,8 +881,9 @@ SPECS = [
      "Paper 1, Computational thinking and programming skills, is 2 hours and 90 marks, sat in C#, Python or VB.NET; these are the "
      "Python version, 8525/1B. Paper 2, Computing concepts, is 1 hour 45 minutes and 90 marks. No calculator."),
     ("1CP2", "Pearson Edexcel GCSE Computer Science (1CP2)",
-     "Paper 1, Principles of computer science, is a 1 hour 30 minute written paper of 75 marks. Paper 2, Application of "
-     "computational thinking, is a 2 hour onscreen exam of 75 marks in Python 3: here the programs are run and marked as you go."),
+     "Paper 1, Principles of computer science, is a 1 hour 30 minute written paper of 75 marks in five 15 mark questions, with no "
+     "calculator. Paper 2, Application of computational thinking, is a 2 hour onscreen exam of 75 marks in Python 3: here the "
+     "programs are run and marked as you go."),
     ("H446", "OCR A Level Computer Science (H446)",
      "Two written papers, each 2 hours 30 minutes and 140 marks: H446/01 Computer systems, and H446/02 Algorithms and programming, "
      "which ends with a scenario based Section B. No calculator."),

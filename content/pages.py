@@ -4,8 +4,15 @@ from mskbuild.render import (layout, crumbs, crumbs_ld, ico, esc, write,
                              SITE_URL, SITE_NAME, mascot_svg)
 
 
-def _page(path, title, description, crumb, body_md, extra="", ld=None):
+def _page(path, title, description, crumb, body_md, extra="", ld=None, slots=None):
+    """slots maps a placeholder paragraph in body_md to HTML put in its place,
+    for the odd control, such as a button, that the markup cannot express."""
     trail = [("Home", "/"), (crumb, None)]
+    rendered = markup.render(body_md)
+    for name, fragment in (slots or {}).items():
+        if "<p>%s</p>" % name not in rendered:
+            raise ValueError("%s: no placeholder %s" % (path, name))
+        rendered = rendered.replace("<p>%s</p>" % name, fragment)
     body = """<div class="wrap">
   %s
   <div class="page-panel">
@@ -15,7 +22,7 @@ def _page(path, title, description, crumb, body_md, extra="", ld=None):
       %s
     </article>
   </div>
-</div>""" % (crumbs(trail), esc(title), esc(description), markup.render(body_md), extra)
+</div>""" % (crumbs(trail), esc(title), esc(description), rendered, extra)
     return path, layout(title=title, description=description, path=path,
                         body=body,
                         jsonld=(ld or []) + [crumbs_ld(trail)])
@@ -352,6 +359,7 @@ The following may be stored locally:
 | What | Why |
 | Your quiz scores | So you can see which topics you have completed and how you did |
 | Your exam-style answer marks | So your progress on written questions is not lost when you close the tab |
+| Your answers and the time left on a timed exam paper | So a paper you are part way through is still there if you close the tab or lose power |
 | Which topics you have opened | So the course pages can show a small marker next to topics you have visited |
 | Your light or dark theme choice | So the site looks the way you left it |
 | Whether you asked Pixel to stay quiet | So the mascot respects that |
@@ -361,7 +369,7 @@ The following may be stored locally:
 
 You can delete all of it at any time by clearing site data for this website in your browser settings, or by using the button below.
 
-<p><button class="btn btn-secondary" type="button" data-reset-progress>Clear everything this site has stored on my device</button></p>
+RESETBUTTON
 
 ## The mascot
 
@@ -408,7 +416,9 @@ If you have a question about privacy on this site, please get in touch through t
         "The site owner collects no personal data and your quiz scores never leave your device. The site is funded by Google adverts, which do set cookies. Explained in full here.",
         "Privacy", privacy,
         ld=[{"@context": "https://schema.org", "@type": "WebPage",
-             "name": "Privacy Policy", "url": SITE_URL + "/privacy/"}])
+             "name": "Privacy Policy", "url": SITE_URL + "/privacy/"}],
+        slots={"RESETBUTTON": '<p><button class="btn btn-secondary" type="button" data-reset-progress>'
+                              'Clear everything this site has stored on my device</button></p>'})
     write(path, html)
     register(path, 0.5, "yearly")
     add_search("Privacy policy", path, "What is stored, what Google collects for adverts, and your rights",
