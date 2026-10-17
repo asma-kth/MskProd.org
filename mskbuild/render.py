@@ -152,7 +152,8 @@ def layout(*, title: str, description: str, path: str, body: str,
     py_attr = ""
     if '<span class="code-label">Python</span>' in body:
         py_attr = " data-pyrun"
-        scripts.append("/assets/js/pyrun.js")
+        if "/assets/js/pyrun.js" not in scripts:
+            scripts.append("/assets/js/pyrun.js")
     ld_html = "".join(
         '<script type="application/ld+json">%s</script>' % json.dumps(x, separators=(",", ":"))
         for x in ld)
@@ -404,33 +405,219 @@ def _stem_html(stem: str) -> str:
     run together as one paragraph, which is not how the paper prints it and
     not how it reads. Everything before the final block is the scenario.
     """
-    blocks = [b.strip() for b in re.split(r"\n\s*\n", stem.strip()) if b.strip()]
-    if len(blocks) < 2:
+    blocks = _stem_blocks(stem)
+    if len(blocks) < 2 and (not blocks or blocks[0][0] == "para"):
         return markup.inline(stem.strip())
-    out = ['<span class="examq-scenario">%s</span>' % markup.inline(b)
-           for b in blocks[:-1]]
-    out.append('<span class="examq-ask">%s</span>' % markup.inline(blocks[-1]))
+    # The instruction is the last paragraph, with any list or code that follows
+    # it: "Write a program that:" and the bullet points it introduces.
+    paras = [i for i, (kind, _) in enumerate(blocks) if kind == "para"]
+    k = paras[-1] if paras else 0
+    out = ['<span class="examq-scenario">%s</span>' % _stem_block(b) for b in blocks[:k]]
+    out.append('<span class="examq-ask">%s</span>' % "".join(_stem_block(b) for b in blocks[k:]))
     return "".join(out)
 
 
-def render_exam(topic_slug: str, questions: List[EQ], title: str = "Exam-style questions",
-                lead: str = "", heading_level: str = "h2") -> str:
-    if not questions:
-        return ""
-    total = sum(q.marks for q in questions)
-    qs = []
-    for i, q in enumerate(questions):
-        pts = "".join(
-            '<li data-any=\'%s\'><span class="tick">%s</span><span>%s</span></li>'
-            % (html.escape(json.dumps(p.any), quote=True), "L", markup.inline(p.text))
+def _stem_blocks(stem: str) -> list:
+    """Split a stem into ("para" | "list" | "code", text) blocks."""
+    blocks, buf, fence = [], [], None
+    for line in stem.strip().split("\n"):
+        if fence is not None:
+            if line.strip().startswith("```"):
+                blocks.append(("code", "\n".join(fence)))
+                fence = None
+            else:
+                fence.append(line)
+            continue
+        if line.strip().startswith("```"):
+            if buf:
+                blocks.append(("para", "\n".join(buf)))
+                buf = []
+            fence = []
+        elif not line.strip():
+            if buf:
+                blocks.append(("para", "\n".join(buf)))
+                buf = []
+        else:
+            buf.append(line)
+    if fence is not None:
+        blocks.append(("code", "\n".join(fence)))
+    if buf:
+        blocks.append(("para", "\n".join(buf)))
+    return [("list", b) if kind == "para" and all(ln.lstrip().startswith("- ") for ln in b.split("\n")) else (kind, b)
+            for kind, b in blocks]
+
+
+def _stem_block(block: tuple) -> str:
+    # Only inline elements, because the stem sits inside a span; CSS lays them out as blocks.
+    kind, text = block
+    if kind == "code":
+        return '<span class="examq-pre"><code>%s</code></span>' % html.escape(text, quote=False)
+    if kind == "list":
+        return '<span class="examq-list">%s</span>' % "".join(
+            '<span class="examq-li">%s</span>' % markup.inline(ln.lstrip()[2:]) for ln in text.split("\n"))
+    return markup.inline(text)
+
+
+LETTERS = "ABCDEFGHIJ"
+
+
+def _attr(value) -> str:
+    """JSON for a data attribute, escaped for single quoted HTML."""
+    return html.escape(json.dumps(value, separators=(",", ":")), quote=True)
+
+
+def _ms_item(text: str, data: str = "") -> str:
+    return '<li%s><span class="tick">L</span><span>%s</span></li>' % (data, markup.inline(text))
+
+
+def _choice_html(q: EQ, qid: str) -> tuple:
+    q.correct = sorted(q.correct)
+    multi = len(q.correct) > 1
+    typ = "checkbox" if multi else "radio"
+    opts = "".join(
+        '<label class="xq-opt"><input type="%s" name="%s" value="%d"%s>'
+        '<span class="xq-letter">%s</span><span class="xq-text">%s</span></label>'
+        % (typ, qid, i, ' data-c="1"' if i in q.correct else "", LETTERS[i], markup.inline(o))
+        for i, o in enumerate(q.options))
+    hint = ("Tick %s boxes." % ("two" if len(q.correct) == 2 else str(len(q.correct)))) if multi else "Tick one box."
+    area = ('<div class="xq-opts" role="group" aria-label="Options for question %s">%s</div>'
+            '<p class="xq-hint">%s</p>' % (esc(q.label or ""), opts, hint))
+    if multi:
+        items = "".join(_ms_item("**%s** %s" % (LETTERS[c], q.options[c])) for c in q.correct)
+        items += _ms_item("No marks if more than %d boxes are ticked" % len(q.correct), ' class="xq-rule"')
+    else:
+        items = _ms_item("**%s** %s" % (LETTERS[q.correct[0]], q.options[q.correct[0]]))
+    return area, items
+
+
+def _matrix_html(q: EQ, qid: str) -> tuple:
+    head = "<th></th>" + "".join('<th scope="col">%s</th>' % markup.inline(c) for c in q.cols)
+    body = []
+    for r, row in enumerate(q.rows):
+        cells = "".join(
+            '<td><label class="xq-cell"><input type="radio" name="%s-r%d" value="%d"%s>'
+            '<span class="sr-only">%s</span></label></td>'
+            % (qid, r, c, ' data-c="1"' if q.correct[r] == c else "", esc(col))
+            for c, col in enumerate(q.cols))
+        body.append('<tr data-row="%d"><th scope="row">%s</th>%s</tr>' % (r, markup.inline(row), cells))
+    area = ('<div class="table-wrap xq-matrix-wrap"><table class="xq-matrix"><thead><tr>%s</tr></thead>'
+            '<tbody>%s</tbody></table></div><p class="xq-hint">Tick one box in each row.</p>' % (head, "".join(body)))
+    per = len(q.rows) // q.marks if q.marks and len(q.rows) % q.marks == 0 else 1
+    if per == 1:
+        items = "".join(_ms_item("%s: **%s**" % (row, q.cols[q.correct[r]]), ' data-rows="[%d]"' % r)
+                        for r, row in enumerate(q.rows))
+    else:
+        items = ""
+        for m in range(q.marks):
+            rows = list(range(m * per, (m + 1) * per))
+            text = "; ".join("%s: **%s**" % (q.rows[r], q.cols[q.correct[r]]) for r in rows)
+            items += _ms_item("1 mark for both: " + text if per == 2 else "1 mark for all of: " + text,
+                              ' data-rows="%s"' % _attr(rows))
+    return area, items
+
+
+def _blank_input(b, n: int, qid: str) -> str:
+    return ('<input class="xq-blank" type="text" autocomplete="off" spellcheck="false" data-b="%d" '
+            'data-accept="%s"%s%s size="%d" aria-label="%s">'
+            % (n, _attr(b.accept), ' data-numeric="1"' if b.numeric else "",
+               (' data-tol="%s"' % b.tol) if b.tol else "", max(3, b.width),
+               esc(b.label or "Answer %d" % (n + 1))))
+
+
+def _blanks_html(q: EQ, qid: str) -> tuple:
+    if q.grid:
+        head = ("<thead><tr>%s</tr></thead>" % "".join('<th scope="col">%s</th>' % markup.inline(h) for h in q.grid_head)
+                if q.grid_head else "")
+        rows = []
+        for row in q.grid:
+            cells = []
+            for cell in row:
+                if isinstance(cell, int):
+                    cells.append("<td>%s</td>" % _blank_input(q.blanks[cell], cell, qid))
+                else:
+                    cells.append("<td>%s</td>" % markup.inline(str(cell)))
+            rows.append("<tr>%s</tr>" % "".join(cells))
+        area = '<div class="table-wrap"><table class="xq-grid">%s<tbody>%s</tbody></table></div>' % (head, "".join(rows))
+    else:
+        area = '<div class="xq-blanks">%s</div>' % "".join(
+            '<label class="xq-blank-row">%s%s%s</label>' % (
+                ('<span class="xq-blank-label">%s</span>' % markup.inline(b.label)) if b.label else "",
+                _blank_input(b, n, qid),
+                ('<span class="xq-unit">%s</span>' % esc(b.unit)) if b.unit else "")
+            for n, b in enumerate(q.blanks))
+    if q.working:
+        area = ('<label class="xq-working-label" for="%s-w">Show your working</label>'
+                '<textarea class="xq-working" id="%s-w" rows="3" placeholder="Working: method marks are given even when the final answer is wrong."></textarea>'
+                % (qid, qid)) + area
+    groups = q.groups or [("", [n]) for n in range(len(q.blanks))]
+    items = ""
+    for text, nums in groups:
+        answer = ", ".join(q.blanks[n].accept[0] + (" " + q.blanks[n].unit if q.blanks[n].unit else "") for n in nums)
+        line = "%s: **%s**" % (text, answer) if text else "**%s**" % answer
+        if q.working and len(groups) == 1:
+            line = "Correct answer, full marks: **%s**" % answer
+        items += _ms_item(line, ' data-blanks="%s"' % _attr(nums))
+    if q.working:
+        items += "".join(_ms_item("Method: " + p.text, " data-any='%s'" % html.escape(json.dumps(p.any), quote=True))
+                         for p in q.points)
+    return area, items
+
+
+def _code_html(q: EQ, qid: str) -> tuple:
+    t = q.code
+    is_sql = t.lang == "sql"
+    rows = min(26, max(5 if is_sql else 8, t.starter.count("\n") + 3))
+    feed = ("" if is_sql else
+            '<div class="xq-code-in"><label class="tool-label" for="%s-in">Input for Run, one value per line</label>'
+            '<textarea id="%s-in" rows="2" spellcheck="false"></textarea></div>' % (qid, qid))
+    area = ('<div class="xq-code" data-lang="%s" data-checks="%s" data-files="%s"%s>'
+            '<div class="xq-code-bar"><span class="xq-file">%s</span>'
+            '<button class="tool-btn" type="button" data-code-run>Run</button>'
+            '<button class="tool-btn" type="button" data-code-reset>Start again</button></div>'
+            '<textarea class="xq-code-area" spellcheck="false" autocapitalize="off" autocomplete="off" rows="%d" '
+            'aria-label="Your %s for question %s">%s</textarea>%s'
+            '<pre class="xq-code-out" hidden><code></code></pre>'
+            '<template class="xq-starter">%s</template></div>'
+            % (esc(t.lang), _attr([c.expr for c in t.checks]), _attr(t.files),
+               (' data-setup="%s"' % html.escape(t.setup, quote=True)) if is_sql else "", esc(t.filename),
+               rows, "SQL" if is_sql else "program", esc(q.label or ""), esc(t.starter), feed, esc(t.starter)))
+    items = "".join(_ms_item(c.text) for c in t.checks)
+    return area, items
+
+
+def _examq_html(q: EQ, i: int, slug: str) -> str:
+    qid = "%s-e%d" % (slug, i)
+    label = q.label or str(i + 1)
+    kind = q.kind or "text"
+    if kind == "choice":
+        area, items = _choice_html(q, qid)
+    elif kind == "matrix":
+        area, items = _matrix_html(q, qid)
+    elif kind == "blanks":
+        area, items = _blanks_html(q, qid)
+    elif kind == "code":
+        area, items = _code_html(q, qid)
+    else:
+        area = ('<textarea placeholder="Write your answer as you would in the exam." aria-label="Your answer to question %s"></textarea>'
+                % esc(label))
+        items = "".join(
+            "<li data-any='%s'><span class=\"tick\">L</span><span>%s</span></li>"
+            % (html.escape(json.dumps(p.any), quote=True), markup.inline(p.text))
             for p in q.points)
-        cmdbadge = '<span class="badge">%s</span>' % esc(q.command) if q.command else ""
-        fig = ('<div class="examq-figure">%s</div>' % markup.render(q.figure)
-               if getattr(q, "figure", "") else "")
-        qs.append("""<div class="examq" data-marks="%d" data-exam-id="%s-e%d">
-  <div class="examq-head"><span class="n">%d</span><span class="stem">%s</span><span class="marks">%d %s</span></div>
+    cmdbadge = '<span class="badge">%s</span>' % esc(q.command) if q.command else ""
+    fig = ('<div class="examq-figure">%s</div>' % markup.render(q.figure)) if q.figure else ""
+    model = markup.model(q.model) if q.model else ""
+    if kind == "code":
+        model += markup.code_block(q.code.solution.rstrip(), q.code.lang)
+    self_mark = ('<div class="self-mark"><label for="self-%s">Examiner override</label>'
+                 '<select data-self id="self-%s"></select><span>%s</span></div>'
+                 % (qid, qid, "The marker looks for key phrases. If you said it another way and it is still right, give yourself the mark."
+                    if kind == "text" or (kind == "blanks" and q.working) else
+                    "Marked exactly against the mark scheme. Change it only if an examiner would accept your answer."))
+    return """<div class="examq" data-kind="%s" data-marks="%d" data-exam-id="%s">
+  <div class="examq-head"><span class="n">%s</span><span class="stem">%s</span><span class="marks">%d %s</span></div>
   %s%s
-  <textarea placeholder="Write your answer as you would in the exam." aria-label="Your answer to question %d"></textarea>
+  %s
   <div class="examq-tools">
     <button class="btn btn-primary btn-sm" type="button" data-mark>%s Mark my answer</button>
     <button class="btn btn-ghost btn-sm" type="button" data-exam-reset>Clear</button>
@@ -440,18 +627,38 @@ def render_exam(topic_slug: str, questions: List[EQ], title: str = "Exam-style q
     <div class="ms">
       <div class="ms-head">%s Mark scheme<span class="award">0 / %d</span></div>
       <ul>%s</ul>
-      <div class="model-answer"><b>Model answer</b>%s</div>
-      <div class="self-mark">
-        <label for="self-%s-%d">Examiner override</label>
-        <select data-self id="self-%s-%d"></select>
-        <span>The marker looks for key phrases. If you said it another way and it is still right, give yourself the mark.</span>
-      </div>
+      %s
+      %s
     </div>
   </div>
-</div>""" % (q.marks, esc(topic_slug), i, i + 1, _stem_html(q.stem), q.marks,
-             "mark" if q.marks == 1 else "marks", cmdbadge, fig, i + 1, ico("i-check"),
-             ico("i-paper"), q.marks, pts, markup.model(q.model),
-             esc(topic_slug), i, esc(topic_slug), i))
+</div>""" % (esc(kind), q.marks, esc(qid), esc(label), _stem_html(q.stem), q.marks,
+             "mark" if q.marks == 1 else "marks", cmdbadge, fig, area, ico("i-check"),
+             ico("i-paper"), q.marks, items,
+             ('<div class="model-answer"><b>%s</b>%s</div>' % ("Model answer" if kind != "code" else
+                                                               "An answer that scores full marks" if q.code.lang == "sql" else
+                                                               "A program that scores full marks", model)) if model else "",
+             self_mark)
+
+
+def render_exam(topic_slug: str, questions: List[EQ], title: str = "Exam-style questions",
+                lead: str = "", heading_level: str = "h2") -> str:
+    if not questions:
+        return ""
+    total = sum(q.marks for q in questions)
+    qs = []
+    for i, q in enumerate(questions):
+        if q.section:
+            sec_marks = 0
+            for later in questions[i:]:
+                if later is not q and later.section:
+                    break
+                sec_marks += later.marks
+            qs.append('<div class="xq-section"><h3>%s <span>%d marks</span></h3>%s</div>'
+                      % (esc(q.section), sec_marks,
+                         ('<p>%s</p>' % markup.inline(q.section_note)) if q.section_note else ""))
+        if q.lead:
+            qs.append('<div class="xq-lead">%s</div>' % markup.render(q.lead))
+        qs.append(_examq_html(q, i, topic_slug))
 
     return """<section class="quiz" id="exam" data-exam-set aria-labelledby="examTitle">
   <div class="quiz-head">
@@ -498,6 +705,28 @@ def flashcards(terms, limit: int = 8) -> str:
 # ================================================================== pages
 
 from .illus_banners import banner as banner_for, course_banner
+
+
+def _unit_exams_aside(topic) -> str:
+    """Key Stage 3 units link to their two unit exams."""
+    exams = getattr(topic, "exams", None)
+    if not exams:
+        return ""
+    links = "".join(
+        '<a class="btn %s" style="width:100%%;justify-content:center;margin-top:.5rem" href="%s">%s %s</a>'
+        % ("btn-primary" if i == 0 else "btn-secondary", href, ico("i-clock"), esc(label))
+        for i, (label, href, meta) in enumerate(exams))
+    return ('<div class="aside-block"><h4>Unit exams</h4><p>%s</p>%s</div>'
+            % (esc(exams[0][2]), links))
+
+
+def _unit_exams_note(topic) -> str:
+    exams = getattr(topic, "exams", None)
+    if not exams:
+        return ""
+    links = " or ".join('<a href="%s">%s</a>' % (href, esc(label)) for label, href, meta in exams)
+    return ('<div class="note note-exam" style="margin-top:var(--sp-5)"><div class="note-title">%s Sit a unit exam</div>'
+            '<p>When you have finished this unit, sit %s. %s</p></div>' % (ico("i-clock"), links, esc(exams[0][2])))
 
 
 def topic_page(course: Course, unit: Unit, topic: Topic,
@@ -591,6 +820,7 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
       %s
       %s
       %s
+      %s
     </article>
     <aside class="topic-aside">
       %s
@@ -599,13 +829,15 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
         <p>Read the explanation, do the ten question check, then write the five exam answers from memory. Come back in three days and redo the quiz only.</p>
         %s
       </div>
+      %s
     </aside>
   </div>
 </div>""" % (crumbs(trail), banner_for(course.slug, topic.slug), "".join(badges), esc(topic.title), markup.inline(topic.blurb),
              "\n".join(sec_html), fact,
              render_quiz(tid, topic.quiz),
              render_exam(tid, topic.exam, topic.exam_title),
-             nav_html, toc_html, worksheet_link)
+             _unit_exams_note(topic),
+             nav_html, toc_html, worksheet_link, _unit_exams_aside(topic))
 
     desc = topic.blurb if len(topic.blurb) > 70 else topic.blurb + " Full explanation, a ten question check and five auto marked exam-style questions."
     ld = [crumbs_ld(trail), {

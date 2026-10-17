@@ -118,13 +118,18 @@ def _highlight(code: str, lang: str) -> str:
     return esc
 
 
+# Exam papers print programs that must not be runnable, since running one would
+# give the answer away: "pycode" is Python with no Run button, "aqa" is AQA
+# pseudo-code and "scratch" is Scratch blocks written out as text.
 LANG_LABEL = {"python": "Python", "pylocal": "Python (on your computer)", "pseudo": "OCR reference language", "text": "",
+              "pycode": "Python code", "aqa": "AQA pseudo-code", "scratch": "Scratch blocks",
               "sql": "SQL", "html": "HTML", "css": "CSS", "js": "JavaScript",
               "assembly": "Assembly", "trace": "Trace table"}
 
 
 def code_block(code: str, lang: str = "python") -> str:
-    body = _highlight(code, lang) if lang in ("python", "pylocal", "pseudo") else html.escape(code, quote=False)
+    hl = {"pycode": "python", "aqa": "pseudo"}.get(lang, lang)
+    body = _highlight(code, hl) if hl in ("python", "pylocal", "pseudo") else html.escape(code, quote=False)
     label = LANG_LABEL.get(lang, lang.upper() if lang else "")
     lab = '<span class="code-label">%s</span>' % label if label else ""
     return ('<div class="code-block">%s<button class="code-copy" type="button">Copy</button>'

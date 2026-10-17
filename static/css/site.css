@@ -750,7 +750,8 @@ pre code { background: none; border: 0; padding: 0; color: inherit; white-space:
 .examq-head .n {
   flex: none; font-family: var(--font-mono); font-size: .82rem; color: var(--purple-deep);
   background: color-mix(in srgb, var(--lilac) 26%, transparent); border-radius: var(--r-s);
-  width: 1.75rem; height: 1.75rem; display: grid; place-items: center; font-weight: 650; margin-top: .12rem;
+  min-width: 1.75rem; height: 1.75rem; padding: 0 .35rem; white-space: nowrap;
+  display: grid; place-items: center; font-weight: 650; margin-top: .12rem;
 }
 [data-theme="dark"] .examq-head .n { color: var(--lilac); }
 .examq-head .stem { font-weight: 600; line-height: 1.55; flex: 1; max-width: none; }
@@ -770,6 +771,14 @@ pre code { background: none; border: 0; padding: 0; color: inherit; white-space:
   padding: .1rem 0 .1rem .8rem; margin-bottom: .55rem;
 }
 .examq-head .stem .examq-scenario + .examq-scenario { margin-top: -.3rem; }
+/* Requirements as bullet points, and example output, inside a stem. */
+.examq-head .stem .examq-list { display: block; margin: .35rem 0 .15rem; padding-left: 1.3rem; font-weight: 500; }
+.examq-head .stem .examq-li { display: list-item; list-style: disc; margin: .14rem 0; }
+.examq-head .stem .examq-pre {
+  display: block; white-space: pre; overflow-x: auto; font-family: var(--font-mono); font-size: .84rem;
+  font-weight: 400; line-height: 1.5; background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--r-s); padding: .55rem .75rem; margin: .45rem 0 .2rem;
+}
 
 /* Resource material: a chart to read, a table to find the faults in. It sits
    between the question and the answer box, indented to the stem. */
@@ -1571,3 +1580,135 @@ h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
 .pyrun-out.is-error code { color: var(--bad); }
 /* display:block above would otherwise beat the hidden attribute these rely on */
 .pyrun-editor[hidden], .pyrun-input[hidden], .pyrun-out[hidden], .pyrun-bar[hidden] { display: none; }
+
+/* ==========================================================================
+   Exam papers: closed questions, programs, sections and the timed paper bar
+   ========================================================================== */
+.xq-section {
+  margin: var(--sp-6) 0 var(--sp-3); padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-m); background: var(--surface-2); border: 1px solid var(--border);
+}
+.xq-section:first-child { margin-top: 0; }
+.xq-section h3 { margin: 0; font-size: var(--step-1); display: flex; align-items: baseline; gap: .7rem; flex-wrap: wrap; }
+.xq-section h3 span { font-size: .85rem; font-weight: 600; color: var(--ink-3); }
+.xq-section p { margin: .4rem 0 0; font-size: .92rem; color: var(--ink-3); max-width: none; }
+.xq-lead {
+  margin: var(--sp-5) 0 var(--sp-2); padding: .8rem 1rem; border-left: 4px solid var(--teal);
+  background: var(--surface); border-radius: 0 var(--r-s) var(--r-s) 0; font-size: .95rem;
+}
+.xq-lead + .examq { border-top: 0; padding-top: var(--sp-2); }
+.xq-lead > :first-child { margin-top: 0; }
+.xq-lead > :last-child { margin-bottom: 0; }
+
+.xq-opts { display: grid; gap: .45rem; margin: .3rem 0 .2rem; padding-left: 2.1rem; }
+.xq-opt {
+  display: flex; align-items: flex-start; gap: .65rem; cursor: pointer;
+  padding: .55rem .75rem; border: 1px solid var(--border); border-radius: var(--r-s);
+  background: var(--surface); font-size: .95rem; line-height: 1.5;
+}
+.xq-opt:hover { border-color: var(--border-strong); }
+.xq-opt input { margin-top: .25rem; width: 1.05rem; height: 1.05rem; accent-color: var(--accent-strong); flex: none; }
+.xq-letter { font-weight: 700; color: var(--ink-3); min-width: 1.1rem; }
+.xq-opt.is-right { border-color: var(--ok); background: var(--ok-bg); }
+.xq-opt.is-wrong { border-color: var(--bad); background: var(--bad-bg); }
+.xq-hint { margin: .35rem 0 0 2.1rem; font-size: .82rem; color: var(--ink-muted); }
+
+.xq-matrix-wrap, .examq .table-wrap { margin: .3rem 0 .2rem 2.1rem; }
+.xq-matrix, .xq-grid { border-collapse: collapse; font-size: .92rem; min-width: 60%; }
+.xq-matrix th, .xq-matrix td, .xq-grid th, .xq-grid td {
+  border: 1px solid var(--border-strong); padding: .45rem .7rem; text-align: left; vertical-align: middle;
+}
+.xq-matrix thead th, .xq-grid thead th { background: var(--surface-2); font-weight: 650; }
+.xq-matrix td { text-align: center; width: 5.5rem; }
+.xq-cell { display: inline-flex; padding: .25rem; cursor: pointer; }
+.xq-cell input { width: 1.1rem; height: 1.1rem; accent-color: var(--accent-strong); }
+.xq-matrix td.is-right { background: var(--ok-bg); }
+.xq-matrix td.is-wrong { background: var(--bad-bg); }
+.xq-grid td { min-width: 4.5rem; }
+
+.xq-blanks { display: grid; gap: .5rem; margin: .3rem 0 .2rem 2.1rem; }
+.xq-blank-row { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; font-size: .95rem; }
+.xq-blank-label { color: var(--ink-2); }
+.xq-unit { color: var(--ink-3); font-size: .9rem; }
+.xq-blank {
+  font: inherit; font-family: var(--font-mono); font-size: .92rem; padding: .35rem .55rem;
+  border: 1px solid var(--border-strong); border-radius: var(--r-s);
+  background: var(--surface); color: var(--ink); max-width: 100%;
+}
+.xq-blank:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+.xq-blank.is-right { border-color: var(--ok); background: var(--ok-bg); }
+.xq-blank.is-wrong { border-color: var(--bad); background: var(--bad-bg); }
+.xq-grid .xq-blank { width: 100%; min-width: 3.5rem; }
+.xq-working-label { display: block; margin: .3rem 0 .25rem 2.1rem; font-size: .82rem; font-weight: 600; color: var(--ink-3); }
+.examq textarea.xq-working { margin-left: 2.1rem; width: calc(100% - 2.1rem); min-height: 4.5rem; }
+
+.xq-code { margin: .3rem 0 .2rem 2.1rem; }
+.xq-code-bar {
+  display: flex; align-items: center; gap: .45rem; flex-wrap: wrap; padding: .5rem .8rem;
+  background: var(--surface-2); border: 1px solid var(--border); border-bottom: 0;
+  border-radius: var(--r-m) var(--r-m) 0 0;
+}
+.xq-file { font-family: var(--font-mono); font-size: .82rem; font-weight: 700; color: var(--ink-2); margin-right: auto; }
+.xq-code-bar .tool-btn {
+  font: inherit; font-size: .82rem; font-weight: 600; padding: .3rem .8rem; border-radius: var(--r-pill);
+  border: 1px solid var(--border-strong); background: var(--surface); color: var(--ink-2); cursor: pointer;
+}
+.xq-code-bar .tool-btn:hover { background: var(--accent-quiet); color: var(--accent); border-color: transparent; }
+.xq-code-bar .tool-btn:disabled { opacity: .5; cursor: not-allowed; }
+.examq textarea.xq-code-area {
+  display: block; width: 100%; margin: 0; border-radius: 0; border: 1px solid var(--border);
+  font-family: var(--font-mono); font-size: .86rem; line-height: 1.65; tab-size: 4; white-space: pre;
+  overflow-x: auto; min-height: 12rem; background: var(--surface); color: var(--ink);
+}
+.xq-code-in { padding: .55rem .8rem; border: 1px solid var(--border); border-top: 0; background: var(--surface-2); }
+.xq-code-in textarea {
+  width: 100%; font-family: var(--font-mono); font-size: .84rem; padding: .35rem .5rem; min-height: 2.4rem;
+  border: 1px solid var(--border-strong); border-radius: var(--r-s); background: var(--surface); color: var(--ink);
+}
+.xq-code-out {
+  margin: 0; padding: .7rem 1rem; border: 1px solid var(--border); border-top: 0;
+  background: var(--surface-sunk); border-radius: 0 0 var(--r-m) var(--r-m); overflow-x: auto;
+}
+.xq-code-out code { font-family: var(--font-mono); font-size: .84rem; white-space: pre-wrap; color: var(--ink-2); background: none; border: 0; padding: 0; }
+.xq-code-out.is-error code { color: var(--bad); }
+.xq-code-out[hidden] { display: none; }
+.ms li .xq-why { display: block; font-size: .82rem; color: var(--ink-3); margin-top: .15rem; }
+.ms li { flex-wrap: wrap; }
+.ms li > span:last-child:not(.tick) { flex: 1; min-width: 0; }
+.ms li.xq-rule .tick { visibility: hidden; }
+.ms li.xq-rule.broken { color: var(--bad); }
+@media (max-width: 640px) {
+  .xq-opts, .xq-hint, .xq-blanks, .xq-code, .xq-matrix-wrap, .examq .table-wrap, .xq-working-label { margin-left: 0; padding-left: 0; }
+  .examq textarea.xq-working { margin-left: 0; width: 100%; }
+}
+
+/* the paper bar: sticky under the site header, counting down the real time */
+.paper-bar {
+  position: sticky; top: 4.45rem; z-index: 80; margin: 0 0 var(--sp-4);
+  background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--r-m);
+  box-shadow: var(--shadow-2);
+}
+.paper-bar-inner { display: flex; align-items: center; gap: .6rem 1.1rem; flex-wrap: wrap; padding: .6rem .9rem; }
+.pb-clock { display: inline-flex; align-items: baseline; gap: .5rem; }
+.pb-clock small { font-size: .78rem; font-weight: 650; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-3); }
+.pb-clock b { font-family: var(--font-mono); font-size: 1.45rem; font-weight: 700; color: var(--accent-strong); font-variant-numeric: tabular-nums; }
+.paper-bar.is-low .pb-clock b { color: var(--bad); }
+.pb-meta { font-size: .86rem; color: var(--ink-3); }
+.pb-meta b { color: var(--ink); }
+.pb-score { font-family: var(--font-mono); font-weight: 700; color: var(--ok); }
+.pb-actions { margin-left: auto; display: flex; gap: .5rem; flex-wrap: wrap; }
+.pb-actions [hidden] { display: none; }
+.paper-bar.is-done .pb-clock b { color: var(--ink-3); }
+[data-exam-set].is-locked .examq-tools { display: none; }
+.paper-cover { margin-bottom: var(--sp-5); }
+.paper-cover dl { display: grid; grid-template-columns: max-content 1fr; gap: .35rem 1rem; margin: 0 0 var(--sp-3); font-size: .95rem; }
+.paper-cover dt { font-weight: 650; color: var(--ink-2); }
+.paper-cover dd { margin: 0; color: var(--ink); }
+.paper-cover ul { margin: 0; padding-left: 1.2rem; font-size: .93rem; color: var(--ink-3); }
+@media print { .paper-bar { display: none; } }
+.unit-exams h3 { font-size: var(--step-1); margin-bottom: .5rem; }
+.unit-exams ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .35rem; }
+.unit-exams li { display: flex; justify-content: space-between; gap: .6rem; align-items: baseline; font-size: .93rem; padding: .3rem 0; border-bottom: 1px solid var(--border); }
+.unit-exams li:last-child { border-bottom: 0; }
+.unit-exam-links { display: inline-flex; gap: .7rem; flex: none; }
+.unit-exam-links a { font-weight: 650; }

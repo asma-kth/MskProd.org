@@ -204,6 +204,46 @@
     });
   }
 
+  /* Shared with the exam marker, which runs and marks programs typed into
+     programming questions. run() resolves with what the program printed. */
+  var runs = 0;
+  function runSource(src, feed, files) {
+    return boot(function () {}).then(function (py) {
+      var lines = [];
+      files = files || {};
+      /* Each run gets an empty folder holding only the question's data files,
+         so a file written by an earlier run cannot be mistaken for this one's. */
+      var dir = "/tmp/msk-run-" + (++runs);
+      try {
+        py.FS.mkdirTree(dir);
+        py.FS.chdir(dir);
+        Object.keys(files).forEach(function (n) { py.FS.writeFile(n, files[n]); });
+      } catch (e) { /* run in the default folder */ }
+      py.setStdout({ batched: function (s) { lines.push(s); } });
+      py.setStderr({ batched: function (s) { lines.push(s); } });
+      py.globals.set("__msk_src", src);
+      py.globals.set("__msk_feed", feed || []);
+      var failed = null;
+      try {
+        py.runPython("__msk_run(__msk_src, __msk_feed)");
+      } catch (e) {
+        failed = String(e.message || e).split("\n").filter(function (l) {
+          return l.indexOf("pyodide") < 0 && l.indexOf("  File \"<exec>\"") < 0;
+        }).join("\n").trim();
+      }
+      py.setStdout({});
+      py.setStderr({});
+      try {
+        py.FS.readdir(".").forEach(function (n) {
+          if (n === "." || n === ".." || files.hasOwnProperty(n)) return;
+          lines.push("\n--- " + n + " (written by your program) ---\n" + py.FS.readFile(n, { encoding: "utf8" }));
+        });
+      } catch (e) { /* nothing to show */ }
+      return { output: lines.join("\n"), error: failed };
+    });
+  }
+  window.MskPython = { boot: boot, run: runSource };
+
   function isPython(block) {
     var label = block.querySelector(".code-label");
     return label && label.textContent.trim() === "Python";

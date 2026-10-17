@@ -564,6 +564,11 @@ def main():
     _spread, _n = quizshuffle.check([m.COURSE for m in modules])
     print("Quiz answers placed, %d questions: %s" % (_n, _spread))
 
+    # Key Stage 3 units link to their unit exams, so attach those links
+    # before any topic page is written.
+    from content import papers
+    papers.attach_exam_links()
+
     for mod in modules:
         build_course(mod.COURSE)
 
@@ -574,11 +579,7 @@ def main():
     except ImportError:
         pass
 
-    try:
-        from content import papers
-        papers.build(register, add_search)
-    except ImportError:
-        pass
+    papers.build(register, add_search)
 
     from content import tools_page
     tools_page.build(register, add_search)

@@ -72,7 +72,9 @@ content/
                       processors, operating systems, networks, cryptography
   python_advanced/    Advanced Python, simulation and machine learning
   pixelrun/           Pixel Run, the Python platformer: levels, fifty challenges, marker
-  papers.py           Original practice papers with mark schemes
+  papers.py           The exam papers page, and the first practice papers
+  papers_full.py      Full length papers for each board (papers_j277.py, papers_aqa.py, ...)
+  ks3_exams*.py       Key Stage 3 unit exams, two for every unit
   pages.py            About, privacy, accessibility, how to revise, glossary
 static/
   css/site.css        Design system, light and dark themes
@@ -84,6 +86,35 @@ static/
   css/game.css        Pixel Run styles
   img/                Logo, favicon, mascot, icon sprite, share image
 ```
+
+## Exam papers
+
+`/exam-papers/` holds timed papers that mark themselves. Each Key Stage 3 unit has two unit exams
+(`content/ks3_exams_y7.py` to `_y9.py`), 25 marks in 25 minutes. Each specification has full length
+papers with the real paper's total marks, time allowed and sections (`content/papers_j277.py`,
+`papers_aqa.py`, `papers_edexcel.py` and the others listed in `content/papers_full.py`).
+
+A bar at the top of the paper counts down from the real time allowed. Answers are saved in the
+browser as they are typed; when time runs out the paper locks and is marked, and Finish marks it early.
+
+Questions are written with the helpers in `mskbuild/examkit.py`, so a paper reads like the paper:
+
+| Helper | Question | Marked by |
+|---|---|---|
+| `tick`, `rows` | tick boxes; one tick per row | the answer key |
+| `ans`, `boxes`, `table` | typed answers, alone or in a table | exact match, with numeric tolerance where set |
+| `calc` | an answer with working | the answer, or method marks found in the working |
+| `write` | a written answer | mark points, with the examiner override |
+| `prog` | a Python program to write or amend | running it against one check per mark |
+| `sql` | one SQL statement | running it against the tables printed in the question |
+
+`mskbuild/papercheck.py` proves every paper at build time and stops the build if anything is
+unsound: a full paper whose marks, time or section totals differ from the official figures, an
+answer key that does not fit its options, or a programming question whose model solution fails a
+check, whose starter code already scores full marks, or whose listed wrong answers do not lose a
+mark. Programs are marked by `mskbuild/codemark.py`, and the same file runs in the browser under
+Pyodide, so the mark the build proved is the mark a student is given. `mskbuild/examarrange.py`
+places the tick box answers so that no letter is favoured.
 
 ## The Python course
 
