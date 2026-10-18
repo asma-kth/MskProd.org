@@ -273,29 +273,38 @@ def build(register, add_search, courses):
     total_topics = sum(len(u.topics) for c in courses for u in c.units)
     total_quiz = sum(len(t.quiz) for c in courses for u in c.units for t in u.topics)
     about = """
-MskProd Computing is a free revision site for UK students studying computing at Key Stage 3, GCSE and A Level. There are **%d topics**, **%d knowledge check questions** and several hundred auto marked exam-style questions, written board by board for OCR, AQA and Edexcel and sequenced in the order the subject is actually taught in school.
+MskProd Computing is a free revision site for students studying computing in UK schools, from Key Stage 3 to A Level. There are **%d topics**, **%d knowledge check questions**, timed exam papers for every specification and several hundred automatically marked exam questions, written board by board for OCR, AQA and Pearson Edexcel and sequenced in the order the subject is taught in school.
 
 Everything on the site is free. There is no account to create and no subscription. The site is paid for by advertising, and how that works is set out in the [privacy policy](/privacy/).
 
-## Why this site exists
+## About me
 
-Most computing revision material falls into one of two categories. Either it is a list of bullet points that tells you what the answer is without ever explaining why, or it is a wall of text written for a teacher rather than a student. Neither of those helps somebody sitting at a desk in April trying to work out what a page fault actually is.
+I am Asma Kethiri, Head of Computing at a secondary school in London. My department teaches computing from Key Stage 3 to A Level, and every year our students make strong progress and achieve a high success rate in their computing qualifications.
 
-This site is built on a different premise: that the reason behind a fact is the thing worth knowing, because the reason is where the marks are and, more importantly, because a reason is something you can reconstruct when you have forgotten the detail.
+I created MskProd Computing and I am responsible for everything on it, from the explanations and mark schemes to the exam papers, the Python course and Pixel Run. I built it so that the teaching that works for my own students is there for every student.
 
-Every topic therefore has the same structure:
+## Why I built this site
+
+I want every student to have what my students have: clear teaching, plenty of practice and honest feedback, whatever school they go to and whatever their family can afford. Good revision should not sit behind a paywall or a login.
+
++ **Free, with no account.** Nothing stands between a student and the work.
++ **Every computing subject, Key Stage 3 to A Level.** Key Stage 3 Computing; GCSE Computer Science for OCR (J277), AQA (8525) and Pearson Edexcel (1CP2); OCR Cambridge National Creative iMedia (J834); OCR A Level Computer Science (H446); the OCR Cambridge Advanced National in IT: Data Analytics (F200 and F201); and Python from a first program to A Level.
++ **Explanations that teach the reason.** Most revision material either lists answers without explaining them or is written for teachers rather than students. The reason behind a fact is where the marks are, and it is something you can work out again when you have forgotten the detail.
++ **Practice that marks itself.** Knowledge checks, exam questions marked against a mark scheme, and timed papers with the real marks and time allowed, so students know exactly where they stand and what to do next.
++ **Built on what works in the classroom.** Retrieval practice, spaced review and exam technique, the same methods I use with my own classes.
++ **Accessible to everyone.** It works on phones and school computers, with a screen reader or a keyboard, in light or dark mode, with nothing to install.
+
+## How every topic is built
 
 + A full explanation written to be understood, with the mechanism explained rather than asserted
 + Key terms defined the way a mark scheme wants them, plus flashcards for retrieval practice
 + A ten question knowledge check with an explanation for every answer, right or wrong
-+ Five exam-style written questions marked automatically against a real mark scheme, with a model answer
++ Exam-style questions marked automatically against a mark scheme, with a model answer
 + A section on what separates a top grade answer from an average one, and the mistakes that cost marks
 
-## About the author
+## For teachers
 
-!info Please personalise this section :: This paragraph is a placeholder. Replace the text below with your own introduction, and this note along with it.
-
-This site is written and maintained by a computing teacher working in a UK secondary school, covering Key Stage 3 through to A Level. It began as a set of resources for one department and grew into something worth making available to anyone.
+Everything here is free to use with your classes, in lessons, for homework and for revision. Teachers can also ask me for resources that are not on the site yet, such as an end of unit test, a mock paper or extra practice on a topic students find hard. See [resources for teachers](/teachers/).
 
 ## How the site is built
 
@@ -311,22 +320,27 @@ This site is written independently and is not endorsed by, affiliated with or co
 
 ## Getting in touch
 
-Corrections are genuinely welcome. If something on this site is wrong, unclear or out of date, please say so, and it will be fixed.
+Corrections are genuinely welcome. If something on this site is wrong, unclear or out of date, please tell me and it will be fixed. Email [a.kethiri@mskprod.org](mailto:a.kethiri@mskprod.org), or use the [contact page](/contact/). Every page also has a link at the bottom for reporting a problem with that page, and every exam question has one under its mark scheme.
 """
     path, html = _page(
         "/about/", "About MskProd Computing",
-        "A free revision site for UK computing students at Key Stage 3, GCSE and A Level, covering OCR J277, AQA 8525, Edexcel 1CP2, Creative iMedia and A Level H446. No account needed.",
+        "Free computing revision from Key Stage 3 to A Level, created by Asma Kethiri, Head of Computing at a London secondary school, so that every student can revise well and get high grades.",
         "About", about % (total_topics, total_quiz),
         extra='<div class="center" style="max-width:220px;margin:var(--sp-6) auto 0">%s</div>' % mascot_svg(),
         ld=[{"@context": "https://schema.org", "@type": "AboutPage",
-             "name": "About " + SITE_NAME, "url": SITE_URL + "/about/"}])
+             "name": "About " + SITE_NAME, "url": SITE_URL + "/about/",
+             "mainEntity": {"@type": "Person", "name": "Asma Kethiri", "jobTitle": "Head of Computing",
+                            "email": "mailto:a.kethiri@mskprod.org"}}])
     write(path, html)
     register(path, 0.6, "yearly")
-    add_search("About", path, "About this site", "about author contact")
+    add_search("About", path, "Who writes this site, and why",
+               "about author asma kethiri head of computing london teacher contact why")
 
     # ----------------------------------------------------------- privacy
     privacy = """
 **Last updated: October 2026**
+
+MskProd Computing is run by Asma Kethiri, who is responsible for this policy and can be contacted at [a.kethiri@mskprod.org](mailto:a.kethiri@mskprod.org).
 
 The short version: the site itself asks nothing of you and keeps your work on your own device. It is paid for by advertising, and those adverts are served by Google, which does set cookies and does collect data about the people who see them. That part is explained in full below.
 
@@ -371,6 +385,12 @@ You can delete all of it at any time by clearing site data for this website in y
 
 RESETBUTTON
 
+## If you contact me
+
+The contact form on this site sends nothing itself: it writes a message and opens your own email program, so the email is sent from your own account and you see it before it goes.
+
+If you email [a.kethiri@mskprod.org](mailto:a.kethiri@mskprod.org), your email address and your message are used only to reply to you and to deal with what you raised. They are never added to a mailing list or passed to anyone else, and they are deleted once they are no longer needed. You can ask for them to be deleted at any time.
+
 ## The mascot
 
 Pixel, the robot cat, runs entirely in your browser. The facts, tips and messages are all contained in a JavaScript file downloaded with the page. Nothing you do is analysed and no request is made to any server when Pixel speaks.
@@ -393,7 +413,7 @@ The site is a set of static files served by a hosting provider. Like almost all 
 
 The UK General Data Protection Regulation and the Data Protection Act 2018 give individuals rights over personal data held about them, including the rights of access, rectification and erasure.
 
-The site owner holds no personal data about you, so there is nothing held here to request access to, correct or erase. The data stored in your browser is under your own control and can be deleted at any time using the button above or your browser's settings.
+The site owner holds no personal data about visitors to the site, so for most people there is nothing held here to request access to, correct or erase. The one exception is an email you choose to send, which you can ask to see or to have deleted at any time. The data stored in your browser is under your own control and can be deleted at any time using the button above or your browser's settings.
 
 For the data Google collects through the adverts, Google is the data controller. Requests about that data should go to Google, using the contacts in [its privacy policy](https://policies.google.com/privacy). You can withdraw your consent to advertising cookies at any time, and doing so does not affect anything else on the site.
 
@@ -401,7 +421,7 @@ For the data Google collects through the adverts, Google is the data controller.
 
 This site is written for school age students, including Key Stage 3 pupils who may be as young as eleven, and it asks for no personal information from anybody of any age.
 
-Because the site carries advertising, adverts here are served as non-personalised: they are chosen from the content of the page rather than from any profile of the reader, and they are not used to build one. If you are a parent or a teacher and have a question about this, please get in touch through the [about page](/about/).
+Because the site carries advertising, adverts here are served as non-personalised: they are chosen from the content of the page rather than from any profile of the reader, and they are not used to build one. If you are a parent or a teacher and have a question about this, please email [a.kethiri@mskprod.org](mailto:a.kethiri@mskprod.org).
 
 ## Changes to this policy
 
@@ -409,7 +429,7 @@ If this policy ever changes, the date at the top of this page will be updated, a
 
 ## Contact
 
-If you have a question about privacy on this site, please get in touch through the [about page](/about/).
+If you have a question about privacy on this site, email [a.kethiri@mskprod.org](mailto:a.kethiri@mskprod.org) or use the [contact page](/contact/).
 """
     path, html = _page(
         "/privacy/", "Privacy Policy",
@@ -485,7 +505,7 @@ Every explanation, key term, quiz question and exam question is present in the H
 Being honest about what is not perfect is more useful than claiming everything is.
 
 + Some tables of technical comparison are wide by nature. They scroll horizontally on a narrow screen, which is a compromise rather than an ideal solution.
-+ Diagrams are currently described in text rather than presented visually. This is better for screen reader users but means some concepts that would benefit from an illustration do not yet have one.
++ Diagrams and illustrations carry text descriptions, but a few detailed ones are easier to follow by looking than by listening to the description.
 + The exam answer marker requires typing. There is currently no alternative input method for students who would find that difficult, and voice input from the operating system is the only workaround.
 + The Pixel Run scene is a picture on a canvas with no description beyond the text announcements, and its coding challenges need typing unless quiz mode is chosen.
 
@@ -495,7 +515,7 @@ The site aims to meet **WCAG 2.2 level AA**. If you find something that does not
 
 ## Reporting a problem
 
-If any part of this site is difficult or impossible for you to use, please say so through the [about page](/about/). Accessibility problems are treated as bugs and are prioritised as such.
+If any part of this site is difficult or impossible for you to use, please tell me: email [a.kethiri@mskprod.org](mailto:a.kethiri@mskprod.org), or use the [contact page](/contact/?type=access), which fills in the page you were on. Accessibility problems are treated as bugs and are prioritised as such.
 """
     path, html = _page(
         "/accessibility/", "Accessibility",

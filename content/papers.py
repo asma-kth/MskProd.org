@@ -8,7 +8,8 @@ official past papers on each board's own site are given alongside them.
 import json
 import os
 
-from mskbuild import render
+from mskbuild import papercheck, render
+from mskbuild.examkit import tick, db, sql
 from mskbuild.models import EQ, MP, Paper
 from mskbuild.render import layout, crumbs, crumbs_ld, ico, esc, write, SITE_URL
 
@@ -26,13 +27,15 @@ OFFICIAL = [
 
 J277_P1 = Paper(
     slug="j277-paper-1-a",
-    title="GCSE Computer Science Paper 1: Computer Systems",
+    title="GCSE Computer Science Paper 1 A: Computer Systems",
     course="GCSE Computer Science",
     board="OCR",
-    code="J277/01 style",
+    code="J277/01",
     minutes=90,
     marks=80,
     accent="var(--teal)",
+    spec="J277",
+    full=True,
     blurb="A full length original paper covering systems architecture, memory and storage, networks, network security, systems software and the impacts of technology.",
     advice="Answer every question. The number of marks tells you how many creditworthy points the examiner wants, so a four mark question needs four separate developed points. Show all working in calculations and state the unit.",
     questions=[
@@ -147,7 +150,7 @@ J277_P1 = Paper(
             MP("This reduces e-waste and the resources consumed by manufacturing replacements", ["e-waste", "waste", "manufacturing", "resources", "landfill"]),
         ], "The first way is to configure every machine to enter a low power sleep state after a short period of inactivity and to shut down automatically at the end of the day. A school may have several hundred computers, and each one left running overnight and at weekends consumes electricity continuously for no benefit, so the saving across the whole site is substantial both financially and in terms of carbon emissions. The second way is to keep hardware in use for longer and to dispose of it responsibly when it is finally replaced. Manufacturing a computer consumes rare earth metals extracted through environmentally damaging mining and accounts for a large share of the device's total lifetime environmental impact, so extending a machine's working life from three years to five reduces that impact considerably. When machines are finally retired, refurbishing and donating those that still work, and using a certified recycler for those that do not, keeps toxic materials out of landfill and out of the informal export trade."),
 
-        EQ("Describe what is meant by phishing and explain how a user can identify a phishing message.", 5, [
+        EQ("Describe what is meant by phishing and explain how a user can identify a phishing message.", 4, [
             MP("A fraudulent message pretending to be from a legitimate organisation", ["fraudulent", "fake", "pretends", "impersonates", "legitimate organisation"]),
             MP("Designed to trick the user into revealing personal information", ["trick", "reveal", "personal information", "password", "bank details"]),
             MP("Warning sign: a sense of urgency such as an account being closed", ["urgency", "urgent", "immediately", "24 hours", "threat", "act now"]),
@@ -175,22 +178,38 @@ J277_P1 = Paper(
 
 # ============================= J277/02 Computational thinking and programming
 
+BOOKS = db(("Book", ["BookID INTEGER", "Title TEXT", "Author TEXT", "Genre TEXT", "Price REAL"],
+            [(1, "The Silent Shore", "M. Okafor", "Fiction", 7.99), (2, "Coding for Everyone", "R. Shah", "Computing", 12.50),
+             (3, "Night Train", "L. Byrne", "Fiction", 9.99), (4, "Stars Above", "A. Novak", "Science", 6.50),
+             (5, "The Last Library", "J. Patel", "Fiction", 5.99), (6, "Atlas of Oceans", "K. Ito", "Geography", 15.00),
+             (7, "Moonlit Garden", "S. Reyes", "Fiction", 8.00)]))
+
+# The student's WHERE clause earns each condition's mark on its own: every row
+# it returns meets that condition, and it returns at least the right books.
+_BOOK_CHECK = ("(lambda S, E: len(S) > 0 and E <= set(r[0] for r in S) and all(%s for r in S))"
+               "(q('SELECT BookID, Genre, Price FROM Book WHERE ' + where()),"
+               " set(r[0] for r in q(\"SELECT BookID FROM Book WHERE Genre = 'Fiction' AND Price < 8\")))")
+
 J277_P2 = Paper(
     slug="j277-paper-2-a",
-    title="GCSE Computer Science Paper 2: Computational Thinking, Algorithms and Programming",
+    title="GCSE Computer Science Paper 2 A: Computational Thinking, Algorithms and Programming",
     course="GCSE Computer Science",
     board="OCR",
-    code="J277/02 style",
+    code="J277/02",
     minutes=90,
     marks=80,
     accent="var(--purple)",
-    blurb="A full length original paper covering computational thinking, algorithms, searching and sorting, programming fundamentals, robust programs, Boolean logic and IDEs.",
+    spec="J277",
+    full=True,
+    blurb="A full length original paper: computational thinking, searching and sorting, trace tables, Boolean logic, SQL and languages in a 50 mark Section A, then programming fundamentals, robust programs and testing in a 30 mark Section B.",
     advice="You may answer programming questions in OCR reference language, Python or another high level language, but be consistent within each answer. Show your trace tables in full, because method marks are awarded for the working.",
+    instructions=["OCR advises about 50 minutes on Section A and about 40 minutes on Section B."],
     questions=[
         EQ("Define the term algorithm.", 2, [
             MP("A sequence of steps or instructions", ["steps", "instructions", "sequence", "set of"]),
             MP("In a specific order, to solve a problem or complete a task", ["order", "solve a problem", "complete a task", "achieve"]),
-        ], "An algorithm is a sequence of unambiguous instructions, arranged in a specific order, which solves a problem or completes a task. It must be complete, so no step is missing, and finite, so that it eventually stops."),
+        ], "An algorithm is a sequence of unambiguous instructions, arranged in a specific order, which solves a problem or completes a task. It must be complete, so no step is missing, and finite, so that it eventually stops.",
+           section="Section A", section_note="Answer all the questions in this section."),
 
         EQ("Explain what is meant by abstraction and give an example of how it could be used in a program that finds the quickest route between two railway stations.", 4, [
             MP("Abstraction is removing detail that is not relevant to the problem", ["removing", "detail", "not relevant", "unnecessary", "hiding"]),
@@ -198,6 +217,14 @@ J277_P2 = Paper(
             MP("Gives examples of removed detail such as scenery or station buildings", ["scenery", "buildings", "colour", "type of train", "weather", "passengers"]),
             MP("Identifies what is retained such as stations, connections and journey times", ["stations", "connections", "journey time", "distance", "links"]),
         ], "Abstraction is the process of removing detail that is not relevant to the problem being solved, so that only the information genuinely needed remains and the problem becomes simpler and quicker to solve. In a program finding the quickest route between two railway stations, details such as what the stations look like, the type of train used on each service, the weather and the number of passengers would all be removed, because none of them affect which sequence of connections is fastest. What would be retained is the set of stations, which stations connect directly to which others, and the journey time for each connection, which turns a complex real network into a simple set of points and weighted links that a routing algorithm can process."),
+
+        EQ("Explain what is meant by decomposition and describe how it could be used when writing a program to manage a school library.", 5, [
+            MP("Decomposition means breaking a large problem into smaller sub problems", ["breaking", "smaller", "sub problems", "split", "divide"]),
+            MP("Each sub problem is easier to understand and solve", ["easier", "simpler", "manageable"]),
+            MP("Gives a valid sub problem such as searching for a book", ["search", "find a book", "look up", "catalogue"]),
+            MP("Gives a second valid sub problem such as issuing or returning a book", ["issue", "borrow", "return", "loan", "due date"]),
+            MP("States a benefit such as parts being testable separately or by different people", ["separately", "different people", "test", "independently", "reuse"]),
+        ], "Decomposition means breaking a large complex problem down into smaller sub problems, each of which is small enough to be understood and solved on its own. For a school library system, one sub problem would be searching the catalogue for a book by title, author or subject. A second would be issuing a book, which involves recording who has borrowed it and calculating the due date. Further sub problems would include returning a book and clearing the loan, calculating and recording overdue fines, adding new stock to the catalogue and producing reports for the librarian. Breaking the problem down this way means each part can be written and tested independently, different people can work on separate parts at the same time, and a fault can be traced to one small section rather than searched for across the whole program."),
 
         EQ("Complete a trace table for the following algorithm and state the final output.\n\ntotal = 0, count = 0, for i = 1 to 6: if i MOD 3 == 0 then total = total + i and count = count + 1, next i, print(total), print(count)", 5, [
             MP("Identifies that the condition is true when i is a multiple of 3", ["multiple of 3", "divisible by 3", "3 and 6", "mod 3"]),
@@ -214,6 +241,13 @@ J277_P2 = Paper(
             MP("23 is less than 42, so the upper half is discarded, leaving 23 which is found", ["less", "smaller", "discard", "upper", "found", "23"]),
         ], "Binary search begins by examining the middle item of the list, which is 16. The target 23 is greater than 16, so it cannot lie in the lower half, and everything from 4 up to and including 16 is discarded, leaving 23, 42 and 50. The middle of that remaining section is 42. The target 23 is less than 42, so the upper half is discarded, leaving only 23. That item is examined, it matches the target, and the search stops after three comparisons rather than the five a linear search would have required."),
 
+        EQ("A program uses a linear search on an unsorted list of 5000 names. Explain why a binary search could not be used instead, and state what would need to change.", 4, [
+            MP("Binary search requires the data to be sorted", ["sorted", "in order", "must be sorted", "ordered"]),
+            MP("It works by discarding half the list based on a comparison with the middle item", ["half", "middle", "discard", "compare"]),
+            MP("On unsorted data that assumption is invalid so the result would be wrong", ["invalid", "wrong", "incorrect", "cannot assume", "fails"]),
+            MP("The list would have to be sorted first, which itself takes time", ["sort first", "sorted first", "takes time", "cost of sorting"]),
+        ], "A binary search cannot be used because it requires the data to be in sorted order. The algorithm compares the target with the middle item and then discards the entire half of the list in which the target cannot lie, and this reasoning is only valid if the list is ordered. On unsorted data there is no guarantee that the target is not in the half being discarded, so the search would frequently report that an item is absent when it is actually present. To use a binary search the list would first have to be sorted, which itself takes time. Whether that is worthwhile depends on how often the list is searched: sorting once and then performing many fast binary searches is a clear gain, but sorting 5000 names in order to perform a single search would take longer than simply scanning the list once."),
+
         EQ("Show the state of the list [9, 4, 7, 2] after each complete pass of a bubble sort.", 4, [
             MP("After pass 1 the list is [4, 7, 2, 9]", ["4, 7, 2, 9", "4 7 2 9"]),
             MP("After pass 2 the list is [4, 2, 7, 9]", ["4, 2, 7, 9", "4 2 7 9"]),
@@ -228,37 +262,6 @@ J277_P2 = Paper(
             MP("Because the sub lists have to be stored during the merging process", ["sub lists", "stored", "copies", "not in place"]),
         ], "The advantage of merge sort is speed on large lists. It uses divide and conquer, repeatedly splitting the list in half until each part contains a single item and then merging the sorted parts back together, which requires far fewer comparisons than bubble sort's repeated passes through the entire list and, importantly, gives consistent performance regardless of how disordered the starting data is. The disadvantage is memory. Merge sort has to create and hold the sub lists it produces while dividing and merging, so it requires additional memory roughly proportional to the size of the list, whereas bubble sort sorts in place using only a single temporary variable and therefore needs almost no extra memory at all."),
 
-        EQ("Write a program that asks the user for 10 numbers, stores them in an array, and then outputs the largest number and the average.", 6, [
-            MP("Declares an array or list to hold the values", ["array", "list", "[]", "declare"]),
-            MP("Uses a count controlled loop that runs 10 times", ["for", "range(10)", "0 to 9", "1 to 10", "10 times"]),
-            MP("Reads input and converts it to a number", ["int(input", "input", "convert"]),
-            MP("Stores each value and maintains a running total", ["append", "array[i]", "total", "sum"]),
-            MP("Finds the largest by initialising from the first element and comparing", ["largest", "max", "greater than", "numbers[0]", "compare"]),
-            MP("Outputs the largest and the average", ["print", "output", "average", "/ 10"]),
-        ], "numbers = []\ntotal = 0\n\nfor i in range(10):\n    value = int(input(\"Enter a number: \"))\n    numbers.append(value)\n    total = total + value\n\nlargest = numbers[0]\nfor n in numbers:\n    if n > largest:\n        largest = n\n\nprint(\"Largest:\", largest)\nprint(\"Average:\", total / 10)\n\nThe loop runs exactly ten times, reading each number, converting it from the text that input returns into an integer, storing it in the array and adding it to a running total. The largest is found by initialising the variable to the first element rather than to zero, which matters because the numbers could all be negative, and then comparing each value against it. The average is the total divided by ten."),
-
-        EQ("Explain the difference between a variable and a constant, and give one reason for using a constant.", 3, [
-            MP("A variable's value can change while the program runs", ["change", "changes", "can vary", "altered"]),
-            MP("A constant's value is fixed once set and cannot be changed", ["fixed", "cannot change", "unchanged", "set once"]),
-            MP("A reason such as preventing accidental change or only needing to edit one line", ["accidental", "one place", "single edit", "clarity", "meaningful", "readable"]),
-        ], "A variable is a named memory location whose value can be changed at any point while the program is running, such as a score that increases during a game. A constant is given a value once and that value cannot be altered afterwards, such as a VAT rate or the maximum number of players. A constant is used because it prevents the value being changed accidentally elsewhere in the program, and because if the value ever does need updating it appears in only one place so a single line has to be edited rather than every occurrence being found."),
-
-        EQ("A program should accept an age between 11 and 18. Design a test plan containing four tests, giving the test data, its type and the expected result.", 6, [
-            MP("Includes normal data within the range", ["normal", "typical", "14", "15", "within"]),
-            MP("Includes boundary data at the edge of the accepted range", ["boundary", "11", "18", "edge"]),
-            MP("Includes boundary data just outside the accepted range", ["10", "19", "just outside", "boundary"]),
-            MP("Includes erroneous data of the wrong type", ["erroneous", "letters", "text", "abc", "blank", "wrong type"]),
-            MP("States the type of each piece of data", ["normal", "boundary", "erroneous", "invalid", "type"]),
-            MP("States an expected result for every test", ["expected", "accepted", "rejected", "error message"]),
-        ], "Test 1 uses the value 14, which is normal data comfortably inside the range, and the expected result is that it is accepted. Test 2 uses the value 11, which is boundary data at the lower edge of the accepted range, and the expected result is that it is accepted because the range is inclusive. Test 3 uses the value 19, which is boundary data just outside the upper edge, and the expected result is that it is rejected with an error message asking the user to try again. Test 4 uses the entry abc, which is erroneous data of the wrong type entirely, and the expected result is that the program rejects it with a clear message rather than crashing when it attempts to convert text into a number. A fifth useful test would be the value 10, checking the lower boundary from outside, since an error at one end of a range does not guarantee an error at the other."),
-
-        EQ("Explain the difference between a syntax error and a logic error, giving an example of each.", 4, [
-            MP("A syntax error breaks the rules of the programming language", ["rules", "syntax", "grammar", "invalid"]),
-            MP("The program will not run at all until it is corrected", ["will not run", "cannot run", "does not execute"]),
-            MP("A logic error means the program runs but produces the wrong result", ["runs", "wrong result", "incorrect", "unexpected"]),
-            MP("Gives valid examples such as a missing bracket and a wrong operator", ["missing bracket", "colon", "spelling", "wrong operator", "plus instead", "greater than"]),
-        ], "A syntax error is a mistake in the way the code is written, such as a missing colon at the end of an if statement or an unclosed bracket, and because the code breaks the rules of the language the program will not run at all until it is fixed. A logic error is different: the code is perfectly valid and the program runs without complaint, but the instructions do not do what the programmer intended, so the output is wrong. An example is writing total = total minus price when calculating a shopping basket, or using a greater than sign where greater than or equal to was needed, which produces the wrong answer only at the boundary value. Logic errors are more dangerous because nothing alerts the programmer to them and they can only be found by careful testing."),
-
         EQ("Complete a truth table for Q = (A OR B) AND NOT C, for all eight combinations of inputs.", 5, [
             MP("Lists all eight input combinations", ["eight", "000", "111", "all combinations"]),
             MP("Includes an intermediate column for A OR B", ["a or b", "intermediate"]),
@@ -266,6 +269,21 @@ J277_P2 = Paper(
             MP("Q is 0 whenever C is 1", ["c is 1", "0 when c", "not c is 0"]),
             MP("Q is 1 for the combinations 010, 100 and 110", ["010", "100", "110", "three"]),
         ], "There are eight input combinations, counted in binary from 000 to 111. The intermediate column A OR B is 0 only when both A and B are 0, and 1 otherwise. The intermediate column NOT C is 1 whenever C is 0 and 0 whenever C is 1. Q is the AND of those two columns, so Q is 1 only when at least one of A and B is 1 and C is 0. Q is therefore 1 for the input combinations 010, 100 and 110, and 0 for the other five combinations, namely 000, 001, 011, 101 and 111."),
+
+        tick("Which **one** data type is most suitable for storing the price of a book, such as 7.99?",
+             ["*Real", "Integer", "Boolean", "Character"],
+             "A price has a fractional part, so it is stored as a real number. An integer would lose the pence."),
+
+        sql("A library stores details of its books in a table called Book. Write an SQL statement to display the Title and Price of every book in the Fiction genre that costs less than £8.",
+            BOOKS, "SELECT Title, Price\nFROM Book\nWHERE Genre = 'Fiction' AND Price < 8",
+            [("SELECT Title, Price", "sorted(fields()) == ['price', 'title']"),
+             ("FROM Book", "tables() == ['book']"),
+             ("WHERE Genre = 'Fiction'", _BOOK_CHECK % "str(r[1]).lower() == 'fiction'"),
+             ("AND Price < 8", _BOOK_CHECK % "r[2] < 8")],
+            model="Each condition earns a mark. Moonlit Garden costs exactly £8.00, so the condition must be < 8, not <= 8.",
+            wrong=["SELECT Title, Price FROM Book WHERE Genre = 'Fiction'",
+                   "SELECT Title, Price FROM Book WHERE Genre = 'Fiction' AND Price <= 8",
+                   "SELECT * FROM Book WHERE Genre = 'Fiction' AND Price < 8"]),
 
         EQ("Explain two differences between a compiler and an interpreter.", 4, [
             MP("A compiler translates the whole program before it is run", ["whole program", "all at once", "before", "entire"]),
@@ -281,12 +299,12 @@ J277_P2 = Paper(
             MP("Or debugging tools such as breakpoints allowing variables to be inspected", ["breakpoint", "debug", "step", "watch", "inspect"]),
         ], "The first feature is the editor with syntax highlighting, which colours keywords, strings and comments differently. This makes the structure of the code immediately visible and causes typing errors to stand out, since a misspelled keyword loses its colour and an unclosed quotation mark turns the rest of the line into a string. The second feature is error diagnostics combined with debugging tools. Error diagnostics report the line number and the type of any error found, which means the programmer can go straight to the problem instead of searching. Debugging tools such as breakpoints pause the program at a chosen line so the values held in variables can be inspected, and stepping runs one line at a time so the flow can be watched, which is the only reliable way to find logic errors."),
 
-        EQ("Explain why input validation should be used in a program that asks a user for a percentage mark.", 4, [
-            MP("Users may enter data of the wrong type or outside a sensible range", ["wrong type", "letters", "negative", "over 100", "invalid"]),
-            MP("Without validation the program may crash", ["crash", "error", "stop", "fails"]),
-            MP("Or produce incorrect results from meaningless data", ["incorrect", "meaningless", "wrong results", "nonsense"]),
-            MP("Validation checks the input is acceptable and allows the user to try again", ["checks", "range check", "type check", "try again", "error message", "rejects"]),
-        ], "Input validation is needed because a user may enter something the program cannot sensibly use, whether by accident or deliberately. They might type letters instead of digits, enter a negative mark, enter a value above 100, or leave the field blank. Without validation the program would attempt to use that input directly, and converting text into a number would cause it to crash, while a mark of 500 would produce a meaningless average that the program would report as though it were correct. Validation applies a type check to confirm a whole number was entered and a range check to confirm it lies between 0 and 100 inclusive, rejecting anything that fails with a clear message so the user can correct it, which makes the program robust rather than fragile."),
+        EQ("Explain the difference between a variable and a constant, and give one reason for using a constant.", 3, [
+            MP("A variable's value can change while the program runs", ["change", "changes", "can vary", "altered"]),
+            MP("A constant's value is fixed once set and cannot be changed", ["fixed", "cannot change", "unchanged", "set once"]),
+            MP("A reason such as preventing accidental change or only needing to edit one line", ["accidental", "one place", "single edit", "clarity", "meaningful", "readable"]),
+        ], "A variable is a named memory location whose value can be changed at any point while the program is running, such as a score that increases during a game. A constant is given a value once and that value cannot be altered afterwards, such as a VAT rate or the maximum number of players. A constant is used because it prevents the value being changed accidentally elsewhere in the program, and because if the value ever does need updating it appears in only one place so a single line has to be edited rather than every occurrence being found.",
+           section="Section B", section_note="Answer all the questions in this section. Where a question asks for a program, write it in OCR Exam Reference Language or a high-level language."),
 
         EQ("Explain the difference between a function and a procedure, and give one benefit of using subroutines.", 4, [
             MP("A function returns a value to the code that called it", ["returns", "return value", "gives back"]),
@@ -302,20 +320,37 @@ J277_P2 = Paper(
             MP("A situation for a while loop such as validating input until it is acceptable", ["validation", "until valid", "password", "menu", "quit", "unknown"]),
         ], "A for loop repeats a known, fixed number of times, decided before the loop begins, or once for each item in a collection. A while loop repeats for as long as its condition remains true, so the number of iterations is not known in advance and depends on what happens while the program runs. A for loop would be the correct choice for calculating the total of an array of thirty marks, because the number of repetitions is known from the length of the array. A while loop would be the correct choice for repeatedly asking a user to enter a valid password, because there is no way to know in advance how many attempts they will need."),
 
-        EQ("Explain what is meant by decomposition and describe how it could be used when writing a program to manage a school library.", 5, [
-            MP("Decomposition means breaking a large problem into smaller sub problems", ["breaking", "smaller", "sub problems", "split", "divide"]),
-            MP("Each sub problem is easier to understand and solve", ["easier", "simpler", "manageable"]),
-            MP("Gives a valid sub problem such as searching for a book", ["search", "find a book", "look up", "catalogue"]),
-            MP("Gives a second valid sub problem such as issuing or returning a book", ["issue", "borrow", "return", "loan", "due date"]),
-            MP("States a benefit such as parts being testable separately or by different people", ["separately", "different people", "test", "independently", "reuse"]),
-        ], "Decomposition means breaking a large complex problem down into smaller sub problems, each of which is small enough to be understood and solved on its own. For a school library system, one sub problem would be searching the catalogue for a book by title, author or subject. A second would be issuing a book, which involves recording who has borrowed it and calculating the due date. Further sub problems would include returning a book and clearing the loan, calculating and recording overdue fines, adding new stock to the catalogue and producing reports for the librarian. Breaking the problem down this way means each part can be written and tested independently, different people can work on separate parts at the same time, and a fault can be traced to one small section rather than searched for across the whole program."),
+        EQ("Write a program that asks the user for 10 numbers, stores them in an array, and then outputs the largest number and the average.", 6, [
+            MP("Declares an array or list to hold the values", ["array", "list", "[]", "declare"]),
+            MP("Uses a count controlled loop that runs 10 times", ["for", "range(10)", "0 to 9", "1 to 10", "10 times"]),
+            MP("Reads input and converts it to a number", ["int(input", "input", "convert"]),
+            MP("Stores each value and maintains a running total", ["append", "array[i]", "total", "sum"]),
+            MP("Finds the largest by initialising from the first element and comparing", ["largest", "max", "greater than", "numbers[0]", "compare"]),
+            MP("Outputs the largest and the average", ["print", "output", "average", "/ 10"]),
+        ], "numbers = []\ntotal = 0\n\nfor i in range(10):\n    value = int(input(\"Enter a number: \"))\n    numbers.append(value)\n    total = total + value\n\nlargest = numbers[0]\nfor n in numbers:\n    if n > largest:\n        largest = n\n\nprint(\"Largest:\", largest)\nprint(\"Average:\", total / 10)\n\nThe loop runs exactly ten times, reading each number, converting it from the text that input returns into an integer, storing it in the array and adding it to a running total. The largest is found by initialising the variable to the first element rather than to zero, which matters because the numbers could all be negative, and then comparing each value against it. The average is the total divided by ten."),
 
-        EQ("A program uses a linear search on an unsorted list of 5000 names. Explain why a binary search could not be used instead, and state what would need to change.", 4, [
-            MP("Binary search requires the data to be sorted", ["sorted", "in order", "must be sorted", "ordered"]),
-            MP("It works by discarding half the list based on a comparison with the middle item", ["half", "middle", "discard", "compare"]),
-            MP("On unsorted data that assumption is invalid so the result would be wrong", ["invalid", "wrong", "incorrect", "cannot assume", "fails"]),
-            MP("The list would have to be sorted first, which itself takes time", ["sort first", "sorted first", "takes time", "cost of sorting"]),
-        ], "A binary search cannot be used because it requires the data to be in sorted order. The algorithm compares the target with the middle item and then discards the entire half of the list in which the target cannot lie, and this reasoning is only valid if the list is ordered. On unsorted data there is no guarantee that the target is not in the half being discarded, so the search would frequently report that an item is absent when it is actually present. To use a binary search the list would first have to be sorted, which itself takes time. Whether that is worthwhile depends on how often the list is searched: sorting once and then performing many fast binary searches is a clear gain, but sorting 5000 names in order to perform a single search would take longer than simply scanning the list once."),
+        EQ("Explain why input validation should be used in a program that asks a user for a percentage mark.", 4, [
+            MP("Users may enter data of the wrong type or outside a sensible range", ["wrong type", "letters", "negative", "over 100", "invalid"]),
+            MP("Without validation the program may crash", ["crash", "error", "stop", "fails"]),
+            MP("Or produce incorrect results from meaningless data", ["incorrect", "meaningless", "wrong results", "nonsense"]),
+            MP("Validation checks the input is acceptable and allows the user to try again", ["checks", "range check", "type check", "try again", "error message", "rejects"]),
+        ], "Input validation is needed because a user may enter something the program cannot sensibly use, whether by accident or deliberately. They might type letters instead of digits, enter a negative mark, enter a value above 100, or leave the field blank. Without validation the program would attempt to use that input directly, and converting text into a number would cause it to crash, while a mark of 500 would produce a meaningless average that the program would report as though it were correct. Validation applies a type check to confirm a whole number was entered and a range check to confirm it lies between 0 and 100 inclusive, rejecting anything that fails with a clear message so the user can correct it, which makes the program robust rather than fragile."),
+
+        EQ("A program should accept an age between 11 and 18. Design a test plan containing four tests, giving the test data, its type and the expected result.", 5, [
+            MP("Includes normal data within the range", ["normal", "typical", "14", "15", "within"]),
+            MP("Includes boundary data at the edge of the accepted range", ["boundary", "11", "18", "edge"]),
+            MP("Includes boundary data just outside the accepted range", ["10", "19", "just outside", "boundary"]),
+            MP("Includes erroneous data of the wrong type", ["erroneous", "letters", "text", "abc", "blank", "wrong type"]),
+            MP("States the type of each piece of data", ["normal", "boundary", "erroneous", "invalid", "type"]),
+            MP("States an expected result for every test", ["expected", "accepted", "rejected", "error message"]),
+        ], "Test 1 uses the value 14, which is normal data comfortably inside the range, and the expected result is that it is accepted. Test 2 uses the value 11, which is boundary data at the lower edge of the accepted range, and the expected result is that it is accepted because the range is inclusive. Test 3 uses the value 19, which is boundary data just outside the upper edge, and the expected result is that it is rejected with an error message asking the user to try again. Test 4 uses the entry abc, which is erroneous data of the wrong type entirely, and the expected result is that the program rejects it with a clear message rather than crashing when it attempts to convert text into a number. A fifth useful test would be the value 10, checking the lower boundary from outside, since an error at one end of a range does not guarantee an error at the other."),
+
+        EQ("Explain the difference between a syntax error and a logic error, giving an example of each.", 4, [
+            MP("A syntax error breaks the rules of the programming language", ["rules", "syntax", "grammar", "invalid"]),
+            MP("The program will not run at all until it is corrected", ["will not run", "cannot run", "does not execute"]),
+            MP("A logic error means the program runs but produces the wrong result", ["runs", "wrong result", "incorrect", "unexpected"]),
+            MP("Gives valid examples such as a missing bracket and a wrong operator", ["missing bracket", "colon", "spelling", "wrong operator", "plus instead", "greater than"]),
+        ], "A syntax error is a mistake in the way the code is written, such as a missing colon at the end of an if statement or an unclosed bracket, and because the code breaks the rules of the language the program will not run at all until it is fixed. A logic error is different: the code is perfectly valid and the program runs without complaint, but the instructions do not do what the programmer intended, so the output is wrong. An example is writing total = total minus price when calculating a shopping basket, or using a greater than sign where greater than or equal to was needed, which produces the wrong answer only at the boundary value. Logic errors are more dangerous because nothing alerts the programmer to them and they can only be found by careful testing."),
     ],
 )
 
@@ -323,14 +358,14 @@ J277_P2 = Paper(
 
 H446_P1 = Paper(
     slug="h446-paper-1-a",
-    title="A Level Computer Science Paper 1: Computer Systems",
+    title="A Level Computer Science Shorter Paper 1: Computer Systems",
     course="A Level Computer Science",
     board="OCR",
     code="H446/01 style",
     minutes=110,
     marks=0,
     accent="var(--deep)",
-    blurb="An original paper in the style of H446/01, covering processors, software and development, exchanging data, data types and structures, and legal and ethical issues.",
+    blurb="A shorter practice paper in the style of H446/01, about half the length of the real paper and timed at the same pace, covering processors, software and development, exchanging data, data types and structures, and legal and ethical issues.",
     advice="The extended response questions are levels marked, so structure, balance and a supported conclusion matter as much as the content. Use precise technical vocabulary, because a single correct term communicates more than a paragraph of description.",
     questions=[
         EQ("Describe the role of the Current Instruction Register and the status register within the processor.", 4, [
@@ -459,14 +494,14 @@ H446_P1 = Paper(
 
 H446_P2 = Paper(
     slug="h446-paper-2-a",
-    title="A Level Computer Science Paper 2: Algorithms and Programming",
+    title="A Level Computer Science Shorter Paper 2: Algorithms and Programming",
     course="A Level Computer Science",
     board="OCR",
     code="H446/02 style",
     minutes=110,
     marks=0,
     accent="var(--purple)",
-    blurb="An original paper in the style of H446/02, covering computational thinking, programming techniques, computational methods and algorithms including complexity and pathfinding.",
+    blurb="A shorter practice paper in the style of H446/02, about half the length of the real paper and timed at the same pace, covering computational thinking, programming techniques, computational methods and algorithms including complexity and pathfinding.",
     advice="Write code in OCR reference language or a high level language of your choice, but be consistent. On algorithm questions, show the trace in full. On extended questions, justify every choice against the scenario given.",
     questions=[
         EQ("Explain the difference between representational abstraction and abstraction by generalisation.", 4, [
@@ -582,14 +617,14 @@ H446_P2 = Paper(
 
 R093_P1 = Paper(
     slug="r093-paper-a",
-    title="Creative iMedia R093: Creative iMedia in the Media Industry",
+    title="Creative iMedia R093 Shorter Paper: Creative iMedia in the Media Industry",
     course="Creative iMedia",
     board="OCR",
     code="R093 style",
     minutes=75,
     marks=0,
     accent="var(--lilac-deep)",
-    blurb="An original paper in the style of the R093 examined unit, covering the media industry, factors influencing product design, pre-production planning and distribution.",
+    blurb="A shorter practice paper in the style of the R093 examined unit, about three quarters of the length of the real paper and timed at the same pace, covering the media industry, factors influencing product design, pre-production planning and distribution.",
     advice="Read the scenario carefully and refer to it directly in your answers. Marks are awarded for applying knowledge to the situation described, not for general statements about media production.",
     questions=[
         EQ("Identify two job roles in the post-production stage of a video project and describe what each does.", 4, [
@@ -686,15 +721,17 @@ R093_P1 = Paper(
 ALL_PAPERS = [J277_P1, J277_P2, H446_P1, H446_P2, R093_P1]
 for _p in ALL_PAPERS:
     _p.marks = sum(q.marks for q in _p.questions)
-
-# These first papers are shorter than the real ones, so their time is scaled to
-# the real paper's marks per minute: J277 allows 90 minutes for 80 marks, H446
-# 150 minutes for 140, R093 90 for 70.
-_RATIO = {"J277/01 style": 1.125, "J277/02 style": 1.125,
-          "H446/01 style": 1.071, "H446/02 style": 1.071, "R093 style": 1.286}
-for _p in ALL_PAPERS:
-    _p.minutes = int(round(_p.marks * _RATIO.get(_p.code, 1.1)))
     _p.spec = _p.code.split("/")[0].split()[0]
+
+# The two J277 papers are full length, 80 marks in 90 minutes as the real ones
+# are, and are checked against those figures like every full paper. The H446
+# and R093 papers here are shorter than the real ones and are labelled as such;
+# their time is scaled to the real paper's pace, 150 minutes for 140 marks at
+# H446 and 90 minutes for 70 at R093.
+SHORT_PAPERS = [H446_P1, H446_P2, R093_P1]
+_PACE = {"H446/01 style": 150 / 140, "H446/02 style": 150 / 140, "R093 style": 90 / 70}
+for _p in SHORT_PAPERS:
+    _p.minutes = int(round(_p.marks * _PACE[_p.code]))
 
 # Key Stage 3: the end of year assessments, and two exams for every unit.
 from content.ks3_papers import ALL_KS3_PAPERS  # noqa: E402
@@ -778,7 +815,9 @@ def _paper_page(paper):
     cover_rows.append(("Calculator", paper.calculator))
     lines = ["Answer <b>all</b> the questions.",
              "The number of marks for each question is shown in brackets. Use it as a guide to how much to write.",
-             "The clock at the top counts down from the real time allowed. When it reaches zero the paper is locked and marked, as it would be collected in the exam hall."]
+             ("The clock at the top counts down from the real time allowed." if paper.full else
+              "The clock at the top counts down from the time allowed for this paper.") +
+             " When it reaches zero the paper is locked and marked, as it would be collected in the exam hall."]
     lines += [esc(x) for x in paper.instructions]
     lines.append(esc(paper.advice))
     cover = """<div class="card paper-cover">
@@ -816,11 +855,15 @@ def _paper_page(paper):
                  "written answers are marked against a mark scheme in the same style as a GCSE paper, so the format is "
                  "familiar long before it counts.")
     else:
-        about = ("This is an original paper written to match the structure, question style, command words and mark "
-                 "allocation of the real %s %s assessment, with the time scaled to the same marks per minute. It is not a "
-                 "past paper. Real past papers are the copyright of the exam board and cannot be republished here, so links "
-                 "to the official papers on the board's own site are provided on the <a href=\"/exam-papers/\">exam papers page</a>."
-                 % (esc(paper.board), esc(paper.code)))
+        real_code = paper.code.replace(" style", "")
+        real_marks, real_minutes = papercheck.OFFICIAL[real_code]
+        about = ("This is a <b>shorter practice paper</b>: %d marks in %s, where the real %s %s is %d marks in %s. It is "
+                 "written to match the real paper's question style, command words and mark tariffs, and timed at the same "
+                 "number of marks per minute, so it fits a lesson or a homework and still trains your pace. For the full "
+                 "experience, sit one of the full length %s papers. It is not a past paper: real past papers are the copyright "
+                 "of the exam board, so links to them are on the <a href=\"/exam-papers/\">exam papers page</a>."
+                 % (paper.marks, duration(paper.minutes), esc(paper.board), esc(real_code), real_marks,
+                    duration(real_minutes), esc(paper.spec)))
 
     harness = ""
     if has_code:
@@ -855,7 +898,7 @@ def _paper_page(paper):
     </div>
   </div>
 </div>%s""" % (crumbs(trail), bar, esc(paper.board), esc(paper.code), ico("i-clock"), duration(paper.minutes),
-             ico("i-paper"), paper.marks, ico("i-pen"), "Full length paper" if paper.full else "Original paper",
+             ico("i-paper"), paper.marks, ico("i-pen"), "Full length paper" if paper.full else "Unit exam" if paper.unit else "Original paper" if paper.spec == "KS3" else "Shorter paper",
              esc(paper.title), esc(paper.blurb), cover, qs, ico("i-info"), about, harness)
 
     ld = [crumbs_ld(trail), {
@@ -906,11 +949,10 @@ def _tile(p, path):
             '<span class="tile-icon">%s</span><h3>%s</h3><p>%s</p>'
             '<span class="tile-meta"><span>%d marks</span><span>%s</span><span>%s</span></span></a>'
             % (path, ico("i-paper"), esc(p.title), esc(p.blurb), p.marks, duration(p.minutes),
-               "Full length" if p.full else esc(p.board + " " + p.code)))
+               "Full length" if p.full else esc(p.board + " " + p.code) if p.spec == "KS3" else "Shorter paper"))
 
 
 def build(register, add_search, *_):
-    from mskbuild import papercheck
     letters = papercheck.validate(ALL_PAPERS)
     print("Exam papers proved: %d papers, %d marks; tick box answers %s" % (
         len(ALL_PAPERS), sum(p.marks for p in ALL_PAPERS),

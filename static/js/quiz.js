@@ -535,6 +535,13 @@
     }
   });
 
+  /* A report link carries the page it came from, so the report names the
+     exact paper or topic as well as the question. */
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("[data-report]");
+    if (a && a.href.indexOf("page=") < 0) a.href += "&page=" + encodeURIComponent(location.pathname);
+  });
+
   function runCode(box, btn) {
     var out = box.querySelector(".xq-code-out"), code = out.querySelector("code");
     if (!window.MskPython) {

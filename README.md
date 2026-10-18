@@ -76,6 +76,7 @@ content/
   papers_full.py      Full length papers for each board (papers_j277.py, papers_aqa.py, ...)
   ks3_exams*.py       Key Stage 3 unit exams, two for every unit
   pages.py            About, privacy, accessibility, how to revise, glossary
+  contact_page.py     Contact and report a problem (the form opens the reader's own email), and For teachers
 static/
   css/site.css        Design system, light and dark themes
   js/app.js           Theme, navigation, search, progress

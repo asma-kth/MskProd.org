@@ -1712,3 +1712,23 @@ h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
 .unit-exams li:last-child { border-bottom: 0; }
 .unit-exam-links { display: inline-flex; gap: .7rem; flex: none; }
 .unit-exam-links a { font-weight: 650; }
+
+/* Contact: the form writes an email for the reader's own mail program. */
+.contact-card h2 { font-size: var(--step-1); display: flex; align-items: center; gap: .5rem; margin-bottom: .6rem; }
+.contact-email { font-size: var(--step-1); font-weight: 700; overflow-wrap: anywhere; }
+.contact-form { margin-bottom: var(--sp-6); }
+.contact-form h2 { font-size: var(--step-1); margin-bottom: .4rem; }
+.contact-form label { display: block; font-weight: 600; font-size: .92rem; margin: 1.05rem 0 .35rem; }
+.contact-form input, .contact-form select, .contact-form textarea {
+  width: 100%; padding: .7rem .9rem; border: 1.5px solid var(--border-strong); border-radius: var(--r-m);
+  font: inherit; font-size: .95rem; line-height: 1.5; background: var(--surface-2); color: var(--ink);
+}
+.contact-form input:focus, .contact-form select:focus, .contact-form textarea:focus { border-color: var(--teal); background: var(--surface); }
+.contact-form textarea { resize: vertical; min-height: 8rem; }
+.contact-form .btn-row { margin-top: 1.3rem; }
+.contact-status { margin: .9rem 0 0; font-size: .92rem; color: var(--ink-3); white-space: pre-wrap; }
+.contact-status:empty { display: none; }
+.footer-report { margin: 0 0 var(--sp-4); }
+.footer-report a { text-decoration: underline; }
+.xq-report { margin: .9rem 0 0; font-size: .85rem; }
+.xq-report a { color: var(--ink-3); }

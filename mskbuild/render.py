@@ -5,6 +5,7 @@ and students with JavaScript disabled both get the full text. JavaScript only
 adds interactivity on top.
 """
 import html
+from urllib.parse import quote
 import json
 import os
 import re
@@ -17,6 +18,7 @@ from .models import Topic, Unit, Course, Q, EQ
 
 SITE_NAME = "MskProd Computing"
 SITE_URL = "https://mskprod.org"
+CONTACT_EMAIL = "a.kethiri@mskprod.org"
 TAGLINE = "UK computing revision, built for the top grade"
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -251,7 +253,7 @@ def layout(*, title: str, description: str, path: str, body: str,
         menu=ico("i-menu"),
         body=body,
         py_attr=py_attr,
-        footer=footer(),
+        footer=footer(path),
         search_shell=search_shell(),
         mascot=mascot(),
         scripts="".join('<script src="%s" defer></script>' % s for s in scripts),
@@ -285,7 +287,8 @@ def mascot() -> str:
 </div>""" % (ico("i-cross"), mascot_svg())
 
 
-def footer() -> str:
+def footer(path: str = "") -> str:
+    report = "/contact/?page=" + quote(path, safe="/") if path else "/contact/"
     return """<footer class="site-footer">
   <div class="wrap">
     <div class="footer-grid">
@@ -320,16 +323,20 @@ def footer() -> str:
         <h4>Site</h4>
         <ul>
           <li><a href="/about/">About</a></li>
+          <li><a href="/teachers/">For teachers</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="/accessibility/">Accessibility</a></li>
           <li><a href="/privacy/">Privacy policy</a></li>
         </ul>
       </div>
     </div>
+    <p class="footer-report">Spotted a mistake, a broken link or something you cannot use? <a href="%s">Report a problem with this page</a>, or email <a href="mailto:%s">%s</a>.</p>
     <div class="footer-bottom">
       <span>Copyright MskProd Computing. Content written independently and not endorsed by any exam board.</span>
       <span>No accounts and no subscription. Adverts are served by Google, as set out in the <a href="/privacy/">privacy policy</a>.</span>
     </div>
   </div>
-</footer>""" % logo_svg("")
+</footer>""" % (logo_svg(""), esc(report), CONTACT_EMAIL, CONTACT_EMAIL)
 
 
 # ============================================================== components
@@ -629,6 +636,7 @@ def _examq_html(q: EQ, i: int, slug: str) -> str:
       <ul>%s</ul>
       %s
       %s
+      <p class="xq-report"><a href="/contact/?type=answer&amp;q=%s" data-report>Think this answer or mark scheme is wrong? Report it</a></p>
     </div>
   </div>
 </div>""" % (esc(kind), q.marks, esc(qid), esc(label), _stem_html(q.stem), q.marks,
@@ -637,7 +645,7 @@ def _examq_html(q: EQ, i: int, slug: str) -> str:
              ('<div class="model-answer"><b>%s</b>%s</div>' % ("Model answer" if kind != "code" else
                                                                "An answer that scores full marks" if q.code.lang == "sql" else
                                                                "A program that scores full marks", model)) if model else "",
-             self_mark)
+             self_mark, quote(label, safe=""))
 
 
 def render_exam(topic_slug: str, questions: List[EQ], title: str = "Exam-style questions",

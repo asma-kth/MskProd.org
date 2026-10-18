@@ -230,6 +230,30 @@ def build_home():
 <section class="section">
   <div class="wrap">
     <div class="grid grid-2" style="align-items:center;gap:var(--sp-6)">
+      <div>
+        <span class="eyebrow"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-user"></use></svg> Who writes this</span>
+        <h2>Written by a head of computing</h2>
+        <p class="lead">MskProd Computing is written by Asma Kethiri, Head of Computing at a secondary school in London,
+        where students make strong progress and achieve high results every year. The same teaching is here for every
+        student, free, from Key Stage 3 to A Level.</p>
+        <div class="btn-row" style="margin-top:1.4rem">
+          <a class="btn btn-secondary" href="/about/">Why I built this site</a>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:var(--step-1)">Teachers: resources on request</h3>
+        <p style="color:var(--ink-3);font-size:.95rem">Use anything here with your classes, free. If you need a test,
+        a worksheet or a topic that is not on the site yet, ask, and it can be made for you.</p>
+        <div class="btn-row"><a class="btn btn-primary btn-sm" href="/teachers/">For teachers</a>
+        <a class="btn btn-secondary btn-sm" href="/contact/?type=teacher">Request a resource</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="grid grid-2" style="align-items:center;gap:var(--sp-6)">
       <div class="center">%s</div>
       <div>
         <span class="eyebrow">%s Meet Pixel</span>
@@ -258,6 +282,8 @@ def build_home():
         "name": SITE_NAME, "url": SITE_URL,
         "description": "Free computing revision for UK students at Key Stage 3, GCSE and A Level.",
         "logo": SITE_URL + "/assets/img/logo.svg",
+        "email": render.CONTACT_EMAIL,
+        "founder": {"@type": "Person", "name": "Asma Kethiri", "jobTitle": "Head of Computing"},
     }, {
         "@context": "https://schema.org", "@type": "WebSite",
         "name": SITE_NAME, "url": SITE_URL, "inLanguage": "en-GB",
@@ -595,6 +621,9 @@ def main():
 
     from content import assign_page
     assign_page.build(register, add_search)
+
+    from content import contact_page
+    contact_page.build(register, add_search)
 
     placements.check(PLACED)
     check_icons()
