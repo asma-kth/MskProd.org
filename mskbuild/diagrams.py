@@ -2889,3 +2889,4 @@ from . import diagrams_imedia_nea  # noqa: E402,F401
 # and the 3D and network helpers in diagrams_ai_kit, one module per few levels.
 from . import diagrams_ai1  # noqa: E402,F401
 from . import diagrams_ai2  # noqa: E402,F401
+from . import diagrams_ai3  # noqa: E402,F401

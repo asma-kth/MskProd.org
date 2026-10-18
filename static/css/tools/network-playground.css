@@ -1,0 +1,32 @@
+/* Network playground. The plot of the data and the network's regions, with
+   the live statistics and a diagram of the weights beside it, stacking on a
+   phone. The plot draws in fixed vivid colours at partial opacity. */
+.tool[data-tool="network-playground"] .np-wrap {
+  display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-start;
+}
+.tool[data-tool="network-playground"] .np-plot {
+  flex: 1 1 15rem; min-width: 0; max-width: 22rem; width: 100%; height: auto; aspect-ratio: 1;
+  border-radius: var(--r-s); border: 1px solid var(--border); background: var(--surface-2);
+}
+.tool[data-tool="network-playground"] .np-side { flex: 1 1 14rem; min-width: 0; }
+.tool[data-tool="network-playground"] .np-stats {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; margin-bottom: .7rem;
+}
+.tool[data-tool="network-playground"] .np-stat {
+  display: flex; flex-direction: column; gap: .15rem; padding: .5rem .6rem;
+  border-radius: var(--r-s); background: var(--surface-2); border: 1px solid var(--border);
+}
+.tool[data-tool="network-playground"] .np-stat span {
+  font-size: .7rem; font-weight: 650; color: var(--ink-3);
+}
+.tool[data-tool="network-playground"] .np-stat b {
+  font-size: 1.15rem; font-weight: 750; color: var(--ink); font-variant-numeric: tabular-nums;
+}
+.tool[data-tool="network-playground"] .np-net {
+  width: 100%; height: auto; border-radius: var(--r-s); background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+.tool[data-tool="network-playground"] .np-lab { font-size: 10px; font-weight: 650; fill: var(--ink-3); }
+.tool[data-tool="network-playground"] .np-lr {
+  font-family: var(--font-mono); font-size: .85rem; color: var(--ink); min-width: 3.4rem;
+}

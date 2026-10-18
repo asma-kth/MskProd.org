@@ -124,6 +124,28 @@ TOOLS = {
                 "an optimiser and a learning rate and watch every ball descend "
                 "in 3D and on the map at once. Drag the surface to turn it.",
     },
+    "neuron-lab": {
+        "title": "Neuron lab",
+        "icon": "i-gate",
+        "blurb": "Turn one neuron's weights and bias and watch its decision "
+                 "boundary turn and slide; then let the perceptron rule learn.",
+        "long": "One artificial neuron with two inputs. Drag w1, w2 and b to move "
+                "its decision boundary across the plane, switch between step and "
+                "sigmoid activations, and train it with Rosenblatt's perceptron rule "
+                "on AND, OR, NAND, two clouds of points, or XOR, which it can never "
+                "learn.",
+    },
+    "network-playground": {
+        "title": "Neural network playground",
+        "icon": "i-layers",
+        "blurb": "Train a small neural network in your browser and watch its "
+                 "decision boundary form, weight by weight.",
+        "long": "Choose a dataset, from two clouds to two interlocking spirals, "
+                "set the number of hidden layers, neurons and the activation, and "
+                "press Train. Every frame runs real forward passes, cross-entropy "
+                "loss, backpropagation and a gradient step, and the shading shows "
+                "the network's output across the whole plane.",
+    },
     "lmc": {
         "title": "Little Man Computer",
         "icon": "i-cpu",
@@ -142,7 +164,7 @@ ORDER = ["base-converter", "file-size", "logic-simulator", "sort-visualiser",
 
 # The AI course's labs. They get their own section on the /tools/ hub page,
 # and are bundled with the rest.
-AI_ORDER = ["kmeans-lab", "loss-landscape"]
+AI_ORDER = ["kmeans-lab", "loss-landscape", "neuron-lab", "network-playground"]
 
 
 def _read(path):

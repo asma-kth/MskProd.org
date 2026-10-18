@@ -1,0 +1,41 @@
+/* Neuron lab. Sliders in a row above the plot; the plot and the truth table
+   side by side on a wide screen and stacked on a phone. The plane's shading
+   is drawn by the script in fixed vivid colours with partial opacity, so it
+   darkens with the page in the dark theme. */
+.tool[data-tool="neuron-lab"] .nl-sliders {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: .6rem 1rem;
+  margin-bottom: .9rem;
+}
+.tool[data-tool="neuron-lab"] .nl-slider {
+  display: grid; grid-template-columns: 1.6rem 1fr 3.2rem; align-items: center; gap: .5rem;
+}
+.tool[data-tool="neuron-lab"] .nl-slider label {
+  font-family: var(--font-mono); font-weight: 700; color: var(--ink-2);
+}
+.tool[data-tool="neuron-lab"] .nl-slider input { width: 100%; min-width: 0; }
+.tool[data-tool="neuron-lab"] .nl-slider output {
+  font-family: var(--font-mono); font-size: .88rem; text-align: right; color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.tool[data-tool="neuron-lab"] .nl-wrap { display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-start; }
+.tool[data-tool="neuron-lab"] .nl-plot { flex: 1 1 16rem; min-width: 0; max-width: 24rem; height: auto; }
+.tool[data-tool="neuron-lab"] .nl-frame { fill: none; stroke: var(--border-strong); }
+.tool[data-tool="neuron-lab"] .nl-grid { stroke: var(--ink-3); stroke-opacity: .25; stroke-dasharray: 3 4; }
+.tool[data-tool="neuron-lab"] .nl-line { stroke: var(--ink); stroke-width: 3; }
+.tool[data-tool="neuron-lab"] .nl-arrow { stroke: #6D28D9; stroke-width: 3.2; }
+.tool[data-tool="neuron-lab"] .nl-arrowhead { fill: #6D28D9; }
+.tool[data-tool="neuron-lab"] .nl-pt { stroke: #fff; stroke-width: 2; }
+.tool[data-tool="neuron-lab"] .nl-wrong { fill: none; stroke: #F59E0B; stroke-width: 3; stroke-dasharray: 4 3; }
+.tool[data-tool="neuron-lab"] .nl-side { flex: 1 1 13rem; min-width: 0; }
+.tool[data-tool="neuron-lab"] .nl-eq {
+  margin: 0 0 .7rem; font-family: var(--font-mono); font-size: .86rem; line-height: 1.8; color: var(--ink-2);
+}
+.tool[data-tool="neuron-lab"] .nl-table {
+  border-collapse: collapse; font-size: .84rem; font-variant-numeric: tabular-nums;
+}
+.tool[data-tool="neuron-lab"] .nl-table th, .tool[data-tool="neuron-lab"] .nl-table td {
+  padding: .25rem .55rem; border-bottom: 1px solid var(--border); text-align: center;
+}
+.tool[data-tool="neuron-lab"] .nl-table th { color: var(--ink-3); font-weight: 650; }
+.tool[data-tool="neuron-lab"] .nl-ok { color: var(--ok); font-weight: 750; }
+.tool[data-tool="neuron-lab"] .nl-bad { color: var(--bad); font-weight: 750; }

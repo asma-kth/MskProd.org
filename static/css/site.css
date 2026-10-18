@@ -1148,6 +1148,19 @@ a.pill:hover { color: var(--accent); background: #fff; }
   --ai-red: #FCA5A5;    --ai-indigo: #A5B4FC; --ai-slate: #CBD5E1;
 }
 .diagram svg { width: 100%; height: auto; display: block; overflow: visible; }
+/* Motion in the AI course figures: gears that turn, signals that travel. Only
+   for readers who have not asked for reduced motion; everyone else sees the
+   same figure standing still, which reads just as well. */
+@media (prefers-reduced-motion: no-preference) {
+  .diagram .ai-spin {
+    transform-box: fill-box; transform-origin: center;
+    animation: ai-spin var(--ai-spin, 12s) linear infinite;
+  }
+  .diagram .ai-spin.ai-rev { animation-direction: reverse; }
+  .diagram .ai-flow { stroke-dasharray: 6 8; animation: ai-flow 1.6s linear infinite; }
+}
+@keyframes ai-spin { to { transform: rotate(360deg); } }
+@keyframes ai-flow { to { stroke-dashoffset: -28; } }
 .diagram .dg-mono { font-family: var(--font-mono); }
 .diagram figcaption {
   margin-top: var(--sp-3); font-size: .88rem; color: var(--ink-3);
