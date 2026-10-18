@@ -167,6 +167,17 @@ TOOLS = {
                 "parallelogram and names the word it lands on. Drag the space to "
                 "turn it and see that the pattern holds from every angle.",
     },
+    "attention-lab": {
+        "title": "Attention lab",
+        "icon": "i-target",
+        "blurb": "Drag a query and some keys, and watch the dot products, the "
+                 "softmax and the blended output change.",
+        "long": "Scaled dot-product attention you can push around. Drag the query "
+                "and key arrows, turn the sharpness up and down, and switch on a "
+                "causal mask. Every score, weight and the blended output update "
+                "as you move, and each token's value is a colour, so the output "
+                "is the colours mixed by the attention weights.",
+    },
     "lmc": {
         "title": "Little Man Computer",
         "icon": "i-cpu",
@@ -186,7 +197,7 @@ ORDER = ["base-converter", "file-size", "logic-simulator", "sort-visualiser",
 # The AI course's labs. They get their own section on the /tools/ hub page,
 # and are bundled with the rest.
 AI_ORDER = ["kmeans-lab", "loss-landscape", "neuron-lab", "network-playground",
-            "convolution-lab", "embedding-space"]
+            "convolution-lab", "embedding-space", "attention-lab"]
 
 
 def _read(path):

@@ -917,8 +917,11 @@ def _plain(text: str) -> str:
 
     The question is authored with `code` and **bold** marks that the page
     renders. A search engine reading the Quiz markup gets the raw string, so
-    it would see the backticks.
+    it would see the backticks. Subscripts and superscripts become the usual
+    plain-text d_k and e^2.
     """
+    text = re.sub(r"~([0-9A-Za-z]+)~", r"_\1", text)
+    text = re.sub(r"\^([0-9A-Za-z+\-/()]+)\^", r"^\1", text)
     return text.replace("`", "").replace("**", "")
 
 

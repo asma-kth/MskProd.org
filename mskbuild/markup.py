@@ -47,8 +47,8 @@ _INLINE_CODE = re.compile(r"`([^`]+)`")
 _BOLD = re.compile(r"\*\*([^*]+)\*\*")
 _ITAL = re.compile(r"(?<![\w*])\*([^*\n]+)\*(?![\w*])")
 _LINK = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
-_SUB = re.compile(r"~([0-9a-z]+)~")
-_SUP = re.compile(r"\^([0-9a-z+-]+)\^")
+_SUB = re.compile(r"~([0-9A-Za-z]+)~")
+_SUP = re.compile(r"\^([0-9A-Za-z+\-/()]+)\^")
 
 
 def inline(text: str) -> str:
