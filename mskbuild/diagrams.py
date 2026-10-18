@@ -2890,3 +2890,4 @@ from . import diagrams_imedia_nea  # noqa: E402,F401
 from . import diagrams_ai1  # noqa: E402,F401
 from . import diagrams_ai2  # noqa: E402,F401
 from . import diagrams_ai3  # noqa: E402,F401
+from . import diagrams_ai4  # noqa: E402,F401

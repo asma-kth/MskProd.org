@@ -1,0 +1,29 @@
+/* Convolution lab. Picture, kernel and feature map in a row on a wide screen,
+   wrapping on a phone. Drawn pixels use the ink colour, so the picture reads
+   in both themes; the feature map uses the course's blue-to-pink scale. */
+.tool[data-tool="convolution-lab"] .cv-wrap {
+  display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-start;
+}
+.tool[data-tool="convolution-lab"] .cv-col { flex: 1 1 12rem; min-width: 0; max-width: 17rem; }
+.tool[data-tool="convolution-lab"] .cv-kcol { flex: 0 1 9rem; }
+.tool[data-tool="convolution-lab"] .cv-cap { margin: 0 0 .35rem; font-size: .8rem; font-weight: 650; color: var(--ink-3); }
+.tool[data-tool="convolution-lab"] .cv-grid {
+  width: 100%; height: auto; display: block; touch-action: none;
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r-s);
+}
+.tool[data-tool="convolution-lab"] .cv-on { fill: var(--ink); cursor: crosshair; }
+.tool[data-tool="convolution-lab"] .cv-off { fill: var(--surface); stroke: var(--border); cursor: crosshair; }
+.tool[data-tool="convolution-lab"] .cv-out { cursor: help; }
+.tool[data-tool="convolution-lab"] .cv-out:focus { outline: none; stroke: #F59E0B; stroke-width: 2; }
+.tool[data-tool="convolution-lab"] .cv-hl { fill: none; stroke: #F59E0B; stroke-width: 3; pointer-events: none; }
+.tool[data-tool="convolution-lab"] .cv-kernel {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .3rem;
+}
+.tool[data-tool="convolution-lab"] .cv-kernel input {
+  width: 100%; text-align: center; font-family: var(--font-mono); padding: .4rem .2rem;
+}
+.tool[data-tool="convolution-lab"] .cv-check label {
+  display: flex; align-items: center; gap: .4rem; font-size: .9rem; text-transform: none;
+  letter-spacing: 0; color: var(--ink-2); font-weight: 600;
+}
+.tool[data-tool="convolution-lab"] .cv-work { min-height: 2.6rem; }

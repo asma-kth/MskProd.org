@@ -146,6 +146,16 @@ TOOLS = {
                 "loss, backpropagation and a gradient step, and the shading shows "
                 "the network's output across the whole plane.",
     },
+    "convolution-lab": {
+        "title": "Convolution lab",
+        "icon": "i-image",
+        "blurb": "Draw a picture, choose or design a 3 × 3 kernel, and see the "
+                 "feature map it produces.",
+        "long": "Paint pixels on a 12 × 12 grid or load a picture, then pick an "
+                "edge, blur or sharpen kernel or type your own weights. The "
+                "feature map updates as you draw, padding and stride change its "
+                "size, and hovering over any cell writes out the sum that made it.",
+    },
     "lmc": {
         "title": "Little Man Computer",
         "icon": "i-cpu",
@@ -164,7 +174,8 @@ ORDER = ["base-converter", "file-size", "logic-simulator", "sort-visualiser",
 
 # The AI course's labs. They get their own section on the /tools/ hub page,
 # and are bundled with the rest.
-AI_ORDER = ["kmeans-lab", "loss-landscape", "neuron-lab", "network-playground"]
+AI_ORDER = ["kmeans-lab", "loss-landscape", "neuron-lab", "network-playground",
+            "convolution-lab"]
 
 
 def _read(path):
