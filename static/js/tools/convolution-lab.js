@@ -149,25 +149,31 @@
           "class": "cv-out" });
         outSvg.appendChild(cell);
       }
-      if (st.hover) {
+      status.textContent = "Feature map " + size + " × " + size + ". Strongest response " + fmt(hi) + ".";
+      st.size = size;
+      paintHover();
+    }
+    // Only the outlines and the working change on hover, so the cells under
+    // the pointer are never rebuilt while it moves.
+    function paintHover() {
+      Array.prototype.forEach.call(wrap.querySelectorAll(".cv-hl"), function (n) { n.parentNode.removeChild(n); });
+      var size = st.size;
+      if (st.hover && st.hover[0] < size && st.hover[1] < size) {
         var hr = st.hover[0], hc = st.hover[1];
-        if (hr < size && hc < size) {
-          outSvg.appendChild(sv("rect", { x: hc * 20, y: hr * 20, width: 20, height: 20, rx: 3, "class": "cv-hl" }));
-          var top = hr * st.stride - st.pad, lft = hc * st.stride - st.pad;
-          inSvg.appendChild(sv("rect", { x: lft * 20, y: top * 20, width: 60, height: 60, rx: 4, "class": "cv-hl" }));
-          var terms = [], i3, j3, sum = 0;
-          for (i3 = 0; i3 < 3; i3++) for (j3 = 0; j3 < 3; j3++) {
-            var rr = top + i3, cc = lft + j3, p = (rr < 0 || cc < 0 || rr >= N || cc >= N) ? 0 : st.img[rr][cc];
-            if (st.k[i3][j3] !== 0 && p !== 0) terms.push(p + "×" + fmt(st.k[i3][j3]));
-            sum += p * st.k[i3][j3];
-          }
-          work.textContent = "Cell (" + (hr + 1) + ", " + (hc + 1) + "): " + (terms.length ? terms.join(" + ") : "every product is 0") +
-            " = " + fmt(sum) + (st.relu ? ", after ReLU " + fmt(Math.max(0, sum)) : "");
+        outSvg.appendChild(sv("rect", { x: hc * 20, y: hr * 20, width: 20, height: 20, rx: 3, "class": "cv-hl" }));
+        var top = hr * st.stride - st.pad, lft = hc * st.stride - st.pad;
+        inSvg.appendChild(sv("rect", { x: lft * 20, y: top * 20, width: 60, height: 60, rx: 4, "class": "cv-hl" }));
+        var terms = [], i3, j3, sum = 0;
+        for (i3 = 0; i3 < 3; i3++) for (j3 = 0; j3 < 3; j3++) {
+          var rr = top + i3, cc = lft + j3, p = (rr < 0 || cc < 0 || rr >= N || cc >= N) ? 0 : st.img[rr][cc];
+          if (st.k[i3][j3] !== 0 && p !== 0) terms.push(p + "×" + fmt(st.k[i3][j3]));
+          sum += p * st.k[i3][j3];
         }
+        work.textContent = "Cell (" + (hr + 1) + ", " + (hc + 1) + "): " + (terms.length ? terms.join(" + ") : "every product is 0") +
+          " = " + fmt(sum) + (st.relu ? ", after ReLU " + fmt(Math.max(0, sum)) : "");
       } else {
         work.textContent = "Hover over, or tab to, a cell of the feature map to see its sum worked out. Pixels are 1 where drawn and 0 elsewhere.";
       }
-      status.textContent = "Feature map " + size + " × " + size + ". Strongest response " + fmt(hi) + ".";
     }
 
     function cellAt(svgEl, ev) {
@@ -187,16 +193,19 @@
     });
     inSvg.addEventListener("pointerup", function () { st.paint = null; });
     inSvg.addEventListener("contextmenu", function (ev) { ev.preventDefault(); });
-    function hoverFrom(ev) { var c = cellAt(outSvg, ev); if (c) { st.hover = c; render(); } }
+    function hoverFrom(ev) {
+      var c = cellAt(outSvg, ev);
+      if (c && !(st.hover && st.hover[0] === c[0] && st.hover[1] === c[1])) { st.hover = c; paintHover(); }
+    }
     outSvg.addEventListener("pointermove", hoverFrom);
     outSvg.addEventListener("focusin", hoverFrom);
     outSvg.addEventListener("keydown", function (ev) {
       if (!st.hover) st.hover = [0, 0];
-      var size = conv().length, r = st.hover[0], c = st.hover[1], used = true;
+      var size = st.size, r = st.hover[0], c = st.hover[1], used = true;
       if (ev.key === "ArrowRight") c = Math.min(size - 1, c + 1); else if (ev.key === "ArrowLeft") c = Math.max(0, c - 1);
       else if (ev.key === "ArrowDown") r = Math.min(size - 1, r + 1); else if (ev.key === "ArrowUp") r = Math.max(0, r - 1);
       else used = false;
-      if (used) { ev.preventDefault(); st.hover = [r, c]; render(); var t = outSvg.querySelector('[data-r="' + r + '"][data-c="' + c + '"]'); if (t) t.focus(); }
+      if (used) { ev.preventDefault(); st.hover = [r, c]; paintHover(); var t = outSvg.querySelector('[data-r="' + r + '"][data-c="' + c + '"]'); if (t) t.focus(); }
     });
     kInputs.forEach(function (inp, n) {
       inp.addEventListener("input", function () {

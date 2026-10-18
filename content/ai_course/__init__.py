@@ -5,7 +5,8 @@ INPUTS and EXPECT are only read by tools/check_python_examples.py. Passing every
 lesson's quiz unlocks the printable certificate at /ai/certificate/.
 """
 from mskbuild.models import Unit, Course
-from . import level01, level02, level03, level04, level05, level06, level07
+from . import (level01, level02, level03, level04, level05, level06, level07,
+               level08, level09)
 
 # (module, unit slug, title, blurb, icon, stage label)
 LEVELS = [
@@ -30,6 +31,12 @@ LEVELS = [
     (level07, "level-7", "Level 7: Neural Networks",
      "Neurons wired into layers: matrix multiplication, the forward pass, hidden layers that reshape space, counting parameters, and backpropagation, built from scratch and used to train a network live.",
      "i-layers", "Level 7 · Builder"),
+    (level08, "level-8", "Level 8: Seeing: Convolutional Networks",
+     "How machines see: kernels that slide across an image to find edges and textures, stride, padding and pooling, feature maps stacked into volumes, and the networks from LeNet to ResNet that turned pixels into predictions.",
+     "i-image", "Level 8 · Practitioner"),
+    (level09, "level-9", "Level 9: Language as Numbers",
+     "How text becomes maths: tokens and byte pair encoding, embeddings where meaning becomes geometry, cosine similarity and word analogies, then language models from n-grams to recurrent networks, LSTMs and the bottleneck that led to attention.",
+     "i-language", "Level 9 · Practitioner"),
 ]
 
 UNITS = [Unit(slug, title, blurb, mod.TOPICS, icon=icon, term=term)

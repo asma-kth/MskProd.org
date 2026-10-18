@@ -156,6 +156,17 @@ TOOLS = {
                 "feature map updates as you draw, padding and stride change its "
                 "size, and hovering over any cell writes out the sum that made it.",
     },
+    "embedding-space": {
+        "title": "Embedding space lab",
+        "icon": "i-language",
+        "blurb": "Spin a 3D space of word vectors, find each word's nearest "
+                 "neighbours and test analogies like king − man + woman.",
+        "long": "Thirty-four words placed as points in three dimensions. Pick a "
+                "word and its nearest neighbours by cosine similarity light up; "
+                "choose three words and the lab computes a − b + c, draws the "
+                "parallelogram and names the word it lands on. Drag the space to "
+                "turn it and see that the pattern holds from every angle.",
+    },
     "lmc": {
         "title": "Little Man Computer",
         "icon": "i-cpu",
@@ -175,7 +186,7 @@ ORDER = ["base-converter", "file-size", "logic-simulator", "sort-visualiser",
 # The AI course's labs. They get their own section on the /tools/ hub page,
 # and are bundled with the rest.
 AI_ORDER = ["kmeans-lab", "loss-landscape", "neuron-lab", "network-playground",
-            "convolution-lab"]
+            "convolution-lab", "embedding-space"]
 
 
 def _read(path):

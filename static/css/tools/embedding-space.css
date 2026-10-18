@@ -1,0 +1,31 @@
+/* Embedding space lab. The rotating 3D view takes the full width so the words
+   have room, with the neighbour list and the legend below it. The canvas draws
+   its own colours; only the chrome follows the theme. */
+.tool[data-tool="embedding-space"] .es-analogy { margin-top: .25rem; }
+.tool[data-tool="embedding-space"] .es-wrap {
+  display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-start; margin-top: .75rem;
+}
+.tool[data-tool="embedding-space"] .es-plot {
+  flex: 1 1 100%; min-width: 0; width: 100%; display: block;
+  border-radius: var(--r-s); background: radial-gradient(ellipse at 50% 35%, var(--surface-2), var(--surface));
+  border: 1px solid var(--border); touch-action: none; cursor: grab;
+}
+.tool[data-tool="embedding-space"] .es-plot:active { cursor: grabbing; }
+.tool[data-tool="embedding-space"] .es-plot:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.tool[data-tool="embedding-space"] .es-side {
+  flex: 1 1 100%; min-width: 0; display: flex; flex-wrap: wrap; gap: .25rem 2rem; align-items: flex-start;
+}
+.tool[data-tool="embedding-space"] .es-side > div { flex: 0 1 auto; min-width: 0; }
+.tool[data-tool="embedding-space"] .es-cap { margin: 0 0 .4rem; font-size: .8rem; font-weight: 650; color: var(--ink-3); }
+.tool[data-tool="embedding-space"] .es-list {
+  margin: 0; padding-left: 1.3rem; font-family: var(--font-mono);
+  font-size: .84rem; line-height: 1.7; color: var(--ink-2);
+}
+.tool[data-tool="embedding-space"] .es-legend {
+  list-style: none; margin: 0; padding: 0; display: grid; gap: .3rem;
+  font-size: .82rem; color: var(--ink-2);
+}
+.tool[data-tool="embedding-space"] .es-dot {
+  display: inline-block; width: .7rem; height: .7rem; border-radius: 50%;
+  margin-right: .4rem; vertical-align: -.05rem; border: 1px solid var(--border-strong);
+}

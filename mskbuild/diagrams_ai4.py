@@ -573,13 +573,13 @@ def _tokenisation():
     """One sentence split into characters, words and subword tokens."""
     body = [text(380, 22, "Three ways to cut text into pieces", 12, 650, fill=MUTED)]
     sentence = "Unbelievably, transformers tokenise text!"
-    rows = [("characters", list(sentence[:30]) + ["…"], 9.2, 0),
+    rows = [("characters", list(sentence[:20]) + ["…"], 9.2, 0),
             ("words", ["Unbelievably", ",", "transformers", "tokenise", "text", "!"], 10.5, 0),
             ("subword tokens", ["Un", "believ", "ably", ",", " transform", "ers", " token", "ise",
                                 " text", "!"], 10.5, 1)]
     ids = [1844, 22324, 2915, 11, 6121, 364, 11241, 786, 2420, 0]
     cycle = [VIOLET, PINK, BLUE, TEAL, ORANGE, GREEN, INDIGO, RED]
-    y = 58
+    y = 44
     for name, pieces, size, show_ids in rows:
         body.append(text(20, y + 20, name, 10.5, 800, anchor="start", fill=INK))
         x = 146
@@ -594,8 +594,8 @@ def _tokenisation():
         count = len(pieces) if name != "characters" else len(sentence)
         body.append(text(740, y + 20, "%d pieces" % count, 9.6, 750, anchor="end",
                          fill=tv(VIOLET)))
-        y += 72 if show_ids else 58
-    body.append(text(20, y + 22, "· marks a space. Subword tokens keep common words whole and split "
+        y += 66 if show_ids else 54
+    body.append(text(20, y + 6, "· marks a space. Subword tokens keep common words whole and split "
                      "rare ones; each gets an ID number (shown here for illustration).", 9.4, 650,
                      anchor="start", fill=MUTED))
     desc = ("The sentence Unbelievably, transformers tokenise text! split three ways. As "
@@ -604,7 +604,7 @@ def _tokenisation():
             "comma, transform with its leading space, ers, token with its leading space, "
             "ise, text with its leading space, and an exclamation mark, each with an ID "
             "number." % len(sentence))
-    return figure("ai-tok", 760, 260, "".join(body), "Tokenising a sentence", desc,
+    return figure("ai-tok", 760, 240, "".join(body), "Tokenising a sentence", desc,
                   "Subwords are the compromise every modern language model uses.")
 
 
@@ -637,7 +637,16 @@ GROUPS3D = [(VIOLET, ["man", "woman", "boy", "girl", "king", "queen", "prince", 
 @diagram("ai-embedding-3d")
 def _embedding_3d():
     """Word vectors as points in 3D: clusters of meaning, and a gender direction."""
-    yaw, pitch, scale, ox, oy = 0.6, 0.42, 168, 330, 200
+    yaw, pitch = 0.6, 0.42
+    floor = -0.8
+    # project once at unit scale, then fit everything, floor included, into the box
+    raw = [project(x, y, z, yaw, pitch, 1, 0, 0) for x, y, z in WORDS3D.values()]
+    raw += [project(x, y, floor, yaw, pitch, 1, 0, 0) for x in (-1, 1) for y in (-1, 1)]
+    xs_, ys_ = [r[0] for r in raw], [r[1] for r in raw]
+    box_l, box_t, box_w, box_h = 30, 46, 560, 296
+    scale = min(box_w / (max(xs_) - min(xs_)), box_h / (max(ys_) - min(ys_)))
+    ox = box_l + (box_w - (max(xs_) - min(xs_)) * scale) / 2.0 - min(xs_) * scale
+    oy = box_t + (box_h - (max(ys_) - min(ys_)) * scale) / 2.0 - min(ys_) * scale
 
     def P(v):
         return project(v[0], v[1], v[2], yaw, pitch, scale, ox, oy)
@@ -645,9 +654,9 @@ def _embedding_3d():
                  fill=MUTED)]
     # floor grid at z = -1
     for k in range(-2, 3):
-        a, b = P((k / 2.0, -1, -1)), P((k / 2.0, 1, -1))
+        a, b = P((k / 2.0, -1, floor)), P((k / 2.0, 1, floor))
         body.append(line(a[0], a[1], b[0], b[1], stroke=LINE, w=0.6, dash="2 4"))
-        a, b = P((-1, k / 2.0, -1)), P((1, k / 2.0, -1))
+        a, b = P((-1, k / 2.0, floor)), P((1, k / 2.0, floor))
         body.append(line(a[0], a[1], b[0], b[1], stroke=LINE, w=0.6, dash="2 4"))
     colour_of = {}
     for colour, ws, _n in GROUPS3D:
@@ -656,7 +665,7 @@ def _embedding_3d():
     items = sorted(WORDS3D.items(), key=lambda kv: -P(kv[1])[2])
     for w, v in items:
         x, y, _d = P(v)
-        fx, fy, _ = P((v[0], v[1], -1))
+        fx, fy, _ = P((v[0], v[1], floor))
         body.append(line(fx, fy, x, y, stroke=LINE, w=0.8, dash="1 3"))
         body.append(circle(fx, fy, 1.8, fill=LINE, stroke="none", w=0))
     for pair, colour in ((("man", "woman"), AMBER), (("king", "queen"), AMBER)):
@@ -665,7 +674,7 @@ def _embedding_3d():
     for w, v in items:
         x, y, _d = P(v)
         body.append(circle(x, y, 5.2, fill=colour_of[w], stroke=FILL, w=1.4))
-        body.append(_halo(x + 7, y - 6, w, 9, 700, "start"))
+        body.append(_halo(x + 7, y - 5, w, 8.6, 700, "start"))
     body.append(tint(620, 56, 126, 176, SLATE, op=0.07, r=12))
     for i, (colour, _ws, name) in enumerate(GROUPS3D):
         body.append(circle(640, 80 + i * 26, 6, fill=colour, stroke=FILL, w=1.4))
@@ -860,38 +869,44 @@ def _lstm_cell():
     """The cell state highway, with forget, input and output gates."""
     body = [text(380, 22, "Inside an LSTM cell: a memory line and three gates", 12, 650,
                  fill=MUTED)]
-    body.append(tint(110, 46, 540, 220, VIOLET, op=0.06, r=18))
-    # cell state highway
-    body.append(path("M40 84 L720 84", stroke=tv(TEAL), w=6))
-    body.append(text(30, 74, "cell state (long-term memory)", 10, 800, anchor="start", fill=tv(TEAL)))
-    for x, sym, colour in ((250, "×", RED), (400, "+", GREEN)):
-        body.append('<circle cx="%d" cy="84" r="17" fill="%s"/>' % (x, colour))
-        body.append(text(x, 91, sym, 18, 800, fill=WHITE))
-    # hidden path
-    body.append(path("M40 236 L720 236", stroke=tv(ORANGE), w=3))
-    body.append(text(30, 254, "hidden state hₜ₋₁ and input xₜ", 9.6, 750, anchor="start", fill=tv(ORANGE)))
-    gates = [(250, RED, "forget gate", "σ: what to erase"),
-             (370, GREEN, "input gate", "σ: what to write"),
-             (440, PURPLE, "candidate", "tanh: new info"),
-             (560, BLUE, "output gate", "σ: what to reveal")]
+    body.append(tint(150, 44, 560, 228, VIOLET, op=0.06, r=18))
+    CY, HY = 80, 248
+    # the cell state highway along the top, the hidden state and input along the bottom
+    body.append(path("M30 %d L740 %d" % (CY, CY), stroke=tv(TEAL), w=6))
+    body.append(text(30, CY - 12, "cell state: long-term memory", 10, 800, anchor="start",
+                     fill=tv(TEAL)))
+    body.append(path("M30 %d L640 %d" % (HY, HY), stroke=tv(ORANGE), w=3))
+    body.append(text(30, HY + 18, "previous hidden state hₜ₋₁ and input xₜ", 9.6, 750,
+                     anchor="start", fill=tv(ORANGE)))
+    gates = [(230, RED, "forget gate", "σ: what to erase"),
+             (350, GREEN, "input gate", "σ: what to write"),
+             (466, VIOLET, "candidate", "tanh: new info"),
+             (590, BLUE, "output gate", "σ: what to reveal")]
     for x, colour, name, sub in gates:
-        fill = colour if colour != PURPLE else VIOLET
-        body.append(solid(x - 46, 150, 92, 46, fill, name, sub, r=10, size=10, sub_size=8.4))
-        body.append(line(x, 236, x, 196, stroke=tv(ORANGE), w=2))
-    body.append(arrow(250, 150, 250, 101, tv(RED), 2.2))
-    body.append(path("M370 150 L370 120 L400 120 L400 101", stroke=tv(GREEN), w=2.2))
-    body.append(path("M440 150 L440 120 L400 120", stroke=tv(VIOLET), w=2.2))
-    body.append('<circle cx="400" cy="120" r="10" fill="%s"/>' % VIOLET)
-    body.append(text(400, 124, "×", 11, 800, fill=WHITE))
-    body.append(path("M560 84 L560 128", stroke=tv(TEAL), w=2.2))
-    body.append(solid(536, 104, 48, 22, TEAL, "tanh", r=8, size=9.4))
-    body.append('<circle cx="608" cy="173" r="11" fill="%s"/>' % BLUE)
-    body.append(text(608, 177, "×", 11, 800, fill=WHITE))
-    body.append(path("M584 115 L608 115 L608 162", stroke=tv(TEAL), w=2))
-    body.append(path("M606 173 L606 173", stroke=tv(BLUE), w=2))
-    body.append(arrow(619, 173, 700, 173, tv(ORANGE), 2.6))
-    body.append(text(706, 177, "hₜ", 11, 800, anchor="start", fill=tv(ORANGE)))
-    body.append(text(380, 288, "the memory line is changed only by × (forget) and + (add): "
+        body.append(line(x, HY, x, 196, stroke=tv(ORANGE), w=2))
+        body.append(solid(x - 50, 150, 100, 46, colour, name, sub, r=10, size=10, sub_size=8.4))
+    # forget: multiply the memory
+    body.append(arrow(230, 150, 230, CY + 18, tv(RED), 2.2))
+    body.append('<circle cx="230" cy="%d" r="16" fill="%s"/>' % (CY, RED))
+    body.append(text(230, CY + 6, "×", 17, 800, fill=WHITE))
+    # input × candidate, then add to the memory
+    body.append(path("M350 150 L350 118 L396 118", stroke=tv(GREEN), w=2.2))
+    body.append(path("M466 150 L466 118 L420 118", stroke=tv(VIOLET), w=2.2))
+    body.append('<circle cx="408" cy="118" r="11" fill="%s"/>' % VIOLET)
+    body.append(text(408, 122, "×", 11, 800, fill=WHITE))
+    body.append(arrow(408, 106, 408, CY + 18, tv(GREEN), 2.2))
+    body.append('<circle cx="408" cy="%d" r="16" fill="%s"/>' % (CY, GREEN))
+    body.append(text(408, CY + 6, "+", 18, 800, fill=WHITE))
+    # output: tanh of the memory, times the output gate
+    body.append(path("M660 %d L660 108" % CY, stroke=tv(TEAL), w=2.2))
+    body.append(solid(636, 108, 48, 22, TEAL, "tanh", r=8, size=9.4))
+    body.append(path("M660 130 L660 162", stroke=tv(TEAL), w=2.2))
+    body.append(path("M640 173 L649 173", stroke=tv(BLUE), w=2.2))
+    body.append('<circle cx="660" cy="173" r="11" fill="%s"/>' % BLUE)
+    body.append(text(660, 177, "×", 11, 800, fill=WHITE))
+    body.append(arrow(671, 173, 730, 173, tv(ORANGE), 2.6))
+    body.append(text(734, 168, "hₜ", 11, 800, anchor="end", fill=tv(ORANGE)))
+    body.append(text(380, 292, "the memory line is changed only by × (forget) and + (add), so "
                      "gradients travel along it far better than through a plain RNN", 9.6, 700,
                      fill=INK))
     desc = ("A schematic LSTM cell. A thick teal line, the cell state or long-term memory, "
@@ -901,8 +916,8 @@ def _lstm_cell():
             "multiplied by a candidate from a tanh layer. At the right, the cell state "
             "goes through tanh and is multiplied by the output gate, a sigmoid deciding "
             "what to reveal, to give the new hidden state h. Along the bottom runs the "
-            "previous hidden state and the input, feeding all the gates.")
-    return figure("ai-lstm", 760, 300, "".join(body), "An LSTM cell", desc,
+            "previous hidden state and the input, feeding all four boxes.")
+    return figure("ai-lstm", 760, 306, "".join(body), "An LSTM cell", desc,
                   "Each gate outputs numbers between 0 (block) and 1 (let through).")
 
 
@@ -918,14 +933,14 @@ def _seq2seq():
     for k, w in enumerate(src):
         x = 30 + k * 76
         body.append(solid(x, 140, 60, 40, BLUE, "enc", r=10, size=10.5))
-        body.append(tint(x + 2, 200, 56, 26, BLUE, w, r=8, size=10.5, op=0.14))
-        body.append(arrow(x + 30, 198, x + 30, 182, LINE, 1.6))
+        body.append(tint(x + 2, 244, 56, 26, BLUE, w, r=8, size=10.5, op=0.14))
+        body.append(arrow(x + 30, 242, x + 30, 182, LINE, 1.6))
         if k < 3:
             body.append(arrow(x + 62, 160, x + 74, 160, tv(BLUE), 2))
     body.append(arrow(330, 160, 354, 160, tv(RED), 2.6))
     body.append('<circle cx="378" cy="160" r="22" fill="%s"/>' % RED)
     body.append(text(378, 165, "1 vec", 9.6, 800, fill=WHITE))
-    body.append(text(378, 206, "the bottleneck", 10, 800, fill=tv(RED)))
+    body.append(text(378, 128, "the bottleneck", 10, 800, fill=tv(RED)))
     body.append(arrow(402, 160, 426, 160, tv(RED), 2.6))
     for k, w in enumerate(tgt):
         x = 432 + k * 76
@@ -939,10 +954,10 @@ def _seq2seq():
     for k in range(4):
         ex = 30 + k * 76 + 30
         wgt = [0.1, 0.55, 0.25, 0.1][k]
-        body.append('<path d="M%d 182 C %d 262, %d 262, %d 182" fill="none" stroke="%s" '
+        body.append('<path d="M%d 182 C %d 228, %d 228, %d 182" fill="none" stroke="%s" '
                     'stroke-width="%.1f" stroke-opacity="0.85" stroke-dasharray="5 4"/>'
                     % (dx, dx - 40, ex + 40, ex, AMBER, 1 + wgt * 7))
-    body.append(text(380, 286, "attention (2014): while writing “noir”, look back at every "
+    body.append(text(380, 292, "attention (2014): while writing “noir”, look back at every "
                      "encoder state, most strongly at “black”", 9.8, 750, fill=INK))
     body.append(text(180, 70, "encoder reads the source", 10, 800, fill=tv(BLUE)))
     body.append(text(588, 70, "decoder writes the translation", 10, 800, fill=tv(PINK)))
@@ -952,5 +967,5 @@ def _seq2seq():
             "dort. Dashed amber curves of different thicknesses show attention: while "
             "writing noir, the decoder looks back at every encoder state, most strongly at "
             "black.")
-    return figure("ai-s2s", 760, 300, "".join(body), "The sequence-to-sequence bottleneck",
+    return figure("ai-s2s", 760, 304, "".join(body), "The sequence-to-sequence bottleneck",
                   desc, "Attention removed the bottleneck, and then replaced the RNNs entirely.")
