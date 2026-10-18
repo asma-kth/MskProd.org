@@ -43,7 +43,8 @@ import tempfile
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 
-NEW_MODULES = ["content.python_gcse", "content.python_alevel", "content.python_advanced"]
+NEW_MODULES = ["content.python_gcse", "content.python_alevel", "content.python_advanced",
+               "content.ai_course"]
 SLOW_MS = 2500        # the budget for one block under Pyodide
 
 

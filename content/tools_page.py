@@ -1,6 +1,6 @@
 """The interactive tools hub and one page per tool."""
 from mskbuild import markup
-from mskbuild.tools import TOOLS, ORDER
+from mskbuild.tools import TOOLS, ORDER, AI_ORDER
 from mskbuild.render import (layout, crumbs, crumbs_ld, ico, esc, write)
 
 INTRO = ("Reading about a truth table is not the same as building one. These tools let "
@@ -119,17 +119,20 @@ def _page(path, title, description, trail, body_md):
 
 def build(register, add_search):
     # ------------------------------------------------------------ the hub
-    cards = []
-    for name in ORDER:
-        meta = TOOLS[name]
-        cards.append(
+    def tiles(names):
+        return "".join(
             '<a class="tile" href="/tools/%s/">'
             '<span class="tile-icon">%s</span><h3>%s</h3><p>%s</p></a>'
-            % (name, ico(meta["icon"], "icon"), esc(meta["title"]), esc(meta["blurb"])))
+            % (name, ico(TOOLS[name]["icon"], "icon"), esc(TOOLS[name]["title"]),
+               esc(TOOLS[name]["blurb"])) for name in names)
+    cards = [tiles(ORDER)]
     trail = [("Home", "/"), ("Tools", None)]
     body = """<div class="wrap">
   %s
   <header class="section-head"><h1>Interactive tools</h1><p class="lead">%s</p></header>
+  <div class="grid grid-3">%s</div>
+  <header class="section-head" style="margin-top:var(--sp-7)"><h2>AI labs</h2>
+    <p class="lead">From the <a href="/ai/">Artificial Intelligence course</a>: watch models learn, in colour and in 3D.</p></header>
   <div class="grid grid-3">%s</div>
   <header class="section-head" style="margin-top:var(--sp-7)"><h2>Games</h2>
     <p class="lead">Practice that does not feel like practice.</p></header>
@@ -137,18 +140,20 @@ def build(register, add_search):
     <a class="tile" href="/pixel-run/"><span class="tile-icon">%s</span><h3>Pixel Run</h3>
       <p>A platformer where every obstacle is a Python function to write. Ten levels, from print to Dijkstra's algorithm.</p></a>
   </div>
-</div>""" % (crumbs(trail), esc(INTRO), "".join(cards), ico("i-flag", "icon"))
+</div>""" % (crumbs(trail), esc(INTRO), "".join(cards), tiles(AI_ORDER), ico("i-flag", "icon"))
     path = "/tools/"
     write(path, layout(title="Interactive Computing Tools",
                        description=INTRO, path=path, body=body, active="/tools/",
                        jsonld=[crumbs_ld(trail)]))
     register(path, 0.8, "monthly")
-    add_search("Interactive tools", path, "Six tools you can actually use",
+    add_search("Interactive tools", path, "%d tools and AI labs you can actually use"
+               % (len(ORDER) + len(AI_ORDER)),
                "tools converter binary hex logic gates simulator sorting trace table "
-               "little man computer file size calculator interactive")
+               "little man computer file size calculator interactive ai labs neural "
+               "network k-means gradient descent attention embeddings")
 
     # ------------------------------------------------------ one per tool
-    for name in ORDER:
+    for name in ORDER + AI_ORDER:
         meta = TOOLS[name]
         tpath = "/tools/%s/" % name
         ttrail = [("Home", "/"), ("Tools", "/tools/"), (meta["title"], None)]

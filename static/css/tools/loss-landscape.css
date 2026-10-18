@@ -1,0 +1,33 @@
+/* Loss landscape lab. The 3D view takes most of the width, with the contour
+   map and the list of balls beside it on a wide screen and below it on a
+   phone. The canvases draw their own vivid colours, so only the chrome here
+   follows the theme. */
+.tool[data-tool="loss-landscape"] .ll-wrap {
+  display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-start;
+}
+.tool[data-tool="loss-landscape"] .ll-3d {
+  flex: 2 1 20rem; min-width: 0; width: 100%; display: block;
+  border-radius: var(--r-s); background: radial-gradient(ellipse at 50% 30%, var(--surface-2), var(--surface));
+  border: 1px solid var(--border); touch-action: none; cursor: grab;
+}
+.tool[data-tool="loss-landscape"] .ll-3d:active { cursor: grabbing; }
+.tool[data-tool="loss-landscape"] .ll-3d:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.tool[data-tool="loss-landscape"] .ll-side { flex: 1 1 11rem; min-width: 0; max-width: 16rem; }
+.tool[data-tool="loss-landscape"] .ll-map {
+  width: 100%; display: block; border-radius: var(--r-s); cursor: crosshair;
+  border: 1px solid var(--border); touch-action: manipulation;
+}
+.tool[data-tool="loss-landscape"] .ll-cap { margin: .35rem 0 .5rem; font-size: .8rem; color: var(--ink-3); }
+.tool[data-tool="loss-landscape"] .ll-list {
+  margin: 0; padding-left: 1.2rem; font-size: .84rem; line-height: 1.6; color: var(--ink-2);
+}
+.tool[data-tool="loss-landscape"] .ll-list li { margin: .1rem 0; }
+.tool[data-tool="loss-landscape"] .ll-empty { list-style: none; margin-left: -1.2rem; color: var(--ink-3); }
+.tool[data-tool="loss-landscape"] .ll-dot {
+  display: inline-block; width: .7rem; height: .7rem; border-radius: 50%;
+  margin-right: .4rem; vertical-align: -.05rem; border: 1px solid var(--border-strong);
+}
+.tool[data-tool="loss-landscape"] .ll-lr {
+  font-family: var(--font-mono); font-size: .85rem; color: var(--ink); min-width: 3.5rem;
+}
+.tool[data-tool="loss-landscape"] .ll-hint { font-size: .82rem; }

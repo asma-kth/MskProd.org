@@ -608,7 +608,14 @@ DEFAULT_BY_COURSE = {"ks3": "code", "ks4/computer-science": "cpu", "ks4/aqa-comp
                      "ks4/imedia": "media", "ks5": "code", "python": "code", "data-analytics": "analytics"}
 
 
+# The AI course chooses its pictures lesson by lesson, because the general rules
+# would read "neural-networks" as computer networks.
+AI_MOTIFS = {}
+
+
 def motif_for(course_slug, topic_slug):
+    if course_slug == "ai":
+        return AI_MOTIFS.get(topic_slug, "ai")
     for word, name in RULES:
         if word in topic_slug:
             return name
@@ -617,7 +624,8 @@ def motif_for(course_slug, topic_slug):
 
 # the picture on each course's own page, chosen so that the three GCSE boards do not look alike
 COURSE_MOTIF = {"ks3": "people", "ks4/computer-science": "cpu", "ks4/aqa-computer-science": "network", "ks4/edexcel-computer-science": "logic",
-                "ks4/imedia": "media", "ks5": "complexity", "python": "code", "data-analytics": "analytics"}
+                "ks4/imedia": "media", "ks5": "complexity", "python": "code", "data-analytics": "analytics",
+                "ai": "ai"}
 
 
 def course_banner(course_slug):

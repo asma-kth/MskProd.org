@@ -2884,3 +2884,8 @@ from . import diagrams_f202  # noqa: E402,F401
 # The Creative iMedia coursework units, R094 and R097: the identity, the
 # graphic, the interactive product and its review, on two invented briefs.
 from . import diagrams_imedia_nea  # noqa: E402,F401
+
+# The AI course, taught in numbered levels. Its figures share a vivid palette
+# and the 3D and network helpers in diagrams_ai_kit, one module per few levels.
+from . import diagrams_ai1  # noqa: E402,F401
+from . import diagrams_ai2  # noqa: E402,F401

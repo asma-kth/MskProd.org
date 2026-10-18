@@ -179,6 +179,10 @@ class Course:
     # One extra button in the course hero: (label, href, icon). The Python
     # course uses it to point at the game that practises it.
     extra_cta: Tuple[str, str, str] = ()
+    # A course taught in numbered levels with no exam behind it, such as the AI
+    # course: its page counts levels and lessons, and links to its tools
+    # rather than to exam papers.
+    levels: bool = False
 
 
 @dataclass

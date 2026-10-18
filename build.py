@@ -129,6 +129,8 @@ def build_home():
                            "OCR Cambridge Advanced National. F200 and F201, the exam units, and F202, the spreadsheet modelling coursework, with graphs and interactive models."),
         "python": ("Python from scratch", "/python/", "i-python",
                    "From your first line of code to GCSE and A Level programming, advanced Python, simulation and machine learning, with a platformer to practise it in."),
+        "ai": ("Artificial Intelligence: Zero to Hero", "/ai/", "i-sparkle",
+               "Fifteen levels from the history of AI to neural networks, transformers, generative AI and agents. Build your own AI and earn a printable certificate."),
     }
     for slug, (title, href, icon, blurb) in meta.items():
         course = next((c for c in COURSES if c.slug == slug), None)
@@ -139,8 +141,9 @@ def build_home():
         cards.append(
             '<a class="tile" href="%s">'
             '<span class="tile-icon">%s</span><h3>%s</h3><p>%s</p>'
-            '<span class="tile-meta"><span>%d topics</span><span>%d quiz questions</span></span></a>'
-            % (href, ico(icon, "icon"), esc(title), esc(blurb), n_top, n_q))
+            '<span class="tile-meta"><span>%d %s</span><span>%d quiz questions</span></span></a>'
+            % (href, ico(icon, "icon"), esc(title), esc(blurb), n_top,
+               "lessons" if course.levels else "topics", n_q))
 
     body = """<section class="hero">
   <div class="wrap hero-grid">
@@ -574,7 +577,7 @@ def main():
     from content import ks4_cs
     modules = [ks4_cs]
     for name in ("aqa_gcse", "edexcel_gcse", "ks3", "ks4_imedia", "ks5",
-                 "data_analytics", "python_course"):
+                 "data_analytics", "python_course", "ai_course"):
         try:
             mod = __import__("content." + name, fromlist=["COURSE"])
             modules.append(mod)

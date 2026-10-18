@@ -1133,6 +1133,20 @@ a.pill:hover { color: var(--accent); background: #fff; }
   --dg-mark-ink:    #FFF4CC;
   --dg-link:        #9CC0FF;
 }
+/* The AI course's vivid hues, for text and lines drawn straight on the page.
+   Light theme: the saturated colour, dark enough for text. Dark theme: a
+   lighter tint of the same hue, so it keeps its contrast on a dark panel.
+   Filled shapes behind white text use fixed colours and do not need these. */
+.diagram, .tool {
+  --ai-violet: #6D28D9; --ai-pink: #BE185D; --ai-blue: #1D4ED8;
+  --ai-teal: #0F766E;   --ai-green: #15803D; --ai-orange: #C2410C;
+  --ai-red: #B91C1C;    --ai-indigo: #4338CA; --ai-slate: #475569;
+}
+[data-theme="dark"] .diagram, [data-theme="dark"] .tool {
+  --ai-violet: #C4B5FD; --ai-pink: #F9A8D4; --ai-blue: #93C5FD;
+  --ai-teal: #5EEAD4;   --ai-green: #86EFAC; --ai-orange: #FDBA74;
+  --ai-red: #FCA5A5;    --ai-indigo: #A5B4FC; --ai-slate: #CBD5E1;
+}
 .diagram svg { width: 100%; height: auto; display: block; overflow: visible; }
 .diagram .dg-mono { font-family: var(--font-mono); }
 .diagram figcaption {

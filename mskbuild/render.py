@@ -74,6 +74,7 @@ NAV = [
     ("A Level", "/ks5/", "i-brain"),
     ("Data", "/data-analytics/", "i-chart"),
     ("Python", "/python/", "i-python"),
+    ("AI", "/ai/", "i-sparkle"),
     ("Papers", "/exam-papers/", "i-paper"),
     ("Tools", "/tools/", "i-tools"),
     ("Progress", "/progress/", "i-target"),
@@ -305,8 +306,9 @@ def footer(path: str = "") -> str:
           <li><a href="/ks4/edexcel-computer-science/">GCSE Computer Science, Edexcel</a></li>
           <li><a href="/ks4/imedia/">Creative iMedia</a></li>
           <li><a href="/ks5/">A Level Computer Science</a></li>
-          <li><a href="/data-analytics/">OCR Data Analytics, F200 and F201</a></li>
+          <li><a href="/data-analytics/">OCR Data Analytics, F200 to F202</a></li>
           <li><a href="/python/">Python from scratch</a></li>
+          <li><a href="/ai/">Artificial Intelligence, zero to hero</a></li>
         </ul>
       </div>
       <div>
@@ -766,16 +768,24 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
         sec_html.append(flashcards(topic.keyterms))
 
     if topic.grade:
-        toc.append(("top-grade", "Reach the top grade"))
-        sec_html.append('<h2 id="top-grade">Reach the top grade on this topic</h2>%s'
-                        % markup.render(topic.grade))
+        if course.levels:
+            # A levelled course has no grades: the same slot holds the deeper
+            # engineering notes for students who want more.
+            toc.append(("go-further", "Go further"))
+            sec_html.append('<h2 id="go-further">Go further: notes for future AI engineers</h2>%s'
+                            % markup.render(topic.grade))
+        else:
+            toc.append(("top-grade", "Reach the top grade"))
+            sec_html.append('<h2 id="top-grade">Reach the top grade on this topic</h2>%s'
+                            % markup.render(topic.grade))
 
     if topic.mistakes:
-        toc.append(("mistakes", "Common mistakes"))
+        toc.append(("mistakes", "Misconceptions" if course.levels else "Common mistakes"))
         sec_html.append(
-'<h2 id="mistakes">Mistakes that cost marks here</h2>'
+            '<h2 id="mistakes">%s</h2>'
             '<div class="note note-warn"><div class="note-title">%s Avoid these</div><ul>%s</ul></div>'
-            % (ico("i-warn"), "".join("<li>%s</li>" % markup.inline(m) for m in topic.mistakes)))
+            % ("Misconceptions to avoid" if course.levels else "Mistakes that cost marks here",
+               ico("i-warn"), "".join("<li>%s</li>" % markup.inline(m) for m in topic.mistakes)))
 
     if topic.quiz:
         toc.append(("quiz", "Knowledge check"))
@@ -785,9 +795,16 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
     toc_html = '<div class="toc"><h4>On this page</h4><ol>%s</ol></div>' % "".join(
         '<li><a href="#%s">%s</a></li>' % (i, esc(t)) for i, t in toc)
 
-    badges = ['<span class="badge badge-%s">%s</span>' % (course.stage.lower(), esc(course.stage))]
-    if topic.spec:
-        badges.append('<span class="badge badge-spec">%s %s</span>' % (esc(course.code or course.board), esc(topic.spec)))
+    if course.levels:
+        # "Level 3 · Explorer" and "Lesson 3.2" read better than a key stage
+        # and a specification reference the course does not have.
+        badges = ['<span class="badge badge-ks3">%s</span>' % esc(unit.term or unit.title)]
+        if topic.spec:
+            badges.append('<span class="badge badge-spec">Lesson %s</span>' % esc(topic.spec))
+    else:
+        badges = ['<span class="badge badge-%s">%s</span>' % (course.stage.lower(), esc(course.stage))]
+        if topic.spec:
+            badges.append('<span class="badge badge-spec">%s %s</span>' % (esc(course.code or course.board), esc(topic.spec)))
     badges.append('<span class="badge">%s %d min read</span>' % (ico("i-clock"), topic.minutes))
     if topic.quiz:
         badges.append('<span class="badge">%s %d question quiz</span>' % (ico("i-check-circle"), len(topic.quiz)))
@@ -837,7 +854,7 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
       %s
       <div class="aside-block">
         <h4>Study order</h4>
-        <p>Read the explanation, do the ten question check, then write the five exam answers from memory. Come back in three days and redo the quiz only.</p>
+        <p>%s</p>
         %s
       </div>
       %s
@@ -848,7 +865,14 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
              render_quiz(tid, topic.quiz),
              render_exam(tid, topic.exam, topic.exam_title),
              _unit_exams_note(topic),
-             nav_html, toc_html, worksheet_link, _unit_exams_aside(topic))
+             nav_html, toc_html,
+             ("Read each section and run every example, then do the hands-on activities. "
+              "Score 70% or more in the knowledge check to count this lesson towards your "
+              "certificate, then answer the last questions in your own words."
+              if course.levels else
+              "Read the explanation, do the ten question check, then write the five exam answers "
+              "from memory. Come back in three days and redo the quiz only."),
+             worksheet_link, _unit_exams_aside(topic))
 
     desc = topic.blurb if len(topic.blurb) > 70 else topic.blurb + " Full explanation, a ten question check and five auto marked exam-style questions."
     ld = [crumbs_ld(trail), {
@@ -857,7 +881,7 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
         "name": topic.title,
         "description": desc,
         "url": SITE_URL + path,
-        "learningResourceType": "Revision guide",
+        "learningResourceType": "Lesson" if course.levels else "Revision guide",
         "educationalLevel": course.stage,
         "inLanguage": "en-GB",
         "isAccessibleForFree": True,
@@ -909,6 +933,7 @@ def unit_block(course: Course, unit: Unit) -> str:
             % (course.slug, t.slug, esc("%s/%s" % (course.slug, t.slug)),
                esc(t.spec or str(i + 1)),
                esc(t.title), esc(t.blurb), ico("i-arrow-right")))
+    noun = "lessons" if course.levels else "topics"
     return """<section class="section" id="%s">
   <div class="section-head">
     <div class="badge-row"><span class="badge">%s</span>%s</div>
@@ -917,7 +942,7 @@ def unit_block(course: Course, unit: Unit) -> str:
   </div>
   <div class="unit-list">%s</div>
 </section>""" % (esc(unit.slug), esc(unit.term or course.short),
-                 '<span class="badge">%s %d topics</span>' % (ico("i-list"), len(unit.topics)),
+                 '<span class="badge">%s %d %s</span>' % (ico("i-list"), len(unit.topics), noun),
                  esc(unit.title), esc(unit.blurb), "".join(rows))
 
 
@@ -934,12 +959,35 @@ def course_page(course: Course) -> tuple:
             '<div class="journey-step"><div class="journey-dot">%d</div>'
             '<div class="journey-body"><h3>%s</h3><p>%s</p></div></div>'
             % (i + 1, esc(a), markup.inline(b)) for i, (a, b, _c) in enumerate(course.journey))
-        journey = """<section class="section section-alt"><div class="wrap">
+        intro = ("Each level builds on the one before, so work through them in order and finish every lesson's knowledge check."
+                 if course.levels else
+                 "Revision works when it has an order. Follow these stages rather than opening topics at random.")
+        journey = ("""<section class="section section-alt"><div class="wrap">
           <div class="section-head"><h2>Your route to %s</h2>
-          <p>Revision works when it has an order. Follow these stages rather than opening topics at random.</p></div>
-          <div class="journey">%s</div></div></section>""" % (esc(course.goal or "the top grade"), steps)
+          <p>""" + intro + """</p></div>
+          <div class="journey">%s</div></div></section>""") % (esc(course.goal or "the top grade"), steps)
 
     units_html = "".join(unit_block(course, u) for u in course.units)
+    first = "/%s/%s/" % (course.slug, course.units[0].topics[0].slug) if course.units and course.units[0].topics else "/"
+    if course.levels:
+        buttons = ('<a class="btn btn-primary" href="%s">%s Start Level 1</a>\n'
+                   '        <a class="btn btn-secondary" href="/tools/">%s Interactive tools</a>'
+                   % (first, ico("i-play"), ico("i-tools")))
+        stats = ('<div class="stat"><b>%d</b><span>Levels</span></div>\n'
+                 '      <div class="stat"><b>%d</b><span>Lessons</span></div>\n'
+                 '      <div class="stat"><b>%d</b><span>Quiz questions</span></div>\n'
+                 '      <div class="stat"><b>%s</b><span>Your goal</span></div>'
+                 % (len(course.units), total_topics, total_quiz, esc(course.goal or "Mastery")))
+    else:
+        buttons = ('<a class="btn btn-primary" href="%s">%s Start the first topic</a>\n'
+                   '        <a class="btn btn-secondary" href="/exam-papers/">%s Practice papers</a>\n'
+                   '        <a class="btn btn-ghost" href="/worksheets/">%s Printable worksheets</a>'
+                   % (first, ico("i-play"), ico("i-paper"), ico("i-list")))
+        stats = ('<div class="stat"><b>%d</b><span>Topics</span></div>\n'
+                 '      <div class="stat"><b>%d</b><span>Quiz questions</span></div>\n'
+                 '      <div class="stat"><b>%d</b><span>Exam marks</span></div>\n'
+                 '      <div class="stat"><b>%s</b><span>Target grade</span></div>'
+                 % (total_topics, total_quiz, total_marks, esc(course.goal or "Top")))
 
     body = """<div class="wrap">%s</div>
 <section class="hero"><div class="wrap">
@@ -949,16 +997,11 @@ def course_page(course: Course) -> tuple:
       <h1>%s</h1>
       <p class="lead">%s</p>
       <div class="btn-row" style="margin-top:1.6rem">
-        <a class="btn btn-primary" href="/%s/%s/">%s Start the first topic</a>
-        <a class="btn btn-secondary" href="/exam-papers/">%s Practice papers</a>
-        <a class="btn btn-ghost" href="/worksheets/">%s Printable worksheets</a>%s
+        %s%s
       </div>
     </div>
     <div class="stat-row">
-      <div class="stat"><b>%d</b><span>Topics</span></div>
-      <div class="stat"><b>%d</b><span>Quiz questions</span></div>
-      <div class="stat"><b>%d</b><span>Exam marks</span></div>
-      <div class="stat"><b>%s</b><span>Target grade</span></div>
+      %s
     </div>
   </div>
 </div></section>
@@ -967,13 +1010,13 @@ def course_page(course: Course) -> tuple:
 <div class="wrap">%s</div>""" % (
         crumbs(trail),
         ico("i-target"),
-        esc(" %s %s" % (course.board, course.code)).strip() or " Revision course",
+        (" %d levels, zero to hero" % len(course.units) if course.levels else
+         esc(" %s %s" % (course.board, course.code)).strip() or " Revision course"),
         esc(course.title), markup.inline(course.blurb),
-        course.slug, course.units[0].topics[0].slug if course.units and course.units[0].topics else "",
-        ico("i-play"), ico("i-paper"), ico("i-list"),
+        buttons,
         ('\n        <a class="btn btn-secondary" href="%s">%s %s</a>'
          % (course.extra_cta[1], ico(course.extra_cta[2]), esc(course.extra_cta[0]))) if course.extra_cta else "",
-        total_topics, total_quiz, total_marks, esc(course.goal or "Top"),
+        stats,
         course_banner(course.slug), journey, units_html)
 
     ld = [crumbs_ld(trail), {
