@@ -59,12 +59,18 @@ mskbuild/
                       simulation and machine learning)
   illus_pictures.py   Drawn hardware pictures that stand in for photographs until the files exist
   illus_banners.py    The decorative picture at the top of every topic page
+  diagrams*.py        The SVG diagrams; diagrams_f202.py (spreadsheet modelling) and
+                      diagrams_imedia_nea.py (R094 and R097) draw the coursework examples
+  tools.py            The interactive tools (static/js/tools/), such as the what-if model
   placements.py       Which diagram, illustration or tool goes in which section
   placements_visuals.py  The same, written as calls, for illustrations placed on many topics
 content/
   ks3.py              Key Stage 3, Years 7 to 9
   ks4_cs.py           OCR GCSE Computer Science J277
-  ks4_imedia.py       OCR Creative iMedia J834
+  ks4_imedia.py       OCR Creative iMedia J834: R093, and the course itself
+  ks4_imedia_nea.py   R094 and R097: every topic area, and a guide to each coursework task
+  data_analytics.py   OCR IT: Data Analytics H019/H119: F200 and F201
+  data_analytics_f202.py  F202 Spreadsheet data modelling, the coursework unit, and its guide
   ks5.py              OCR A Level Computer Science H446
   python_course.py    The Python course: its units, in order, and which topic modules feed them
   python_gcse/        Python topics for the GCSE boards (one module per topic)

@@ -792,7 +792,10 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
     if topic.quiz:
         badges.append('<span class="badge">%s %d question quiz</span>' % (ico("i-check-circle"), len(topic.quiz)))
     if topic.exam:
-        badges.append('<span class="badge">%s %d exam marks</span>' % (ico("i-paper"), sum(q.marks for q in topic.exam)))
+        # Coursework topics have no exam, so their written practice is not
+        # counted as exam marks.
+        kind = "exam marks" if topic.exam_title == "Exam-style questions" else "marks of written practice"
+        badges.append('<span class="badge">%s %d %s</span>' % (ico("i-paper"), sum(q.marks for q in topic.exam), kind))
 
     nav_html = ""
     if prev_link or next_link:

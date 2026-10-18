@@ -47,7 +47,7 @@ TEACHERS = """
 | [The Python course](/python/) and [Pixel Run](/pixel-run/) | Python from a first program to A Level, with every example runnable in the browser, and a platform game that teaches it. |
 | [How to revise](/how-to-revise/) and the [glossary](/glossary/) | What actually works when revising, and every key term defined the way a mark scheme wants it. |
 
-The courses cover Key Stage 3 Computing, GCSE Computer Science for OCR (J277), AQA (8525) and Pearson Edexcel (1CP2), OCR Cambridge National Creative iMedia (J834), OCR A Level Computer Science (H446) and the OCR Cambridge Advanced National in IT: Data Analytics (F200 and F201).
+The courses cover Key Stage 3 Computing, GCSE Computer Science for OCR (J277), AQA (8525) and Pearson Edexcel (1CP2), OCR Cambridge National Creative iMedia (J834), with a guide to every R094 and R097 coursework task, OCR A Level Computer Science (H446) and the OCR Cambridge Advanced National in IT: Data Analytics (F200, F201 and the F202 coursework unit).
 
 ## Resources on request
 

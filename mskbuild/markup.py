@@ -124,7 +124,8 @@ def _highlight(code: str, lang: str) -> str:
 LANG_LABEL = {"python": "Python", "pylocal": "Python (on your computer)", "pseudo": "OCR reference language", "text": "",
               "pycode": "Python code", "aqa": "AQA pseudo-code", "scratch": "Scratch blocks",
               "sql": "SQL", "html": "HTML", "css": "CSS", "js": "JavaScript",
-              "assembly": "Assembly", "trace": "Trace table"}
+              "assembly": "Assembly", "trace": "Trace table",
+              "formula": "Spreadsheet formulas", "vba": "VBA macro"}
 
 
 def code_block(code: str, lang: str = "python") -> str:

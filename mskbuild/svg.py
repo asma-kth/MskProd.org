@@ -153,3 +153,23 @@ def figure_steps(name, width, height, base, steps, title, desc,
         '<title id="%s">%s</title><desc id="%s">%s</desc>%s</svg>%s%s</figure>'
         % (n, max_w, width, height, tid, did, tid, esc(title), did, esc(desc),
            scope_markers(name, defs() + base + "".join(steps)), controls, cap))
+
+
+def marker(n, x, y):
+    """A numbered callout marker; the same number sits on the note it explains."""
+    return (circle(x, y, 8, fill="var(--dg-warn)", stroke="var(--dg-fill)", w=1.5)
+            + text(x, y + 3.6, str(n), 9.5, 800, fill="var(--dg-fill)"))
+
+
+def notes(x, y0, gap, w, items):
+    """Numbered notes stacked down the side of a picture, one per marker."""
+    out = []
+    for i, (l1, l2) in enumerate(items):
+        y = y0 + i * gap
+        out.append(box(x, y - 20, w, 44, None, fill="var(--dg-warn-soft)",
+                       stroke="var(--dg-warn)", r=6))
+        out.append(marker(i + 1, x + 15, y + 2))
+        out.append(text(x + 30, y - 3, l1, 9.3, 650, anchor="start"))
+        out.append(text(x + 30, y + 12, l2, 9.3, 450, anchor="start",
+                        fill="var(--dg-muted)"))
+    return "".join(out)

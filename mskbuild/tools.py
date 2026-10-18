@@ -91,6 +91,18 @@ TOOLS = {
                 "description and the line of best fit recalculate live, which is "
                 "the quickest way to see how much damage a single outlier does.",
     },
+    "what-if-model": {
+        "title": "What-if model",
+        "icon": "i-chart",
+        "blurb": "Change the inputs of a spreadsheet model and watch every output, "
+                 "the break-even prices and the graph recalculate.",
+        "long": "A ticket price model with its assumptions laid out like an input "
+                "sheet. Move the price or any assumption, switch between "
+                "pessimistic, expected and optimistic scenarios, run Goal Seek "
+                "for a target profit, and open the data table or the formulas "
+                "behind every output. It is the spreadsheet modelling unit's "
+                "what-if analysis, made something you can push around.",
+    },
     "lmc": {
         "title": "Little Man Computer",
         "icon": "i-cpu",
@@ -104,7 +116,8 @@ TOOLS = {
 
 # The order tools appear in on the /tools/ hub page.
 ORDER = ["base-converter", "file-size", "logic-simulator", "sort-visualiser",
-         "trace-table", "lmc", "confusion-matrix", "correlation-lab"]
+         "trace-table", "lmc", "confusion-matrix", "correlation-lab",
+         "what-if-model"]
 
 
 def _read(path):

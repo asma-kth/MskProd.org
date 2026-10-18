@@ -1,14 +1,17 @@
 """OCR Cambridge Advanced National in IT: Data Analytics, H019 and H119.
 
-The two externally assessed units:
+The two externally assessed units, and the mandatory coursework unit:
 
   F200  Fundamentals of data analytics   75 GLH   written exam, 1h 15m, 60 marks
   F201  Big data and machine learning    70 GLH   written exam, 1h 30m, 60 marks
+  F202  Spreadsheet data modelling       75 GLH   OCR-set assignment, centre-assessed
+                                                  and OCR-moderated
 
-F200 is mandatory in both the Certificate (H019) and the Extended Certificate
-(H119). F201 is part of the Extended Certificate. The non-examined unit F202,
-Spreadsheet data modelling, is coursework and is mentioned here only where it
-affects how the exam units are taught; it is not covered topic by topic.
+F200 and F202 are mandatory in both the Certificate (H019) and the Extended
+Certificate (H119). F201 is part of the Extended Certificate. F202 lives in
+content/data_analytics_f202.py, because it is coursework and is written
+differently: no paper to practise for, and every worked example built on one
+invented brief.
 
 The topic area headings follow OCR's published unit structure. Awarding bodies
 revise specifications, so check the current H019 and H119 specification on
@@ -21,6 +24,7 @@ levels-of-response shape. They are practice in that form, not copies of OCR
 past papers, which are OCR's copyright.
 """
 from mskbuild.models import Topic, Section, Unit, Course, Q, EQ, MP
+from content.data_analytics_f202 import TOPICS as F202_TOPICS
 
 # ============================================================== F200 TA1
 
@@ -2098,7 +2102,7 @@ Quantify, name a measure, and decide. "Their PUE is 1.6, so 60% overhead on top 
 
 COURSE = Course(
     slug="data-analytics",
-    seo="OCR Data Analytics F200 F201",
+    seo="OCR Data Analytics F200 F201 F202",
     title="Data Analytics",
     short="Data Analytics",
     stage="KS5",
@@ -2107,7 +2111,7 @@ COURSE = Course(
     goal="Distinction star",
     icon="i-chart",
     accent="var(--teal)",
-    blurb="OCR Cambridge Advanced National in IT: Data Analytics. Both externally assessed units covered topic area by topic area: F200 Fundamentals of data analytics and F201 Big data and machine learning, with quizzes, graphs, interactive models and exam-style questions.",
+    blurb="OCR Cambridge Advanced National in IT: Data Analytics. Both exam units covered topic area by topic area, F200 Fundamentals of data analytics and F201 Big data and machine learning, plus the mandatory coursework unit F202 Spreadsheet data modelling, with quizzes, graphs, interactive models, exam-style questions and a guide to the set assignment.",
     intro="",
     journey=[
         ("Know which unit you are sitting, and its shape",
@@ -2122,6 +2126,8 @@ COURSE = Course(
          "State and identify want a name. Describe wants detail. Explain wants a reason. Calculate wants working shown. Discuss and evaluate want both sides and a judgement, and the judgement is where the top band is.", ""),
         ("Always end with the decision",
          "Analytics exists to change a decision. Whether the question is about a chart, a pipeline or a model, the answer that says what should now happen differently is the answer in the top band.", ""),
+        ("Plan the coursework before you build it",
+         "F202 is assessed on the whole process, not just the finished spreadsheet. Numbered requirements, annotated designs and a test plan with hand-worked expected results come first, and the evaluation traces every one of them to the end.", ""),
     ],
     units=[
         Unit("f200", "F200: Fundamentals of Data Analytics",
@@ -2132,5 +2138,8 @@ COURSE = Course(
              "Externally assessed: 1 hour 30 minutes, 60 marks, 70 guided learning hours. The scope of big data, its infrastructure, machine learning and AI, ethics, and the environment.",
              [B_SCOPE, B_INFRA, B_ML, B_ETHICS, B_ENV],
              icon="i-brain", term="Exam unit"),
+        Unit("f202", "F202: Spreadsheet Data Modelling",
+             "Coursework, 75 guided learning hours: an OCR-set assignment, marked by your teacher and moderated by OCR. The principles of modelling, planning, creating, testing and delivering, evaluating, and a guide to the assignment itself.",
+             F202_TOPICS, icon="i-table", term="Coursework"),
     ],
 )

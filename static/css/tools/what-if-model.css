@@ -1,0 +1,122 @@
+/* What-if model. The inputs and the outputs sit side by side on a wide
+   screen, like an input sheet beside its results, and stack on a phone. */
+.tool[data-tool="what-if-model"] .wim-scen .tool-btn.is-on {
+  background: var(--accent-quiet); color: var(--accent);
+  border-color: color-mix(in srgb, var(--teal) 45%, transparent);
+}
+.tool[data-tool="what-if-model"] .wim-top {
+  display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-start;
+}
+.tool[data-tool="what-if-model"] .wim-inputs {
+  flex: 1 1 19rem; min-width: 0; display: grid; gap: .55rem;
+}
+.tool[data-tool="what-if-model"] .wim-field {
+  padding: .45rem .6rem; border: 1px solid var(--border);
+  border-radius: var(--r-s); background: var(--surface-2);
+}
+.tool[data-tool="what-if-model"] .wim-field.is-key {
+  background: var(--accent-quiet);
+  border-color: color-mix(in srgb, var(--teal) 40%, transparent);
+}
+.tool[data-tool="what-if-model"] .wim-field label {
+  display: block; font-size: .8rem; font-weight: 700; color: var(--ink-2);
+}
+.tool[data-tool="what-if-model"] .wim-ctl {
+  display: flex; align-items: center; gap: .6rem; margin-top: .2rem;
+}
+.tool[data-tool="what-if-model"] .wim-ctl input[type="range"] {
+  flex: 1 1 auto; min-width: 0;
+}
+.tool[data-tool="what-if-model"] .wim-num {
+  width: 6.2rem; flex: none; font-variant-numeric: tabular-nums;
+}
+.tool[data-tool="what-if-model"] .wim-note {
+  display: block; margin-top: .15rem; font-size: .74rem; color: var(--ink-3);
+  font-family: var(--font-mono);
+}
+
+.tool[data-tool="what-if-model"] .wim-out { flex: 1 1 15rem; min-width: 0; }
+.tool[data-tool="what-if-model"] .wim-big {
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: .2rem .6rem;
+  padding: .7rem .8rem; border-radius: var(--r-s);
+  background: var(--accent-quiet);
+  border: 1px solid color-mix(in srgb, var(--teal) 35%, transparent);
+  margin-bottom: .6rem;
+}
+.tool[data-tool="what-if-model"] .wim-big.is-loss {
+  background: color-mix(in srgb, var(--bad) 9%, transparent);
+  border-color: color-mix(in srgb, var(--bad) 35%, transparent);
+}
+.tool[data-tool="what-if-model"] .wim-big-lab {
+  width: 100%; font-size: .75rem; font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--ink-3);
+}
+.tool[data-tool="what-if-model"] .wim-big-val {
+  font-size: 2rem; font-weight: 750; line-height: 1.05; color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+/* --accent and --bad rather than the raw brand colours, which fall below AA
+   contrast on these pale panels. */
+.tool[data-tool="what-if-model"] .wim-big-note {
+  font-size: .82rem; font-weight: 750; color: var(--accent);
+}
+.tool[data-tool="what-if-model"] .wim-big.is-loss .wim-big-note { color: var(--bad); }
+.tool[data-tool="what-if-model"] .wim-table th {
+  background: none; border-bottom: 1px solid var(--border); font-weight: 600;
+  color: var(--ink-3); width: 46%;
+}
+.tool[data-tool="what-if-model"] .wim-table td {
+  padding: .4rem .5rem; font-variant-numeric: tabular-nums; color: var(--ink);
+  font-weight: 600;
+}
+.tool[data-tool="what-if-model"] .wim-best td { color: var(--accent); }
+
+.tool[data-tool="what-if-model"] .wim-plot {
+  display: block; width: 100%; max-width: 36rem; height: auto; margin: 1rem 0 .4rem;
+}
+.tool[data-tool="what-if-model"] .wim-bg { fill: var(--surface-2); }
+.tool[data-tool="what-if-model"] .wim-grid {
+  stroke: var(--border); stroke-width: 1; stroke-dasharray: 2 5;
+}
+.tool[data-tool="what-if-model"] .wim-zero { stroke: var(--ink-3); stroke-width: 1.4; }
+/* The plot is drawn at 400 units wide and shrinks on a phone, so its text is
+   set larger than it would be on paper. */
+.tool[data-tool="what-if-model"] .wim-tick {
+  font-size: 12px; fill: var(--ink-3); font-variant-numeric: tabular-nums;
+}
+.tool[data-tool="what-if-model"] .wim-lab {
+  font-size: 12.5px; font-weight: 650; fill: var(--ink-3);
+}
+.tool[data-tool="what-if-model"] .wim-curve {
+  fill: none; stroke: var(--teal); stroke-width: 2.6; stroke-linejoin: round;
+}
+.tool[data-tool="what-if-model"] .wim-be { fill: var(--bad); }
+.tool[data-tool="what-if-model"] .wim-max { fill: var(--teal); }
+.tool[data-tool="what-if-model"] .wim-cur-line {
+  stroke: var(--purple); stroke-width: 1.2; stroke-dasharray: 4 4;
+}
+.tool[data-tool="what-if-model"] .wim-cur {
+  fill: var(--surface); stroke: var(--purple); stroke-width: 3;
+}
+
+.tool[data-tool="what-if-model"] .wim-seek { margin-top: .6rem; }
+.tool[data-tool="what-if-model"] .wim-seek input { width: 9rem; }
+.tool[data-tool="what-if-model"] .wim-dt,
+.tool[data-tool="what-if-model"] .wim-fx { margin: .2rem 0 .6rem; overflow-x: auto; }
+.tool[data-tool="what-if-model"] .wim-dt caption {
+  caption-side: top; text-align: left; font-size: .82rem; color: var(--ink-3);
+  padding-bottom: .35rem;
+}
+.tool[data-tool="what-if-model"] .wim-dt td,
+.tool[data-tool="what-if-model"] .wim-fx td {
+  padding: .35rem .5rem; font-variant-numeric: tabular-nums;
+}
+.tool[data-tool="what-if-model"] .wim-dt td { white-space: nowrap; }
+.tool[data-tool="what-if-model"] .wim-dt tr.is-loss td { color: var(--bad); }
+.tool[data-tool="what-if-model"] .wim-dt tr.is-near td {
+  background: var(--accent-quiet); font-weight: 700;
+}
+/* Formulas wrap rather than pushing the value column out of view. */
+.tool[data-tool="what-if-model"] .wim-fx code {
+  font-size: .8rem; white-space: normal; overflow-wrap: anywhere;
+}

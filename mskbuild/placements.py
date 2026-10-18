@@ -407,13 +407,14 @@ PLACEMENTS = {
                                     "!diagram imedia-logo-types"],
         "Interpreting the brief and researching": ["!diagram imedia-moodboard-example",
                                                    "!photo moodboard-bakery"],
-        "Planning the graphic": ["!diagram imedia-visualisation-anatomy",
-                                 "!diagram imedia-asset-table-example"],
+    },
+    ("ks4/imedia", "planning-digital-graphics"): {
+        "Visualisation diagrams and asset tables": [
+            "!diagram imedia-visualisation-anatomy",
+            "!diagram imedia-asset-table-example"],
     },
     ("ks4/imedia", "creating-digital-graphics"): {
-        "Raster techniques and exporting": ["!illus graphics-layers",
-                                            "!diagram imedia-raster-vector"],
-        "Reviewing the finished graphic": ["!diagram imedia-review-quality"],
+        "Raster techniques": ["!illus graphics-layers"],
     },
     ("ks4/imedia", "interactive-digital-media"): {
         "Types of interactive product and their structures": [
@@ -424,6 +425,8 @@ PLACEMENTS = {
     },
     ("ks4/imedia", "creating-and-testing-interactive-media"): {
         "Building in the right order": ["!illus graphics-layers"],
+    },
+    ("ks4/imedia", "reviewing-interactive-media"): {
         "Testing": ["!diagram imedia-test-record"],
         "Reviewing and improving": ["!diagram imedia-review-quality"],
     },

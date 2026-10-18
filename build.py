@@ -122,11 +122,11 @@ def build_home():
         "ks4/edexcel-computer-science": ("Edexcel GCSE Computer Science", "/ks4/edexcel-computer-science/", "i-cpu",
                                          "Pearson Edexcel 1CP2. Paper 1 principles in full, plus the programming Paper 2 sits on screen."),
         "ks4/imedia": ("Creative iMedia", "/ks4/imedia/", "i-palette",
-                       "OCR J834. The R093 exam unit in full, plus coursework guidance for R094 and R097."),
+                       "OCR J834. The R093 exam unit in full, plus R094 and R097 topic by topic, with a guide to every coursework task."),
         "ks5": ("A Level Computer Science", "/ks5/", "i-brain",
                 "OCR H446. Both components, the NEA, and the depth an A star actually needs."),
         "data-analytics": ("Data Analytics", "/data-analytics/", "i-chart",
-                           "OCR Cambridge Advanced National. F200 and F201, the two exam units, with graphs and interactive models."),
+                           "OCR Cambridge Advanced National. F200 and F201, the exam units, and F202, the spreadsheet modelling coursework, with graphs and interactive models."),
         "python": ("Python from scratch", "/python/", "i-python",
                    "From your first line of code to GCSE and A Level programming, advanced Python, simulation and machine learning, with a platformer to practise it in."),
     }

@@ -2874,3 +2874,13 @@ from . import diagrams_exam  # noqa: E402,F401
 # from running the same algorithm.
 from . import diagrams_python  # noqa: E402,F401
 from . import diagrams_python_alevel  # noqa: E402,F401
+
+
+# F202, the spreadsheet modelling coursework unit of Data Analytics. Its worked
+# figures share one invented model, defined once in the module, so the graph,
+# the goal seek, the scenarios and the test plan always agree.
+from . import diagrams_f202  # noqa: E402,F401
+
+# The Creative iMedia coursework units, R094 and R097: the identity, the
+# graphic, the interactive product and its review, on two invented briefs.
+from . import diagrams_imedia_nea  # noqa: E402,F401
