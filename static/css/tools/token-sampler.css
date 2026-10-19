@@ -1,0 +1,31 @@
+/* Token sampler. The written text sits in a panel above the table of next
+   word probabilities; generated words are shaded with the course's plasma
+   scale, prompt words stay plain. */
+.tool[data-tool="token-sampler"] .ts-num { font-family: var(--font-mono); font-size: .82rem; }
+.tool[data-tool="token-sampler"] .ts-text {
+  margin: .9rem 0 .4rem; padding: .8rem 1rem; min-height: 3.4rem; line-height: 2.1;
+  font-size: 1.05rem; background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--r-s); color: var(--ink-2);
+}
+.tool[data-tool="token-sampler"] .ts-tok { padding: .12rem .1rem; border-radius: 6px; }
+.tool[data-tool="token-sampler"] .ts-tok.is-gen { padding: .12rem .4rem; font-weight: 650; }
+.tool[data-tool="token-sampler"] .ts-legend { margin: 0 0 .9rem; font-size: .8rem; color: var(--ink-3); }
+.tool[data-tool="token-sampler"] .ts-swatch {
+  display: inline-block; width: .9rem; height: .9rem; border-radius: 3px; vertical-align: -.12rem;
+}
+.tool[data-tool="token-sampler"] .ts-cap { margin: 0 0 .3rem; font-size: .85rem; font-weight: 700; color: var(--ink-2); }
+.tool[data-tool="token-sampler"] .ts-dist { width: 100%; border-collapse: collapse; font-size: .86rem; }
+.tool[data-tool="token-sampler"] .ts-dist th {
+  text-align: left; font-size: .75rem; font-weight: 650; color: var(--ink-3);
+  padding: .2rem .35rem; border-bottom: 1px solid var(--border);
+}
+.tool[data-tool="token-sampler"] .ts-dist td { padding: .28rem .35rem; border-bottom: 1px solid var(--border); color: var(--ink-2); }
+.tool[data-tool="token-sampler"] .ts-word { font-weight: 700; color: var(--ink); white-space: nowrap; }
+.tool[data-tool="token-sampler"] .ts-cell { display: flex; align-items: center; gap: .5rem; }
+.tool[data-tool="token-sampler"] .ts-bar {
+  flex: 1 1 auto; min-width: 3rem; height: .75rem; background: var(--surface-2);
+  border: 1px solid var(--border); border-radius: 4px; overflow: hidden;
+}
+.tool[data-tool="token-sampler"] .ts-fill { display: block; height: 100%; background: #F59E0B; }
+.tool[data-tool="token-sampler"] tr.is-cut { opacity: .5; }
+.tool[data-tool="token-sampler"] tr.is-cut .ts-word { text-decoration: line-through; }

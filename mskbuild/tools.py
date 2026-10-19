@@ -178,6 +178,18 @@ TOOLS = {
                 "as you move, and each token's value is a colour, so the output "
                 "is the colours mixed by the attention weights.",
     },
+    "token-sampler": {
+        "title": "Token sampler",
+        "icon": "i-sparkle",
+        "blurb": "Turn the temperature, top-k and top-p dials and watch a toy "
+                 "language model write, one sampled word at a time.",
+        "long": "A small language model you can steer. Every step shows the "
+                "probability of each possible next word, as trained and after your "
+                "temperature, top-k and top-p settings, then samples one. Each "
+                "written word is shaded by how likely it was, so you can see high "
+                "temperatures produce surprising words and low ones repeat "
+                "themselves.",
+    },
     "lmc": {
         "title": "Little Man Computer",
         "icon": "i-cpu",
@@ -197,7 +209,7 @@ ORDER = ["base-converter", "file-size", "logic-simulator", "sort-visualiser",
 # The AI course's labs. They get their own section on the /tools/ hub page,
 # and are bundled with the rest.
 AI_ORDER = ["kmeans-lab", "loss-landscape", "neuron-lab", "network-playground",
-            "convolution-lab", "embedding-space", "attention-lab"]
+            "convolution-lab", "embedding-space", "attention-lab", "token-sampler"]
 
 
 def _read(path):
