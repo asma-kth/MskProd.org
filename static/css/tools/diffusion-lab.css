@@ -1,0 +1,23 @@
+/* Diffusion lab. A wide canvas of points with the shape's training data drawn
+   faintly behind them, and a thin meter for how much noise is left. The points
+   carry their own colours; the chrome follows the theme. */
+.tool[data-tool="diffusion-lab"] .dl-num { font-family: var(--font-mono); font-size: .85rem; color: var(--ink); }
+.tool[data-tool="diffusion-lab"] .dl-checks { justify-content: flex-end; gap: .3rem; }
+.tool[data-tool="diffusion-lab"] .dl-checks label {
+  display: flex; align-items: center; gap: .4rem; font-size: .88rem; font-weight: 600;
+  text-transform: none; letter-spacing: 0; color: var(--ink-2);
+}
+.tool[data-tool="diffusion-lab"] .dl-plot {
+  display: block; width: 100%; margin-top: .8rem; border-radius: var(--r-s);
+  border: 1px solid var(--border); background: radial-gradient(ellipse at 50% 45%, var(--surface), var(--surface-2));
+}
+.tool[data-tool="diffusion-lab"] .dl-meter-row { display: flex; align-items: center; gap: .6rem; margin-top: .5rem; }
+.tool[data-tool="diffusion-lab"] .dl-meter-label { font-size: .78rem; font-weight: 650; color: var(--ink-3); white-space: nowrap; }
+.tool[data-tool="diffusion-lab"] .dl-meter {
+  flex: 1 1 auto; height: .55rem; background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 999px; overflow: hidden;
+}
+.tool[data-tool="diffusion-lab"] .dl-meter-fill {
+  display: block; height: 100%; width: 100%;
+  background: linear-gradient(90deg, #7C3AED, #DB2777, #F59E0B); transition: width .1s linear;
+}

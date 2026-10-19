@@ -190,6 +190,17 @@ TOOLS = {
                 "temperatures produce surprising words and low ones repeat "
                 "themselves.",
     },
+    "diffusion-lab": {
+        "title": "Diffusion lab",
+        "icon": "i-image",
+        "blurb": "Watch hundreds of random points denoise, step by step, into a "
+                 "spiral, a heart or the letters AI.",
+        "long": "Diffusion in two dimensions, where you can see every point move. "
+                "Add noise to a shape until it vanishes, then generate it back from "
+                "fresh noise with the same denoising update real image models use. "
+                "Change the number of steps, trace each point's path, and see how "
+                "few steps are enough.",
+    },
     "lmc": {
         "title": "Little Man Computer",
         "icon": "i-cpu",
@@ -209,7 +220,8 @@ ORDER = ["base-converter", "file-size", "logic-simulator", "sort-visualiser",
 # The AI course's labs. They get their own section on the /tools/ hub page,
 # and are bundled with the rest.
 AI_ORDER = ["kmeans-lab", "loss-landscape", "neuron-lab", "network-playground",
-            "convolution-lab", "embedding-space", "attention-lab", "token-sampler"]
+            "convolution-lab", "embedding-space", "attention-lab", "token-sampler",
+            "diffusion-lab"]
 
 
 def _read(path):
