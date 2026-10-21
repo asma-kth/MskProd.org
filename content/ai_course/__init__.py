@@ -6,7 +6,7 @@ lesson's quiz unlocks the printable certificate at /ai/certificate/.
 """
 from mskbuild.models import Unit, Course
 from . import (level01, level02, level03, level04, level05, level06, level07,
-               level08, level09, level10, level11, level12, level13)
+               level08, level09, level10, level11, level12, level13, level14)
 
 # (module, unit slug, title, blurb, icon, stage label)
 LEVELS = [
@@ -49,6 +49,9 @@ LEVELS = [
     (level13, "level-13", "Level 13: Reinforcement Learning and Agents",
      "Learning from rewards: returns, values, the Bellman equation, Q-learning and deep RL; game search with minimax, alpha-beta and Monte Carlo tree search; AlphaGo and AlphaZero; and AI agents that plan, use tools and act safely.",
      "i-route", "Level 13 · Expert"),
+    (level14, "level-14", "Level 14: AI Engineering and Architecture",
+     "Turning models into products: framing problems and metrics, data pipelines and leakage, tuning and training at scale, deployment, drift and model cards; then designing AI systems for speed, cost and safety, with a complete worked design.",
+     "i-tools", "Level 14 · Expert"),
 ]
 
 UNITS = [Unit(slug, title, blurb, mod.TOPICS, icon=icon, term=term)

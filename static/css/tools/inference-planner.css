@@ -1,0 +1,32 @@
+/* Inference planner. One column per GPU, filled from the bottom with the
+   weights, the KV cache and working space, then a short list of the numbers
+   behind them. */
+.tool[data-tool="inference-planner"] .ip-num { font-family: var(--font-mono); font-size: .85rem; color: var(--ink); }
+.tool[data-tool="inference-planner"] .ip-gpus {
+  display: flex; flex-wrap: wrap; gap: .75rem; margin-top: .9rem; align-items: flex-end;
+}
+.tool[data-tool="inference-planner"] .ip-gpu { display: flex; flex-direction: column; align-items: center; gap: .3rem; width: 6.2rem; }
+.tool[data-tool="inference-planner"] .ip-bar {
+  position: relative; width: 3.6rem; height: 9rem; display: flex; flex-direction: column-reverse;
+  border: 2px solid var(--border-strong); border-radius: 8px; overflow: hidden; background: var(--surface-2);
+}
+.tool[data-tool="inference-planner"] .ip-seg { display: block; width: 100%; transition: height .2s ease; }
+.tool[data-tool="inference-planner"] .ip-w { background: #6D28D9; }
+.tool[data-tool="inference-planner"] .ip-k { background: #DB2777; }
+.tool[data-tool="inference-planner"] .ip-o { background: #F59E0B; }
+.tool[data-tool="inference-planner"] .ip-f { background: var(--surface-2); border: 1px solid var(--border-strong); }
+.tool[data-tool="inference-planner"] .ip-cap { font-size: .72rem; font-weight: 650; color: var(--ink-3); text-align: center; line-height: 1.3; }
+.tool[data-tool="inference-planner"] .ip-more { margin: 0; font-size: .85rem; color: var(--ink-3); }
+.tool[data-tool="inference-planner"] .ip-legend { margin: .6rem 0 .2rem; font-size: .8rem; color: var(--ink-2); }
+.tool[data-tool="inference-planner"] .ip-key {
+  display: inline-block; width: .8rem; height: .8rem; border-radius: 3px; vertical-align: -.1rem;
+}
+.tool[data-tool="inference-planner"] .ip-facts {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr)); gap: .5rem; margin: .6rem 0 0;
+}
+.tool[data-tool="inference-planner"] .ip-fact {
+  padding: .5rem .65rem; border: 1px solid var(--border); border-radius: var(--r-s); background: var(--surface-2);
+}
+.tool[data-tool="inference-planner"] .ip-fact dt { font-size: .74rem; font-weight: 650; color: var(--ink-3); }
+.tool[data-tool="inference-planner"] .ip-fact dd { margin: .1rem 0 0; font-size: 1.05rem; font-weight: 800; color: var(--ink); }
+.tool[data-tool="inference-planner"] .ip-sub { display: block; font-size: .72rem; font-weight: 600; color: var(--ink-3); }

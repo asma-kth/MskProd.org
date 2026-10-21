@@ -212,6 +212,17 @@ TOOLS = {
                 "exploration, paint walls and traps, then watch the agent follow "
                 "the arrows it has learned.",
     },
+    "inference-planner": {
+        "title": "Inference planner",
+        "icon": "i-cpu",
+        "blurb": "Work out how many GPUs a language model needs, and how fast it "
+                 "can answer, as you change its size, precision and users.",
+        "long": "Choose a model, how its weights are stored, the context length and "
+                "how many conversations it serves at once. The planner fills each GPU "
+                "with weights and KV cache, shows how many GPUs you need, and "
+                "estimates the generation speed from memory bandwidth, with every "
+                "formula written out.",
+    },
     "lmc": {
         "title": "Little Man Computer",
         "icon": "i-cpu",
@@ -232,7 +243,7 @@ ORDER = ["base-converter", "file-size", "logic-simulator", "sort-visualiser",
 # and are bundled with the rest.
 AI_ORDER = ["kmeans-lab", "loss-landscape", "neuron-lab", "network-playground",
             "convolution-lab", "embedding-space", "attention-lab", "token-sampler",
-            "diffusion-lab", "q-learning-grid"]
+            "diffusion-lab", "q-learning-grid", "inference-planner"]
 
 
 def _read(path):
