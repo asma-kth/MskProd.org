@@ -21,6 +21,7 @@ No accounts, no cookies, no adverts, no tracking.
 | A Level Computer Science | OCR H446 | 16 | 160 |
 | Data Analytics | OCR Cambridge Advanced National | 10 | 100 |
 | Python from Scratch | GCSE, A Level and beyond | 51 | 510 |
+| Artificial Intelligence: Zero to Hero | 15 levels, beginner to expert | 30 | 300 |
 
 ## Building the site
 
@@ -61,6 +62,8 @@ mskbuild/
   illus_banners.py    The decorative picture at the top of every topic page
   diagrams*.py        The SVG diagrams; diagrams_f202.py (spreadsheet modelling) and
                       diagrams_imedia_nea.py (R094 and R097) draw the coursework examples
+  diagrams_ai*.py     The AI course figures, one file per level or two, drawn with the
+                      shared palette, 3D and motion helpers in diagrams_ai_kit.py
   tools.py            The interactive tools (static/js/tools/), such as the what-if model
   placements.py       Which diagram, illustration or tool goes in which section
   placements_visuals.py  The same, written as calls, for illustrations placed on many topics
@@ -77,6 +80,9 @@ content/
   python_alevel/      Python topics for A Level: structures, algorithms, theory of computation,
                       processors, operating systems, networks, cryptography
   python_advanced/    Advanced Python, simulation and machine learning
+  ai_course/          Artificial Intelligence: Zero to Hero, one module per level (level01.py
+                      to level15.py), two lessons in each
+  ai_certificate.py   The printable certificate the AI course unlocks
   pixelrun/           Pixel Run, the Python platformer: levels, fifty challenges, marker
   papers.py           The exam papers page, and the first practice papers
   papers_full.py      Full length papers for each board (papers_j277.py, papers_aqa.py, ...)
@@ -87,6 +93,9 @@ static/
   css/site.css        Design system, light and dark themes
   js/app.js           Theme, navigation, search, progress
   js/quiz.js          Quiz engine and exam answer auto marker
+  js/certificate.js   The AI certificate: unlocking, the student's details, printing
+  css/certificate.css The certificate page, and the print rules that put it on one A4 page
+  js/tools/, css/tools/  One script and stylesheet per interactive tool, bundled at build time
   js/mascot.js        Pixel, the robot cat
   js/game.js          Pixel Run: rules, console, Python marking
   js/game-art.js      Pixel Run: everything drawn on the canvas
@@ -156,6 +165,31 @@ python3 tools/check_python_examples.py --pyodide  # also run each block in the b
 `node_modules/pyodide`. It compares each block's output with CPython's and flags any block that
 takes longer than 2.5 seconds, because a Run that is slow on a phone looks broken, and because the
 in browser engine stops a program after ten seconds.
+
+## The AI course
+
+`/ai/` is Artificial Intelligence: Zero to Hero, fifteen levels from the history of AI and its key
+dates to neural networks, transformers, large language models, generative AI, agents, AI
+engineering and responsible AI. Each level is a module in `content/ai_course/` holding two lessons,
+and `content/ai_course/__init__.py` lists the levels in order with their stage, from Beginner to Hero.
+Level 15 ends with a capstone in which the student builds, tests and documents an AI of their own.
+
+* The figures are drawn in `mskbuild/diagrams_ai1.py` to `diagrams_ai10.py` from the shared colours
+  and helpers in `mskbuild/diagrams_ai_kit.py`. Moving parts stop for readers who ask for reduced motion.
+* The labs are listed in `AI_ORDER` in `mskbuild/tools.py`: k-means, the loss landscape, a neuron,
+  a network playground, convolution, embedding space, attention, a token sampler, diffusion, a
+  Q-learning grid, an inference planner and a fairness lab.
+* The Python examples follow the same rules as the Python course and are checked by
+  `tools/check_python_examples.py`.
+
+### The certificate
+
+`/ai/certificate/` unlocks once every lesson quiz in the course has been passed at 70% or more. It
+reads the scores this browser has saved (`mskprod:quiz`, where `b` is the best score for a quiz, so
+a practice retake never takes a pass away), so nothing is uploaded and there is no account. The
+student adds a name, an optional school, the date and one of five colour themes, which are kept
+under `mskprod:aicert`. The certificate is one A4 landscape SVG drawn by `content/ai_certificate.py`,
+and the print stylesheet hides the rest of the page, so it prints, or saves as a PDF, on one sheet.
 
 ## Pixel Run, the game
 
