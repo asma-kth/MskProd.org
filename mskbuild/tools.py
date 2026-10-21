@@ -201,6 +201,17 @@ TOOLS = {
                 "Change the number of steps, trace each point's path, and see how "
                 "few steps are enough.",
     },
+    "q-learning-grid": {
+        "title": "Q-learning grid lab",
+        "icon": "i-route",
+        "blurb": "Train an agent to cross a grid world from rewards alone, and "
+                 "watch its values spread out from the goal.",
+        "long": "Real tabular Q-learning in a grid you can redraw. Each cell shows "
+                "the agent's Q-value for all four moves as coloured triangles. Train "
+                "one episode or a hundred, change the learning rate, discount and "
+                "exploration, paint walls and traps, then watch the agent follow "
+                "the arrows it has learned.",
+    },
     "lmc": {
         "title": "Little Man Computer",
         "icon": "i-cpu",
@@ -221,7 +232,7 @@ ORDER = ["base-converter", "file-size", "logic-simulator", "sort-visualiser",
 # and are bundled with the rest.
 AI_ORDER = ["kmeans-lab", "loss-landscape", "neuron-lab", "network-playground",
             "convolution-lab", "embedding-space", "attention-lab", "token-sampler",
-            "diffusion-lab"]
+            "diffusion-lab", "q-learning-grid"]
 
 
 def _read(path):

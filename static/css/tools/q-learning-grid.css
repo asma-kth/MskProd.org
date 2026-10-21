@@ -1,0 +1,22 @@
+/* Q-learning grid lab. Each cell's four triangles carry the Q-value colours,
+   which the script sets; walls, traps, the goal and the start are drawn on
+   top. The cursor only shows while the grid has keyboard focus. */
+.tool[data-tool="q-learning-grid"] .ql-num { font-family: var(--font-mono); font-size: .85rem; color: var(--ink); }
+.tool[data-tool="q-learning-grid"] .ql-grid {
+  display: block; width: 100%; height: auto; margin-top: .8rem; cursor: pointer;
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r-s);
+}
+.tool[data-tool="q-learning-grid"] .ql-grid:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.tool[data-tool="q-learning-grid"] .ql-tri { stroke: var(--surface); stroke-width: .8; }
+.tool[data-tool="q-learning-grid"] .ql-block { fill: none; }
+.tool[data-tool="q-learning-grid"] .ql-block.is-wall { fill: #475569; }
+.tool[data-tool="q-learning-grid"] .ql-block.is-trap { fill: #B91C1C; }
+.tool[data-tool="q-learning-grid"] .ql-block.is-goal { fill: #15803D; }
+.tool[data-tool="q-learning-grid"] .ql-block.is-start { stroke: #7C3AED; stroke-width: 2.5; stroke-dasharray: 5 4; }
+.tool[data-tool="q-learning-grid"] .ql-lab { font-size: 13px; font-weight: 800; fill: #FFFFFF; pointer-events: none; }
+.tool[data-tool="q-learning-grid"] .is-start + .ql-arrow + .ql-lab { fill: #7C3AED; }
+.tool[data-tool="q-learning-grid"] .ql-arrow { fill: none; stroke: #111827; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+.tool[data-tool="q-learning-grid"] .ql-cursor { fill: none; stroke: #F59E0B; stroke-width: 3; opacity: 0; pointer-events: none; }
+.tool[data-tool="q-learning-grid"] .ql-grid:focus .ql-cursor { opacity: 1; }
+.tool[data-tool="q-learning-grid"] .ql-agent { fill: #7C3AED; stroke: #FFFFFF; stroke-width: 3; pointer-events: none; }
+.tool[data-tool="q-learning-grid"] .ql-stats { margin: .5rem 0 0; font-size: .85rem; font-weight: 650; color: var(--ink-2); }
