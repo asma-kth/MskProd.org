@@ -223,6 +223,17 @@ TOOLS = {
                 "estimates the generation speed from memory bandwidth, with every "
                 "formula written out.",
     },
+    "fairness-lab": {
+        "title": "Fairness lab",
+        "icon": "i-scales",
+        "blurb": "Move each group's approval threshold and watch four fairness "
+                 "measures pull against each other.",
+        "long": "Two groups of simulated loan applicants, one with fewer people who "
+                "would repay. Set a threshold for each group, or let the lab equalise "
+                "approval rates, true positive rates or precision, and see which "
+                "other measures break. Switch on a biased score to see how a skewed "
+                "measurement shows up in every number.",
+    },
     "lmc": {
         "title": "Little Man Computer",
         "icon": "i-cpu",
@@ -243,7 +254,7 @@ ORDER = ["base-converter", "file-size", "logic-simulator", "sort-visualiser",
 # and are bundled with the rest.
 AI_ORDER = ["kmeans-lab", "loss-landscape", "neuron-lab", "network-playground",
             "convolution-lab", "embedding-space", "attention-lab", "token-sampler",
-            "diffusion-lab", "q-learning-grid", "inference-planner"]
+            "diffusion-lab", "q-learning-grid", "inference-planner", "fairness-lab"]
 
 
 def _read(path):

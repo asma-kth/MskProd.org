@@ -1,0 +1,47 @@
+/* Fairness lab. Two rows of applicants, one per group, each with its own
+   threshold line; the table below compares the groups, and the gap row turns
+   green when a measure is within three points. Group colours are tokens so
+   the dark theme can lift them. */
+.tool[data-tool="fairness-lab"] { --fl-a: #2563EB; --fl-b: #C0266D; }
+[data-theme="dark"] .tool[data-tool="fairness-lab"] { --fl-a: #7DA7F5; --fl-b: #F08BBE; }
+.tool[data-tool="fairness-lab"] .fl-num { font-family: var(--font-mono); font-size: .85rem; color: var(--ink); }
+.tool[data-tool="fairness-lab"] .fl-checks { justify-content: flex-end; }
+.tool[data-tool="fairness-lab"] .fl-checks input { width: 1.05rem; height: 1.05rem; accent-color: var(--teal); }
+.tool[data-tool="fairness-lab"] .fl-checks label {
+  display: flex; align-items: center; gap: .45rem; text-transform: none; letter-spacing: 0;
+  font-size: .88rem; font-weight: 600; color: var(--ink-2); cursor: pointer;
+}
+.tool[data-tool="fairness-lab"] .fl-plot {
+  display: block; width: 100%; height: auto; margin-top: .8rem;
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r-s);
+}
+.tool[data-tool="fairness-lab"] .fl-grid { stroke: var(--border); stroke-width: 1; }
+.tool[data-tool="fairness-lab"] .fl-axis { font-size: 11px; font-weight: 600; fill: var(--ink-3); }
+.tool[data-tool="fairness-lab"] .fl-name { font-size: 13px; font-weight: 800; }
+.tool[data-tool="fairness-lab"] .fl-name.fl-a { fill: var(--fl-a); }
+.tool[data-tool="fairness-lab"] .fl-name.fl-b { fill: var(--fl-b); }
+.tool[data-tool="fairness-lab"] .fl-dot { fill: none; stroke-width: 1.4; transition: opacity .15s ease; }
+.tool[data-tool="fairness-lab"] .fl-dot.fl-a { stroke: var(--fl-a); }
+.tool[data-tool="fairness-lab"] .fl-dot.fl-b { stroke: var(--fl-b); }
+.tool[data-tool="fairness-lab"] .fl-dot.fl-a.is-good { fill: var(--fl-a); }
+.tool[data-tool="fairness-lab"] .fl-dot.fl-b.is-good { fill: var(--fl-b); }
+.tool[data-tool="fairness-lab"] .fl-dot.is-out { opacity: .32; }
+.tool[data-tool="fairness-lab"] .fl-thresh { stroke-width: 3; stroke-linecap: round; }
+.tool[data-tool="fairness-lab"] .fl-thresh.fl-a { stroke: var(--fl-a); }
+.tool[data-tool="fairness-lab"] .fl-thresh.fl-b { stroke: var(--fl-b); }
+.tool[data-tool="fairness-lab"] .fl-approve { font-size: 11px; font-weight: 700; fill: var(--ink-2); }
+.tool[data-tool="fairness-lab"] .fl-scroll { margin-top: .8rem; overflow-x: auto; }
+.tool[data-tool="fairness-lab"] .fl-table { font-size: .88rem; }
+.tool[data-tool="fairness-lab"] .fl-table th, .tool[data-tool="fairness-lab"] .fl-table td { padding: .38rem .5rem; }
+.tool[data-tool="fairness-lab"] .fl-table td { font-family: var(--font-mono); color: var(--ink); white-space: nowrap; }
+.tool[data-tool="fairness-lab"] .fl-table thead th { white-space: nowrap; }
+.tool[data-tool="fairness-lab"] .fl-table thead th.fl-a { color: var(--fl-a); font-weight: 800; }
+.tool[data-tool="fairness-lab"] .fl-table thead th.fl-b { color: var(--fl-b); font-weight: 800; }
+.tool[data-tool="fairness-lab"] .fl-table tbody th { background: none; font-weight: 650; color: var(--ink-2); }
+.tool[data-tool="fairness-lab"] .fl-table td.fl-gap { font-weight: 800; }
+.tool[data-tool="fairness-lab"] .fl-table td.is-ok { color: var(--ok); background: var(--ok-bg); }
+.tool[data-tool="fairness-lab"] .fl-table td.is-bad { color: var(--bad); }
+@media (max-width: 30rem) {
+  .tool[data-tool="fairness-lab"] .fl-table { font-size: .8rem; }
+  .tool[data-tool="fairness-lab"] .fl-table th, .tool[data-tool="fairness-lab"] .fl-table td { padding: .32rem .3rem; }
+}

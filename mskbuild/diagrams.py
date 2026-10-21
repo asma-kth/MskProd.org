@@ -2896,3 +2896,4 @@ from . import diagrams_ai6  # noqa: E402,F401
 from . import diagrams_ai7  # noqa: E402,F401
 from . import diagrams_ai8  # noqa: E402,F401
 from . import diagrams_ai9  # noqa: E402,F401
+from . import diagrams_ai10  # noqa: E402,F401
