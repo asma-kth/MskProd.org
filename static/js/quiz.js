@@ -39,7 +39,10 @@
         var key = quiz.getAttribute("data-quiz-id");
         if (key) {
           var rec = store.get("quiz", {});
-          rec[key] = { s: right, t: total, d: Date.now() };
+          // b keeps the best percentage ever scored, so retaking a quiz for
+          // practice can never take back a pass (the AI certificate reads it).
+          var prev = rec[key], prevBest = prev ? (prev.b != null ? prev.b : (prev.t ? Math.round(100 * prev.s / prev.t) : 0)) : 0;
+          rec[key] = { s: right, t: total, d: Date.now(), b: Math.max(pct, prevBest) };
           store.set("quiz", rec);
         }
         if (window.MskCat) {

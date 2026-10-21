@@ -333,7 +333,8 @@ def build_pwa():
 
     shell = []
     for rel in ("css/site.css", "js/app.js", "js/mascot.js", "js/tools.js",
-                "css/game.css", "js/game.js", "js/game-art.js"):
+                "css/game.css", "js/game.js", "js/game-art.js",
+                "css/certificate.css", "js/certificate.js"):
         f = os.path.join(DIST, "assets", rel)
         if os.path.exists(f):
             with open(f, "rb") as fh:
@@ -618,6 +619,9 @@ def main():
 
     from content import progress_page
     progress_page.build(register, add_search)
+
+    from content import ai_certificate
+    ai_certificate.build(register, add_search)
 
     from content import worksheets
     worksheets.build(register, add_search, COURSES)

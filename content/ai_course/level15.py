@@ -320,7 +320,7 @@ You will produce:
 3. A **model card**: what it is for, how it was built, how well it works and for whom, and its limitations.
 4. A short **presentation or demo** for someone else.
 
-The certificate for this course unlocks when you score at least 70% on every lesson's quiz. The capstone is how you prove the skills to yourself, and to anyone you show it to.
+The [certificate for this course](/ai/certificate/) unlocks when you score at least 70% on every lesson's quiz. The capstone is how you prove the skills to yourself, and to anyone you show it to.
 """),
         Section("Choose a project", """
 Pick a project you care about, small enough to finish. Some ideas, with the levels they draw on:

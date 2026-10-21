@@ -81,7 +81,7 @@ COURSE = Course(
     icon="i-sparkle",
     accent="var(--purple)",
     levels=True,
-    blurb="A complete course in how artificial intelligence works and how to build it, in fifteen levels: the history and key dates, data, classic machine learning, gradient descent, artificial neurons, neural networks and backpropagation, convolutional networks, embeddings, attention and transformers, large language models, generative AI, reinforcement learning and agents, AI engineering and architecture, and responsible AI. Every lesson has diagrams, hands-on Python that runs in your browser, interactive labs, a quiz and questions to explain. Pass every quiz to earn your printable MsKprod certificate.",
+    blurb="A complete course in how artificial intelligence works and how to build it, in fifteen levels: the history and key dates, data, classic machine learning, gradient descent, artificial neurons, neural networks and backpropagation, convolutional networks, embeddings, attention and transformers, large language models, generative AI, reinforcement learning and agents, AI engineering and architecture, and responsible AI. Every lesson has diagrams, hands-on Python that runs in your browser, interactive labs, a quiz and questions to explain. Pass every quiz to earn your printable MskProd certificate.",
     intro="",
     journey=[
         ("Go in order",
