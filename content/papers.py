@@ -37,7 +37,6 @@ J277_P1 = Paper(
     spec="J277",
     full=True,
     blurb="A full length original paper covering systems architecture, memory and storage, networks, network security, systems software and the impacts of technology.",
-    advice="Answer every question. The number of marks tells you how many creditworthy points the examiner wants, so a four mark question needs four separate developed points. Show all working in calculations and state the unit.",
     questions=[
         EQ("State what is meant by the term embedded system and give one example.", 2, [
             MP("A computer built into a larger device to perform one dedicated task", ["built into", "dedicated", "one task", "specific task", "part of a device"]),
@@ -202,7 +201,6 @@ J277_P2 = Paper(
     spec="J277",
     full=True,
     blurb="A full length original paper: computational thinking, searching and sorting, trace tables, Boolean logic, SQL and languages in a 50 mark Section A, then programming fundamentals, robust programs and testing in a 30 mark Section B.",
-    advice="You may answer programming questions in OCR reference language, Python or another high level language, but be consistent within each answer. Show your trace tables in full, because method marks are awarded for the working.",
     instructions=["OCR advises about 50 minutes on Section A and about 40 minutes on Section B."],
     questions=[
         EQ("Define the term algorithm.", 2, [
@@ -366,7 +364,6 @@ H446_P1 = Paper(
     marks=0,
     accent="var(--deep)",
     blurb="A shorter practice paper in the style of H446/01, about half the length of the real paper and timed at the same pace, covering processors, software and development, exchanging data, data types and structures, and legal and ethical issues.",
-    advice="The extended response questions are levels marked, so structure, balance and a supported conclusion matter as much as the content. Use precise technical vocabulary, because a single correct term communicates more than a paragraph of description.",
     questions=[
         EQ("Describe the role of the Current Instruction Register and the status register within the processor.", 4, [
             MP("The CIR holds the instruction currently being decoded and executed", ["cir", "current instruction", "being decoded", "currently"]),
@@ -502,7 +499,6 @@ H446_P2 = Paper(
     marks=0,
     accent="var(--purple)",
     blurb="A shorter practice paper in the style of H446/02, about half the length of the real paper and timed at the same pace, covering computational thinking, programming techniques, computational methods and algorithms including complexity and pathfinding.",
-    advice="Write code in OCR reference language or a high level language of your choice, but be consistent. On algorithm questions, show the trace in full. On extended questions, justify every choice against the scenario given.",
     questions=[
         EQ("Explain the difference between representational abstraction and abstraction by generalisation.", 4, [
             MP("Representational abstraction removes detail until only what is needed remains", ["removes", "detail", "only what is needed", "simplify"]),
@@ -625,7 +621,6 @@ R093_P1 = Paper(
     marks=0,
     accent="var(--lilac-deep)",
     blurb="A shorter practice paper in the style of the R093 examined unit, about three quarters of the length of the real paper and timed at the same pace, covering the media industry, factors influencing product design, pre-production planning and distribution.",
-    advice="Read the scenario carefully and refer to it directly in your answers. Marks are awarded for applying knowledge to the situation described, not for general statements about media production.",
     questions=[
         EQ("Identify two job roles in the post-production stage of a video project and describe what each does.", 4, [
             MP("First valid post-production role named", ["video editor", "sound editor", "vfx", "colourist", "quality assurance"]),
@@ -805,7 +800,7 @@ def _paper_page(paper):
 
     qs = render.render_exam(paper.slug, paper.questions,
                             title="Questions",
-                            lead="Answer every question, then finish the paper to have it marked. Marking as you go teaches you far less.",
+                            lead="Answer every question, then finish the paper to have it marked.",
                             heading_level="h2")
 
     sections = _sections(paper)
@@ -813,13 +808,8 @@ def _paper_page(paper):
     if sections:
         cover_rows.append(("Sections", "; ".join("%s, %d marks" % (t, m) for t, m in sections)))
     cover_rows.append(("Calculator", paper.calculator))
-    lines = ["Answer <b>all</b> the questions.",
-             "The number of marks for each question is shown in brackets. Use it as a guide to how much to write.",
-             ("The clock at the top counts down from the real time allowed." if paper.full else
-              "The clock at the top counts down from the time allowed for this paper.") +
-             " When it reaches zero the paper is locked and marked, as it would be collected in the exam hall."]
+    lines = ["Answer <b>all</b> the questions; the paper is marked when you finish or when the clock reaches zero."]
     lines += [esc(x) for x in paper.instructions]
-    lines.append(esc(paper.advice))
     cover = """<div class="card paper-cover">
       <h2 style="font-size:var(--step-1);margin-bottom:.6rem">Instructions</h2>
       <dl>%s</dl>
@@ -1008,9 +998,9 @@ def build(register, add_search, *_):
     <div>
       <span class="eyebrow">%s Practice papers</span>
       <h1>Sit a full paper. Have it marked.</h1>
-      <p class="lead">Full length papers for every specification, modelled on the real past papers: the same marks, the same
-      time allowed and the same structure, with a countdown clock at the top and marking done for you. Closed questions are marked
-      exactly, programs are run, and written answers are checked against a full mark scheme with a model answer.</p>
+      <p class="lead">Full length papers for every specification, with the real marks, time allowed and structure.
+      A clock counts down and the marking is done for you, against a full mark scheme with a model answer.
+      Sit a paper in one go, then revise from the marks you dropped.</p>
     </div>
     <div class="stat-row">
       <div class="stat"><b>%d</b><span>Papers and exams</span></div>
@@ -1026,8 +1016,8 @@ def build(register, add_search, *_):
 <section class="section section-alt" id="ks3-units"><div class="wrap">
   <div class="section-head">
     <h2>Key Stage 3 unit exams</h2>
-    <p>Two exams for every unit, Exam A and Exam B, each 25 marks in 25 minutes and marked automatically. Most questions are
-    closed, so the marking is exact. Sit one, revise from what you dropped, then sit the other.</p>
+    <p>Two exams for every unit, each 25 marks in 25 minutes and marked automatically. Sit one, revise from
+    what you dropped, then sit the other.</p>
   </div>
   <div class="grid grid-3">%s</div>
 </div></section>
@@ -1045,46 +1035,17 @@ def build(register, add_search, *_):
   <div class="grid grid-2" style="gap:var(--sp-6)">
     <div class="col-block">
       <h2 style="font-size:var(--step-2)">Why these are original papers</h2>
-      <p style="color:var(--ink-3)">Real past papers belong to the exam boards and are protected by copyright, so they
-      cannot lawfully be republished on this site. Every paper here is instead written from scratch and modelled on the
-      real ones on the measures that matter: the structure, the balance of topics, the command words, the mark allocations,
-      the total marks and the time allowed. Each comes with a full mark scheme written in the same style as a real one,
-      plus a model answer.</p>
-      <p style="color:var(--ink-3);margin-bottom:0">Use these alongside the official past papers, not instead of them.
-      The official papers are free to download from each board's own website.</p>
+      <p style="color:var(--ink-3)">Real past papers belong to the exam boards, so every paper here is written from
+      scratch to the same structure, command words, marks and time, with a full mark scheme and a model answer.</p>
+      <p style="color:var(--ink-3);margin-bottom:0">Use them alongside the official past papers, not instead of them.</p>
     </div>
     <div class="col-block">
       <h2 style="font-size:var(--step-2)">Official past papers</h2>
       <p style="color:var(--ink-3)">Download the genuine past papers and mark schemes directly from the exam board:</p>
       <ul class="checklist">%s</ul>
-      <p class="muted" style="font-size:.86rem;margin-top:var(--sp-3);margin-bottom:0">These links go to the exam board's own
-      website and open in a new tab. Some materials, particularly recent Cambridge National papers, are held on the
-      board's secure teacher portal and your teacher will be able to access them for you.</p>
+      <p class="muted" style="font-size:.86rem;margin-top:var(--sp-3);margin-bottom:0">Some recent papers are on the
+      board's secure teacher portal, so ask your teacher for them.</p>
     </div>
-  </div>
-</div></section>
-
-<section class="section"><div class="wrap">
-  <div class="section-head">
-    <h2>How to get the most out of a paper</h2>
-    <p>Most students do papers badly, and then wonder why doing lots of them did not help.</p>
-  </div>
-  <div class="journey">
-    <div class="journey-step"><div class="journey-dot">1</div><div class="journey-body">
-      <h3>Do it in one sitting, against the clock, with no notes</h3>
-      <p>Press Start and let the clock run. Stopping to look something up turns an exam into an open book exercise. If you cannot answer a question, leave it and move on, exactly as you would in May.</p></div></div>
-    <div class="journey-step"><div class="journey-dot">2</div><div class="journey-body">
-      <h3>Read the mark scheme, not just the score</h3>
-      <p>Every question shows its mark scheme once the paper is marked. The unticked lines are the marks you dropped, and they say exactly what an examiner wanted.</p></div></div>
-    <div class="journey-step"><div class="journey-dot">3</div><div class="journey-body">
-      <h3>Write down every mark you dropped and why</h3>
-      <p>Not the question, the reason. Did you not know it, misread the command word, run out of time, or know it but fail to say it clearly? Each of those needs a different fix.</p></div></div>
-    <div class="journey-step"><div class="journey-dot">4</div><div class="journey-body">
-      <h3>Revise from that list, not from the specification</h3>
-      <p>Your dropped marks are your revision plan. Going back to page one and reading everything again is comfortable and almost useless.</p></div></div>
-    <div class="journey-step"><div class="journey-dot">5</div><div class="journey-body">
-      <h3>Sit the paper again a week later</h3>
-      <p>Press Sit it again and answer from memory. If you can now earn the marks you dropped, the gap is genuinely closed.</p></div></div>
   </div>
 </div></section>""" % (
         crumbs([("Home", "/"), ("Exam papers", None)]),

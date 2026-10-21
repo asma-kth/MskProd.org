@@ -10,7 +10,6 @@ import json
 import math
 import re
 
-from mskbuild import markup
 from mskbuild.render import layout, crumbs, crumbs_ld, esc, ico, logo_svg, write
 
 PASS = 70
@@ -27,25 +26,11 @@ THEMES = [
 ]
 
 LEAD = ("Pass every lesson quiz in the AI course with at least 70% and your certificate "
-        "unlocks here. Add your name, choose your colours and print it, or save it as a PDF.")
+        "unlocks here; your best score on each quiz counts. Add your name, choose your colours "
+        "and print it, or save it as a PDF. Scores are saved in this browser, so finish the "
+        "course on the same device.")
 
-FOOT = """
-## How the certificate works
 
-- **What unlocks it.** A score of at least 70% on the quiz at the end of each of the 30 lessons, across all 15 levels. Your best score on each quiz counts, so retaking one for practice never takes a pass away.
-- **Where your scores live.** In this browser's storage on this device, like everything else on the site. Nothing is uploaded and there is no account, so use the same browser and device for the whole course. Clearing your browsing data, or using a private window, starts the count again.
-- **The date.** It starts as the day you completed your last quiz. You can change it, for example to the date of a presentation.
-- **The certificate number.** It is worked out from your name and the date, so the same details always print the same number.
-
-## Printing it well
-
-1. Press **Print or save as PDF**.
-2. Choose your printer, or **Save as PDF** to keep a copy.
-3. Check the layout is **landscape** and the paper is **A4**.
-4. Switch **headers and footers** off, and switch **background graphics** on if your browser offers it.
-
-!info Teachers :: The certificate needs no sign-in, so a student can print it at home or in school. If you would like the whole class to finish together, set two lessons a week and the course takes about fifteen weeks.
-"""
 
 
 def _mix(colours, t):
@@ -288,13 +273,10 @@ def build(register, add_search):
     <h2 id="cert-progress-h">Your lessons</h2>
     <div class="cert-levels" id="cert-levels"></div>
   </section>
-  <div class="wrap-narrow" style="width:100%%;margin-inline:auto">
-    <article class="prose" style="padding-bottom:var(--sp-8)">%s</article>
-  </div>
 </div>
 <script type="application/json" id="cert-data">%s</script>""" % (
         crumbs(trail), ico("i-trophy"), esc(LEAD), swatches, ico("i-download"),
-        certificate_svg(levels), markup.render(FOOT),
+        certificate_svg(levels),
         json.dumps(data, separators=(",", ":")).replace("</", "<\\/"))
     path = "/ai/certificate/"
     write(path, layout(

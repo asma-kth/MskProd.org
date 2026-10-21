@@ -28,7 +28,6 @@ F200_D = Paper(
     course="Data Analytics", board="OCR", code="F200",
     minutes=75, marks=60, accent="var(--teal)", spec="DA", full=True,
     blurb="A full length F200 paper built around a bus company's journey data: types and levels of data, data quality in an extract, averages and percentage change, ETL, interoperability, access control, the data protection principles and rights, the roles, and a 10 mark discussion of redesigning timetables.",
-    advice="Use the resource material: the marks are for what is in the extract, not for general statements about data. Show your working in calculations.",
     calculator=CALC, instructions=[DISCUSS],
     questions=[
         rows("Coastline Buses runs bus services in a coastal region. Tick (✓) one box in each row to show the level of measurement of each item of its data.",
@@ -167,7 +166,6 @@ F201_D = Paper(
     course="Data Analytics", board="OCR", code="F201",
     minutes=90, marks=60, accent="var(--purple)", spec="DA", full=True,
     blurb="A full length F201 paper built around a supermarket chain: the five Vs, stream and edge processing, transfer times, replication, types of machine learning, a confusion matrix to calculate from, overfitting, the law on loyalty data, the digital divide, PUE, and a 10 mark discussion of personalised offers.",
-    advice="Several questions print a results table: use its numbers. Show your working in every calculation.",
     calculator=CALC, instructions=[DISCUSS],
     questions=[
         rows("FreshCart is a national supermarket chain. Tick (✓) one box in each row to show the characteristic of big data described.",

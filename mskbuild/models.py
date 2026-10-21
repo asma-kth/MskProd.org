@@ -175,7 +175,6 @@ class Course:
     # title has about sixty characters before Google truncates it and the
     # topic name has to survive that cut.
     seo: str = ""
-    journey: List[Tuple[str, str, str]] = field(default_factory=list)
     # One extra button in the course hero: (label, href, icon). The Python
     # course uses it to point at the game that practises it.
     extra_cta: Tuple[str, str, str] = ()
@@ -201,7 +200,6 @@ class Paper:
     minutes: int
     marks: int
     blurb: str
-    advice: str
     questions: List[EQ]
     calculator: str = "No calculator is permitted."
     accent: str = "var(--teal)"

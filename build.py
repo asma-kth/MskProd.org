@@ -94,7 +94,7 @@ def _pixel_run_band():
         <span class="eyebrow">%s New: a game</span>
         <h2>Learn Python by playing</h2>
         <p class="lead">Pixel the robot cat runs through ten levels, and every obstacle is a Python function for you to write.
-        Pass the tests and she jumps on. Fail three times and you are sent back a level. It runs in your browser,
+        Pass the tests and she jumps on; fail three times and you go back a level. It runs in your browser,
         from your first <code>print()</code> to Dijkstra's algorithm.</p>
         <div class="btn-row" style="margin-top:1.4rem">
           <a class="btn btn-primary" href="/pixel-run/">%s Play Pixel Run</a>
@@ -150,8 +150,8 @@ def build_home():
     <div>
       <h1>Revise computing properly.</h1>
       <p class="lead">Key Stage 3, GCSE and A Level, written board by board for OCR, AQA and Edexcel.
-      Every topic explained in full, then a ten question check and exam-style questions marked against
-      the real mark scheme. No account, no subscription, no paywall. Just the work.</p>
+      Every topic is explained in full, then tested with a ten question check and exam-style questions
+      marked against the real mark scheme. No account, no subscription, no paywall.</p>
       <div class="btn-row" style="margin-top:1.8rem">
         <a class="btn btn-primary" href="/ks4/computer-science/">%s Start GCSE Computer Science</a>
         <a class="btn btn-secondary" href="/how-to-revise/">%s How to revise properly</a>
@@ -176,7 +176,7 @@ def build_home():
   <div class="wrap">
     <div class="section-head">
       <h2>Choose where you are</h2>
-      <p>Each course follows the order it is taught in school, so you can revise alongside your lessons or work through the whole thing from the start.</p>
+      <p>Each course follows the order it is taught in school.</p>
     </div>
     <div class="grid grid-3">%s</div>
   </div>
@@ -186,21 +186,20 @@ def build_home():
   <div class="wrap">
     <div class="section-head">
       <h2>How every topic is built</h2>
-      <p>The same structure every time, because a revision routine only works when you stop having to decide what to do next.</p>
     </div>
     <div class="grid grid-4">
       <div class="card"><span class="tile-icon">%s</span>
         <h3 style="font-size:var(--step-1)">Explanation</h3>
-        <p style="color:var(--ink-3);font-size:.94rem;margin:0">Written to be understood, not skimmed. Every idea is explained with the reason behind it, because the reason is where the marks are.</p></div>
+        <p style="color:var(--ink-3);font-size:.94rem;margin:0">Every idea explained with the reason behind it.</p></div>
       <div class="card"><span class="tile-icon">%s</span>
         <h3 style="font-size:var(--step-1)">Key terms and flashcards</h3>
-        <p style="color:var(--ink-3);font-size:.94rem;margin:0">Exam ready definitions, plus flip cards so you can practise recalling them rather than rereading them.</p></div>
+        <p style="color:var(--ink-3);font-size:.94rem;margin:0">Exam ready definitions, and flip cards to test your recall.</p></div>
       <div class="card"><span class="tile-icon">%s</span>
         <h3 style="font-size:var(--step-1)">Ten question check</h3>
-        <p style="color:var(--ink-3);font-size:.94rem;margin:0">Instant feedback on every answer, right or wrong, explaining why. Anything under ten out of ten means go back.</p></div>
+        <p style="color:var(--ink-3);font-size:.94rem;margin:0">Instant feedback on every answer, explaining why.</p></div>
       <div class="card"><span class="tile-icon">%s</span>
         <h3 style="font-size:var(--step-1)">Auto marked exam questions</h3>
-        <p style="color:var(--ink-3);font-size:.94rem;margin:0">Write a full answer and the marker checks it against the mark scheme point by point, then shows you a model answer.</p></div>
+        <p style="color:var(--ink-3);font-size:.94rem;margin:0">Your answer marked against the mark scheme, then a model answer.</p></div>
     </div>
   </div>
 </section>
@@ -212,19 +211,17 @@ def build_home():
     <div class="grid grid-2" style="align-items:center;gap:var(--sp-6)">
       <div>
         <h2>Practice papers you can actually sit</h2>
-        <p class="lead">Full length original papers written to match the real format exactly, with complete
-        mark schemes and a built in timer. Sit one properly, mark it honestly, and you will learn more in
-        ninety minutes than in a week of rereading notes.</p>
+        <p class="lead">Full length original papers in the real format, with a timer and complete mark schemes.
+        Sit one properly and you will learn more in ninety minutes than in a week of rereading notes.</p>
         <div class="btn-row" style="margin-top:1.4rem">
           <a class="btn btn-primary" href="/exam-papers/">%s Go to exam papers</a>
         </div>
       </div>
       <div class="card">
         <h3 style="font-size:var(--step-1)">Why original papers</h3>
-        <p style="color:var(--ink-3);font-size:.95rem">Real past papers belong to the exam boards and cannot be
-        republished here. Every paper on this site is written from scratch to the same structure, question
-        style, command words and mark allocation as the real thing, and each comes with a full mark scheme.
-        Links to the official past papers on the exam board's own site are provided alongside them.</p>
+        <p style="color:var(--ink-3);font-size:.95rem">Real past papers belong to the exam boards, so every paper
+        here is written from scratch to the same structure, command words and marks, with a full mark scheme.
+        Links to the official past papers are alongside them.</p>
       </div>
     </div>
   </div>
@@ -262,9 +259,8 @@ def build_home():
         <span class="eyebrow">%s Meet Pixel</span>
         <h2>You are not doing this alone</h2>
         <p class="lead">Pixel is the small robot cat in the corner of every page. Tap for a fun fact, a
-        revision tip that is actually backed by evidence, or a reminder that finding this hard is normal and
-        not a sign that you cannot do it.</p>
-        <p class="muted" style="font-size:.9rem">Pixel runs entirely on your own device. Your scores and answers never leave your browser.</p>
+        revision tip, or a reminder that finding this hard is normal.</p>
+        <p class="muted" style="font-size:.9rem">Your scores and answers never leave your browser.</p>
       </div>
     </div>
   </div>

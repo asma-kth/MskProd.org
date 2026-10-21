@@ -57,9 +57,8 @@ H446_1B = Paper(
     course="A Level Computer Science", board="OCR", code="H446/01",
     minutes=150, marks=140, accent=ACC, spec="H446", full=True,
     blurb="A full length H446/01 paper: registers, pipelining and GPUs; scheduling, paging and interrupts; compilation, linking and development methodologies with a 9 mark evaluation; two's complement and floating point; stacks, trees, hash tables and linked lists; Karnaugh maps and adders; SQL run against a vet's database; networks and the web; and a 12 mark discussion of live facial recognition.",
-    advice="Use precise technical vocabulary. In the 9 and 12 mark questions, cover several sides of the issue, apply each point to the scenario and finish with a justified conclusion.",
     calculator="You must not use a calculator.",
-    instructions=["Questions marked with 9 and 12 marks are extended responses. In the real exam they are marked in levels; here every relevant point you make earns a mark, up to the total.",
+    instructions=["The 9 and 12 mark questions earn a mark for each relevant point here; the real exam marks them in levels.",
                   "SQL answers are run against the tables printed in question 7, so they must be valid SQL."],
     questions=[
         # ---------------------------------------------------- 1 processors
@@ -596,10 +595,9 @@ H446_2B = Paper(
     course="A Level Computer Science", board="OCR", code="H446/02",
     minutes=150, marks=140, accent=ACC, spec="H446", full=True,
     blurb="A full length H446/02 paper. Section A: computational thinking, recursion, parameter passing, OOP, Big O, insertion sort, Dijkstra's algorithm and A*, tree traversals, and programs for bracket matching, a recursive binary search and a circular queue. Section B: a word game to program in Python, with a 9 mark evaluation of object-oriented design.",
-    advice="Run every program on the examples in the question, and on the edge cases: an empty list, a single item, the first and the last. In Section B each function builds on the last, so read the whole scenario first.",
     calculator="You must not use a calculator.",
-    instructions=["Write program code in Python, so it can be run and marked here. In the real exam you may answer in OCR Exam Reference Language or a high-level language.",
-                  "The 9 mark question is an extended response. In the real exam it is marked in levels; here every relevant point you make earns a mark, up to the total."],
+    instructions=["Write program code in Python, so it can be run and marked here.",
+                  "The 9 mark question earns a mark for each relevant point here; the real exam marks it in levels."],
     questions=[
         # ---------------------------------------------------- Section A: 1 computational thinking
         write("A satnav app shows a map of the roads to help a driver plan a route. Explain how abstraction has been used to produce the map.", 2, [

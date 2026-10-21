@@ -295,7 +295,7 @@ def footer(path: str = "") -> str:
     <div class="footer-grid">
       <div>
         <div class="footer-brand">%s<span>MskProd Computing</span></div>
-        <p>Free computing revision for UK students at Key Stage 3, GCSE and A Level. Written board by board for OCR, AQA and Edexcel, structured as a journey to the top grade, and completely free to use with no account and no subscription.</p>
+        <p>Free computing revision for UK students at Key Stage 3, GCSE and A Level, written board by board for OCR, AQA and Edexcel. No account, no subscription.</p>
       </div>
       <div>
         <h4>Revise</h4>
@@ -685,7 +685,7 @@ def render_exam(topic_slug: str, questions: List[EQ], title: str = "Exam-style q
     <button class="btn btn-primary btn-sm" type="button" data-mark-all>%s Mark everything</button>
   </div>
 </section>""" % (heading_level, esc(title), heading_level,
-                 esc(lead or "Five written questions in the style of the real paper. Write a full answer, then let the marker check it against the mark scheme."),
+                 esc(lead or "Write a full answer, then let the marker check it against the mark scheme."),
                  total, "".join(qs), total, ico("i-check"))
 
 
@@ -708,7 +708,7 @@ def flashcards(terms, limit: int = 8) -> str:
         "</div></div>" % (esc(t), markup.inline(t), markup.inline(d))
         for t, d in terms[:limit])
     return ('<h2 id="flashcards">Flashcards</h2>'
-            '<p>Say the definition out loud before you flip the card. Retrieving it from memory is what builds recall, reading it again is not.</p>'
+            '<p>Say the definition out loud before you flip the card.</p>'
             '<div class="flashdeck grid grid-2">%s</div>' % cards)
 
 
@@ -866,12 +866,11 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
              render_exam(tid, topic.exam, topic.exam_title),
              _unit_exams_note(topic),
              nav_html, toc_html,
-             ("Read each section and run every example, then do the hands-on activities. "
-              "Score 70% or more in the knowledge check to count this lesson towards your "
-              "certificate, then answer the last questions in your own words."
+             ("Read, run every example, then score 70% or more in the knowledge check "
+              "to count this lesson towards your certificate."
               if course.levels else
-              "Read the explanation, do the ten question check, then write the five exam answers "
-              "from memory. Come back in three days and redo the quiz only."),
+              "Read the explanation, do the ten question check, then write the exam answers "
+              "from memory."),
              worksheet_link, _unit_exams_aside(topic))
 
     desc = topic.blurb if len(topic.blurb) > 70 else topic.blurb + " Full explanation, a ten question check and five auto marked exam-style questions."
@@ -956,20 +955,6 @@ def course_page(course: Course) -> tuple:
     total_quiz = sum(len(t.quiz) for u in course.units for t in u.topics)
     total_marks = sum(q.marks for u in course.units for t in u.topics for q in t.exam)
 
-    journey = ""
-    if course.journey:
-        steps = "".join(
-            '<div class="journey-step"><div class="journey-dot">%d</div>'
-            '<div class="journey-body"><h3>%s</h3><p>%s</p></div></div>'
-            % (i + 1, esc(a), markup.inline(b)) for i, (a, b, _c) in enumerate(course.journey))
-        intro = ("Each level builds on the one before, so work through them in order and finish every lesson's knowledge check."
-                 if course.levels else
-                 "Revision works when it has an order. Follow these stages rather than opening topics at random.")
-        journey = ("""<section class="section section-alt"><div class="wrap">
-          <div class="section-head"><h2>Your route to %s</h2>
-          <p>""" + intro + """</p></div>
-          <div class="journey">%s</div></div></section>""") % (esc(course.goal or "the top grade"), steps)
-
     units_html = "".join(unit_block(course, u) for u in course.units)
     first = "/%s/%s/" % (course.slug, course.units[0].topics[0].slug) if course.units and course.units[0].topics else "/"
     if course.levels:
@@ -1009,7 +994,6 @@ def course_page(course: Course) -> tuple:
   </div>
 </div></section>
 <div class="wrap course-banner">%s</div>
-%s
 <div class="wrap">%s</div>""" % (
         crumbs(trail),
         ico("i-target"),
@@ -1020,7 +1004,7 @@ def course_page(course: Course) -> tuple:
         ('\n        <a class="btn btn-secondary" href="%s">%s %s</a>'
          % (course.extra_cta[1], ico(course.extra_cta[2]), esc(course.extra_cta[0]))) if course.extra_cta else "",
         stats,
-        course_banner(course.slug), journey, units_html)
+        course_banner(course.slug), units_html)
 
     ld = [crumbs_ld(trail), {
         "@context": "https://schema.org", "@type": "Course",

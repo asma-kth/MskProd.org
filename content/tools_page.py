@@ -3,32 +3,19 @@ from mskbuild import markup
 from mskbuild.tools import TOOLS, ORDER, AI_ORDER
 from mskbuild.render import (layout, crumbs, crumbs_ld, ico, esc, write)
 
-INTRO = ("Reading about a truth table is not the same as building one. These tools let "
-         "you do the thing itself, get it wrong, and see immediately why. Everything "
-         "runs in your browser, nothing you type is sent anywhere, and none of it needs an "
-         "account.")
+INTRO = ("Tools that let you do the thing itself, get it wrong, and see immediately why. "
+         "Everything runs in your browser, and none of it needs an account.")
 
 # Extra teaching that sits above each tool on its own page.
 NOTES = {
     "base-converter": """
-Converting between denary, binary and hexadecimal comes up on every single GCSE and A Level paper, and it is the easiest set of marks on the whole specification once the method is automatic. The trick is that the method never changes, so what you are really practising is speed and accuracy.
-
-!key The one method worth learning :: Go through binary. Denary to hex is denary to binary to hex. Hex to denary is hex to binary to denary. You only ever need two conversions, not six.
-
 !tool base-converter
 
-### How to use this properly
-
-+ Start in convert mode and type numbers you already know, so you can see the working laid out
-+ Move to practice mode and set yourself a target, for example twenty correct in a row
-+ Say the place values out loud as you work: 128, 64, 32, 16, 8, 4, 2, 1
-+ Check every answer by converting it back the other way
+!key The one method worth learning :: Go through binary: denary to hex is denary to binary to hex, and hex to denary is hex to binary to denary. You only ever need two conversions, not six.
 
 !exam Show the working :: In an exam a wrong final answer with correct place values written above the columns often still earns a method mark. A bare wrong number earns nothing.
 """,
     "file-size": """
-File size questions are worth between two and five marks and are lost far more often to a missed conversion than to a missed formula. This calculator shows every division separately, so you can see exactly where an answer usually goes wrong.
-
 !tool file-size
 
 ### The three formulas
@@ -41,8 +28,6 @@ File size questions are worth between two and five marks and are lost far more o
 !warn Bits and bytes :: A lower case b means bits and an upper case B means bytes. Every one of these formulas gives you bits, so dividing by eight is always the first conversion.
 """,
     "logic-simulator": """
-A logic circuit is easier to understand when you can flip an input and watch the answer change. Build the circuit from the question, switch the inputs through every combination, and the truth table fills itself in.
-
 !tool logic-simulator
 
 ### Try these
@@ -55,8 +40,6 @@ A logic circuit is easier to understand when you can flip an input and watch the
 !grade Prove it, do not assert it :: An A star answer to "show that these two circuits are equivalent" is a full truth table for each, side by side, with a sentence saying the output columns are identical.
 """,
     "sort-visualiser": """
-Everybody can recite that bubble sort is slow and merge sort is fast. Far fewer students can say what the algorithms are actually doing differently, which is the part worth marks. Watch all four run on the same list and the difference stops being an abstract claim.
-
 !tool sort-visualiser
 
 ### What to look for
@@ -66,18 +49,14 @@ Everybody can recite that bubble sort is slow and merge sort is fast. Far fewer 
 + Merge sort barely compares at all until it starts merging, and the number of comparisons hardly changes when you shuffle the list
 + Quick sort is usually the fastest here, but its comparison count swings the most between shuffles, which is exactly why its worst case is so much worse than its average case
 
-!exam Best, average and worst :: Bubble and insertion sort are n squared in the worst case. Merge sort is n log n in every case. Quick sort is n log n on average but n squared in the worst case. Learn those six facts and most sorting questions answer themselves.
+!exam Best, average and worst :: Bubble and insertion sort are n squared in the worst case. Merge sort is n log n in every case. Quick sort is n log n on average but n squared in the worst case.
 """,
     "trace-table": """
-Trace tables are pure method. There is nothing to understand once you know the rule, which is: work down the algorithm one line at a time and write a value the moment it changes, never later. Students lose marks by tracing in their head and only writing down the answer.
-
 !tool trace-table
 
 !warn The most common mistake :: Updating two variables in the same row when the algorithm changes them on different lines. If line 4 changes total and line 5 changes count, they belong in different steps of your working even if the exam table gives you one row per loop.
 """,
     "lmc": """
-The Little Man Computer is a complete processor with one accumulator, one hundred mailboxes and eleven instructions. It is small enough to hold in your head and real enough that every idea in it transfers straight to a real CPU: the program counter, the accumulator, the fetch decode execute cycle and the difference between an instruction and the data it operates on.
-
 !tool lmc
 
 ### The instruction set
@@ -157,7 +136,7 @@ def build(register, add_search):
         meta = TOOLS[name]
         tpath = "/tools/%s/" % name
         ttrail = [("Home", "/"), ("Tools", "/tools/"), (meta["title"], None)]
-        md = NOTES.get(name) or ("%s\n\n!tool %s\n" % (meta["long"], name))
+        md = NOTES.get(name) or ("!tool %s\n" % name)
         _p, html = _page(tpath, meta["title"], meta["long"], ttrail, md)
         write(tpath, html)
         register(tpath, 0.75, "monthly")

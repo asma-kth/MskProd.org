@@ -67,7 +67,7 @@ def _layers():
     cv.add(cv.text(58, 348, "Hardware", 20, 800, anchor="start", fill="#FFFFFF"),
            cv.text(58, 372, "the parts you could drop on your foot", 13, 600, anchor="start", fill="#E6EEF2"))
     cv.add(cv.rect(332, 324, 204, 68, 14, "#EEF3F6"))
-    cv.add(P.cpu_chip(cv, 346, 342, 34, "", 1, "dark", 6), P.ram_stick(cv, 398, 346, 72, 22, 1, 3), P.ssd(cv, 482, 346, 230, .21, label=False))
+    cv.add(P.cpu_chip(cv, 346, 342, 34, "", 1, "dark", 6), P.ram_stick(cv, 398, 346, 220, 67, .33, 3), P.ssd(cv, 482, 346, 230, .21, label=False))
     cv.add(cv.text(347, 384, "CPU", 10.5, 800, fill="#2E4855", anchor="start", mono=True), cv.text(398, 384, "RAM", 10.5, 800, fill="#2E4855", anchor="start", mono=True),
            cv.text(488, 384, "disk", 10.5, 800, fill="#2E4855", anchor="start", mono=True))
     # each layer asks the one below
@@ -83,7 +83,7 @@ def _layers():
         cv.add(cv.text(676, y + 24, t, 15, 800, fill=P._on(col)), cv.text(676, y + 43, sub, 12, 600, fill=P._on(col)))
     cv.add(P.arrow(cv, [(676, 128), (676, 152)], PAL["teal"][2], 4, 10), P.arrow(cv, [(676, 222), (676, 246)], PAL["teal"][2], 4, 10))
     cv.add(P.arrow(cv, [(664, 322), (630, 350)], PAL["teal"][2], 4, 10), P.arrow(cv, [(688, 322), (722, 350)], PAL["teal"][2], 4, 10))
-    cv.add(P.hdd(cv, 588, 356, 80), P.ssd(cv, 686, 362, 88))
+    cv.add(P.hdd(cv, 588, 356, 80), P.ssd(cv, 686, 362, 230, .38, label=False))
     cv.add(cv.text(628, 440, "hard disk", 12.5, 700, cls="il-ink2"), cv.text(730, 440, "SSD", 12.5, 700, cls="il-ink2"))
     cv.add(cv.text(676, 466, "the app never knows which", 13, 750, cls="il-ink"))
     cv.add(P.badge(cv, 30, 316, 1), P.badge(cv, 30, 180, 2), P.badge(cv, 394, 180, 3), P.badge(cv, 30, 44, 4), P.badge(cv, 584, 36, 5))

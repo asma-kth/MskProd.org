@@ -90,7 +90,7 @@
     var table = el("table", "fl-table"), wrap = el("div", "fl-scroll");
     wrap.appendChild(table);
     var status = el("p", "tool-status"); status.setAttribute("role", "status"); status.setAttribute("aria-live", "polite");
-    var note = el("p", "tool-note", "Each dot is one applicant. Filled dots would really repay; hollow dots would not. Everyone to the right of their group's line is approved. Group B has fewer applicants who would repay, so try to make every measure equal at once.");
+    var note = el("p", "tool-note", "Each dot is an applicant: filled dots would repay, hollow dots would not, and everyone right of their group's line is approved. Group B has fewer applicants who would repay, so try to make every measure equal at once.");
 
     function x(s) { return X0 + s * (X1 - X0); }
     function draw() {

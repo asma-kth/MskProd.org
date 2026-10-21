@@ -3910,18 +3910,6 @@ COURSE = Course(
     accent="var(--lilac-deep)",
     blurb="Years 7, 8 and 9 in the order they are taught. Computer science, information technology and digital literacy, explained properly so that starting GCSE feels like carrying on rather than starting again.",
     intro="",
-    journey=[
-        ("Understand it, do not just do it",
-         "It is possible to finish every task in a lesson without understanding any of it. Read the explanation on each topic and check you could explain it to somebody else.", ""),
-        ("Get full marks on the knowledge checks",
-         "Ten questions per unit. If you get eight, go back to the two sections you missed. Nobody ever improved by moving on from the bits they found hard.", ""),
-        ("Write the longer answers out",
-         "Five written questions per unit, marked against a real mark scheme. Writing an answer is a completely different skill from recognising one, and it is the one that gets tested.", ""),
-        ("Build the habit early",
-         "Twenty minutes a week from Year 7 puts you two years ahead by GCSE. Nobody who gets a grade 9 started revising in Year 11.", ""),
-        ("Keep coding outside lessons",
-         "One small Python project a term will do more for you than any amount of note reading. Build something you actually want to exist.", ""),
-    ],
     units=[
         Unit("year-7", "Year 7", "Your first year of computing: using computers properly, your first programs in Scratch and Python, what is inside the machine, and vector graphics.",
              [Y7_USING, Y7_SCRATCH, Y7_PYTHON, Y7_UNDERSTAND, Y7_VECTOR], icon="i-play", term="Year 7"),

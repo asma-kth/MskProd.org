@@ -33,7 +33,6 @@ J277_01_B = Paper(
     course="GCSE Computer Science", board="OCR", code="J277/01",
     minutes=90, marks=80, accent=ACC, spec="J277", full=True,
     blurb="A full length J277/01 paper: systems architecture, memory and storage, data representation, networks, network security, systems software and an 8 mark discussion of a supermarket replacing its checkout staff.",
-    advice="Give as many separate points as the marks. Show your working in every calculation, because method marks are given even when the final answer is wrong.",
     calculator="No calculator is permitted.",
     instructions=["Use the units asked for. Where a calculation asks for kilobytes, 1 kilobyte = 1000 bytes is expected, and 1024 is also accepted."],
     questions=[
@@ -222,9 +221,8 @@ J277_02_B = Paper(
     course="GCSE Computer Science", board="OCR", code="J277/02",
     minutes=90, marks=80, accent=ACC, spec="J277", full=True,
     blurb="A full length J277/02 paper: searching and sorting, data types, operators and trace tables, Boolean logic, validation and testing in Section A, then a cinema ticketing program to design, write and refine in Section B.",
-    advice="In Section B read the whole scenario first. Test each program with the Run button before you move on, using the example values in the question.",
     calculator="No calculator is permitted.",
-    instructions=["Section B questions ask for programs. Write them in Python so they can be run and marked here. In the real exam you may also use OCR Exam Reference Language.",
+    instructions=["Write the Section B programs in Python, so they can be run and marked here.",
                   "OCR advises about 50 minutes on Section A and about 40 minutes on Section B."],
     questions=[
         # ---------------------------------------------------- Section A

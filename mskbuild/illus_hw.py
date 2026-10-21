@@ -208,7 +208,7 @@ def _memory_hierarchy():
         elif i == 2:
             cv.add(P.ram_stick(cv, apex[0] - 70, y0 + 46, 140, 36, 1, 4))
         else:
-            cv.add(P.ssd(cv, apex[0] - 56, y0 + 40, 112), P.hdd(cv, apex[0] + 58, y0 + 38, 70, 1))
+            cv.add(P.ssd(cv, apex[0] - 56, y0 + 40, 230, .49, label=False), P.hdd(cv, apex[0] + 58, y0 + 38, 70, 1))
         # the card to the right
         cy = mid + 6
         cv.add(cv.line(xr(mid) + 4, mid + 4, 470, cy, ARROW, 2, op=.35, dash="3 5"))

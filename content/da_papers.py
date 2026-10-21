@@ -26,7 +26,6 @@ F200_A = Paper(
     marks=0,
     accent=ACC,
     blurb="A full length original paper sampling all five topic areas of F200: understanding data, managing data, platforms and access, the law, and the roles. Built around a veterinary group merging its practices onto one system.",
-    advice="Use the resource material. Several questions print an extract, a chart or an exchange, and the marks are for what is actually in it rather than for general statements about data.",
     calculator="A calculator may be used.",
     questions=[
         EQ("State what is meant by **information**, and how it differs from data.", 3, [
@@ -161,7 +160,6 @@ F200_B = Paper(
     marks=0,
     accent=ACC,
     blurb="A second full length F200 paper, built around a city council bringing together data from its waste, housing and leisure services to plan where to invest.",
-    advice="Where a question prints an extract or a chart, answer from what is in front of you. General statements that could have been written without looking at the resource earn very little.",
     calculator="A calculator may be used.",
     questions=[
         EQ("State the difference between **quantitative** and **qualitative** data, giving one example of each.", 3, [
@@ -295,7 +293,6 @@ F200_C = Paper(
     marks=0,
     accent=ACC,
     blurb="A third full length F200 paper, set in a manufacturer running production line sensors alongside its order and maintenance systems.",
-    advice="Watch the command word. State and identify want a name, describe wants detail, explain wants a reason, and discuss wants both sides and a judgement at the end.",
     calculator="A calculator may be used.",
     questions=[
         EQ("State what is meant by **metadata**, and give one example.", 2, [
@@ -431,7 +428,6 @@ F201_A = Paper(
     marks=0,
     accent="var(--purple)",
     blurb="A full length original paper sampling all five topic areas of F201, built around a logistics company instrumenting its fleet and warehouses with sensors.",
-    advice="Several questions ask you to calculate from a table. Show the substitution as well as the answer, because a wrong final figure with correct working still earns marks and a bare number does not.",
     calculator="A calculator may be used.",
     questions=[
         EQ("State **three** characteristics of big data.", 3, [
@@ -566,7 +562,6 @@ F201_B = Paper(
     marks=0,
     accent="var(--purple)",
     blurb="A second full length F201 paper, set in an NHS trust considering a model that predicts which patients are at risk of readmission.",
-    advice="The extended question at the end is marked on balance and judgement. An answer that argues only one side, however detailed, will not reach the top band.",
     calculator="A calculator may be used.",
     questions=[
         EQ("Define **machine learning**.", 2, [
@@ -698,7 +693,6 @@ F201_C = Paper(
     marks=0,
     accent="var(--purple)",
     blurb="A third full length F201 paper, set around a streaming platform that recommends content, predicts which subscribers will cancel, and reports on its own energy use.",
-    advice="Where a question says calculate, show the substitution. Where it says discuss, reach a conclusion: a balanced answer that never decides anything stays out of the top band.",
     calculator="A calculator may be used.",
     questions=[
         EQ("State what is meant by **veracity**, and give one example of poor veracity in a platform's data.", 3, [

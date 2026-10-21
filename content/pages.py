@@ -320,7 +320,7 @@ This site is written independently and is not endorsed by, affiliated with or co
 
 ## Getting in touch
 
-Corrections are genuinely welcome. If something on this site is wrong, unclear or out of date, please tell me and it will be fixed. Email [a.kethiri@mskprod.org](mailto:a.kethiri@mskprod.org), or use the [contact page](/contact/). Every page also has a link at the bottom for reporting a problem with that page, and every exam question has one under its mark scheme.
+Corrections are welcome: if something is wrong, unclear or out of date, email [a.kethiri@mskprod.org](mailto:a.kethiri@mskprod.org) or use the [contact page](/contact/). Every page and every exam question also has a link for reporting a problem.
 """
     path, html = _page(
         "/about/", "About MskProd Computing",

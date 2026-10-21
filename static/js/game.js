@@ -918,7 +918,7 @@
       : null;
     var card = h("div", { class: "pr-card pr-titlecard" }, [
       h("h3", null, resume ? "Welcome back" : "Ready to run?"),
-      h("p", null, "Pixel runs by herself. At every obstacle you write a short Python function, and if it passes the tests she jumps on. Fail three times and you go back a level."),
+      h("p", null, "At every obstacle, write a short Python function to keep Pixel running."),
       h("div", { class: "pr-actions" }, [
         resume ? h("button", { class: "btn btn-primary", type: "button", "data-act": "continue" }, "Continue at level " + P.resume) : null,
         h("button", { class: resume ? "btn btn-secondary" : "btn btn-primary", type: "button", "data-act": "start" }, resume ? "Start again at level 1" : "Start at level 1")

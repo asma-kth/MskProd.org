@@ -12,10 +12,6 @@ from mskbuild.examkit import tick, rows, ans, boxes, table, calc, write, prog, d
 from mskbuild.models import Paper
 
 ACC = "var(--purple)"
-ADVICE1 = ("Answer every question. Read each algorithm line by line, and trace it with real values before you answer. "
-           "For the programming questions, run your program on the examples in the question before you move on.")
-ADVICE2 = ("Answer every question. Shade exactly the number of lozenges asked for: shading more than asked scores "
-           "nothing. Show your working in every calculation, because a method can earn marks even when the answer is wrong.")
 
 
 def last(inputs):
@@ -110,7 +106,6 @@ AQA_1 = Paper(
     course="GCSE Computer Science", board="AQA", code="8525/1B",
     minutes=120, marks=90, accent=ACC, spec="8525", full=True,
     blurb="A full length 8525/1B paper: algorithms in AQA pseudo-code, data types, Boolean expressions, trace tables, searching and sorting, subroutines, testing, string handling, records, 2D lists, an authentication routine and a 9 mark car park program.",
-    advice=ADVICE1,
     calculator="You must not use a calculator.",
     instructions=["Answer the questions that ask for program code in Python, using meaningful variable names and indentation.",
                   "Algorithms in the figures are written in AQA pseudo-code or Python, as labelled."],
@@ -390,7 +385,6 @@ AQA_2 = Paper(
     course="GCSE Computer Science", board="AQA", code="8525/2",
     minutes=105, marks=90, accent=ACC, spec="8525", full=True,
     blurb="A full length 8525/2 paper: number bases, binary arithmetic and shifts, characters, images and sound, run length encoding and Huffman coding, Boolean logic, systems architecture, networks, cyber security, SQL queries run against a cinema database, and a discussion of smart speakers.",
-    advice=ADVICE2,
     calculator="You must not use a calculator.",
     instructions=["In this paper 1 kilobyte (kB) = 1000 bytes, 1 megabyte (MB) = 1000 kilobytes, and so on, as in the specification.",
                   "SQL answers are run against the tables printed in question 08, so they must be valid SQL."],

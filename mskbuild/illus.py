@@ -128,6 +128,10 @@ class Canvas:
 
     # -------------------------------------------------------- primitives
     def rect(self, x, y, w, h, r=0, fill="#fff", stroke=None, sw=1.5, op=None, extra="", dash=None):
+        # A part drawn too small for its details can ask for a negative size,
+        # which browsers reject with a console error; such a detail is skipped.
+        if w <= 0 or h <= 0:
+            return ""
         s = ' stroke="%s" stroke-width="%s"' % (stroke, sw) if stroke else ""
         o = ' opacity="%s"' % op if op is not None else ""
         d = ' stroke-dasharray="%s"' % dash if dash else ""

@@ -20,7 +20,6 @@ Y7_AUTUMN = Paper(
     marks=0,
     accent="var(--lilac-deep)",
     blurb="Your first assessment in computing. It covers using computers, hardware and software, files and folders, staying safe on the school network, and programming in Scratch.",
-    advice="Answer every question, even if you are not sure. The number of marks tells you how many separate points to make, so a three mark question needs three things, not one thing said three times. Write in full sentences.",
     calculator="No calculator is permitted.",
     questions=[
         EQ("State what is meant by the term hardware.", 1, [
@@ -109,7 +108,6 @@ Y7_SUMMER = Paper(
     marks=0,
     accent="var(--lilac-deep)",
     blurb="The whole of Year 7, with most of the marks on the units taught after Christmas: Python, what is inside the computer, binary, and vector graphics.",
-    advice="Show your working in every calculation, because marks are given for the method as well as the answer. In the programming questions, write real Python and keep your indentation clear.",
     calculator="No calculator is permitted.",
     questions=[
         EQ("State how many bits there are in one byte.", 1, [
@@ -206,7 +204,6 @@ Y8_AUTUMN = Paper(
     marks=0,
     accent="var(--purple)",
     blurb="Digital literacy and online safety, and computational thinking: decomposition, abstraction, flowcharts, pseudocode, trace tables and test data.",
-    advice="Read each question twice and underline the command word. Describe means say what happens, explain means say why it happens. In the trace table question you must show the values, not just the final answer.",
     calculator="No calculator is permitted.",
     questions=[
         EQ("Name the law that makes it a criminal offence to log into someone else's account without their permission.", 1, [
@@ -303,7 +300,6 @@ Y8_SUMMER = Paper(
     marks=0,
     accent="var(--purple)",
     blurb="The whole of Year 8, with most of the marks on Python, spreadsheets, networks and cyber security, and web development.",
-    advice="Where a question says write a formula or write code, write it exactly as you would type it. Where a question asks you to compare, you must write about both things, not just one of them.",
     calculator="No calculator is permitted.",
     questions=[
         EQ("Name the network device that joins the computers within one network and sends data only to the device it is meant for.", 1, [
@@ -401,7 +397,6 @@ Y9_AUTUMN = Paper(
     marks=0,
     accent="var(--lilac-deep)",
     blurb="Covers the law and your data, binary and hexadecimal, binary addition, units of storage, and how text, images and sound are represented. This is the first assessment that looks and feels like a GCSE paper.",
-    advice="Read the command word before you start writing. State needs a fact. Describe needs a fact plus a detail. Explain needs a reason, usually a sentence containing the word because. Show your working in every conversion, because method marks are available even when the final answer is wrong.",
     calculator="No calculator is permitted.",
     questions=[
         EQ("State what is meant by personal data.", 1, [
@@ -496,7 +491,6 @@ Y9_SUMMER = Paper(
     marks=0,
     accent="var(--lilac-deep)",
     blurb="The last assessment before GCSE. It covers the whole of Year 9: data representation, Python programming, app design, artificial intelligence and 3D modelling, and it is written in GCSE style throughout.",
-    advice="This paper is deliberately set at the level you will meet in Year 10. Answer in full sentences, use the correct technical vocabulary, and make one clear point for each mark available. If a question asks you to justify or evaluate, you must reach a conclusion and say why.",
     calculator="No calculator is permitted.",
     questions=[
         EQ("State what is meant by an algorithm.", 1, [

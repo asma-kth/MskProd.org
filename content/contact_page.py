@@ -17,22 +17,7 @@ TYPES = [
 ]
 
 CONTACT_MORE = """
-## What helps me fix it quickly
-
-- **The page address.** A report link on a page fills it in for you.
-- **The question number**, if it is about an exam question or a quiz.
-- **What you expected and what you saw.** For a mark scheme, say what you wrote and why you think it deserves the mark.
-- **Your device and browser**, if something is broken or will not load, and a screenshot if you can attach one to the email.
-
-Every report is read, and a confirmed mistake is corrected on the site for everyone.
-
-## Accessibility problems
-
-If any part of the site is hard or impossible for you to use, with a screen reader, a keyboard, a magnifier or anything else, please tell me. Accessibility problems are treated as bugs, not as limitations, and the [accessibility statement](/accessibility/) explains the standard the site aims for.
-
-## Your privacy
-
-Your email address and your message are used only to reply to you and to deal with what you raised. They are never added to a mailing list or passed to anyone else, and they are deleted once they are no longer needed. The [privacy policy](/privacy/) has the details.
+Include the page address and the question number; your email is used only to reply to you, as the [privacy policy](/privacy/) explains.
 """
 
 TEACHERS = """
@@ -47,30 +32,13 @@ TEACHERS = """
 | [The Python course](/python/) and [Pixel Run](/pixel-run/) | Python from a first program to A Level, with every example runnable in the browser, and a platform game that teaches it. |
 | [How to revise](/how-to-revise/) and the [glossary](/glossary/) | What actually works when revising, and every key term defined the way a mark scheme wants it. |
 
-The courses cover Key Stage 3 Computing, GCSE Computer Science for OCR (J277), AQA (8525) and Pearson Edexcel (1CP2), OCR Cambridge National Creative iMedia (J834), with a guide to every R094 and R097 coursework task, OCR A Level Computer Science (H446) and the OCR Cambridge Advanced National in IT: Data Analytics (F200, F201 and the F202 coursework unit).
-
 ## Resources on request
 
-If you need something that is not on the site, ask me. As a head of department I know how much time good resources take to make, and I am glad to help other computing teachers. For example:
-
-- an end of unit test or a mock paper for a particular class or specification, with a mark scheme
-- a printable or editable version of a paper, worksheet or set of questions
-- extra practice on a topic your students find hard
-- a resource for a topic or specification that is not covered yet
-- a revision sequence that follows your own scheme of work
-
-Email [{email}](mailto:{email}?subject=Teacher%20resource%20request) with the subject **Teacher resource request**, or use the [request form](/contact/?type=teacher). Say which specification, topic and year group it is for, and when you need it. Resources that would help many schools are added to the site for everyone.
+Need a unit test, a mock paper or extra practice on a hard topic? Email [{email}](mailto:{email}?subject=Teacher%20resource%20request) with the subject **Teacher resource request**, or use the [request form](/contact/?type=teacher).
 
 ## Using the site with a class
 
-- There are no accounts and nothing to set up. It works on school computers, laptops, tablets and phones.
-- Students' scores and answers are stored only on their own device and are never sent anywhere, so the site collects no personal data about your students.
-- The same privacy means you cannot see a class's results. Ask students for a screenshot of their score, or set the written questions or a printed worksheet as the work you collect in.
-- Every paper is original, written to each board's specification, structure and command words. Past papers belong to the boards, so the [exam papers page](/exam-papers/) links to the official ones as well.
-
-## Spotted a mistake?
-
-Please tell me through the [contact page](/contact/?type=answer). Every report is read, and corrections go live for everyone.
+There are no accounts, and scores stay on each student's own device, so ask for a screenshot or collect a printed worksheet.
 """
 
 
@@ -100,7 +68,7 @@ def _contact_page():
     </div>
     <form class="card contact-form" data-contact-form data-to="%s">
       <h2>Report a problem or ask for something</h2>
-      <p class="muted">This writes the email for you and opens it in your own email program, so you can check it before you send it. Nothing is sent from this page.</p>
+      <p class="muted">This writes the email and opens it in your own email program, so nothing is sent from this page.</p>
       <label for="cf-type">What is it about?</label>
       <select id="cf-type" name="type">%s</select>
       <label for="cf-page">Page address</label>

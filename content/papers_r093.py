@@ -9,8 +9,6 @@ from mskbuild.examkit import tick, rows, ans, write
 from mskbuild.models import Paper
 
 ACC = "var(--lilac-deep)"
-ADVICE = ("Section A is quick: about ten minutes for ten marks. In Section B, read the brief twice and refer to it in every answer, "
-          "because marks are given for applying what you know to this client, not for general statements.")
 NOTE_A = "Answer all the questions in this section."
 NOTE_B = "Answer all the questions in this section. They are about the client brief below."
 
@@ -32,7 +30,7 @@ R093_B = Paper(
     course="Creative iMedia", board="OCR", code="R093",
     minutes=90, marks=70, accent=ACC, spec="R093", full=True,
     blurb="A full length R093 paper. Section A: ten one mark questions. Section B: a brief for an adventure centre's promotional video and poster, covering requirements, audience, research, work planning, pre-production documents, copyright and permissions, file formats, and two 9 mark extended responses.",
-    advice=ADVICE, calculator="You do not need a calculator.",
+    calculator="You do not need a calculator.",
     instructions=["The two 9 mark questions are extended responses. In the real exam they are marked in levels; here every relevant point you make earns a mark, up to 9."],
     questions=[
         # ---------------------------------------------------- Section A
@@ -205,7 +203,7 @@ R093_C = Paper(
     course="Creative iMedia", board="OCR", code="R093",
     minutes=90, marks=70, accent=ACC, spec="R093", full=True,
     blurb="A full length R093 paper. Section A: ten one mark questions. Section B: a brief for a music festival's audio advert and social media graphics, covering constraints, audience, scripts, asset logs, copyright and trade marks, audio properties and file formats, and two 9 mark extended responses.",
-    advice=ADVICE, calculator="You do not need a calculator.",
+    calculator="You do not need a calculator.",
     instructions=["The two 9 mark questions are extended responses. In the real exam they are marked in levels; here every relevant point you make earns a mark, up to 9."],
     questions=[
         # ---------------------------------------------------- Section A

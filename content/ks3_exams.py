@@ -8,10 +8,6 @@ revise from what they dropped, and sit the other.
 """
 from mskbuild.models import Paper
 
-ADVICE = ("Read every question to the end before answering. Where a question says tick two boxes, tick exactly two: "
-          "ticking more than asked scores nothing. Type one word and number answers carefully, because they are "
-          "marked exactly.")
-
 
 def _titles():
     from content import ks3
@@ -27,7 +23,7 @@ def exam(unit, letter, blurb, questions):
         title="%s: Unit Exam %s" % (title, letter),
         course="Key Stage 3", board="MskProd", code="%s unit exam" % year,
         minutes=25, marks=sum(q.marks for q in questions),
-        blurb=blurb, advice=ADVICE, questions=questions,
+        blurb=blurb, questions=questions,
         calculator="No calculator is permitted.", accent="var(--lilac-deep)",
         spec="KS3", unit=unit)
 

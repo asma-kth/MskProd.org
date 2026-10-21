@@ -940,27 +940,6 @@ pre code { background: none; border: 0; padding: 0; color: inherit; white-space:
   justify-content: space-between; gap: var(--sp-3); flex-wrap: wrap; font-size: .84rem; color: #9BB9B7;
 }
 
-/* ---------------------------------------------------------------- journey */
-.journey { position: relative; display: grid; gap: var(--sp-4); }
-.journey::before {
-  content: ""; position: absolute; left: 1.35rem; top: 1.5rem; bottom: 1.5rem; width: 2px;
-  background: linear-gradient(180deg, var(--aqua), var(--lilac)); opacity: .55;
-}
-.journey-step { display: grid; grid-template-columns: auto 1fr; gap: var(--sp-4); align-items: start; position: relative; }
-.journey-dot {
-  width: 2.8rem; height: 2.8rem; border-radius: 50%; display: grid; place-items: center;
-  background: #fff; border: 2px solid var(--teal); color: var(--accent); font-weight: 700;
-  font-family: var(--font-mono); font-size: .86rem; z-index: 1; box-shadow: var(--shadow-1);
-}
-[data-theme="dark"] .journey-dot { background: var(--surface); }
-.journey-body {
-  background: var(--glass-strong);
-  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-edge); border-radius: var(--r-m);
-  padding: var(--sp-4); box-shadow: var(--shadow-glass);
-}
-.journey-body h3 { font-size: var(--step-1); margin-bottom: .35rem; }
-.journey-body p { margin: 0; color: var(--ink-3); font-size: .95rem; }
 
 /* -------------------------------------------------------------- checklist */
 .checklist { list-style: none; padding: 0; display: grid; gap: .45rem; }
@@ -1641,6 +1620,10 @@ h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
 .xq-hint { margin: .35rem 0 0 2.1rem; font-size: .82rem; color: var(--ink-muted); }
 
 .xq-matrix-wrap, .examq .table-wrap { margin: .3rem 0 .2rem 2.1rem; }
+/* A tick grid with several long column headings is wider than a phone, so it
+   scrolls inside its own box instead of pushing the whole page sideways. The box
+   is positioned so the hidden screen reader labels in its cells stay inside it. */
+.examq .table-wrap { position: relative; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .xq-matrix, .xq-grid { border-collapse: collapse; font-size: .92rem; min-width: 60%; }
 .xq-matrix th, .xq-matrix td, .xq-grid th, .xq-grid td {
   border: 1px solid var(--border-strong); padding: .45rem .7rem; text-align: left; vertical-align: middle;
@@ -1707,6 +1690,8 @@ h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
 @media (max-width: 640px) {
   .xq-opts, .xq-hint, .xq-blanks, .xq-code, .xq-matrix-wrap, .examq .table-wrap, .xq-working-label { margin-left: 0; padding-left: 0; }
   .examq textarea.xq-working { margin-left: 0; width: 100%; }
+  .xq-matrix, .xq-grid { font-size: .84rem; }
+  .xq-matrix td { width: auto; min-width: 3.2rem; }
 }
 
 /* the paper bar: sticky under the site header, counting down the real time */

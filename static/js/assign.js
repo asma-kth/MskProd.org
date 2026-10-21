@@ -119,10 +119,8 @@
     track.appendChild(fill);
     bar.appendChild(track);
     bar.appendChild(el("p", "muted",
-      "A topic counts as done once its knowledge check is at 80 per cent or better. "
-      + "That tick lives in this browser only. Nobody, including whoever set this "
-      + "work, can see it, so screenshot the page if you have been asked to prove "
-      + "you did it."));
+      "A topic counts as done at 80 per cent or better in its knowledge check. "
+      + "Only this browser can see the ticks, so screenshot the page if you need to show it."));
     root.appendChild(bar);
 
     var again = el("p");

@@ -89,10 +89,8 @@
       var empty = el("div", "card dash-empty");
       empty.appendChild(el("h2", null, "Nothing recorded yet"));
       empty.appendChild(el("p", null,
-        "This page fills itself in as you work. Open a topic, do the knowledge "
-        + "check at the bottom of it, and come back here. Everything is stored in "
-        + "this browser only, so there is no account and nothing to sign in to. "
-        + "Using a different browser or a private window starts again from empty."));
+        "This page fills itself in as you work: open a topic, do its knowledge "
+        + "check, then come back here. Scores are stored in this browser only."));
       var links = el("p");
       manifest.courses.forEach(function (c, i) {
         if (i) links.appendChild(document.createTextNode("  "));
@@ -141,13 +139,10 @@
     pickSection.appendChild(el("h2", null, "Revise these five today"));
     if (!due.length) {
       pickSection.appendChild(el("p", "muted",
-        "Nothing is due yet. Every topic you have tested yourself on is still "
-        + "inside its spacing window, so the most useful thing you can do is start "
-        + "a topic you have not opened."));
+        "Nothing is due yet, so start a topic you have not opened."));
     } else {
       pickSection.appendChild(el("p", "muted",
-        "Ranked by how weak the last score was and how long it has been. Doing "
-        + "these five is worth more than rereading five pages you already know."));
+        "Ranked by how weak the last score was and how long ago it was."));
       var list = el("ol", "dash-list");
       due.slice(0, 5).forEach(function (r) {
         var li = el("li");
@@ -294,9 +289,7 @@
     }
     streakSection.appendChild(grid);
     streakSection.appendChild(el("p", "muted",
-      "Twenty minutes a day beats three hours on a Sunday, because the gap between "
-      + "sessions is what moves knowledge into long term memory. Filled squares are "
-      + "days you opened the site."));
+      "Filled squares are days you opened the site."));
     root.appendChild(streakSection);
   }
 
