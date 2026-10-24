@@ -1,0 +1,60 @@
+/* The adventure's teacher page and certificate page. */
+.ctt-sec { margin: 0 0 var(--sp-6); }
+.ctt-how ol { padding-left: 1.3rem; }
+.ctt-toc ol { display: flex; flex-wrap: wrap; gap: .4rem; list-style: none; padding: 0; }
+.ctt-toc a { display: inline-block; padding: .3rem .8rem; border-radius: 999px; text-decoration: none; font-weight: 600; background: var(--surface-2); border: 1px solid var(--border); }
+.ctt-world h2 { color: var(--wd); }
+[data-theme="dark"] .ctt-world h2 { color: var(--w); }
+.ctt-tag { color: var(--ink-2); max-width: none; }
+.ctt-grid { display: grid; gap: .9rem; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); }
+.ctt-level { padding: 1rem 1.1rem; border-radius: var(--r-l); background: var(--surface); border: 1px solid var(--border); border-top: 5px solid var(--w); box-shadow: var(--shadow-1); }
+.ctt-level header { display: flex; align-items: center; gap: .6rem; margin-bottom: .4rem; }
+.ctt-level h3 { margin: 0; font-size: 1.1rem; flex: 1; }
+.ctt-n { display: grid; place-items: center; width: 2rem; height: 2rem; flex: none; border-radius: 50%; font-weight: 800; color: #fff; background: var(--wd); }
+.ctt-band { padding: .1rem .55rem; border-radius: 999px; font-size: .75rem; font-weight: 800; color: #fff; background: #0D9488; }
+.ctt-band-intermediate { background: #2563EB; } .ctt-band-advanced { background: #9333EA; } .ctt-band-expert { background: #DC2626; }
+.ctt-level p { margin: .3rem 0; font-size: .93rem; }
+.ctt-level details { margin: .35rem 0; font-size: .92rem; }
+.ctt-level summary { cursor: pointer; font-weight: 700; }
+.ctt-cur { margin: .5rem 0; padding-left: 1.1rem; font-size: .82rem; color: var(--ink-3); }
+.ctt-actions { margin-top: .6rem; }
+.ctt-guide th { width: 30%; vertical-align: top; }
+.ctt-guide pre { margin: 0; padding: .4rem .6rem; font-size: .85rem; }
+
+.ctc-tabs { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .6rem; }
+.ctc-tab { padding: .45rem .9rem; border-radius: 999px; cursor: pointer; font: 700 .92rem var(--font-body); color: var(--ink); background: var(--surface-2); border: 2px solid var(--border); }
+.ctc-tab.is-ready { border-color: #059669; }
+.ctc-tab.is-on { color: #fff; background: var(--ink); border-color: var(--ink); }
+.ctc-status { font-weight: 700; }
+.ctc-form { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin-bottom: 1rem; }
+.ctc-form label { font-weight: 700; }
+.ctc-form input { min-height: 44px; min-width: min(320px, 100%); padding: .4rem .7rem; border-radius: 10px; font: 600 1rem var(--font-body); border: 2px solid var(--border-strong); background: var(--surface); color: var(--ink); }
+.ctc-paper { position: relative; max-width: 1000px; }
+.ctc-paper.is-locked .ctc-cert { filter: grayscale(.9) blur(1.5px); opacity: .55; }
+.ctc-cert { display: block; width: 100%; height: auto; border-radius: 12px; box-shadow: var(--shadow-2); --c1: #059669; --c2: #065F46; --c3: #D1FAE5; }
+.ctc-cert svg.ctc-cat { width: 190px; height: 190px; max-width: none; display: inline; }
+.ctc-bg { fill: #FFFDF5; }
+.ctc-frame { fill: none; stroke: var(--c2); stroke-width: 10; }
+.ctc-frame2 { fill: none; stroke: var(--c1); stroke-width: 3; stroke-dasharray: 2 8; stroke-linecap: round; }
+.ctc-wave { fill: var(--c3); }
+.ctc-star { fill: #F5B700; stroke: #C98A00; stroke-width: 1.5; }
+.ctc-kicker { font: 800 15px var(--font-body); letter-spacing: .16em; fill: var(--c2); }
+.ctc-title { font: 800 52px var(--font-display); fill: #0F172A; }
+.ctc-small { font: 600 22px var(--font-body); fill: #334155; }
+.ctc-name { font: 800 54px var(--font-display); fill: var(--c2); }
+.ctc-line { stroke: var(--c1); stroke-width: 3; }
+.ctc-world { font: 800 38px var(--font-display); fill: #0F172A; }
+.ctc-stars { font: 800 24px var(--font-body); fill: #B45309; }
+.ctc-medal { fill: var(--c1); } .ctc-medal2 { fill: var(--c3); stroke: #fff; stroke-width: 4; }
+.ctc-ribbon { fill: var(--c2); }
+.ctc-medal-t { font: 800 44px var(--font-display); fill: var(--c2); }
+.ctc-sig { font: italic 700 34px Georgia, serif; fill: #0F172A; }
+.ctc-date { font: 700 22px var(--font-body); fill: #0F172A; }
+.ctc-line2 { stroke: #64748B; stroke-width: 1.5; }
+.ctc-tiny { font: 600 13px var(--font-body); fill: #475569; }
+@media print {
+  @page { size: A4 landscape; margin: 0; }
+  body * { visibility: hidden; }
+  #ctc-cert, #ctc-cert * { visibility: visible; }
+  #ctc-cert { position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; box-shadow: none; border-radius: 0; filter: none; opacity: 1; }
+}

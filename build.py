@@ -330,7 +330,7 @@ def build_pwa():
     shell = []
     for rel in ("css/site.css", "js/app.js", "js/mascot.js", "js/tools.js",
                 "css/game.css", "js/game.js", "js/game-art.js",
-                "css/certificate.css", "js/certificate.js", "css/ct.css", "js/ct.js"):
+                "css/certificate.css", "js/certificate.js", "css/ct.css", "js/ct.js", "css/ct-pages.css", "js/ct-pages.js"):
         f = os.path.join(DIST, "assets", rel)
         if os.path.exists(f):
             with open(f, "rb") as fh:
@@ -519,6 +519,9 @@ def copy_static():
         fh.write(ctbundle.bundle(ROOT, "js"))
     with open(os.path.join(dst, "css", "ct.css"), "w", encoding="utf-8") as fh:
         fh.write(ctbundle.bundle(ROOT, "css"))
+    # The parts are in the bundles now, so they are not published one by one.
+    shutil.rmtree(os.path.join(dst, "js", "ct"))
+    shutil.rmtree(os.path.join(dst, "css", "ct"))
 
     # The @font-face rules go at the head of the one stylesheet every page
     # already loads, so self hosting the fonts costs no extra request.
@@ -541,7 +544,7 @@ def copy_static():
 
     # The tools bundle and the game each carry their own dark rules, so each
     # gets the same prefers-color-scheme mirror as the main stylesheet.
-    for name in ("tools.css", "game.css", "ct.css"):
+    for name in ("tools.css", "game.css", "ct.css", "ct-pages.css"):
         extra_css = os.path.join(css_dir, name)
         with open(extra_css, encoding="utf-8") as fh:
             t = fh.read()
