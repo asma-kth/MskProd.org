@@ -252,7 +252,15 @@ const MISTAKES = {
     d.rounds.forEach((rd, k) => Object.keys(rd.blanks).forEach((b) => {
       const v = rd.blanks[b], tries = ["0", "1", "99", "i"];
       if (/^-?\d+$/.test(v)) tries.push(String(Number(v) + 1), String(Number(v) - 1));
-      for (const t of tries) { if (t === v) continue; const a = clone(sol); a[k][b] = t; out.push(["round " + k + " " + b + "=" + t, a]); }
+      // a change that prints exactly the same is still a right answer, so it is not a mistake
+      const want = CT.pseudo.run(rd.long).output.join("\n");
+      for (const t of tries) {
+        if (t === v) continue;
+        const a = clone(sol); a[k][b] = t;
+        const r = CT.pseudo.run(CT.fillTemplate(rd.template, a[k]), { maxSteps: 3000 });
+        if (r.ok && r.output.join("\n") === want) continue;
+        out.push(["round " + k + " " + b + "=" + t, a]);
+      }
     }));
     return out;
   },
@@ -453,7 +461,8 @@ function period(list) {
 // Numbers that go up or down by a fixed step, or multiply by a fixed ratio.
 function numberRule(list) {
   const n = list.map(Number), diffs = n.slice(1).map((x, i) => x - n[i]), ratios = n.slice(1).map((x, i) => x / n[i]);
-  return diffs.every((x) => x === diffs[0]) || ratios.every((x) => x === ratios[0]);
+  const sums = n.length > 2 && n.slice(2).every((x, i) => x === n[i] + n[i + 1]);
+  return diffs.every((x) => x === diffs[0]) || ratios.every((x) => x === ratios[0]) || sums;
 }
 function follows(rd, d, list) {
   return (rd.look || d.look) === "number" ? numberRule(list) : period(list) > 0;
@@ -579,7 +588,7 @@ let failures = 0, levels = 0;
 const fail = (id, msg) => { failures++; console.log("  FAIL " + id + ": " + msg); };
 const rng = CT.rng("check-ct");
 
-for (const lv of DATA.levels) {
+for (const lv of DATA.levels.concat(DATA.bonus || [])) {
   levels++;
   const check = CT.check[lv.engine], solve = CT.solve[lv.engine];
   if (!check || !solve) { fail(lv.id, "no checker or model answer for engine " + lv.engine); continue; }

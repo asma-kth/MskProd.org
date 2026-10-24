@@ -9,7 +9,7 @@ checker and that wrong answers fail.
 """
 import re
 
-from . import decomposition, abstraction, patterns, algorithms
+from . import decomposition, abstraction, patterns, algorithms, bonus
 
 WORLDS = [
     dict(id="decomposition", n=1, name="Decomposition", tag="Break It Down!", place="Builder Bay",
@@ -108,9 +108,18 @@ def validate():
     return len(levels())
 
 
+def bonus_levels():
+    out = []
+    for i, b in enumerate(bonus.BONUS, 1):
+        d = dict(b)
+        d.update(id="bonus-%d" % i, n=i, band="Bonus", bonus=True)
+        out.append(d)
+    return out
+
+
 def payload():
     """Everything the page needs, as one JSON-ready dict."""
     worlds = [{k: v for k, v in w.items() if k != "levels"} for w in WORLDS]
     for w in worlds:
         w["count"] = len(next(x for x in WORLDS if x["id"] == w["id"])["levels"])
-    return dict(worlds=worlds, levels=levels(), badges=BADGES, chests=CHESTS)
+    return dict(worlds=worlds, levels=levels(), bonus=bonus_levels(), badges=BADGES, chests=CHESTS)

@@ -1,7 +1,7 @@
 /* Engine: graph. Drive a car across a road graph and find the quickest route.
  *
  * data: { nodes: [{id, label, icon, x, y}], edges: [[a, b, minutes]],
- *         rounds: [{start, end, via, closed: [[a, b]], say}] }
+ *         rounds: [{start, end, via, closed: [[a, b]], say}], decor: [[emoji, x, y]], real: button text }
  * The town is drawn twice: as the real streets and as the satnav's graph,
  * which keeps only junctions, roads and minutes. The student drives junction
  * by junction; reaching the end checks the route against the quickest one.
@@ -120,7 +120,7 @@
           CT.el("p", { class: "cgr-goal" }, ["🎯 ", label(d, rd.start), " → ", rd.via ? label(d, rd.via) + " → " : "", label(d, rd.end)]),
           CT.el("p", { class: "cgr-clock", "aria-live": "polite" }, ["⏱ ", CT.el("b", null, String(total())), " min so far"]),
           CT.el("button", { type: "button", class: "ct-btn ct-btn-mini", "aria-pressed": street ? "true" : "false",
-            onclick: function () { street = !street; render(); } }, street ? "🕸 Show the satnav graph" : "🏙 Show the real streets")
+            onclick: function () { street = !street; render(); } }, street ? "🕸 Show the graph" : (d.real || "🏙 Show the real streets"))
         ]);
         // On a narrow screen the map shrinks, so labels and junctions grow to stay readable and tappable.
         k = Math.max(1, Math.min(1.6, 0.92 * W / (board.clientWidth || W)));
@@ -128,7 +128,7 @@
           style: "--k: " + k.toFixed(2),
           "aria-label": "Road map. You are at " + label(d, here()) + "." });
         var deco = CT.svg("g", { class: "cgr-decor", "aria-hidden": "true" });
-        DECOR.forEach(function (x) { deco.appendChild(CT.svg("text", { x: x[1], y: x[2], text: x[0] })); });
+        (d.decor || DECOR).forEach(function (x) { deco.appendChild(CT.svg("text", { x: x[1], y: x[2], text: x[0] })); });
         svg.appendChild(deco);
         d.edges.forEach(function (e) {
           var a = at(e[0]), b = at(e[1]), isClosed = closed[key(e[0], e[1])];

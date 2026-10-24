@@ -376,6 +376,21 @@
   };
   function stat(i, v, l) { return CT.el("div", { class: "ct-stat" }, [CT.el("span", { "aria-hidden": "true" }, i), CT.el("b", null, v), CT.el("small", null, l)]); }
 
+  // ------------------------------------------------------------ bonus
+  // A chest's bonus puzzle, played in the normal level player once the chest is open.
+  V.bonus = function (host, n) {
+    var lv = CT.byId(CT.data.bonus || [], "bonus-" + n), chest = (CT.data.chests || [])[n - 1];
+    var open = lv && chest && (CT.store.preview || CT.store.state.chests.indexOf(chest.at) >= 0);
+    if (!open) {
+      var h = CT.el("h1", { tabindex: "-1" }, "🔒 Bonus puzzle " + n);
+      CT.append(host, [CT.el("header", { class: "ct-me-head" }, [CT.el("a", { class: "ct-back", href: "#/me" }, "← Chests and badges"), h,
+        CT.el("p", { class: "ct-lead" }, chest ? "Finish " + chest.at + " levels, then open treasure chest " + n + " to unlock this puzzle." : "There is no bonus puzzle here.")])]);
+      heading(h);
+      return null;
+    }
+    return CT.play(host, lv, { preview: CT.store.preview, onMap: function () { location.hash = "#/me"; }, onNext: function () { location.hash = "#/me"; } });
+  };
+
   // ------------------------------------------------------------ daily
   V.daily = function (host) {
     var lv = CT.daily.pick();

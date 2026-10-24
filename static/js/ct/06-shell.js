@@ -76,9 +76,9 @@
     var best = CT.progress.stars(level.id);
 
     var header = CT.el("header", { class: "ctl-top" }, [
-      CT.el("a", { class: "ctl-back", href: "#/world/" + level.world }, ["← ", world.place]),
+      level.bonus ? CT.el("a", { class: "ctl-back", href: "#/me" }, "← Chests and badges") : CT.el("a", { class: "ctl-back", href: "#/world/" + level.world }, ["← ", world.place]),
       CT.el("div", { class: "ctl-titles" }, [
-        CT.el("p", { class: "ctl-kicker" }, [CT.el("span", { class: "ctl-num" }, "Level " + level.n), " · ",
+        CT.el("p", { class: "ctl-kicker" }, [CT.el("span", { class: "ctl-num" }, (level.bonus ? "Bonus puzzle " : "Level ") + level.n), " · ",
           CT.el("span", { class: "ctl-band ctl-band-" + level.band.toLowerCase() }, level.band),
           level.preview ? CT.el("span", { class: "ctl-preview" }, "Teacher preview") : null]),
         CT.el("h1", { class: "ctl-h", tabindex: "-1" }, level.title)
@@ -284,12 +284,13 @@
       setPhase("win");
       controls.hidden = true;
       var stars = CT.progress.starsFor(st.hints, st.wrong, st.shown);
-      var res = level.preview ? { xp: P_XP(stars), stars: stars, newBadges: [], chests: [] } : CT.progress.record(level.id, stars);
+      var res = level.preview ? { xp: P_XP(stars), stars: stars, newBadges: [], chests: [] }
+        : level.bonus ? CT.progress.bonusWin(level.id, stars) : CT.progress.record(level.id, stars);
       res.stars = stars;
       CT.emit("hud");
       say(level.cheer, "cheer");
       tell("Level complete! " + stars + (stars === 1 ? " star." : " stars."), "good");
-      var nextLevel = CT.byId(CT.data.levels, level.world + "-" + (level.n + 1));
+      var nextLevel = level.bonus ? null : CT.byId(CT.data.levels, level.world + "-" + (level.n + 1));
       var worldCount = world.count;
       var chain = function () {
         if (res.allDone) CT.celebrate.champion({ map: function () { opts.onMap(); } });

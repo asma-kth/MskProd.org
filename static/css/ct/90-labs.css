@@ -1,0 +1,46 @@
+/* The labs: Pseudocode Playground and Flowchart Lab. */
+.clab { display: grid; gap: .8rem; }
+.clab-bar { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.clab-bar select { min-height: 44px; padding: .3rem .6rem; border-radius: 12px; font: 600 .95rem var(--font-body); color: var(--ink); background: var(--surface); border: 2px solid var(--border-strong); }
+.clab-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1rem; align-items: start; }
+@media (max-width: 860px) { .clab-grid { grid-template-columns: 1fr; } }
+.clab-edit { display: grid; grid-template-columns: auto minmax(0, 1fr); border-radius: 14px; overflow: hidden; background: #0F172A; border: 2px solid #334155; }
+.clab-nums { margin: 0; padding: .7rem .5rem; overflow: hidden; text-align: right; user-select: none; color: #64748B; background: #0B1222;
+  font: 500 .95rem/1.55 var(--font-mono, ui-monospace, monospace); border: 0; border-radius: 0; box-shadow: none; }
+.clab-ta { width: 100%; min-height: 260px; padding: .7rem .8rem; resize: vertical; tab-size: 4; white-space: pre; overflow: auto;
+  font: 500 .95rem/1.55 var(--font-mono, ui-monospace, monospace); color: #E2E8F0; background: transparent; border: 0; }
+.clab-ta:focus { outline: none; }
+.clab-edit:focus-within { border-color: var(--w); box-shadow: 0 0 0 3px color-mix(in srgb, var(--w) 30%, transparent); }
+.clab-view .ct-code { min-height: 200px; }
+.clab-note { margin: .4rem 0 0; font-size: .85rem; color: var(--ink-2); }
+.clab-inputs { display: grid; gap: .3rem; margin-top: .6rem; font-weight: 700; font-size: .88rem; }
+.clab-inputs textarea { width: 100%; padding: .5rem .6rem; border-radius: 10px; font: 600 .95rem var(--font-mono, ui-monospace, monospace); color: var(--ink); background: var(--surface); border: 2px solid var(--border-strong); }
+.clab-out pre { min-height: 90px; margin: .2rem 0 0; padding: .6rem .8rem; border-radius: 12px; white-space: pre-wrap;
+  font: 600 .95rem/1.5 var(--font-mono, ui-monospace, monospace); color: #A7F3D0; background: #052E16; border: 2px solid #14532D; }
+.clab-err { margin: .4rem 0 0; padding: .5rem .7rem; border-radius: 10px; font-weight: 700; color: var(--bad); background: var(--bad-bg); border: 1px solid var(--bad); }
+.clab-vars { margin-top: .6rem; }
+.clab-vars td { font-family: var(--font-mono, ui-monospace, monospace); }
+.clab-trace caption { caption-side: top; padding: .4rem .6rem; text-align: left; font-weight: 800; }
+.clab-tracewrap { max-height: 420px; overflow: auto; }
+.clab-guide { padding: .6rem .9rem; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--border); }
+.clab-guide summary { cursor: pointer; font-weight: 800; }
+.clab-guide p { margin: .5rem 0; }
+.clab-ref th { white-space: normal; width: 34%; }
+.clab-ref pre { margin: 0; padding: .3rem .5rem; font-size: .82rem; line-height: 1.45; border-radius: 8px; white-space: pre-wrap; }
+.clab-add { display: flex; flex-wrap: wrap; gap: .35rem; margin: .3rem 0 .6rem; }
+.clab-add .ct-tray-h { flex-basis: 100%; }
+.clab-list { display: grid; gap: .35rem; margin: 0; padding: 0; list-style: none; }
+.clab-blk { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; padding: .4rem .5rem; border-radius: 12px; background: var(--surface); border: 2px solid var(--border-strong); }
+.clab-blk.is-on { border-color: #F59E0B; box-shadow: 0 0 0 3px rgba(245, 158, 11, .3); }
+.clab-input, .clab-output { border-left: 6px solid #0369A1; }
+.clab-process { border-left: 6px solid #A16207; }
+.clab-if, .clab-while, .clab-until { border-left: 6px solid #BE185D; }
+.clab-kind { font-size: .78rem; font-weight: 800; color: var(--ink-2); min-width: 6.5rem; }
+.clab-val { flex: 1 1 140px; min-width: 0; min-height: 36px; padding: .2rem .45rem; border-radius: 8px; font: 600 .92rem var(--font-mono, ui-monospace, monospace); color: var(--ink); background: var(--surface-2); border: 1px solid var(--border-strong); }
+.clab-num { font-size: .8rem; font-weight: 700; }
+.clab-ops { display: inline-flex; gap: .2rem; margin-left: auto; }
+.clab-ops button { width: 30px; height: 30px; border-radius: 8px; cursor: pointer; color: var(--ink-2); background: var(--surface-2); border: 1px solid var(--border); }
+.clab-sub { flex-basis: 100%; margin-left: .8rem; padding: .3rem 0 .2rem .5rem; border-left: 3px dashed var(--border-strong); }
+.clab-sub.is-into { border-left-color: var(--w); }
+.clab-subh { margin-bottom: .3rem; padding: .15rem .5rem; border-radius: 8px; cursor: pointer; font: 700 .8rem var(--font-body); color: var(--ink-2); background: var(--surface-2); border: 1px solid var(--border); }
+.clab-sub.is-into .clab-subh { color: #fff; background: var(--wd); border-color: var(--wd); }

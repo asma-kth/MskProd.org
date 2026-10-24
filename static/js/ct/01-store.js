@@ -166,6 +166,14 @@
       };
     },
     addXP: function (n) { store.state.xp += n; store.save(); },
+    // A bonus puzzle: its own best score and XP, outside the worlds.
+    bonusWin: function (id, stars) {
+      var prev = store.state.bonus[id] || 0, xp = prev ? 0 : 50;
+      store.state.bonus[id] = Math.max(prev, stars);
+      store.state.xp += xp;
+      store.save();
+      return { xp: xp, stars: stars, first: !prev, newBadges: [], chests: [] };
+    },
     openChest: function (at) {
       if (store.state.chests.indexOf(at) < 0) store.state.chests.push(at);
       store.save();
