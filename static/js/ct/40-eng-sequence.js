@@ -86,7 +86,8 @@
   }
   CT.seqTile = function (v, look, pal) {
     var p = entry(pal, v), label = p && p.label ? p.label : String(v);
-    if (look === "colour") return CT.el("span", { class: "cseq-bead", style: { background: p ? p.c : "#94A3B8" }, role: "img", "aria-label": label });
+    // A letter as well as a colour, so the pattern does not depend on seeing colour.
+    if (look === "colour") return CT.el("span", { class: "cseq-bead", style: { background: p ? p.c : "#94A3B8" }, role: "img", "aria-label": label }, label.charAt(0));
     if (look === "lights") {
       var on = { R: [1, 0, 0], RA: [1, 1, 0], G: [0, 0, 1], A: [0, 1, 0] }[v] || [0, 0, 0];
       return CT.el("span", { class: "cseq-light", role: "img", "aria-label": label }, ["r", "a", "g"].map(function (c, i) {
@@ -178,6 +179,8 @@
         });
         if (rd.type === "ask") row.appendChild(CT.el("span", { class: "cseq-more", "aria-hidden": "true" }, "…"));
         board.appendChild(row);
+        if (rd.type === "odd" && empty(ans.pick)) board.appendChild(CT.el("p", { class: "cseq-hint" }, "👆 Click the item that breaks the pattern."));
+        if (rd.type === "fill" && look() !== "number") board.appendChild(CT.el("p", { class: "cseq-hint" }, "👆 Pick a gap, then choose what goes in it."));
 
         if (rd.type === "fill" && look() !== "number") board.appendChild(palette(function (v) {
           ans[active] = v;
@@ -205,7 +208,7 @@
         pal().forEach(function (p) {
           var v = valueOf(p);
           box.appendChild(CT.el("button", { type: "button", class: "cseq-pbtn", "data-pal": String(v), "aria-label": label + " " + labelOf(p),
-            onclick: function () { onPick(v); } }, CT.seqTile(v, look(), pal())));
+            onclick: function () { onPick(v); } }, [CT.seqTile(v, look(), pal()), look() === "colour" || look() === "lights" ? CT.el("small", { "aria-hidden": "true" }, labelOf(p)) : null]));
         });
         return box;
       }

@@ -5,7 +5,7 @@
 .ct-code li { display: flex; align-items: baseline; padding: 0 .8rem 0 0; }
 .ct-code li.is-picked, .ct-code li.is-mark { background: rgba(250, 204, 21, .18); box-shadow: inset 4px 0 0 #FACC15; }
 .ct-ln { flex: none; width: 2.4rem; padding-right: .6rem; text-align: right; color: #64748B; user-select: none; }
-.ct-code code { white-space: pre; font: inherit; color: inherit; background: none; padding: 0; }
+.ct-code code { white-space: pre; font: inherit; color: inherit; background: none; padding: 0; border: 0; border-radius: 0; box-shadow: none; }
 .ct-code-line { display: flex; align-items: baseline; width: 100%; padding: .1rem .8rem .1rem 0; border: 0; cursor: pointer; text-align: left; font: inherit; color: inherit; background: none; }
 .ct-code-line:hover { background: rgba(148, 163, 184, .15); }
 .ct-code-line:focus-visible { outline: 3px solid #FACC15; outline-offset: -3px; }
@@ -34,13 +34,15 @@
 .cseq-in { width: 4.2rem; padding: 0 .3rem; text-align: center; font: 800 1.3rem var(--font-display); color: var(--ink); border: 3px dashed var(--w); }
 .cseq-in:focus { border-style: solid; outline: none; box-shadow: 0 0 0 4px color-mix(in srgb, var(--w) 35%, transparent); }
 .cseq-in-big { width: 7rem; margin-top: .4rem; }
-.cseq-bead { display: block; width: 34px; height: 34px; border-radius: 50%; border: 3px solid rgba(15, 23, 42, .25); box-shadow: inset -5px -6px 0 rgba(0, 0, 0, .12), inset 4px 4px 0 rgba(255, 255, 255, .35); }
+.cseq-bead { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; font: 800 .8rem/1 var(--font-body); color: rgba(15, 23, 42, .85); border: 3px solid rgba(15, 23, 42, .25); box-shadow: inset -5px -6px 0 rgba(0, 0, 0, .12), inset 4px 4px 0 rgba(255, 255, 255, .35); }
 .cseq-light { display: grid; gap: 3px; padding: 4px; border-radius: 9px; background: #1F2937; }
 .cseq-l { display: block; width: 13px; height: 13px; border-radius: 50%; background: #374151; }
 .cseq-l-r.is-on { background: #EF4444; box-shadow: 0 0 8px #EF4444; }
 .cseq-l-a.is-on { background: #F59E0B; box-shadow: 0 0 8px #F59E0B; }
 .cseq-l-g.is-on { background: #22C55E; box-shadow: 0 0 8px #22C55E; }
 .cseq-pal { display: flex; flex-wrap: wrap; gap: .5rem; margin: .4rem 0 .8rem; }
+.cseq-pbtn small { display: block; margin-top: .2rem; font-size: .68rem; font-weight: 700; color: var(--ink-2); }
+.cseq-hint { margin: -.3rem 0 .8rem; font-weight: 700; color: var(--ink-2); }
 .cseq-pbtn { min-width: 58px; min-height: 58px; display: grid; place-items: center; padding: .3rem; border-radius: 14px; cursor: pointer; background: var(--surface); border: 2px solid var(--border-strong); box-shadow: 0 3px 0 var(--border-strong); }
 .cseq-pbtn:hover { border-color: var(--w); }
 .cseq-pbtn:active { transform: translateY(2px); box-shadow: none; }
@@ -51,10 +53,10 @@
 .cseq-code { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 1rem; align-items: start; }
 @media (max-width: 700px) { .cseq-code { grid-template-columns: 1fr; } }
 .cseq-outs { display: grid; gap: .6rem; }
-.cseq-out pre, .ccp-out { margin: .2rem 0 0; padding: .5rem .8rem; border-radius: 12px; font: 600 .95rem/1.5 var(--font-mono, ui-monospace, monospace); background: var(--surface-2); border: 2px solid var(--border); white-space: pre-wrap; }
+.cseq-out pre, .ccp-out { color: var(--ink); margin: .2rem 0 0; padding: .5rem .8rem; border-radius: 12px; font: 600 .95rem/1.5 var(--font-mono, ui-monospace, monospace); background: var(--surface-2); border: 2px solid var(--border); white-space: pre-wrap; }
 .cseq-out.is-bad pre { border-color: #FCA5A5; }
 .cseq-out.is-good pre { border-color: #86EFAC; background: var(--ok-bg); }
-.cseq-fixopt code { font: 600 .95rem var(--font-mono, ui-monospace, monospace); white-space: pre; }
+.cseq-fixopt code { font: 600 .95rem var(--font-mono, ui-monospace, monospace); white-space: pre; background: none; border: 0; padding: 0; }
 .cseq-fixopt code .hl-k { color: #BE185D; } .cseq-fixopt code .hl-s { color: #15803D; } .cseq-fixopt code .hl-n { color: #C2410C; }
 [data-theme="dark"] .cseq-fixopt code .hl-k { color: #F472B6; } [data-theme="dark"] .cseq-fixopt code .hl-s { color: #86EFAC; } [data-theme="dark"] .cseq-fixopt code .hl-n { color: #FDBA74; }
 
