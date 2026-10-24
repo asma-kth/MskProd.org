@@ -330,7 +330,7 @@ def build_pwa():
     shell = []
     for rel in ("css/site.css", "js/app.js", "js/mascot.js", "js/tools.js",
                 "css/game.css", "js/game.js", "js/game-art.js",
-                "css/certificate.css", "js/certificate.js"):
+                "css/certificate.css", "js/certificate.js", "css/ct.css", "js/ct.js"):
         f = os.path.join(DIST, "assets", rel)
         if os.path.exists(f):
             with open(f, "rb") as fh:
@@ -513,6 +513,13 @@ def copy_static():
     with open(os.path.join(dst, "css", "tools.css"), "w", encoding="utf-8") as fh:
         fh.write(tool_reg.bundle(ROOT, "css"))
 
+    # The Computational Thinking Adventure ships as one script and one stylesheet.
+    from mskbuild import ctbundle
+    with open(os.path.join(dst, "js", "ct.js"), "w", encoding="utf-8") as fh:
+        fh.write(ctbundle.bundle(ROOT, "js"))
+    with open(os.path.join(dst, "css", "ct.css"), "w", encoding="utf-8") as fh:
+        fh.write(ctbundle.bundle(ROOT, "css"))
+
     # The @font-face rules go at the head of the one stylesheet every page
     # already loads, so self hosting the fonts costs no extra request.
     css_dir = os.path.join(dst, "css")
@@ -534,7 +541,7 @@ def copy_static():
 
     # The tools bundle and the game each carry their own dark rules, so each
     # gets the same prefers-color-scheme mirror as the main stylesheet.
-    for name in ("tools.css", "game.css"):
+    for name in ("tools.css", "game.css", "ct.css"):
         extra_css = os.path.join(css_dir, name)
         with open(extra_css, encoding="utf-8") as fh:
             t = fh.read()
@@ -618,6 +625,9 @@ def main():
 
     from content import ai_certificate
     ai_certificate.build(register, add_search)
+
+    from content import ct_page
+    ct_page.build(register, add_search)
 
     from content import worksheets
     worksheets.build(register, add_search, COURSES)

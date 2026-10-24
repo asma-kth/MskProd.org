@@ -1,0 +1,72 @@
+/* Pixel, the adventure companion. The rig (mskbuild/cat.py rig()) carries every
+   pose's pieces; a class on the <svg> picks which are shown and how they move.
+   Poses: is-wave, is-think, is-happy, is-cheer, is-proud. Accessories: wear-*. */
+.px { display: block; overflow: visible; }
+.px .px-arm, .px .px-trophy, .px .px-eyes-happy, .px .px-m, .px .px-acc, .px .px-q, .px .px-spark { display: none; }
+.px .px-arm-rest, .px .px-m-smile { display: inline; }
+
+.px.is-wave .px-arm-r.px-arm-rest, .px.is-proud .px-arm-r.px-arm-rest,
+.px.is-think .px-arm-l.px-arm-rest, .px.is-cheer .px-arm-rest { display: none; }
+.px.is-wave .px-arm-wave, .px.is-cheer .px-arm-cheer, .px.is-think .px-arm-scratch,
+.px.is-proud .px-arm-hold, .px.is-proud .px-trophy { display: inline; }
+
+.px.is-happy .px-eyes, .px.is-cheer .px-eyes, .px.is-proud .px-eyes { display: none; }
+.px.is-happy .px-eyes-happy, .px.is-cheer .px-eyes-happy, .px.is-proud .px-eyes-happy { display: inline; }
+.px.is-cheer .px-m-smile, .px.is-proud .px-m-smile, .px.is-think .px-m-smile { display: none; }
+.px.is-cheer .px-m-grin, .px.is-proud .px-m-grin, .px.is-think .px-m-o, .px.is-think .px-q { display: inline; }
+.px.is-happy .px-spark, .px.is-cheer .px-spark, .px.is-proud .px-spark { display: inline; }
+
+.px.wear-party .px-acc-party, .px.wear-shades .px-acc-shades, .px.wear-scarf .px-acc-scarf,
+.px.wear-wizard .px-acc-wizard, .px.wear-crown .px-acc-crown { display: inline; }
+/* a hat replaces the visor's little light, and only one hat at a time */
+.px.wear-wizard .px-acc-party, .px.wear-crown .px-acc-party, .px.wear-crown .px-acc-wizard { display: none; }
+
+.px .px-all, .px .px-head, .px .px-eyes, .px .px-arm-wave, .px .px-arm-scratch, .px .px-q, .px .px-spark,
+.px .px-trophy, .px .px-shadow, .px .px-arm-cheer { transform-box: view-box; }
+.px .px-all { transform-origin: 50px 90px; }
+.px .px-head { transform-origin: 50px 76px; transition: transform .35s ease; }
+.px .px-eyes { transform-origin: 50px 53px; }
+.px .px-arm-wave { transform-origin: 70px 77px; }
+.px .px-arm-scratch { transform-origin: 30px 77px; }
+.px .px-arm-cheer { transform-origin: 50px 77px; }
+.px .px-trophy { transform-origin: 102px 52px; }
+.px .px-shadow { transform-origin: 50px 91px; }
+.px .px-q { transform-origin: 92px 2px; }
+.px .px-spark-1 { transform-origin: 4px 4px; }
+.px .px-spark-2 { transform-origin: 100px 18px; }
+.px .px-spark-3 { transform-origin: -4px 56px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-motion="full"] .px .px-eyes { animation: px-blink 5.2s infinite; }
+  [data-motion="full"] .px.is-idle .px-all { animation: px-breathe 3.4s ease-in-out infinite; }
+  [data-motion="full"] .px.is-wave .px-arm-wave { animation: px-wave .55s ease-in-out infinite alternate; }
+  [data-motion="full"] .px.is-think .px-head { transform: rotate(-7deg); }
+  [data-motion="full"] .px.is-think .px-arm-scratch { animation: px-scratch .5s ease-in-out infinite alternate; }
+  [data-motion="full"] .px.is-think .px-q { animation: px-bob 1.4s ease-in-out infinite; }
+  [data-motion="full"] .px.is-happy .px-all { animation: px-jump .62s cubic-bezier(.3,.7,.4,1.3) 3; }
+  [data-motion="full"] .px.is-happy .px-shadow { animation: px-shadow .62s cubic-bezier(.3,.7,.4,1.3) 3; }
+  [data-motion="full"] .px.is-cheer .px-all { animation: px-dance 1.6s ease-in-out infinite; }
+  [data-motion="full"] .px.is-cheer .px-arm-cheer { animation: px-arms .4s ease-in-out infinite alternate; }
+  [data-motion="full"] .px.is-proud .px-trophy { animation: px-shine 1.8s ease-in-out infinite; }
+  [data-motion="full"] .px .px-spark { animation: px-twinkle 1.3s ease-in-out infinite; }
+  [data-motion="full"] .px .px-spark-2 { animation-delay: .4s; }
+  [data-motion="full"] .px .px-spark-3 { animation-delay: .8s; }
+}
+.px.is-think .px-head { transform: rotate(-7deg); }
+
+@keyframes px-blink { 0%, 45%, 49%, 100% { transform: scaleY(1); } 47% { transform: scaleY(.12); } }
+@keyframes px-breathe { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.012, .988); } }
+@keyframes px-wave { from { transform: rotate(-10deg); } to { transform: rotate(8deg); } }
+@keyframes px-scratch { from { transform: rotate(-4deg); } to { transform: rotate(5deg); } }
+@keyframes px-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes px-jump { 0%, 100% { transform: translateY(0) scale(1, 1); } 15% { transform: translateY(0) scale(1.06, .92); }
+  50% { transform: translateY(-18px) scale(.97, 1.04); } 85% { transform: translateY(0) scale(1.04, .95); } }
+@keyframes px-shadow { 0%, 100% { transform: scale(1); opacity: .16; } 50% { transform: scale(.7); opacity: .08; } }
+@keyframes px-dance {
+  0% { transform: translateY(0) rotate(0); } 12% { transform: translateY(-10px) rotate(-8deg); }
+  25% { transform: translateY(0) rotate(0); } 37% { transform: translateY(-10px) rotate(8deg); }
+  50% { transform: translateY(0) rotate(0); } 62% { transform: translateY(-16px) rotate(0) scale(1.04); }
+  80% { transform: translateY(-6px) rotate(360deg); } 100% { transform: translateY(0) rotate(360deg); } }
+@keyframes px-arms { from { transform: scaleY(1); } to { transform: scaleY(.94) translateY(3px); } }
+@keyframes px-shine { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(6deg) scale(1.05); } }
+@keyframes px-twinkle { 0%, 100% { transform: scale(.4); opacity: .3; } 50% { transform: scale(1.15); opacity: 1; } }
