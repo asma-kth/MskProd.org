@@ -202,6 +202,60 @@ const MISTAKES = {
     });
     return out;
   },
+  sequence(d, sol) {
+    const out = [];
+    const alts = (rd, v) => {
+      const look = rd.look || d.look;
+      if (look === "number") return [Number(v) + 1, Number(v) - 1, Number(v) * 2];
+      return (rd.palette || d.palette).map((p) => (p && p.id !== undefined ? p.id : p)).filter((x) => x !== v);
+    };
+    d.rounds.forEach((rd, k) => {
+      const put = (a) => { const b = clone(sol); b[k] = a; out.push(["round " + k + " " + JSON.stringify(a), b]); };
+      if (rd.type === "fill") rd.answers.forEach((v, i) => alts(rd, v).forEach((w) => { const a = sol[k].slice(); a[i] = w; put(a); }));
+      if (rd.type === "ask") {
+        if (rd.input) [rd.answer + 1, rd.answer - 1, rd.answer * 2].forEach(put);
+        else rd.options.forEach((_, i) => { if (i !== rd.answer) put(i); });
+      }
+      if (rd.type === "odd") {
+        rd.seq.forEach((_, i) => { if (i !== rd.wrong) put({ pick: i, fix: rd.fix }); });
+        alts(rd, rd.fix).forEach((w) => put({ pick: rd.wrong, fix: w }));
+      }
+      if (rd.type === "code") {
+        rd.code.split("\n").forEach((_, i) => { if (i + 1 !== rd.bug) put({ line: i + 1, fix: rd.answer }); });
+        rd.fixes.forEach((_, i) => { if (i !== rd.answer) put({ line: rd.bug, fix: i }); });
+      }
+    });
+    return out;
+  },
+  dance(d, sol) {
+    const out = [];
+    const moves = ids(d.moves);
+    d.rounds.forEach((rd, k) => {
+      const put = (a) => { const b = clone(sol); b[k] = a; out.push(["round " + k + " " + JSON.stringify(a), b]); };
+      if (rd.type === "loop") {
+        [rd.answer.times - 1, rd.answer.times + 1].filter((t) => t > 0).forEach((t) => put({ times: t, unit: rd.answer.unit }));
+        rd.answer.unit.forEach((m, i) => moves.forEach((x) => { if (x !== m) { const u = rd.answer.unit.slice(); u[i] = x; put({ times: rd.answer.times, unit: u }); } }));
+      } else rd.answer.forEach((m, i) => moves.forEach((x) => { if (x !== m) { const a = rd.answer.slice(); a[i] = x; put(a); } }));
+    });
+    return out;
+  },
+  snakepat(d, sol) {
+    const out = [];
+    d.rounds.forEach((rd, k) => rd.answer.forEach((f, i) => d.fruits.forEach((x) => {
+      if (x.id === f) return;
+      const a = clone(sol); a[k][i] = x.id; out.push(["round " + k + " eat " + x.id + " at " + i, a]);
+    })));
+    return out;
+  },
+  codepat(d, sol) {
+    const out = [];
+    d.rounds.forEach((rd, k) => Object.keys(rd.blanks).forEach((b) => {
+      const v = rd.blanks[b], tries = ["0", "1", "99", "i"];
+      if (/^-?\d+$/.test(v)) tries.push(String(Number(v) + 1), String(Number(v) - 1));
+      for (const t of tries) { if (t === v) continue; const a = clone(sol); a[k][b] = t; out.push(["round " + k + " " + b + "=" + t, a]); }
+    }));
+    return out;
+  },
   quest(d, sol) {
     const out = [];
     d.stages.forEach((s, k) => {
@@ -279,11 +333,105 @@ const RANDOM = {
   },
   model(d, rng) { return d.rounds.map((rd) => CT.shuffle(ids(d.features), rng).slice(0, rd.needs.length)); },
   datamaze(d, rng) { return d.doors.map(() => String(100 + Math.floor(rng() * 900))); },
+  sequence(d, rng) {
+    return d.rounds.map((rd) => {
+      const look = rd.look || d.look, pal = (rd.palette || d.palette || []).map((p) => (p && p.id !== undefined ? p.id : p));
+      const any = () => (look === "number" ? Math.floor(rng() * 41) : pickFrom(rng, pal));
+      if (rd.type === "fill") return rd.answers.map(any);
+      if (rd.type === "ask") return rd.input ? Math.floor(rng() * 201) : Math.floor(rng() * rd.options.length);
+      if (rd.type === "odd") return { pick: Math.floor(rng() * rd.seq.length), fix: any() };
+      return { line: 1 + Math.floor(rng() * rd.code.split("\n").length), fix: Math.floor(rng() * rd.fixes.length) };
+    });
+  },
+  dance(d, rng) {
+    const moves = ids(d.moves);
+    return d.rounds.map((rd) => rd.type === "loop"
+      ? { times: 1 + Math.floor(rng() * 9), unit: Array.from({ length: 1 + Math.floor(rng() * rd.units) }, () => pickFrom(rng, moves)) }
+      : rd.answer.map(() => pickFrom(rng, moves)));
+  },
+  snakepat(d, rng) { return d.rounds.map((rd) => rd.answer.map(() => pickFrom(rng, d.fruits).id)); },
+  codepat(d, rng) {
+    const bits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "-1", "i", "2 * i", "3 * i", "7 * i", "i + 1"];
+    return d.rounds.map((rd) => { const a = {}; Object.keys(rd.blanks).forEach((b) => { a[b] = pickFrom(rng, bits); }); return a; });
+  },
   quest(d, rng) { return d.stages.map((s) => RANDOM[s.engine](s.data, rng)); },
 };
 
 // ------------------------------------------------------------ simulations
+// The smallest repeating period of a list, or 0 if it never repeats twice.
+function period(list) {
+  for (let p = 1; p <= list.length / 2; p++) if (list.every((x, i) => i < p || x === list[i - p])) return p;
+  return 0;
+}
+// Numbers that go up or down by a fixed step, or multiply by a fixed ratio.
+function numberRule(list) {
+  const n = list.map(Number), diffs = n.slice(1).map((x, i) => x - n[i]), ratios = n.slice(1).map((x, i) => x / n[i]);
+  return diffs.every((x) => x === diffs[0]) || ratios.every((x) => x === ratios[0]);
+}
+function follows(rd, d, list) {
+  return (rd.look || d.look) === "number" ? numberRule(list) : period(list) > 0;
+}
 const SIMULATE = {
+  sequence(d) {
+    for (const [k, rd] of d.rounds.entries()) {
+      if (rd.type === "fill") {
+        let g = 0;
+        const full = rd.seq.map((v) => (v === null ? rd.answers[g++] : v));
+        if (!follows(rd, d, full)) return "round " + k + ": the filled pattern does not follow a rule";
+      }
+      if (rd.type === "odd") {
+        const fixed = rd.seq.slice(); fixed[rd.wrong] = rd.fix;
+        if (!follows(rd, d, fixed)) return "round " + k + ": the fixed pattern does not follow a rule";
+        if (follows(rd, d, rd.seq)) return "round " + k + ": the faulty pattern already follows a rule";
+      }
+      if (rd.type === "code") {
+        const want = rd.expect.join("\n");
+        const before = CT.pseudo.run(rd.code);
+        if (before.ok && before.output.join("\n") === want) return "round " + k + ": the buggy code already prints the right output";
+        for (const [i, f] of rd.fixes.entries()) {
+          const r = CT.pseudo.run(CT.patchCode(rd.code, rd.bug, f));
+          const good = r.ok && r.output.join("\n") === want;
+          if (i === rd.answer && !good) return "round " + k + ": the right fix does not print " + rd.expect.join(", ") + " (" + (r.ok ? r.output.join(", ") : r.error.msg) + ")";
+          if (i !== rd.answer && good) return "round " + k + ": fix " + i + " also prints the right output";
+        }
+      }
+    }
+    return null;
+  },
+  dance(d) {
+    for (const [k, rd] of d.rounds.entries()) {
+      if (rd.type === "next" && JSON.stringify(CT.patternNext(rd.shown, rd.answer.length)) !== JSON.stringify(rd.answer)) return "round " + k + ": the answer does not continue the pattern";
+      if (rd.type === "gap") {
+        let g = 0;
+        const full = rd.shown.map((m) => (m === null ? rd.answer[g++] : m));
+        if (!period(full)) return "round " + k + ": the filled dance does not repeat";
+      }
+    }
+    return null;
+  },
+  snakepat(d) {
+    for (const [k, rd] of d.rounds.entries()) {
+      if (JSON.stringify(CT.patternNext(rd.eaten, rd.answer.length)) !== JSON.stringify(rd.answer)) return "round " + k + ": the answer does not continue the eaten pattern";
+      if (!period(rd.eaten.concat(rd.answer))) return "round " + k + ": the fruit never repeats";
+    }
+    return null;
+  },
+  codepat(d) {
+    for (const [k, rd] of d.rounds.entries()) {
+      const r = CT.pseudo.run(rd.long);
+      if (!r.ok) return "round " + k + ": the long program has an error: " + r.error.msg;
+      if (rd.template.split("\n").length >= rd.long.split("\n").length) return "round " + k + ": the loop is not shorter than the long program";
+    }
+    return null;
+  },
+  quest(d) {
+    for (const [k, s] of d.stages.entries()) {
+      const f = SIMULATE[s.engine];
+      const r = f ? f(s.data) : null;
+      if (r) return "stage " + k + ": " + r;
+    }
+    return null;
+  },
   maze(d) {
     const path = CT.mazeWalk(d);
     if (!path) return "the planned walk is blocked";

@@ -29,8 +29,9 @@
       function drawStrip() {
         CT.clear(strip);
         d.stages.forEach(function (s, i) {
-          strip.appendChild(CT.el("li", { class: "cq-step" + (i < si ? " is-done" : i === si ? " is-now" : ""), "aria-current": i === si ? "step" : null },
-            [CT.el("b", null, i < si ? "✓" : String(i + 1)), " ", s.title]));
+          var mark = d.look === "vault" ? (i < si ? "🔓" : "🔒") : (i < si ? "✓" : String(i + 1));
+          strip.appendChild(CT.el("li", { class: "cq-step" + (d.look === "vault" ? " is-lock" : "") + (i < si ? " is-done" : i === si ? " is-now" : ""), "aria-current": i === si ? "step" : null },
+            [CT.el("b", { "aria-hidden": d.look === "vault" ? "true" : null }, mark), " ", s.title, i < si && d.look === "vault" ? CT.el("span", { class: "sr-only" }, " (open)") : null]));
         });
       }
       // A stage's final "right" becomes "stage done" until the last stage.
