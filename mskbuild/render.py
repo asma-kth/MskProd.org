@@ -75,6 +75,7 @@ NAV = [
     ("Data", "/data-analytics/", "i-chart"),
     ("Python", "/python/", "i-python"),
     ("AI", "/ai/", "i-sparkle"),
+    ("Adventure", "/computational-thinking/", "i-map"),
     ("Papers", "/exam-papers/", "i-paper"),
     ("Tools", "/tools/", "i-tools"),
     ("Progress", "/progress/", "i-target"),
@@ -315,6 +316,7 @@ def footer(path: str = "") -> str:
         <h4>Practise</h4>
         <ul>
           <li><a href="/exam-papers/">Practice exam papers</a></li>
+          <li><a href="/computational-thinking/">Computational Thinking Adventure</a></li>
           <li><a href="/pixel-run/">Pixel Run, the Python game</a></li>
           <li><a href="/progress/">Your progress</a></li>
           <li><a href="/how-to-revise/">How to revise properly</a></li>

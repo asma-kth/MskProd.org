@@ -83,6 +83,10 @@ Suppose you are writing a program that works out bus fares. The real world facts
 
 !exam Naming what was removed :: If a question shows a scenario and asks you to give an example of abstraction, name a specific detail that has been left out and say why it does not matter. "The map does not show the real distance between stations because a passenger only needs to know the order of the stops" is a full answer. "It removes detail" is not.
 """),
+        Section("Practise it as a game", """
+Play the [Computational Thinking Adventure](/computational-thinking/): forty short game levels on decomposition, abstraction, pattern recognition and algorithms, with flowcharts and pseudocode.
+Pixel the robot cat cheers every win, hints are free, and your progress saves in your browser with no account.
+"""),
     ],
     keyterms=[
         ("Algorithm", "A sequence of steps that can be followed to complete a task."),

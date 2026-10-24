@@ -87,7 +87,7 @@ def build_course(course):
 
 def _pixel_run_band():
     """The home page's way into the game: a picture of it, and two buttons."""
-    return """<section class="section">
+    return """<section class="section section-alt">
   <div class="wrap">
     <div class="grid grid-2" style="align-items:center;gap:var(--sp-6)">
       <div>
@@ -108,6 +108,44 @@ def _pixel_run_band():
     </div>
   </div>
 </section>""" % (ico("i-flag"), ico("i-play"), ico("i-python"))
+
+
+def _adventure_band():
+    """The home page's way into the Computational Thinking Adventure."""
+    return """<section class="section">
+  <div class="wrap">
+    <div class="grid grid-2" style="align-items:center;gap:var(--sp-6)">
+      <figure class="hero-figure ct-home-fig">%s</figure>
+      <div>
+        <span class="eyebrow">%s New: 40 game levels</span>
+        <h2>The Computational Thinking Adventure</h2>
+        <p class="lead">Four worlds, forty levels: break problems down, focus on what matters, spot patterns and build algorithms
+        as flowcharts and pseudocode. Pixel cheers every win, and your progress saves in your browser with no account.</p>
+        <div class="btn-row" style="margin-top:1.4rem">
+          <a class="btn btn-primary" href="/computational-thinking/">%s Start the adventure</a>
+          <a class="btn btn-secondary" href="/computational-thinking/teacher/">%s Teacher mode</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>""" % (_adventure_art(), ico("i-map"), ico("i-play"), ico("i-user"))
+
+
+def _adventure_art():
+    """Four islands on a sea, one per world, joined by a dotted route."""
+    isles = [("#EA580C", 70, 150, "🧩", "Decomposition"), ("#0284C7", 190, 80, "🔭", "Abstraction"),
+             ("#9333EA", 310, 150, "💎", "Patterns"), ("#059669", 430, 80, "🤖", "Algorithms")]
+    out = ['<svg viewBox="0 0 500 230" role="img" aria-label="Four islands, one for each world of the adventure: '
+           'Decomposition, Abstraction, Patterns and Algorithms, joined by a dotted route">',
+           '<rect width="500" height="230" rx="22" fill="#BAE6FD"/>',
+           '<path d="M70 150 Q130 60 190 80 T310 150 T430 80" fill="none" stroke="#0F172A" stroke-width="3" stroke-dasharray="2 9" stroke-linecap="round"/>']
+    for c, x, y, e, name in isles:
+        out.append('<ellipse cx="%d" cy="%d" rx="58" ry="26" fill="#FDE68A"/><ellipse cx="%d" cy="%d" rx="44" ry="18" fill="%s"/>'
+                   '<text x="%d" y="%d" font-size="30" text-anchor="middle">%s</text>' % (x, y + 14, x, y + 8, c, x, y + 4, e))
+        out.append('<text x="%d" y="%d" font-size="15" font-weight="700" fill="#0F172A" text-anchor="middle" '
+                   'font-family="system-ui, sans-serif">%s</text>' % (max(x, 80), y + 64 if y > 100 else y - 40, name))
+    out.append("</svg>")
+    return "".join(out)
 
 
 def build_home():
@@ -206,7 +244,9 @@ def build_home():
 
 %s
 
-<section class="section section-alt">
+%s
+
+<section class="section">
   <div class="wrap">
     <div class="grid grid-2" style="align-items:center;gap:var(--sp-6)">
       <div>
@@ -227,7 +267,7 @@ def build_home():
   </div>
 </section>
 
-<section class="section">
+<section class="section section-alt">
   <div class="wrap">
     <div class="grid grid-2" style="align-items:center;gap:var(--sp-6)">
       <div>
@@ -251,7 +291,7 @@ def build_home():
   </div>
 </section>
 
-<section class="section section-alt">
+<section class="section">
   <div class="wrap">
     <div class="grid grid-2" style="align-items:center;gap:var(--sp-6)">
       <div class="center">%s</div>
@@ -270,6 +310,7 @@ def build_home():
         ico("i-palette"), ico("i-layers"),
         "".join(cards),
         ico("i-book"), ico("i-list"), ico("i-check-circle"), ico("i-paper"),
+        _adventure_band(),
         _pixel_run_band(),
         ico("i-arrow-right"),
         render.mascot_svg().replace('<svg ', '<svg style="max-width:260px;margin:0 auto" ', 1),

@@ -98,6 +98,10 @@ A strong answer says: "Abstraction means keeping only the detail needed to solve
 
 Ask yourself: has the problem been **split into parts** (decomposition), or has **detail been left out** (abstraction)? Splitting a shopping app into login, basket and payment is decomposition. Deciding the basket only needs the product code, quantity and price is abstraction.
 """),
+        Section("Practise it as a game", """
+Play the [Computational Thinking Adventure](/computational-thinking/): forty short game levels on decomposition, abstraction, pattern recognition and algorithms, with flowcharts and pseudocode.
+Pixel the robot cat cheers every win, hints are free, and your progress saves in your browser with no account.
+"""),
     ],
     keyterms=[
         ("Decomposition", "Breaking a large, complex problem down into smaller sub problems that can each be solved and tested separately."),

@@ -1424,6 +1424,10 @@ Choose test data of three kinds:
 
 Boundary data is the most useful, because that is exactly where mistakes hide.
 """),
+        Section("Practise it as a game", """
+Play the [Computational Thinking Adventure](/computational-thinking/): forty short game levels on decomposition, abstraction, pattern recognition and algorithms, with flowcharts and pseudocode.
+Pixel the robot cat cheers every win, hints are free, and your progress saves in your browser with no account.
+"""),
     ],
     keyterms=[
         ("Decomposition", "Breaking a large problem into smaller problems that are easier to solve."),

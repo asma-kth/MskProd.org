@@ -30,6 +30,7 @@ TEACHERS = """
 | [Assignment links](/assign/) | Pick the topics you want revised and send one link. No accounts, and nothing is stored. |
 | [Interactive tools](/tools/) | A number base converter, file size calculator, Little Man Computer simulator and more, built for showing on the board. |
 | [The Python course](/python/) and [Pixel Run](/pixel-run/) | Python from a first program to A Level, with every example runnable in the browser, and a platform game that teaches it. |
+| [Computational Thinking Adventure](/computational-thinking/) and [teacher mode](/computational-thinking/teacher/) | Forty game levels on decomposition, abstraction, pattern recognition and algorithms, with answers, previews and printable certificates. |
 | [How to revise](/how-to-revise/) and the [glossary](/glossary/) | What actually works when revising, and every key term defined the way a mark scheme wants it. |
 
 ## Resources on request

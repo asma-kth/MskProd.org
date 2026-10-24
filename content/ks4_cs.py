@@ -3589,6 +3589,10 @@ Step 4 must come before step 5. Step 7 must come after step 6. Order is not deco
 
 Then the parts are combined into a working program.
 """),
+        Section("Practise it as a game", """
+Play the [Computational Thinking Adventure](/computational-thinking/): forty short game levels on decomposition, abstraction, pattern recognition and algorithms, with flowcharts and OCR-style pseudocode.
+Pixel the robot cat cheers every win, hints are free, and your progress saves in your browser with no account.
+"""),
     ],
     keyterms=[
         ("Computational thinking", "Approaching a problem in a way that allows a computer to solve it, using abstraction, decomposition and algorithmic thinking."),

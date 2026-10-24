@@ -290,6 +290,8 @@ kbd {
   transition: background .16s ease, color .16s ease;
 }
 .nav a:hover { background: rgba(255,255,255,.55); color: var(--ink); }
+@media (min-width: 1101px) { .nav a { padding: .5rem .55rem; gap: .3rem; font-size: .9rem; } }
+@media (min-width: 1101px) and (max-width: 1259px) { .nav a .icon { display: none; } }
 [data-theme="dark"] .nav a:hover { background: rgba(255,255,255,.08); }
 .nav a[aria-current="page"], .nav a.is-active {
   background: var(--grad-brand); color: #fff; font-weight: 600;

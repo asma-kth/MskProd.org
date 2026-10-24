@@ -116,10 +116,16 @@ def build(register, add_search):
   <header class="section-head" style="margin-top:var(--sp-7)"><h2>Games</h2>
     <p class="lead">Practice that does not feel like practice.</p></header>
   <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(min(265px,100%%),1fr))">
+    <a class="tile" href="/computational-thinking/"><span class="tile-icon">%s</span><h3>Computational Thinking Adventure</h3>
+      <p>Forty levels across four worlds: decomposition, abstraction, pattern recognition and algorithms.</p></a>
+    <a class="tile" href="/computational-thinking/#/lab/pseudocode"><span class="tile-icon">%s</span><h3>Pseudocode Playground</h3>
+      <p>Write OCR-style pseudocode, run it, step through it and watch a trace table build itself.</p></a>
+    <a class="tile" href="/computational-thinking/#/lab/flowchart"><span class="tile-icon">%s</span><h3>Flowchart Lab</h3>
+      <p>Build a flowchart from blocks, see it drawn with the standard symbols, then run it step by step.</p></a>
     <a class="tile" href="/pixel-run/"><span class="tile-icon">%s</span><h3>Pixel Run</h3>
       <p>A platformer where every obstacle is a Python function to write. Ten levels, from print to Dijkstra's algorithm.</p></a>
   </div>
-</div>""" % (crumbs(trail), esc(INTRO), "".join(cards), tiles(AI_ORDER), ico("i-flag", "icon"))
+</div>""" % (crumbs(trail), esc(INTRO), "".join(cards), tiles(AI_ORDER), ico("i-map", "icon"), ico("i-code", "icon"), ico("i-flow", "icon"), ico("i-flag", "icon"))
     path = "/tools/"
     write(path, layout(title="Interactive Computing Tools",
                        description=INTRO, path=path, body=body, active="/tools/",

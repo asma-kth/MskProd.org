@@ -378,6 +378,8 @@ The following may be stored locally:
 | Your light or dark theme choice | So the site looks the way you left it |
 | Whether you asked Pixel to stay quiet | So the mascot respects that |
 | Your Pixel Run progress: the level you reached, your stars, which challenges you have solved, and whether you chose quiz mode or calm mode | So the game can pick up where you stopped |
+| Your Computational Thinking Adventure progress: levels finished, stars, XP, badges, chests, your daily streak and your sound, voice and animation settings | So the adventure can pick up where you stopped |
+| The name you type on an adventure certificate | So it is still there next time you print it |
 
 **This data never leaves your device.** It is not transmitted to any server, it is not accessible to the site owner, and there is no mechanism by which it could be. It is stored by your browser under this website's address and is readable only by this website on this device.
 
@@ -496,6 +498,14 @@ This site is built so that it can be used by everybody, including people using a
 + Nothing is against the clock
 + Passing and failing are shown in words as well as colour, and quiz mode replaces typing code with choosing an answer
 
+### The Computational Thinking Adventure
+
++ Every drag and drop also works by tapping a card and then a box, or entirely from the keyboard with Tab, Enter and Escape
++ Movement games can be played one step at a time with buttons, arrow keys or swipes, and nothing is against the clock
++ Animation follows your system setting and can be switched to calm in the adventure's settings; celebrations can be skipped with Escape
++ Sound is off until you switch it on, and instructions can be read aloud by your browser
++ Colour is never the only clue: colour patterns carry letters, and right and wrong answers are written in words
+
 ### Without JavaScript
 
 Every explanation, key term, quiz question and exam question is present in the HTML and fully readable with JavaScript disabled. JavaScript adds interactivity such as instant marking, the theme switch and the search dialog, but nothing that is needed to read and learn from the content.
@@ -508,6 +518,7 @@ Being honest about what is not perfect is more useful than claiming everything i
 + Diagrams and illustrations carry text descriptions, but a few detailed ones are easier to follow by looking than by listening to the description.
 + The exam answer marker requires typing. There is currently no alternative input method for students who would find that difficult, and voice input from the operating system is the only workaround.
 + The Pixel Run scene is a picture on a canvas with no description beyond the text announcements, and its coding challenges need typing unless quiz mode is chosen.
++ In the Computational Thinking Adventure, a few board pictures (the maze, the snake board and the car tracks) are easier to follow by looking than by listening, although every level can be completed with the keyboard.
 
 ## Standards
 

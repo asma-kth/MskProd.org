@@ -84,6 +84,8 @@ content/
                       to level15.py), two lessons in each
   ai_certificate.py   The printable certificate the AI course unlocks
   pixelrun/           Pixel Run, the Python platformer: levels, fifty challenges, marker
+  ct_adventure/       The Computational Thinking Adventure: four worlds of ten levels, and bonus puzzles
+  ct_page.py          The adventure's page, its teacher mode and its certificate
   papers.py           The exam papers page, and the first practice papers
   papers_full.py      Full length papers for each board (papers_j277.py, papers_aqa.py, ...)
   ks3_exams*.py       Key Stage 3 unit exams, two for every unit
@@ -100,6 +102,9 @@ static/
   js/game.js          Pixel Run: rules, console, Python marking
   js/game-art.js      Pixel Run: everything drawn on the canvas
   css/game.css        Pixel Run styles
+  js/ct/, css/ct/     The adventure: one engine per kind of game, the pseudocode interpreter,
+                      flowcharts and the labs, bundled at build time into ct.js and ct.css
+  js/ct-pages.js      The adventure's teacher mode and certificate
   img/                Logo, favicon, mascot, icon sprite, share image
 ```
 
@@ -231,6 +236,32 @@ copies that its tests fail to notice. Today those are all equivalent to the
 original, such as which of two equal values is returned first.
 
 Progress is stored in the browser under `mskprod:pixelrun`.
+
+## The Computational Thinking Adventure
+
+`/computational-thinking/` is a game in four worlds, Decomposition, Abstraction, Pattern Recognition
+and Algorithms, with ten levels in each: Beginner (1 to 3, each with a worked demo), Intermediate,
+Advanced and Expert. Algorithms uses flowcharts and OCR style pseudocode only. Pixel cheers every win
+with stars and XP, and finishing worlds opens badges, chests, bonus puzzles and a printable
+certificate (`/computational-thinking/certificate/`). The Pseudocode Playground and the Flowchart Lab
+are open from the start.
+
+Levels are plain data in `content/ct_adventure/`, one module per world, so the solution lives with
+the level. `static/js/ct/` holds one engine per kind of game (grouping, ordering, structure diagrams,
+mazes, graphs, sequences, flowcharts, robot programs, trace tables...), the pseudocode interpreter
+(`17-pseudo.js`) and the flowchart model (`18-flow.js`).
+
+```bash
+node tools/check_ct.mjs
+```
+
+checks every level without a browser: the model answer passes, every listed mistake fails, random
+answers almost never pass, and every program, maze walk and flowchart reaches its goal.
+
+`/computational-thinking/teacher/` lists all forty activities with their objective, curriculum link
+and answer, opens any level as a preview that saves nothing, and can clear this browser's progress.
+Progress is stored in the browser under `mskprod:ct`, and the name on the certificate under
+`mskprod:ctcert`.
 
 ## Adding a topic
 
