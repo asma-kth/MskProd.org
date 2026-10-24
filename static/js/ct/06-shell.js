@@ -93,7 +93,9 @@
       CT.el("div", { class: "ctl-card ctl-hintbox" }, [CT.el("h2", null, "💡 Pixel's hints"), hintList,
         CT.el("p", { class: "ctl-muted" }, "Hints are free to use. Three stars needs no hints and at most one slip.")])
     ]);
-    var body = CT.el("div", { class: "ctl-body" }, [side, CT.el("div", { class: "ctl-main" }, [stage, controls, feedback])]);
+    // On narrow screens the side cards drop below the board, so the task is repeated above it.
+    var taskLine = CT.el("p", { class: "ctl-taskline", "aria-hidden": "true" }, ["🕹 ", level.task]);
+    var body = CT.el("div", { class: "ctl-body" }, [side, CT.el("div", { class: "ctl-main" }, [taskLine, stage, controls, feedback])]);
     CT.append(host, [header, stepsWrap, body]);
 
     function setPhase(p) {
@@ -119,7 +121,11 @@
       // Engines with their own Run button report the outcome through this.
       result: function (res) { handle(res); },
       // Engines with timers check this before every tick.
-      alive: function () { return !dead; }
+      alive: function () { return !dead; },
+      // Engines whose main button changes job between stages rename it.
+      label: function (t) { bCheck.textContent = t || "✓ Check"; },
+      // Pressing Enter in an engine's own input presses the main button.
+      submit: function () { if (!bCheck.disabled && !controls.hidden) bCheck.click(); }
     };
 
     function mount(demoMode) {

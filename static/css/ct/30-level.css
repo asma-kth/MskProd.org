@@ -41,6 +41,9 @@
 .ctl-hints li.is-new { animation: ct-pop .35s ease 1; }
 
 .ctl-main { min-width: 0; }
+.ctl-taskline { display: none; margin: 0 0 .7rem; padding: .6rem .8rem; border-radius: 14px; font-weight: 700; background: var(--wl); border: 2px solid color-mix(in srgb, var(--w) 40%, transparent); }
+[data-theme="dark"] .ctl-taskline { background: color-mix(in srgb, var(--w) 16%, var(--surface)); }
+@media (max-width: 900px) { [data-phase="play"] .ctl-taskline { display: block; } }
 .ctl-stage { min-height: 320px; }
 .ctl-panel { padding: 1.3rem; border-radius: 22px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-1); }
 .ctl-learn-text { font-size: var(--step-1); line-height: 1.5; margin: .2rem 0 1rem; max-width: 60ch; }

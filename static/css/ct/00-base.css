@@ -59,7 +59,12 @@
 }
 .ct-card:hover { transform: translateY(-2px); border-color: var(--w); }
 .ct-card-i { flex: none; font-size: 1.35rem; line-height: 1; }
-.ct-card-t { min-width: 0; }
+.ct-card-t { min-width: 0; overflow-wrap: break-word; hyphens: auto; }
+/* In a narrow column the icon sits above the words, so the words get the full width. */
+.ctr-col, .cas-st { container-type: inline-size; }
+@container (max-width: 190px) {
+  .ct-card { flex-direction: column; gap: .2rem; padding: .45rem .4rem; text-align: center; font-size: .86rem; }
+}
 .ct-card.is-picked { border-color: var(--w); box-shadow: 0 0 0 4px color-mix(in srgb, var(--w) 30%, transparent), 0 10px 24px rgba(15, 32, 38, .15); transform: translateY(-3px) scale(1.02); }
 .ct-card.is-dragging { opacity: .35; }
 .ct-card.is-wrong { border-color: #DC2626; background: #FEF2F2; animation: ct-shake .4s ease 1; }
@@ -83,7 +88,7 @@
   display: grid; grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr)); gap: .55rem;
   padding: .8rem; margin-bottom: 1rem; border-radius: 16px; background: var(--ct-card-2); border: 2px dashed var(--border-strong);
 }
-.ct-tray-h { grid-column: 1 / -1; margin: 0; font-size: .8rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+.ct-tray-h { grid-column: 1 / -1; max-width: none; margin: 0; font-size: .8rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
 .ct-tray-empty { grid-column: 1 / -1; margin: .2rem 0; font-weight: 700; color: var(--ok); }
 
 .ct-drop {
