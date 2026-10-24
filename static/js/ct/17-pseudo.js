@@ -11,6 +11,8 @@
  *   + - * / ^  MOD  DIV  == != < <= > >=  AND OR NOT  true false
  *   str() int() float() real()  s.length s.upper s.lower s.substring(i, n) s.left(n) s.right(n)
  *   // comments
+ * opts: { inputs: [test inputs], quiet: leave prompts and typed inputs out of the output,
+ *         maxSteps, builtins: {name: function} for game commands }.
  * CT.pseudo.run(src, opts) returns { ok, output, error, vars, steps };
  * CT.pseudo.steps(src, opts) returns a stepper for tracing, one line at a time.
  */
@@ -332,6 +334,7 @@
       case "not": return !truthy(evaluate(e.a, env, line, io), line);
       case "input": {
         var prompt = e.a ? show(evaluate(e.a, env, line, io)) : "";
+        if (io.quiet) prompt = "";
         if (prompt) io.out.push(prompt);
         if (!io.inputs.length) {
           if (io.ask) { var got = io.ask(prompt); if (got === null || got === undefined) fail(line, "The program stopped while waiting for input."); return String(got); }
@@ -340,7 +343,7 @@
         var given = String(io.inputs.shift());
         io.echo.push(given);
         if (prompt) io.out[io.out.length - 1] = prompt + given;
-        else io.out.push(given);
+        else if (!io.quiet) io.out.push(given);
         return given;
       }
       case "index": {
@@ -372,6 +375,12 @@
       case "call": {
         var a = e.args.map(function (x) { return evaluate(x, env, line, io); });
         var f = e.name;
+        // Game commands and sensors, such as forward() or roadAhead(), supplied by an engine.
+        if (io.builtins && Object.prototype.hasOwnProperty.call(io.builtins, f)) {
+          var got = io.builtins[f].apply(null, a);
+          if (got && got.ctError) fail(line, got.ctError);
+          return got === undefined ? null : got;
+        }
         if (f === "str") return show(a[0]);
         if (f === "int") {
           if (typeof a[0] === "number") return Math.trunc(a[0]);
@@ -507,7 +516,8 @@
     // A stepper: next() runs one line and reports it, until done.
     steps: function (src, opts) {
       opts = opts || {};
-      var max = opts.maxSteps || 5000, env = {}, io = { out: [], inputs: (opts.inputs || []).slice(), echo: [], ask: opts.ask };
+      var max = opts.maxSteps || 5000, env = {}, io = { out: [], inputs: (opts.inputs || []).slice(), echo: [], ask: opts.ask, builtins: null, quiet: !!opts.quiet };
+      if (opts.builtins) { io.builtins = {}; Object.keys(opts.builtins).forEach(function (k) { io.builtins[k.toLowerCase()] = opts.builtins[k]; }); }
       var p = CT.pseudo.parse(src), it = null, count = 0, finished = false, error = p.ok ? null : p.error;
       if (p.ok) it = walk(p.program, env, io);
       return {

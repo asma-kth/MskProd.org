@@ -5,6 +5,7 @@
  * With rules, any order that keeps every rule is right, because real tasks
  * often have more than one correct order. Without them, data.order is the answer.
  * With flow, a live flowchart (Start, one box per step, End) is drawn beside the list.
+ * With code, the steps are lines of pseudocode, shown in a code font with their indents.
  * answer: [ids in order], or with rounds { round: i, order: [...] }.
  */
 (function (root) {
@@ -95,6 +96,7 @@
             ])
           ]);
           if (wrong[id]) li.querySelector(".ct-card").classList.add("is-wrong");
+          if (d.code) li.querySelector(".ct-card").classList.add("is-code");
           list.appendChild(li);
         });
         var wrap = CT.el("div", { class: "co-wrap" + (d.flow ? " has-flow" : "") }, [list]);

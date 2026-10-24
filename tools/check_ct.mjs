@@ -256,6 +256,64 @@ const MISTAKES = {
     }));
     return out;
   },
+  program(d, sol) {
+    const out = [];
+    const cmds = d.mode === "absolute" ? ["up", "down", "left", "right"] : ["F", "L", "R"];
+    d.rounds.forEach((rd, k) => {
+      const put = (p, label) => { const a = clone(sol); a[k] = p; out.push(["round " + k + " " + label, a]); };
+      const prog = sol[k];
+      prog.forEach((c, i) => {
+        if (prog.length > 1) { const p = clone(prog); p.splice(i, 1); put(p, "without block " + i); }
+        if (typeof c === "string") cmds.forEach((x) => { if (x !== c) { const p = clone(prog); p[i] = x; put(p, "block " + i + " as " + x); } });
+        else {
+          [c.repeat - 1, c.repeat + 1].forEach((n) => { const p = clone(prog); p[i].repeat = n; put(p, "repeat " + n); });
+          c.do.forEach((x, j) => cmds.forEach((y) => { if (y !== x) { const p = clone(prog); p[i].do[j] = y; put(p, "repeat body " + j + " as " + y); } }));
+        }
+      });
+    });
+    return out;
+  },
+  flowbuild(d, sol) {
+    const out = [];
+    d.rounds.forEach((rd, k) => {
+      const slots = Object.keys(sol[k]);
+      const kind = (slot) => CT.flow.nodes(rd.flow).find((n) => n.slot === slot).t;
+      const fits = (card, slot) => (kind(slot) === "slot" ? card.t !== "decision" : card.t === "decision");
+      for (const slot of slots) for (const c of rd.cards) {
+        if (c.id === sol[k][slot] || !fits(c, slot)) continue;
+        const a = clone(sol); for (const s2 of slots) if (a[k][s2] === c.id) a[k][s2] = sol[k][slot];
+        a[k][slot] = c.id; out.push(["round " + k + " " + c.id + " in " + slot, a]);
+      }
+    });
+    return out;
+  },
+  flowfix(d, sol) {
+    const out = [];
+    d.rounds.forEach((rd, k) => {
+      CT.flow.nodes(rd.flow).forEach((n) => {
+        if (n.id === rd.bug || n.t === "start" || n.t === "end") return;
+        const a = clone(sol); a[k] = { node: n.id, fix: rd.answer }; out.push(["round " + k + " node " + n.id, a]);
+      });
+      rd.fixes.forEach((_, i) => { if (i !== rd.answer) { const a = clone(sol); a[k] = { node: rd.bug, fix: i }; out.push(["round " + k + " fix " + i, a]); } });
+    });
+    return out;
+  },
+  trace(d, sol) {
+    const out = [];
+    d.rounds.forEach((rd, k) => rd.rows.forEach((row, r) => row.forEach((v, c) => {
+      if ((rd.given || []).some((g) => g[0] === r && g[1] === c)) return;
+      const a = clone(sol); a[k][r][c] = v === "" ? "9" : String(Number(v) + 1); out.push(["round " + k + " cell " + r + "," + c, a]);
+    })));
+    return out;
+  },
+  botcode(d, sol) {
+    const out = [];
+    Object.keys(d.choices).forEach((b) => d.choices[b].forEach((o) => {
+      if (o === sol[b]) return;
+      const a = clone(sol); a[b] = o; out.push([b + "=" + o, a]);
+    }));
+    return out;
+  },
   quest(d, sol) {
     const out = [];
     d.stages.forEach((s, k) => {
@@ -354,6 +412,35 @@ const RANDOM = {
     const bits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "-1", "i", "2 * i", "3 * i", "7 * i", "i + 1"];
     return d.rounds.map((rd) => { const a = {}; Object.keys(rd.blanks).forEach((b) => { a[b] = pickFrom(rng, bits); }); return a; });
   },
+  program(d, rng) {
+    const cmds = d.mode === "absolute" ? ["up", "down", "left", "right"] : ["F", "L", "R"];
+    return d.rounds.map((rd) => {
+      const n = 1 + Math.floor(rng() * (rd.max || CT.progBlocks(rd.answer) + 2)), p = [];
+      for (let i = 0; i < n; i++) {
+        if (d.mode === "relative" && rng() < 0.15) p.push({ repeat: 2 + Math.floor(rng() * 4), do: [pickFrom(rng, cmds), pickFrom(rng, cmds), pickFrom(rng, cmds)].slice(0, 1 + Math.floor(rng() * 3)) });
+        else p.push(pickFrom(rng, cmds));
+      }
+      return p;
+    });
+  },
+  flowbuild(d, rng) {
+    return d.rounds.map((rd) => {
+      const a = {}, used = new Set();
+      CT.flow.nodes(rd.flow).filter((n) => n.slot).forEach((n) => {
+        const ok = rd.cards.filter((c) => !used.has(c.id) && (n.t === "slot" ? c.t !== "decision" : c.t === "decision"));
+        if (ok.length) { const c = pickFrom(rng, ok); used.add(c.id); a[n.slot] = c.id; }
+      });
+      return a;
+    });
+  },
+  flowfix(d, rng) {
+    return d.rounds.map((rd) => {
+      const ns = CT.flow.nodes(rd.flow).filter((n) => n.t !== "start" && n.t !== "end");
+      return { node: pickFrom(rng, ns).id, fix: Math.floor(rng() * rd.fixes.length) };
+    });
+  },
+  trace(d, rng) { return d.rounds.map((rd) => rd.rows.map((row) => row.map(() => (rng() < 0.3 ? "" : String(Math.floor(rng() * 10)))))); },
+  botcode(d, rng) { const a = {}; Object.keys(d.choices).forEach((b) => { a[b] = pickFrom(rng, d.choices[b]); }); return a; },
   quest(d, rng) { return d.stages.map((s) => RANDOM[s.engine](s.data, rng)); },
 };
 
@@ -421,6 +508,52 @@ const SIMULATE = {
       const r = CT.pseudo.run(rd.long);
       if (!r.ok) return "round " + k + ": the long program has an error: " + r.error.msg;
       if (rd.template.split("\n").length >= rd.long.split("\n").length) return "round " + k + ": the loop is not shorter than the long program";
+    }
+    return null;
+  },
+  flowbuild(d) {
+    const sol = CT.solve.flowbuild(d);
+    for (const [k, rd] of d.rounds.entries()) {
+      const flow = CT.flowBuild(rd, sol[k]);
+      if (rd.tests) {
+        const res = CT.flow.test(flow, rd.tests);
+        const bad = res.find((t) => !t.pass);
+        if (bad) return "round " + k + ": the finished flowchart fails a test (" + (bad.got ? bad.got.join(",") : bad.error.msg) + ")";
+      }
+      if (rd.sim === "pelican") { const r = CT.pelican(flow); if (!r.ok) return "round " + k + ": the finished crossing is unsafe: " + r.problem; }
+    }
+    return null;
+  },
+  flowfix(d) {
+    for (const [k, rd] of d.rounds.entries()) {
+      if (CT.flow.test(rd.flow, rd.tests).every((t) => t.pass)) return "round " + k + ": the broken flowchart already passes every test";
+      for (const [i] of rd.fixes.entries()) {
+        const pass = CT.flow.test(CT.flowFixed(rd, i), rd.tests).every((t) => t.pass);
+        if (i === rd.answer && !pass) return "round " + k + ": the right fix does not pass the tests";
+        if (i !== rd.answer && pass) return "round " + k + ": fix " + i + " also passes every test";
+      }
+    }
+    return null;
+  },
+  trace(d) {
+    for (const [k, rd] of d.rounds.entries()) {
+      const r = CT.pseudo.run(rd.code);
+      if (!r.ok) return "round " + k + ": the program has an error: " + r.error.msg;
+      const oc = rd.cols.indexOf("output");
+      const outs = rd.rows.map((row) => row[oc]).filter((v) => v !== "");
+      if (JSON.stringify(outs) !== JSON.stringify(r.output)) return "round " + k + ": the output column does not match the program's output";
+      for (const [c, name] of rd.cols.entries()) {
+        if (name === "output") continue;
+        const vals = rd.rows.map((row) => row[c]).filter((v) => v !== "");
+        if (String(r.vars[name]) !== vals[vals.length - 1]) return "round " + k + ": the last value of " + name + " should be " + r.vars[name];
+      }
+    }
+    return null;
+  },
+  program(d) {
+    for (const [k, rd] of d.rounds.entries()) {
+      if (rd.max && CT.progBlocks(rd.answer) > rd.max) return "round " + k + ": the model answer is over the block limit";
+      if (rd.max && d.mode === "relative" && rd.answer.some((c) => typeof c === "object") && CT.progFlat(rd.answer).length <= rd.max) return "round " + k + ": the loop is not needed to meet the limit";
     }
     return null;
   },
