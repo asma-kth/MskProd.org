@@ -350,8 +350,9 @@ new topic gets a sensible banner without anyone choosing one.
 
 ## Deployment
 
-Pushing to `main` triggers `.github/workflows/deploy.yml`, which builds the site and
-publishes `dist/` to GitHub Pages.
+Pushing to `main` triggers `.github/workflows/deploy.yml`, which checks every Python example
+and every adventure level (`tools/check_python_examples.py` and `tools/check_ct.mjs`), builds the
+site and publishes `dist/` to GitHub Pages. A failed check stops the deploy.
 
 ### One off setup
 

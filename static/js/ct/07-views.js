@@ -73,7 +73,7 @@
   V.mapSvg = function () {
     var worlds = CT.data.worlds;
     var cur = currentWorld();
-    var s = ['<svg class="ct-map-svg" viewBox="0 0 1000 560" role="img" aria-labelledby="ct-map-t">',
+    var s = ['<svg class="ct-map-svg" viewBox="0 0 1000 560" role="group" aria-labelledby="ct-map-t">',
       '<title id="ct-map-t">The adventure map: four island worlds joined by a dotted sea route</title>',
       '<defs><linearGradient id="ct-sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="sea-a"/><stop offset="1" class="sea-b"/></linearGradient></defs>',
       '<rect width="1000" height="560" rx="28" fill="url(#ct-sea)"/>',
@@ -253,16 +253,17 @@
       var isCur = cur && cur.id === l.id;
       var node = CT.el(open ? "a" : "button", {
         class: "ct-node" + (done ? " is-done" : "") + (isCur ? " is-current" : "") + (!open ? " is-locked" : ""),
-        href: open ? "#/play/" + l.id : null, type: open ? null : "button", role: "listitem",
+        href: open ? "#/play/" + l.id : null, type: open ? null : "button",
         "aria-label": "Level " + l.n + ": " + l.title + ". " + l.band + ". " + (done ? stars + " stars." : open ? "Ready to play." : "Locked. Finish level " + (l.n - 1) + " first."),
-        style: { left: (pts[i][0] / W * 100) + "%", top: (pts[i][1] / H * 100) + "%" },
         onclick: open ? null : function () { CT.celebrate.toast("🔒 Finish level " + (l.n - 1) + " first"); }
       }, [
         CT.el("span", { class: "ct-node-dot" }, done ? "✓" : (open ? String(l.n) : "🔒")),
         CT.el("span", { class: "ct-node-label" }, [CT.el("b", null, l.n + ". " + l.title),
           CT.el("span", { class: "ct-node-stars", "aria-hidden": "true" }, [1, 2, 3].map(function (s) { return CT.el("i", { class: s <= stars ? "on" : "" }, "★"); }))])
       ]);
-      path.appendChild(node);
+      // The list item is the wrapper, so the link or button inside keeps its own role.
+      path.appendChild(CT.el("div", { class: "ct-node-li", role: "listitem",
+        style: { left: (pts[i][0] / W * 100) + "%", top: (pts[i][1] / H * 100) + "%" } }, [node]));
       if (isCur) {
         var px = new CT.Pixel({ mood: "wave" });
         path.appendChild(CT.el("div", { class: "ct-path-pixel", "aria-hidden": "true", style: { left: (pts[i][0] / W * 100) + "%", top: (pts[i][1] / H * 100) + "%" } }, [px.svg]));

@@ -28,6 +28,14 @@ jobs:
       - name: Check that every Python example runs
         run: python3 tools/check_python_examples.py
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Check every level of the Computational Thinking Adventure
+        run: node tools/check_ct.mjs
+
       - name: Build the site
         run: python3 build.py
 

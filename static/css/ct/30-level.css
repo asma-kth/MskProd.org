@@ -6,8 +6,8 @@
 .ctl-h { margin: 0; font-size: var(--step-3); line-height: 1.1; }
 .ctl-kicker { margin: 0 0 .2rem; font-size: .8rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
 .ctl-num { color: var(--wd); }
-[data-theme="dark"] .ctl-num { color: var(--w); }
-.ctl-band { padding: .12rem .5rem; border-radius: 999px; color: #fff; background: #0D9488; }
+[data-theme="dark"] .ctl-num { color: color-mix(in srgb, var(--w) 60%, #fff); }
+.ctl-band { padding: .12rem .5rem; border-radius: 999px; color: #fff; background: #0F766E; }
 .ctl-band-intermediate { background: #2563EB; } .ctl-band-advanced { background: #9333EA; } .ctl-band-expert { background: #DC2626; }
 .ctl-preview { margin-left: .4rem; padding: .12rem .5rem; border-radius: 999px; color: #78350F; background: #FDE68A; }
 .ctl-best { font-size: 1.6rem; letter-spacing: .05em; color: #CBD5E1; }
@@ -25,7 +25,7 @@
 .ctl-step::before { content: counter(s) " "; font-weight: 800; }
 .ctl-step.is-past { color: var(--ok); background: var(--ok-bg); border-color: transparent; }
 .ctl-step.is-past::before { content: "✓ "; }
-.ctl-step.is-on { color: #fff; background: linear-gradient(135deg, var(--w), var(--wd)); border-color: transparent; box-shadow: 0 4px 12px color-mix(in srgb, var(--w) 35%, transparent); }
+.ctl-step.is-on { color: #fff; background: linear-gradient(135deg, color-mix(in srgb, var(--w) 50%, var(--wd)), var(--wd)); border-color: transparent; box-shadow: 0 4px 12px color-mix(in srgb, var(--w) 35%, transparent); }
 
 .ctl-body { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 1rem; align-items: start; }
 @media (max-width: 900px) { .ctl-body { grid-template-columns: 1fr; } .ctl-side { order: 2; } }
@@ -62,6 +62,8 @@
   border-radius: 18px; background: color-mix(in srgb, var(--surface) 92%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
   border: 1px solid var(--border); box-shadow: var(--ct-shadow); }
 .ctl-controls .ct-btn-go { flex: 1 1 160px; font-size: 1.05rem; }
+/* Keep a focused card clear of the sticky bar, so Tab never hides it underneath. */
+html:has(.ctl-controls:not([hidden])) { scroll-padding-bottom: 8rem; }
 .ctl-feedback { margin-top: .7rem; min-height: 1.4rem; font-weight: 700; }
 .ctl-feedback:empty { display: none; }
 .ctl-feedback.is-bad { padding: .7rem .9rem; border-radius: 14px; color: var(--bad); background: var(--bad-bg); border: 1px solid var(--bad); }

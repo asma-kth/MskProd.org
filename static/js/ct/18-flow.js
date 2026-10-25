@@ -160,7 +160,7 @@
     o = o || {};
     var sz = sizeSeq(flow), w = Math.max(sz.w + 40, 260), h = sz.h + 40;
     var body = drawSeq(flow, w / 2, 20, o);
-    return '<svg class="fc" viewBox="0 0 ' + w + " " + h + '" role="img" aria-label="' + esc(o.label || "Flowchart") + '" style="max-width:' + Math.round(w * 1.1) + 'px">' +
+    return '<svg class="fc" viewBox="0 0 ' + w + " " + h + '" role="' + (o.clickable ? "group" : "img") + '" aria-label="' + esc(o.label || "Flowchart") + '" style="max-width:' + Math.round(w * 1.1) + 'px">' +
       '<defs><marker id="fc-head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="fc-headfill"/></marker></defs>' +
       body.svg + "</svg>";
   }

@@ -30,7 +30,7 @@
 
 /* order: lines of pseudocode */
 .ct-card.is-code { font: 600 .95rem/1.4 var(--font-mono, ui-monospace, monospace); background: #0F172A; color: #E2E8F0; border-color: #334155; }
-.ct-card.is-code .ct-card-t { display: block; max-width: 100%; overflow-x: auto; white-space: pre; overflow-wrap: normal; }
+.ct-card.is-code .ct-card-t { display: block; max-width: 100%; white-space: pre-wrap; overflow-wrap: anywhere; }
 .co-row .ct-card { min-width: 0; }
 @media (max-width: 480px) { .ct-card.is-code { font-size: .8rem; } .cbc-sel { font-size: .78rem; } }
 .ct-card.is-code.is-wrong { background: #3B1219; border-color: #DC2626; }

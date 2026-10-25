@@ -4,14 +4,14 @@
 .ctt-toc ol { display: flex; flex-wrap: wrap; gap: .4rem; list-style: none; padding: 0; }
 .ctt-toc a { display: inline-block; padding: .3rem .8rem; border-radius: 999px; text-decoration: none; font-weight: 600; background: var(--surface-2); border: 1px solid var(--border); }
 .ctt-world h2 { color: var(--wd); }
-[data-theme="dark"] .ctt-world h2 { color: var(--w); }
+[data-theme="dark"] .ctt-world h2 { color: color-mix(in srgb, var(--w) 60%, #fff); }
 .ctt-tag { color: var(--ink-2); max-width: none; }
 .ctt-grid { display: grid; gap: .9rem; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); }
 .ctt-level { padding: 1rem 1.1rem; border-radius: var(--r-l); background: var(--surface); border: 1px solid var(--border); border-top: 5px solid var(--w); box-shadow: var(--shadow-1); }
 .ctt-level header { display: flex; align-items: center; gap: .6rem; margin-bottom: .4rem; }
 .ctt-level h3 { margin: 0; font-size: 1.1rem; flex: 1; }
 .ctt-n { display: grid; place-items: center; width: 2rem; height: 2rem; flex: none; border-radius: 50%; font-weight: 800; color: #fff; background: var(--wd); }
-.ctt-band { padding: .1rem .55rem; border-radius: 999px; font-size: .75rem; font-weight: 800; color: #fff; background: #0D9488; }
+.ctt-band { padding: .1rem .55rem; border-radius: 999px; font-size: .75rem; font-weight: 800; color: #fff; background: #0F766E; }
 .ctt-band-intermediate { background: #2563EB; } .ctt-band-advanced { background: #9333EA; } .ctt-band-expert { background: #DC2626; }
 .ctt-level p { margin: .3rem 0; font-size: .93rem; }
 .ctt-level details { margin: .35rem 0; font-size: .92rem; }
@@ -24,7 +24,7 @@
 .ctc-tabs { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .6rem; }
 .ctc-tab { padding: .45rem .9rem; border-radius: 999px; cursor: pointer; font: 700 .92rem var(--font-body); color: var(--ink); background: var(--surface-2); border: 2px solid var(--border); }
 .ctc-tab.is-ready { border-color: #059669; }
-.ctc-tab.is-on { color: #fff; background: var(--ink); border-color: var(--ink); }
+.ctc-tab.is-on { color: var(--surface); background: var(--ink); border-color: var(--ink); }
 .ctc-status { font-weight: 700; }
 .ctc-form { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin-bottom: 1rem; }
 .ctc-form label { font-weight: 700; }
