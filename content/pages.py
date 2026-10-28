@@ -17,12 +17,12 @@ def _page(path, title, description, crumb, body_md, extra="", ld=None, slots=Non
   %s
   <div class="page-panel">
     <article class="prose">
-      <header class="topic-header"><h1>%s</h1><p class="lead">%s</p></header>
+      <header class="topic-header"><h1>%s</h1></header>
       %s
       %s
     </article>
   </div>
-</div>""" % (crumbs(trail), esc(title), esc(description), rendered, extra)
+</div>""" % (crumbs(trail), esc(title), rendered, extra)
     return path, layout(title=title, description=description, path=path,
                         body=body,
                         jsonld=(ld or []) + [crumbs_ld(trail)])
@@ -31,8 +31,6 @@ def _page(path, title, description, crumb, body_md, extra="", ld=None, slots=Non
 # ============================================================ HOW TO REVISE
 
 HOW_TO_REVISE = """
-Most students revise by reading their notes again, highlighting things, and copying work out neatly. All three of those feel productive and almost none of the effect survives to the exam. This page describes what actually works, and it is based on decades of evidence from cognitive psychology rather than on what feels comfortable.
-
 ## The one idea that matters most
 
 !key Retrieval beats review :: Trying to recall something from memory strengthens that memory far more than reading it again does. This single finding is the most robust result in the whole of learning research, and almost nobody acts on it.
@@ -261,9 +259,7 @@ def build(register, add_search, courses):
     path, html = _page(
         "/glossary/", "Computing Glossary",
         "Every key term across Key Stage 3, GCSE and A Level computing, each defined in one sentence you could write in an exam.",
-        "Glossary",
-        "Definitions written the way a mark scheme wants them: one sentence, precise, and using the vocabulary the examiner is looking for. Type in the box to filter, and cover the definition and say it out loud before you read it.",
-        extra=extra)
+        "Glossary", "", extra=extra)
     write(path, html)
     register(path, 0.7, "monthly")
     add_search("Computing glossary", path, "%d key terms defined" % len(GLOSSARY),
@@ -273,76 +269,35 @@ def build(register, add_search, courses):
     total_topics = sum(len(u.topics) for c in courses for u in c.units)
     total_quiz = sum(len(t.quiz) for c in courses for u in c.units for t in u.topics)
     about = """
-MskProd Computing is a free revision site for students studying computing in UK schools, from Key Stage 3 to A Level. There are **%d topics**, **%d knowledge check questions**, timed exam papers for every specification and several hundred automatically marked exam questions, written board by board for OCR, AQA and Pearson Edexcel and sequenced in the order the subject is taught in school.
+Free computing revision for Key Stage 3, GCSE and A Level: **%d topics**, **%d knowledge check questions** and timed exam papers for OCR, AQA and Pearson Edexcel.
 
-Everything on the site is free. There is no account to create and no subscription. The site is paid for by advertising, and how that works is set out in the [privacy policy](/privacy/).
+Written by Ms Kethiri, head of the computing department at a school in London.
 
-## About me
+No account and no subscription. The site is paid for by advertising, as set out in the [privacy policy](/privacy/).
 
-I am Asma Kethiri, Head of Computing at a secondary school in London. My department teaches computing from Key Stage 3 to A Level, and every year our students make strong progress and achieve a high success rate in their computing qualifications.
+Independent of the exam boards. The exam papers are original, written to the structure of the real ones.
 
-I created MskProd Computing and I am responsible for everything on it, from the explanations and mark schemes to the exam papers, the Python course and Pixel Run. I built it so that the teaching that works for my own students is there for every student.
-
-## Why I built this site
-
-I want every student to have what my students have: clear teaching, plenty of practice and honest feedback, whatever school they go to and whatever their family can afford. Good revision should not sit behind a paywall or a login.
-
-+ **Free, with no account.** Nothing stands between a student and the work.
-+ **Every computing subject, Key Stage 3 to A Level.** Key Stage 3 Computing; GCSE Computer Science for OCR (J277), AQA (8525) and Pearson Edexcel (1CP2); OCR Cambridge National Creative iMedia (J834); OCR A Level Computer Science (H446); the OCR Cambridge Advanced National in IT: Data Analytics (F200, F201 and the F202 coursework unit); and Python from a first program to A Level.
-+ **Explanations that teach the reason.** Most revision material either lists answers without explaining them or is written for teachers rather than students. The reason behind a fact is where the marks are, and it is something you can work out again when you have forgotten the detail.
-+ **Practice that marks itself.** Knowledge checks, exam questions marked against a mark scheme, and timed papers with the real marks and time allowed, so students know exactly where they stand and what to do next.
-+ **Built on what works in the classroom.** Retrieval practice, spaced review and exam technique, the same methods I use with my own classes.
-+ **Accessible to everyone.** It works on phones and school computers, with a screen reader or a keyboard, in light or dark mode, with nothing to install.
-
-## How every topic is built
-
-+ A full explanation written to be understood, with the mechanism explained rather than asserted
-+ Key terms defined the way a mark scheme wants them, plus flashcards for retrieval practice
-+ A ten question knowledge check with an explanation for every answer, right or wrong
-+ Exam-style questions marked automatically against a mark scheme, with a model answer
-+ A section on what separates a top grade answer from an average one, and the mistakes that cost marks
-
-## For teachers
-
-Everything here is free to use with your classes, in lessons, for homework and for revision. Teachers can also ask me for resources that are not on the site yet, such as an end of unit test, a mock paper or extra practice on a topic students find hard. See [resources for teachers](/teachers/).
-
-## How the site is built
-
-The site is a set of static HTML pages generated from structured content. That means it loads quickly, works without JavaScript for reading, is fully accessible to screen readers and search engines, and has no database to be breached because there is no database at all.
-
-The quizzes and the exam marker run entirely in your browser. Your scores are stored on your own device using local storage and are never transmitted anywhere. There is no server that could see them.
-
-## A note on exam papers
-
-Real past papers are the copyright of the exam boards and cannot lawfully be republished here. Every paper in the [exam papers section](/exam-papers/) is therefore written from scratch to match the structure, question style, command words and mark allocation of the real assessments, with a full mark scheme for each. Links to the official past papers on each board's own website are provided alongside them.
-
-This site is written independently and is not endorsed by, affiliated with or connected to OCR or any other awarding body. Always check the current specification on the exam board's own website, since specifications do change.
-
-## Getting in touch
-
-Corrections are welcome: if something is wrong, unclear or out of date, email [a.kethiri@mskprod.org](mailto:a.kethiri@mskprod.org) or use the [contact page](/contact/). Every page and every exam question also has a link for reporting a problem.
+Corrections: [a.kethiri@mskprod.org](mailto:a.kethiri@mskprod.org).
 """
     path, html = _page(
         "/about/", "About MskProd Computing",
-        "Free computing revision from Key Stage 3 to A Level, created by Asma Kethiri, Head of Computing at a London secondary school, so that every student can revise well and get high grades.",
+        "Free computing revision from Key Stage 3 to A Level, written by Ms Kethiri, head of the computing department at a school in London.",
         "About", about % (total_topics, total_quiz),
         extra='<div class="center" style="max-width:220px;margin:var(--sp-6) auto 0">%s</div>' % mascot_svg(),
         ld=[{"@context": "https://schema.org", "@type": "AboutPage",
              "name": "About " + SITE_NAME, "url": SITE_URL + "/about/",
-             "mainEntity": {"@type": "Person", "name": "Asma Kethiri", "jobTitle": "Head of Computing",
+             "mainEntity": {"@type": "Person", "name": "Ms Kethiri", "jobTitle": "Head of the computing department",
                             "email": "mailto:a.kethiri@mskprod.org"}}])
     write(path, html)
     register(path, 0.6, "yearly")
     add_search("About", path, "Who writes this site, and why",
-               "about author asma kethiri head of computing london teacher contact why")
+               "about author ms kethiri head of computing department london teacher contact")
 
     # ----------------------------------------------------------- privacy
     privacy = """
 **Last updated: October 2026**
 
-MskProd Computing is run by Asma Kethiri, who is responsible for this policy and can be contacted at [a.kethiri@mskprod.org](mailto:a.kethiri@mskprod.org).
-
-The short version: the site itself asks nothing of you and keeps your work on your own device. It is paid for by advertising, and those adverts are served by Google, which does set cookies and does collect data about the people who see them. That part is explained in full below.
+MskProd Computing is run by Ms Kethiri, who is responsible for this policy and can be contacted at [a.kethiri@mskprod.org](mailto:a.kethiri@mskprod.org).
 
 ## What this site does not do
 
@@ -375,7 +330,6 @@ The following may be stored locally:
 | Your exam-style answer marks | So your progress on written questions is not lost when you close the tab |
 | Your answers and the time left on a timed exam paper | So a paper you are part way through is still there if you close the tab or lose power |
 | Which topics you have opened | So the course pages can show a small marker next to topics you have visited |
-| Your light or dark theme choice | So the site looks the way you left it |
 | Whether you asked Pixel to stay quiet | So the mascot respects that |
 | Your Pixel Run progress: the level you reached, your stars, which challenges you have solved, and whether you chose quiz mode or calm mode | So the game can pick up where you stopped |
 | Your Computational Thinking Adventure progress: levels finished, stars, XP, badges, chests, your daily streak and your sound, voice and animation settings | So the adventure can pick up where you stopped |
@@ -448,8 +402,6 @@ If you have a question about privacy on this site, email [a.kethiri@mskprod.org]
 
     # ----------------------------------------------------- accessibility
     access = """
-This site is built so that it can be used by everybody, including people using a screen reader, people navigating by keyboard, people with low vision and people with limited dexterity. Accessibility was designed in rather than added afterwards.
-
 ## What has been done
 
 ### Structure and semantics
@@ -470,8 +422,7 @@ This site is built so that it can be used by everybody, including people using a
 
 ### Visual design
 
-+ Body text and interface text meet or exceed the WCAG AA contrast requirement in both light and dark themes
-+ A dark theme is available and the site also respects your operating system preference automatically
++ Body text and interface text meet or exceed the WCAG AA contrast requirement
 + Text uses relative units and reflows correctly when zoomed to 200 per cent
 + Colour is never the only way information is conveyed. Correct and incorrect quiz answers are marked with a symbol and text as well as a colour
 + Line length is limited to around 68 characters, and line height is generous, both of which materially help readers with dyslexia

@@ -1258,7 +1258,6 @@ These extracts show each kind of evidence at its best. They come from the Harbou
 - [The H019 and H119 specification (PDF)](%s): F202's content and how it is assessed.
 - [JCQ: instructions for conducting non-examination assessments](https://www.jcq.org.uk/exams-office/non-examination-assessments/): the rules every centre follows for coursework.
 - [JCQ: artificial intelligence](https://www.jcq.org.uk/exams-office/malpractice/artificial-intelligence/): what counts as misuse of AI, and how to acknowledge permitted use.
-- [Cite Them Right](https://www.citethemrightonline.com/): the Harvard referencing guide many schools and colleges subscribe to; ask your library for access.
 - [Office for National Statistics](https://www.ons.gov.uk/) and [data.gov.uk](https://www.data.gov.uk/): reliable data that is free to reuse, if your brief allows you to bring in data of your own.
 """ % (OCR_PAGE, OCR_SPEC)),
     ],

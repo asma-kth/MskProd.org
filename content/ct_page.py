@@ -98,8 +98,6 @@ GUIDE_ROWS = [
 def _guide_html():
     rows = "".join('<tr><th scope="row">%s</th><td><pre><code>%s</code></pre></td></tr>' % (esc(a), esc(b)) for a, b in GUIDE_ROWS)
     return ('<section class="ctt-sec" id="pseudocode"><h2>The pseudocode convention</h2>'
-            '<p>Pseudocode in the adventure follows the OCR Exam Reference Language used for GCSE Computer Science (J277). '
-            'A single = stores a value and == compares two values; every block has a matching end word such as endif, next or endwhile.</p>'
             '<div class="table-scroll"><table class="ctt-guide">%s</table></div></section>' % rows)
 
 
@@ -137,28 +135,19 @@ def build_teacher(register, add_search):
   %s
   <header class="page-head">
     <h1>Teacher mode</h1>
-    <p class="lead">%s</p>
   </header>
   <section class="ctt-sec ctt-how">
-    <h2>How to use it in class</h2>
-    <ol>
-      <li>Send students to <a href="%s">the adventure</a>, or use the Adventure link at the top of every page.</li>
-      <li>Each world unlocks one level at a time, and levels 1 to 3 have a worked example to watch first.</li>
-      <li>Use <b>Preview</b> to show any level on a projector: preview never saves progress or changes stars.</li>
-    </ol>
-    <p>Students earn 1 to 3 stars from hints and slips, never from speed, and the Me page shows their badges, chests and certificates.</p>
     <nav class="ctt-toc" aria-label="Worlds"><ol>%s<li><a href="#bonus">Bonus puzzles</a></li><li><a href="#pseudocode">Pseudocode convention</a></li><li><a href="#reset">Reset a device</a></li></ol></nav>
   </section>
   %s
-  <section class="ctt-sec" id="bonus"><h2>Bonus puzzles</h2><p>Each treasure chest, earned after 5, 10, 20, 30 and 40 levels, unlocks one bonus puzzle.</p><ul>%s</ul></section>
-  <section class="ctt-sec"><h2>Labs for free play</h2><p>The <a href="%s#/lab/pseudocode">Pseudocode Playground</a> runs OCR-style pseudocode, steps through it and builds a trace table. The <a href="%s#/lab/flowchart">Flowchart Lab</a> builds flowcharts from blocks and runs them step by step.</p></section>
+  <section class="ctt-sec" id="bonus"><h2>Bonus puzzles</h2><ul>%s</ul></section>
+  <section class="ctt-sec"><h2>Labs</h2><ul><li><a href="%s#/lab/pseudocode">Pseudocode Playground</a></li><li><a href="%s#/lab/flowchart">Flowchart Lab</a></li></ul></section>
   <section class="ctt-sec"><h2>Badges</h2><ul>%s</ul></section>
   %s
   <section class="ctt-sec" id="reset"><h2>Reset a shared device</h2>
-    <p>Progress lives only in this browser. On a shared computer, reset it here before the next student starts.</p>
     <p><button type="button" class="btn btn-secondary" id="ct-reset">Reset the adventure on this device</button> <span id="ct-reset-msg" role="status"></span></p>
   </section>
-</div>""" % (crumbs(trail), esc(TEACHER_LEAD), PATH, toc, "".join(sections), bonus, PATH, PATH, badges, _guide_html())
+</div>""" % (crumbs(trail), toc, "".join(sections), bonus, PATH, PATH, badges, _guide_html())
     write(TEACHER_PATH, layout(title="Computational Thinking Adventure: teacher mode", description=TEACHER_LEAD, path=TEACHER_PATH, body=body,
                                active=PATH, extra_head='<link rel="stylesheet" href="/assets/css/ct-pages.css">',
                                scripts=["/assets/js/ct-pages.js"], jsonld=[crumbs_ld(trail)]))
@@ -197,7 +186,7 @@ def _cert_svg():
   %s
   <path d="M112 640 L92 712 L122 698 L140 724 L152 652 Z M188 640 L208 712 L178 698 L160 724 L148 652 Z" class="ctc-ribbon"/>
   <circle cx="150" cy="590" r="66" class="ctc-medal"/><circle cx="150" cy="590" r="51" class="ctc-medal2"/>
-  <text x="150" y="606" text-anchor="middle" class="ctc-medal-t" id="ctc-medal-t">★</text>
+  <text x="150" y="606" text-anchor="middle" class="ctc-medal-t" id="ctc-medal-t">1</text>
   <text x="420" y="690" text-anchor="middle" class="ctc-sig">Pixel</text>
   <line x1="320" y1="702" x2="520" y2="702" class="ctc-line2"/>
   <text x="420" y="724" text-anchor="middle" class="ctc-tiny">Pixel the robot cat, Chief Computational Thinker</text>
@@ -214,7 +203,7 @@ def build_certificate(register, add_search):
                         for w in A.WORLDS])
     body = """<div class="wrap ctc">
   %s
-  <header class="page-head"><h1>Your certificate</h1><p class="lead">%s</p></header>
+  <header class="page-head"><h1>Your certificate</h1></header>
   <div id="ctc-app">
     <div class="ctc-tabs" id="ctc-tabs" role="group" aria-label="Choose a certificate"></div>
     <p class="ctc-status" id="ctc-status" role="status"></p>
@@ -226,7 +215,7 @@ def build_certificate(register, add_search):
     <div class="ctc-paper" id="ctc-paper">%s</div>
   </div>
 </div>
-<script type="application/json" id="ctc-data">%s</script>""" % (crumbs(trail), esc(CERT_LEAD), _cert_svg(),
+<script type="application/json" id="ctc-data">%s</script>""" % (crumbs(trail), _cert_svg(),
                                                                 json.dumps(data, separators=(",", ":")).replace("</", "<\\/"))
     write(CERT_PATH, layout(title="Computational Thinking Adventure certificate", description=CERT_LEAD, path=CERT_PATH, body=body,
                             active=PATH, extra_head='<link rel="stylesheet" href="/assets/css/ct-pages.css">',

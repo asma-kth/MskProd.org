@@ -111,10 +111,10 @@
     for (var y = 0; y < map.h; y++) for (var x = 0; x < map.w; x++) {
       var ch = map.at(x, y), cls = ch === "#" ? (d.look === "car" ? "cbc-grass" : "cbc-wall") : (d.look === "car" ? "cbc-road" : "cbc-floor");
       out += '<rect x="' + (x * S + 1) + '" y="' + (y * S + 1) + '" width="' + (S - 2) + '" height="' + (S - 2) + '" rx="5" class="' + cls + '"/>';
-      if (ch === "F") out += '<text x="' + (x * S + S / 2) + '" y="' + (y * S + S / 2 + 1) + '" class="csn-ico">🏁</text>';
+      if (ch === "F") out += CT.icoSvgText("flag-finish", x * S + 4, y * S + 4, S - 8);
     }
     if (d.look === "snake") {
-      Object.keys(st.food).forEach(function (k) { var p = k.split(","); out += '<text x="' + (p[0] * S + S / 2) + '" y="' + (p[1] * S + S / 2 + 1) + '" class="csn-ico">🍎</text>'; });
+      Object.keys(st.food).forEach(function (k) { var p = k.split(","); out += CT.icoSvgText("apple", p[0] * S + 5, p[1] * S + 5, S - 10); });
       st.body.forEach(function (b) { out += '<rect x="' + (b[0] * S + 4) + '" y="' + (b[1] * S + 4) + '" width="' + (S - 8) + '" height="' + (S - 8) + '" rx="9" class="cbc-seg"/>'; });
       out += '<g transform="rotate(' + ROT[st.dir] + " " + (st.x * S + S / 2) + " " + (st.y * S + S / 2) + ')"><rect x="' + (st.x * S + 3) + '" y="' + (st.y * S + 3) + '" width="' + (S - 6) + '" height="' + (S - 6) + '" rx="13" class="cbc-head"/>' +
         '<circle cx="' + (st.x * S + 14) + '" cy="' + (st.y * S + 13) + '" r="4" fill="#fff"/><circle cx="' + (st.x * S + 26) + '" cy="' + (st.y * S + 13) + '" r="4" fill="#fff"/>' +
@@ -122,7 +122,7 @@
     } else {
       out += '<g transform="translate(' + st.x * S + " " + st.y * S + ") rotate(" + ROT[st.dir] + " 20 20)" + '"' + (st.crash ? ' class="is-crash"' : "") + ">" + carShape() + "</g>";
     }
-    if (st.crash) out += '<text x="' + (st.x * S + S / 2) + '" y="' + (st.y * S + 4) + '" class="csn-ico">💥</text>';
+    if (st.crash) out += CT.icoSvgText("burst", st.x * S + 2, st.y * S - 14, S - 4);
     svg.setAttribute("viewBox", "0 0 " + map.w * S + " " + map.h * S);
     svg.innerHTML = out;
   }
@@ -140,7 +140,7 @@
           var s = status[i];
           return CT.el("button", { type: "button", class: "cbc-tab" + (i === bi ? " is-on" : "") + (s === true ? " is-pass" : s === false ? " is-fail" : ""),
             "aria-pressed": i === bi ? "true" : "false", disabled: running ? true : null,
-            onclick: function () { bi = i; practice = null; render(); } }, [s === true ? "✅ " : s === false ? "❌ " : "", b.name]);
+            onclick: function () { bi = i; practice = null; render(); } }, [s === true ? CT.ico("tick") : s === false ? CT.ico("no") : null, " ", b.name]);
         }));
         var st = practice || snap(world(d.look, d.boards[bi]));
         drawBoard(svg, d, d.boards[bi], st);
@@ -161,11 +161,11 @@
           if (w.map.at(w.x, w.y) === "F") api.say("You reached the finish! Now write an algorithm that can do it by itself.", "happy", 3000);
           render();
         };
-        return CT.el("div", { class: "cbc-practice" }, [CT.el("p", { class: "ct-tray-h" }, "🕹 Practise driving"),
-          CT.el("button", { type: "button", class: "cdz-move", onclick: function () { act("turnLeft"); } }, "↩️ Left"),
-          CT.el("button", { type: "button", class: "cdz-move", onclick: function () { act("forward"); } }, "⬆️ Forward"),
-          CT.el("button", { type: "button", class: "cdz-move", onclick: function () { act("turnRight"); } }, "↪️ Right"),
-          CT.el("button", { type: "button", class: "ct-btn ct-btn-mini", onclick: function () { practice = null; render(); } }, "↺ Start again")]);
+        return CT.el("div", { class: "cbc-practice" }, [CT.el("p", { class: "ct-tray-h" }, "Practise driving"),
+          CT.el("button", { type: "button", class: "cdz-move", onclick: function () { act("turnLeft"); } }, [CT.ico("turn-left"), " Left"]),
+          CT.el("button", { type: "button", class: "cdz-move", onclick: function () { act("forward"); } }, [CT.ico("arrow-up"), " Forward"]),
+          CT.el("button", { type: "button", class: "cdz-move", onclick: function () { act("turnRight"); } }, [CT.ico("turn-right"), " Right"]),
+          CT.el("button", { type: "button", class: "ct-btn ct-btn-mini", onclick: function () { practice = null; render(); } }, "Start again")]);
       }
       function codePanel() {
         var panel = CT.el("div", { class: "cbc-code" }, [CT.el("p", { class: "ct-tray-h" }, typing ? "Your algorithm (OCR-style pseudocode)" : "Your algorithm: choose for each gap")]);
@@ -190,7 +190,7 @@
         if (d.typing) panel.appendChild(CT.el("button", { type: "button", class: "ct-btn ct-btn-mini", onclick: function () {
           if (!typing) code = codeOf(d, picks) || CT.fillTemplate(d.template, picks);
           typing = !typing; render();
-        } }, typing ? "🧩 Back to the gaps" : "✍️ Type it myself"));
+        } }, typing ? "Back to the gaps" : "Type it myself"));
         panel.appendChild(CT.el("details", { class: "cbc-ref" }, [CT.el("summary", null, "Commands you can use"),
           CT.el("p", null, d.look === "car" ? "forward(), turnLeft(), turnRight(); sensors: roadAhead(), roadOnLeft(), roadOnRight(), atFinish()."
             : "forward(), turnLeft(), turnRight(); sensors: foodAhead(), foodOnLeft(), foodOnRight(), allEaten()."),
@@ -226,7 +226,7 @@
 
       render();
       return {
-        checkLabel: d.look === "car" ? "▶ Test on all tracks" : "▶ Test on all boards",
+        checkLabel: d.look === "car" ? "Test on all tracks" : "Test on all boards",
         run: function (done) { animate(done); },
         mark: function () { render(); },
         reset: function () { if (running) return; picks = {}; code = ""; typing = false; status = d.boards.map(function () { return null; }); practice = null; render(); },

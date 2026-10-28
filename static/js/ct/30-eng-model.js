@@ -69,10 +69,10 @@
       function render() {
         CT.clear(board);
         var who = CT.el("div", { class: "cmd-who" }, [
-          CT.el("div", { class: "cmd-ava", "aria-hidden": "true" }, rd.icon),
+          CT.el("div", { class: "cmd-ava", "aria-hidden": "true" }, CT.ico(rd.icon)),
           CT.el("div", null, [CT.el("p", { class: "cmd-name" }, rd.name + ", " + rd.age),
             CT.el("ul", { class: "cmd-needs", "aria-label": rd.name + "'s needs" }, rd.needs.map(function (n) {
-              return CT.el("li", { class: met ? "is-met" : "" }, [CT.el("span", { "aria-hidden": "true" }, met ? "✅ " : "• "), n.text]);
+              return CT.el("li", { class: met ? "is-met" : "" }, [met ? CT.ico("tick") : CT.el("span", { "aria-hidden": "true" }, "• "), " ", n.text]);
             }))])
         ]);
         var ph = CT.el("div", { class: "cmd-phonewrap" + (met ? " is-met" : "") });

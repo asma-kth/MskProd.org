@@ -12,9 +12,7 @@ Community Garden's touchscreen visitor guide (R097). They show the quality of
 each piece of evidence without answering anybody's real brief.
 
 Brand colours in the Spokes figures are fixed values rather than theme
-variables, because a colour palette that changed with dark mode would not be a
-colour palette. Every piece of text on them has been chosen to keep its
-contrast in both themes.
+variables, because a brand's palette never changes.
 """
 from .diagrams import (diagram, TEAL, TEAL_SOFT, LILAC, LILAC_SOFT, WARN,
                        WARN_SOFT, FILL, LINE, MUTED)
@@ -228,8 +226,7 @@ def _logo_dev():
         body.append(box(x, 44, 164, 170, None, fill=FILL,
                         stroke=TEAL if chosen else LINE, r=8))
         body.append(text(x + 82, 64, k, 10, 750, fill=TEAL if chosen else MUTED))
-        # Logos are shown on paper, the background they were designed for, so
-        # the dark wordmark stays visible in the dark theme as well.
+        # Logos are shown on paper, the background they were designed for.
         body.append(box(x + 10, 80, 144, 72, None, fill=PAPER, stroke=LINE, r=6))
         cx, cy = x + 82, 118
         if i == 0:

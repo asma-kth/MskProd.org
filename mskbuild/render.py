@@ -172,8 +172,7 @@ def layout(*, title: str, description: str, path: str, body: str,
 <link rel="canonical" href="{canonical}">
 <meta name="robots" content="{robots}">
 <meta name="author" content="MskProd Computing">
-<meta name="theme-color" content="#FDFAF0" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0C2B2E" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FDFAF0">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="{site}">
 <meta property="og:title" content="{ogtitle}">
@@ -675,8 +674,7 @@ def render_exam(topic_slug: str, questions: List[EQ], title: str = "Exam-style q
     return """<section class="quiz" id="exam" data-exam-set aria-labelledby="examTitle">
   <div class="quiz-head">
     <div>
-      <%s id="examTitle">%s</%s>
-      <p>%s</p>
+      <%s id="examTitle">%s</%s>%s
     </div>
     <span class="quiz-counter">%d marks</span>
   </div>
@@ -687,7 +685,7 @@ def render_exam(topic_slug: str, questions: List[EQ], title: str = "Exam-style q
     <button class="btn btn-primary btn-sm" type="button" data-mark-all>%s Mark everything</button>
   </div>
 </section>""" % (heading_level, esc(title), heading_level,
-                 esc(lead or "Write a full answer, then let the marker check it against the mark scheme."),
+                 ("\n      <p>%s</p>" % esc(lead)) if lead else "",
                  total, "".join(qs), total, ico("i-check"))
 
 
@@ -710,7 +708,6 @@ def flashcards(terms, limit: int = 8) -> str:
         "</div></div>" % (esc(t), markup.inline(t), markup.inline(d))
         for t, d in terms[:limit])
     return ('<h2 id="flashcards">Flashcards</h2>'
-            '<p>Say the definition out loud before you flip the card.</p>'
             '<div class="flashdeck grid grid-2">%s</div>' % cards)
 
 
@@ -728,8 +725,7 @@ def _unit_exams_aside(topic) -> str:
         '<a class="btn %s" style="width:100%%;justify-content:center;margin-top:.5rem" href="%s">%s %s</a>'
         % ("btn-primary" if i == 0 else "btn-secondary", href, ico("i-clock"), esc(label))
         for i, (label, href, meta) in enumerate(exams))
-    return ('<div class="aside-block"><h4>Unit exams</h4><p>%s</p>%s</div>'
-            % (esc(exams[0][2]), links))
+    return '<div class="aside-block"><h4>Unit exams</h4>%s</div>' % links
 
 
 def _unit_exams_note(topic) -> str:
@@ -737,8 +733,8 @@ def _unit_exams_note(topic) -> str:
     if not exams:
         return ""
     links = " or ".join('<a href="%s">%s</a>' % (href, esc(label)) for label, href, meta in exams)
-    return ('<div class="note note-exam" style="margin-top:var(--sp-5)"><div class="note-title">%s Sit a unit exam</div>'
-            '<p>When you have finished this unit, sit %s. %s</p></div>' % (ico("i-clock"), links, esc(exams[0][2])))
+    return ('<div class="note note-exam" style="margin-top:var(--sp-5)"><div class="note-title">%s Unit exams</div>'
+            '<p>%s</p></div>' % (ico("i-clock"), links))
 
 
 def topic_page(course: Course, unit: Unit, topic: Topic,
@@ -843,7 +839,6 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
         %s
         <div class="badge-row">%s</div>
         <h1>%s</h1>
-        <p class="lead">%s</p>
       </header>
       %s
       %s
@@ -854,26 +849,18 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
     </article>
     <aside class="topic-aside">
       %s
-      <div class="aside-block">
-        <h4>Study order</h4>
-        <p>%s</p>
-        %s
-      </div>
+      %s
       %s
     </aside>
   </div>
-</div>""" % (crumbs(trail), banner_for(course.slug, topic.slug), "".join(badges), esc(topic.title), markup.inline(topic.blurb),
+</div>""" % (crumbs(trail), banner_for(course.slug, topic.slug), "".join(badges), esc(topic.title),
              "\n".join(sec_html), fact,
              render_quiz(tid, topic.quiz),
              render_exam(tid, topic.exam, topic.exam_title),
              _unit_exams_note(topic),
              nav_html, toc_html,
-             ("Read, run every example, then score 70% or more in the knowledge check "
-              "to count this lesson towards your certificate."
-              if course.levels else
-              "Read the explanation, do the ten question check, then write the exam answers "
-              "from memory."),
-             worksheet_link, _unit_exams_aside(topic))
+             ('<div class="aside-block">%s</div>' % worksheet_link) if worksheet_link else "",
+             _unit_exams_aside(topic))
 
     desc = topic.blurb if len(topic.blurb) > 70 else topic.blurb + " Full explanation, a ten question check and five auto marked exam-style questions."
     ld = [crumbs_ld(trail), {
@@ -932,22 +919,21 @@ def unit_block(course: Course, unit: Unit) -> str:
         rows.append(
             '<a class="unit-row" href="/%s/%s/" data-topic-ref="%s">'
             '<span class="unit-num">%s</span>'
-            '<span><b>%s</b><small>%s</small></span>'
+            '<span><b>%s</b></span>'
             '<span data-done-slot>%s</span></a>'
             % (course.slug, t.slug, esc("%s/%s" % (course.slug, t.slug)),
                esc(t.spec or str(i + 1)),
-               esc(t.title), esc(t.blurb), ico("i-arrow-right")))
+               esc(t.title), ico("i-arrow-right")))
     noun = "lessons" if course.levels else "topics"
     return """<section class="section" id="%s">
   <div class="section-head">
     <div class="badge-row"><span class="badge">%s</span>%s</div>
     <h2>%s</h2>
-    <p>%s</p>
   </div>
   <div class="unit-list">%s</div>
 </section>""" % (esc(unit.slug), esc(unit.term or course.short),
                  '<span class="badge">%s %d %s</span>' % (ico("i-list"), len(unit.topics), noun),
-                 esc(unit.title), esc(unit.blurb), "".join(rows))
+                 esc(unit.title), "".join(rows))
 
 
 def course_page(course: Course) -> tuple:
@@ -965,9 +951,8 @@ def course_page(course: Course) -> tuple:
                    % (first, ico("i-play"), ico("i-tools")))
         stats = ('<div class="stat"><b>%d</b><span>Levels</span></div>\n'
                  '      <div class="stat"><b>%d</b><span>Lessons</span></div>\n'
-                 '      <div class="stat"><b>%d</b><span>Quiz questions</span></div>\n'
-                 '      <div class="stat"><b>%s</b><span>Your goal</span></div>'
-                 % (len(course.units), total_topics, total_quiz, esc(course.goal or "Mastery")))
+                 '      <div class="stat"><b>%d</b><span>Quiz questions</span></div>'
+                 % (len(course.units), total_topics, total_quiz))
     else:
         buttons = ('<a class="btn btn-primary" href="%s">%s Start the first topic</a>\n'
                    '        <a class="btn btn-secondary" href="/exam-papers/">%s Practice papers</a>\n'
@@ -975,9 +960,8 @@ def course_page(course: Course) -> tuple:
                    % (first, ico("i-play"), ico("i-paper"), ico("i-list")))
         stats = ('<div class="stat"><b>%d</b><span>Topics</span></div>\n'
                  '      <div class="stat"><b>%d</b><span>Quiz questions</span></div>\n'
-                 '      <div class="stat"><b>%d</b><span>Exam marks</span></div>\n'
-                 '      <div class="stat"><b>%s</b><span>Target grade</span></div>'
-                 % (total_topics, total_quiz, total_marks, esc(course.goal or "Top")))
+                 '      <div class="stat"><b>%d</b><span>Exam marks</span></div>'
+                 % (total_topics, total_quiz, total_marks))
 
     body = """<div class="wrap">%s</div>
 <section class="hero"><div class="wrap">
@@ -985,7 +969,6 @@ def course_page(course: Course) -> tuple:
     <div>
       <span class="eyebrow">%s%s</span>
       <h1>%s</h1>
-      <p class="lead">%s</p>
       <div class="btn-row" style="margin-top:1.6rem">
         %s%s
       </div>
@@ -1001,7 +984,7 @@ def course_page(course: Course) -> tuple:
         ico("i-target"),
         (" %d levels, zero to hero" % len(course.units) if course.levels else
          esc(" %s %s" % (course.board, course.code)).strip() or " Revision course"),
-        esc(course.title), markup.inline(course.blurb),
+        esc(course.title),
         buttons,
         ('\n        <a class="btn btn-secondary" href="%s">%s %s</a>'
          % (course.extra_cta[1], ico(course.extra_cta[2]), esc(course.extra_cta[0]))) if course.extra_cta else "",

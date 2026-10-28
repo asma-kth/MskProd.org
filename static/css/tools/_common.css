@@ -88,5 +88,3 @@
 }
 .tool td { border-bottom: 1px solid var(--border); }
 
-[data-theme="dark"] .tool-btn.is-primary,
-[data-theme="dark"] .tool-btn.is-primary:hover { color: #06231F; }

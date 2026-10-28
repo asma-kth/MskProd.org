@@ -37,7 +37,7 @@ def spark(cv, cx, cy, r=6, color="#FFCC4A", op=.9):
 
 
 def plate(cv, cx, cy, r=34):
-    """A pale disc behind a dark drawing, so that it still shows on the dark theme's panel."""
+    """A pale disc behind a dark drawing."""
     return cv.circle(cx, cy, r, "#EEF3F6", op=.92)
 
 

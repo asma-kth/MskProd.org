@@ -138,15 +138,14 @@
     }
     function draw() {
       var S = fit(), g = canvas.getContext("2d"), cx = S.w / 2, cy = S.h / 2;
-      var dark = document.documentElement.getAttribute("data-theme") === "dark";
       g.clearRect(0, 0, S.w, S.h);
-      g.strokeStyle = dark ? "rgba(229,231,235,0.12)" : "rgba(17,24,39,0.1)"; g.lineWidth = S.dpr;
+      g.strokeStyle = "rgba(17,24,39,0.1)"; g.lineWidth = S.dpr;
       for (var v = -2; v <= 2; v++) {
         g.beginPath(); g.moveTo(cx + v * S.k, 0); g.lineTo(cx + v * S.k, S.h); g.stroke();
         g.beginPath(); g.moveTo(0, cy - v * S.k); g.lineTo(S.w, cy - v * S.k); g.stroke();
       }
       if (cData.checked) {
-        g.fillStyle = dark ? "rgba(229,231,235,0.35)" : "rgba(17,24,39,0.25)";
+        g.fillStyle = "rgba(17,24,39,0.25)";
         st.data.forEach(function (d) { g.beginPath(); g.arc(cx + d[0] * S.k, cy - d[1] * S.k, 2.2 * S.dpr, 0, Math.PI * 2); g.fill(); });
       }
       if (cTrail.checked && st.mode !== "noising") {
@@ -230,7 +229,6 @@
     bNoise.addEventListener("click", startForward);
     bNew.addEventListener("click", function () { freshNoise(); startReverse(); });
     window.addEventListener("resize", draw);
-    new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
     body.appendChild(row); body.appendChild(btns); body.appendChild(canvas); body.appendChild(meterRow);
     body.appendChild(status); body.appendChild(note);

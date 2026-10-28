@@ -85,7 +85,7 @@
     return null;
   }
   CT.seqTile = function (v, look, pal) {
-    var p = entry(pal, v), label = p && p.label ? p.label : String(v);
+    var p = entry(pal, v), label = p && p.label ? p.label : CT.isIcon(v) ? CT.icoLabel(v) : String(v);
     // A letter as well as a colour, so the pattern does not depend on seeing colour.
     if (look === "colour") return CT.el("span", { class: "cseq-bead", style: { background: p ? p.c : "#94A3B8" }, role: "img", "aria-label": label }, label.charAt(0));
     if (look === "lights") {
@@ -95,10 +95,10 @@
       }));
     }
     if (look === "number") return CT.el("span", { class: "cseq-num" }, String(v));
-    return CT.el("span", { class: "cseq-emo", role: "img", "aria-label": label }, String(v));
+    return CT.el("span", { class: "cseq-emo", role: "img", "aria-label": label }, CT.isIcon(v) ? CT.ico(v) : String(v));
   };
   function valueOf(p) { return p && p.id !== undefined ? p.id : p; }
-  function labelOf(p) { return p && p.label ? p.label : String(p); }
+  function labelOf(p) { return p && p.label ? p.label : CT.isIcon(p) ? CT.icoLabel(p) : String(p); }
 
   // Code with line numbers; each line can be a button.
   CT.codeView = function (code, opts) {
@@ -179,8 +179,8 @@
         });
         if (rd.type === "ask") row.appendChild(CT.el("span", { class: "cseq-more", "aria-hidden": "true" }, "…"));
         board.appendChild(row);
-        if (rd.type === "odd" && empty(ans.pick)) board.appendChild(CT.el("p", { class: "cseq-hint" }, "👆 Click the item that breaks the pattern."));
-        if (rd.type === "fill" && look() !== "number") board.appendChild(CT.el("p", { class: "cseq-hint" }, "👆 Pick a gap, then choose what goes in it."));
+        if (rd.type === "odd" && empty(ans.pick)) board.appendChild(CT.el("p", { class: "cseq-hint" }, "Click the item that breaks the pattern."));
+        if (rd.type === "fill" && look() !== "number") board.appendChild(CT.el("p", { class: "cseq-hint" }, "Pick a gap, then choose what goes in it."));
 
         if (rd.type === "fill" && look() !== "number") board.appendChild(palette(function (v) {
           ans[active] = v;
@@ -214,7 +214,7 @@
       }
 
       function renderAsk() {
-        var box = CT.el("div", { class: "cg-follow cseq-ask" }, [CT.el("p", { class: "ct-kicker" }, "🔎 Pattern question"), CT.el("h3", null, rd.q)]);
+        var box = CT.el("div", { class: "cg-follow cseq-ask" }, [CT.el("p", { class: "ct-kicker" }, "Pattern question"), CT.el("h3", null, rd.q)]);
         if (rd.input) {
           box.appendChild(CT.el("input", { type: "text", inputmode: "numeric", class: "cseq-in cseq-in-big", value: empty(ans) ? "" : String(ans), "aria-label": "Your answer",
             oninput: function () { ans = this.value.replace(/[^0-9.-]/g, ""); this.value = ans; },
@@ -227,7 +227,7 @@
               disabled: struck[i] ? true : null, "aria-pressed": ans === i ? "true" : "false", "data-opt": String(i),
               "aria-label": rd.tiles ? labelOf(entry(pal(), o) || o) : null,
               onclick: function () { ans = i; render("[data-opt='" + i + "']"); CT.sound.play("tap"); } },
-              rd.tiles ? CT.seqTile(o, look(), pal()) : o));
+              rd.tiles ? CT.seqTile(o, look(), pal()) : CT.icoRow(o)));
           });
           box.appendChild(opts);
         }
@@ -256,7 +256,7 @@
             var r = CT.pseudo.run(CT.patchCode(rd.code, ans.line, rd.fixes[ans.fix]), { maxSteps: 2000 });
             preview = { text: r.ok ? r.output.join("\n") : "Error: " + r.error.msg, good: r.ok && r.output.join("\n") === rd.expect.join("\n") };
             render(); CT.sound.play("step");
-          } }, "▶ Try my fix"));
+          } }, "Try my fix"));
           board.appendChild(fx);
         }
       }

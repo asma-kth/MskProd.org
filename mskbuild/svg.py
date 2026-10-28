@@ -1,8 +1,8 @@
 """Small helpers for building the site's inline SVG diagrams.
 
 Every diagram is plain inline SVG with no external dependency. Colours are
-written as CSS custom properties so the diagram re-themes automatically when
-the page switches between light and dark, and text inherits the page font.
+written as CSS custom properties from the site's palette, and text inherits
+the page font.
 """
 import html
 

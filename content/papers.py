@@ -798,17 +798,14 @@ def _paper_page(paper):
     trail = [("Home", "/"), ("Exam papers", "/exam-papers/"), (paper.title, None)]
     has_code = any(q.kind == "code" for q in paper.questions)
 
-    qs = render.render_exam(paper.slug, paper.questions,
-                            title="Questions",
-                            lead="Answer every question, then finish the paper to have it marked.",
-                            heading_level="h2")
+    qs = render.render_exam(paper.slug, paper.questions, title="Questions", heading_level="h2")
 
     sections = _sections(paper)
     cover_rows = [("Time allowed", duration(paper.minutes)), ("Total marks", "%d" % paper.marks)]
     if sections:
         cover_rows.append(("Sections", "; ".join("%s, %d marks" % (t, m) for t, m in sections)))
     cover_rows.append(("Calculator", paper.calculator))
-    lines = ["Answer <b>all</b> the questions; the paper is marked when you finish or when the clock reaches zero."]
+    lines = ["Answer <b>all</b> the questions."]
     lines += [esc(x) for x in paper.instructions]
     cover = """<div class="card paper-cover">
       <h2 style="font-size:var(--step-1);margin-bottom:.6rem">Instructions</h2>
@@ -834,27 +831,6 @@ def _paper_page(paper):
                  "%d:%02d:00" % divmod(paper.minutes, 60) if paper.minutes >= 60 else "%d:00" % paper.minutes,
                  len(paper.questions), paper.marks)
 
-    if paper.full:
-        about = ("This is an original paper modelled on the real %s %s past papers: the same structure, the same balance of "
-                 "topics, the same command words and mark tariffs, %d marks in %s, exactly as the real paper allows. It is "
-                 "not a past paper. Real past papers are the copyright of the exam board and cannot be republished here, so "
-                 "links to the official papers on the board's own site are on the <a href=\"/exam-papers/\">exam papers page</a>."
-                 % (esc(paper.board), esc(paper.code), paper.marks, duration(paper.minutes)))
-    elif paper.spec == "KS3":
-        about = ("This is an original Key Stage 3 assessment. Most questions are closed, so the marking is exact, and the "
-                 "written answers are marked against a mark scheme in the same style as a GCSE paper, so the format is "
-                 "familiar long before it counts.")
-    else:
-        real_code = paper.code.replace(" style", "")
-        real_marks, real_minutes = papercheck.OFFICIAL[real_code]
-        about = ("This is a <b>shorter practice paper</b>: %d marks in %s, where the real %s %s is %d marks in %s. It is "
-                 "written to match the real paper's question style, command words and mark tariffs, and timed at the same "
-                 "number of marks per minute, so it fits a lesson or a homework and still trains your pace. For the full "
-                 "experience, sit one of the full length %s papers. It is not a past paper: real past papers are the copyright "
-                 "of the exam board, so links to them are on the <a href=\"/exam-papers/\">exam papers page</a>."
-                 % (paper.marks, duration(paper.minutes), esc(paper.board), esc(real_code), real_marks,
-                    duration(real_minutes), esc(paper.spec)))
-
     harness = ""
     if has_code:
         with open(os.path.join(render.ROOT, "mskbuild", "codemark.py"), encoding="utf-8") as fh:
@@ -875,21 +851,15 @@ def _paper_page(paper):
         <span class="badge">%s %s</span>
       </div>
       <h1>%s</h1>
-      <p class="lead">%s</p>
     </header>
 
     %s
 
     %s
-
-    <div class="note note-exam" style="margin-top:var(--sp-6)">
-      <div class="note-title">%s About this paper</div>
-      <p>%s</p>
-    </div>
   </div>
 </div>%s""" % (crumbs(trail), bar, esc(paper.board), esc(paper.code), ico("i-clock"), duration(paper.minutes),
              ico("i-paper"), paper.marks, ico("i-pen"), "Full length paper" if paper.full else "Unit exam" if paper.unit else "Original paper" if paper.spec == "KS3" else "Shorter paper",
-             esc(paper.title), esc(paper.blurb), cover, qs, ico("i-info"), about, harness)
+             esc(paper.title), cover, qs, harness)
 
     ld = [crumbs_ld(trail), {
         "@context": "https://schema.org", "@type": "LearningResource",
@@ -936,9 +906,9 @@ OFFICIAL = OFFICIAL + [
 
 def _tile(p, path):
     return ('<a class="tile" href="%s">'
-            '<span class="tile-icon">%s</span><h3>%s</h3><p>%s</p>'
+            '<span class="tile-icon">%s</span><h3>%s</h3>'
             '<span class="tile-meta"><span>%d marks</span><span>%s</span><span>%s</span></span></a>'
-            % (path, ico("i-paper"), esc(p.title), esc(p.blurb), p.marks, duration(p.minutes),
+            % (path, ico("i-paper"), esc(p.title), p.marks, duration(p.minutes),
                "Full length" if p.full else esc(p.board + " " + p.code) if p.spec == "KS3" else "Shorter paper"))
 
 
@@ -961,13 +931,13 @@ def build(register, add_search, *_):
         tiles.setdefault(key, []).append(_tile(p, path))
 
     spec_html = []
-    for key, title, about in SPECS:
+    for key, title, _ in SPECS:
         if not tiles.get(key):
             continue
         spec_html.append("""<section class="section" id="%s"><div class="wrap">
-  <div class="section-head"><h2>%s</h2><p>%s</p></div>
+  <div class="section-head"><h2>%s</h2></div>
   <div class="grid grid-2">%s</div>
-</div></section>""" % (key.lower(), esc(title), esc(about), "".join(tiles[key])))
+</div></section>""" % (key.lower(), esc(title), "".join(tiles[key])))
 
     # Key Stage 3 unit exams: a compact list per year, two exams per unit.
     from content import ks3
@@ -991,24 +961,10 @@ def build(register, add_search, *_):
         '<li><a href="%s" target="_blank" rel="noopener">%s %s</a></li>' % (url, esc(name), ico("i-external"))
         for name, url in OFFICIAL)
 
-    full = [p for p in ALL_PAPERS if p.full]
     body = """<div class="wrap">%s</div>
 <section class="hero"><div class="wrap">
-  <div class="hero-grid">
-    <div>
-      <span class="eyebrow">%s Practice papers</span>
-      <h1>Sit a full paper. Have it marked.</h1>
-      <p class="lead">Full length papers for every specification, with the real marks, time allowed and structure.
-      A clock counts down and the marking is done for you, against a full mark scheme with a model answer.
-      Sit a paper in one go, then revise from the marks you dropped.</p>
-    </div>
-    <div class="stat-row">
-      <div class="stat"><b>%d</b><span>Papers and exams</span></div>
-      <div class="stat"><b>%d</b><span>Full length papers</span></div>
-      <div class="stat"><b>%d</b><span>Marks to practise</span></div>
-      <div class="stat"><b>Free</b><span>No sign up</span></div>
-    </div>
-  </div>
+  <span class="eyebrow">%s Practice papers</span>
+  <h1>Exam papers</h1>
 </div></section>
 
 %s
@@ -1016,8 +972,6 @@ def build(register, add_search, *_):
 <section class="section section-alt" id="ks3-units"><div class="wrap">
   <div class="section-head">
     <h2>Key Stage 3 unit exams</h2>
-    <p>Two exams for every unit, each 25 marks in 25 minutes and marked automatically. Sit one, revise from
-    what you dropped, then sit the other.</p>
   </div>
   <div class="grid grid-3">%s</div>
 </div></section>
@@ -1025,31 +979,16 @@ def build(register, add_search, *_):
 <section class="section" id="ks3"><div class="wrap">
   <div class="section-head">
     <h2>Key Stage 3 end of year assessments</h2>
-    <p>Two assessment points a year across Years 7, 8 and 9, written in the same style as a GCSE paper
-    so that the format is completely familiar long before it counts.</p>
   </div>
   <div class="grid grid-2">%s</div>
 </div></section>
 
 <section class="section section-alt"><div class="wrap">
-  <div class="grid grid-2" style="gap:var(--sp-6)">
-    <div class="col-block">
-      <h2 style="font-size:var(--step-2)">Why these are original papers</h2>
-      <p style="color:var(--ink-3)">Real past papers belong to the exam boards, so every paper here is written from
-      scratch to the same structure, command words, marks and time, with a full mark scheme and a model answer.</p>
-      <p style="color:var(--ink-3);margin-bottom:0">Use them alongside the official past papers, not instead of them.</p>
-    </div>
-    <div class="col-block">
-      <h2 style="font-size:var(--step-2)">Official past papers</h2>
-      <p style="color:var(--ink-3)">Download the genuine past papers and mark schemes directly from the exam board:</p>
-      <ul class="checklist">%s</ul>
-      <p class="muted" style="font-size:.86rem;margin-top:var(--sp-3);margin-bottom:0">Some recent papers are on the
-      board's secure teacher portal, so ask your teacher for them.</p>
-    </div>
-  </div>
+  <h2 style="font-size:var(--step-2)">Official past papers</h2>
+  <ul class="checklist">%s</ul>
 </div></section>""" % (
         crumbs([("Home", "/"), ("Exam papers", None)]),
-        ico("i-paper"), len(ALL_PAPERS), len(full), sum(p.marks for p in ALL_PAPERS),
+        ico("i-paper"),
         "\n".join(spec_html), "".join(years), "".join(tiles.get("KS3", [])), links)
 
     ld = [crumbs_ld([("Home", "/"), ("Exam papers", None)])]

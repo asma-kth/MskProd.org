@@ -33,8 +33,6 @@ J834_SPEC = ("https://www.ocr.org.uk/Images/610942-specification-cambridge-"
              "nationals-creative-imedia-j834.pdf")
 MOD_2024 = "https://www.ocr.org.uk/Images/727137-moderators-report-creative-imedia.pdf"
 MOD_2023 = "https://www.ocr.org.uk/Images/704362-moderators-report-creative-imedia.pdf"
-URS_R094 = "https://www.ocr.org.uk/Images/664336-visual-identity-and-digital-graphics.pdf"
-URS_R097 = "https://www.ocr.org.uk/Images/664341-interactive-digital-media.pdf"
 
 OCR_LINKS = """
 - [OCR Cambridge Nationals in Creative iMedia (J834)](%s): the qualification page, with the specification and the assessment materials your teacher works from.
@@ -716,10 +714,9 @@ The client also needs an A4 poster for free repair Saturdays. This is the plan f
 + The work is your own, and anything you used from elsewhere is acknowledged
 """),
         Section("Sources and further reading", OCR_LINKS + """
-- [R094 unit recording sheet (PDF)](%s): the form on which your teacher records the marks for each part of R094.
 - [JCQ: artificial intelligence](https://www.jcq.org.uk/exams-office/malpractice/artificial-intelligence/): the rules on AI tools in coursework.
 - [Adobe Color](https://color.adobe.com/create/color-wheel) and [Google Fonts](https://fonts.google.com/): for building and recording a palette and choosing licensed typefaces.
-""" % URS_R094),
+"""),
     ],
     keyterms=[
         ("OCR-set assignment", "A brief with a fictional client and tasks, written by OCR, completed and marked in your school."),
@@ -873,10 +870,9 @@ The Spokes example continues: the client needs an A4 poster advertising free rep
 + Files follow a naming convention with version numbers
 """),
         Section("Sources and further reading", OCR_LINKS + """
-- [R094 unit recording sheet (PDF)](%s): the form on which your teacher records the marks for each part of R094.
 - [Inkscape](https://inkscape.org/), [GIMP](https://www.gimp.org/) and [Photopea](https://www.photopea.com/): free software for the vector and raster work.
 - [GOV.UK: how copyright protects your work](https://www.gov.uk/copyright) and [Creative Commons licences](https://creativecommons.org/licenses/): for clearing the assets you use.
-""" % URS_R094),
+"""),
     ],
     keyterms=[
         ("Technique", "A particular use of a software tool to achieve an effect, such as masking or Boolean shaping."),
@@ -1571,11 +1567,10 @@ The example is an invented client: **Castle Hill Community Garden** wants a touc
 + The work is your own, and anything you used from elsewhere is acknowledged
 """),
         Section("Sources and further reading", OCR_LINKS + """
-- [R097 unit recording sheet (PDF)](%s): the form on which your teacher records the marks for each R097 task.
 - [diagrams.net](https://app.diagrams.net/): free for navigation diagrams and wireframes.
 - [W3C: WCAG 2.2 quick reference](https://www.w3.org/WAI/WCAG22/quickref/): what accessibility requires, to plan in from the start.
 - [JCQ: artificial intelligence](https://www.jcq.org.uk/exams-office/malpractice/artificial-intelligence/): the rules on AI tools in coursework.
-""" % URS_R097),
+"""),
     ],
     keyterms=[
         ("Navigation diagram", "A diagram of every screen in a product and the links between them."),
@@ -1704,11 +1699,10 @@ Task 2 assesses Topic Area 2: creating the interactive product from your plan, u
 + The source project is saved, and the exported version runs on the target device
 """),
         Section("Sources and further reading", OCR_LINKS + """
-- [R097 unit recording sheet (PDF)](%s): the form on which your teacher records the marks for each R097 task.
 - [MDN Web Docs](https://developer.mozilla.org/): reference and tutorials for building web pages.
 - [Audacity](https://www.audacityteam.org/) and [Shotcut](https://shotcut.org/): free audio and video editing.
 - [WebAIM contrast checker](https://webaim.org/resources/contrastchecker/): check the colours you apply.
-""" % URS_R097),
+"""),
     ],
     keyterms=[
         ("Repurposing", "Changing an asset's size, format or content so it suits the product."),
@@ -1836,10 +1830,9 @@ Task 3 assesses Topic Area 3: testing the product you built and reviewing it aga
 + The review is your own analysis, in your own words
 """),
         Section("Sources and further reading", OCR_LINKS + """
-- [R097 unit recording sheet (PDF)](%s): the form on which your teacher records the marks for each R097 task.
 - [Nielsen Norman Group: why you only need to test with 5 users](https://www.nngroup.com/articles/why-you-only-need-to-test-with-5-users/): how many testers you need, and why.
 - [W3C: easy checks for accessibility](https://www.w3.org/WAI/test-evaluate/preliminary/): quick accessibility tests to include in your plan.
-""" % URS_R097),
+"""),
     ],
     keyterms=[
         ("Usability test", "Watching a user from the audience attempt a task, and recording what they do and say."),

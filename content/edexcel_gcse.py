@@ -300,7 +300,7 @@ Edexcel writes the algorithms in its papers in a specific pseudocode. You do not
 
 ```pseudocode
 SET total TO 0
-SET name TO 'Asma'
+SET name TO 'Priya'
 CONST VAT_RATE = 0.2
 
 SEND 'Enter your age' TO DISPLAY
@@ -308,7 +308,7 @@ RECEIVE age FROM (INTEGER) KEYBOARD
 SEND 'Hello ' & name TO DISPLAY
 ```
 
-Three points to notice. Assignment is `SET ... TO`, not an equals sign. Input states the type it expects, so `(INTEGER) KEYBOARD` reads a whole number and `(STRING) KEYBOARD` reads text. The `&` symbol joins values together, so `'Hello ' & name` produces `Hello Asma`.
+Three points to notice. Assignment is `SET ... TO`, not an equals sign. Input states the type it expects, so `(INTEGER) KEYBOARD` reads a whole number and `(STRING) KEYBOARD` reads text. The `&` symbol joins values together, so `'Hello ' & name` produces `Hello Priya`.
 
 ### Selection
 

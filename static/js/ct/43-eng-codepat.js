@@ -77,12 +77,12 @@
           var n = Math.max(lines.length, want.output.length);
           for (var j = 0; j < n; j++) {
             var okLine = lines[j] === want.output[j];
-            list.appendChild(CT.el("li", { class: okLine ? "is-ok" : "is-bad" }, [CT.el("span", { "aria-hidden": "true" }, okLine ? "✓ " : "✗ "),
+            list.appendChild(CT.el("li", { class: okLine ? "is-ok" : "is-bad" }, [CT.ico(okLine ? "tick" : "no"), " ",
               lines[j] === undefined ? CT.el("i", null, "(nothing)") : lines[j]]));
           }
           mineBox.appendChild(CT.el("p", { class: "ct-tray-h" }, "Your loop prints"));
           mineBox.appendChild(list);
-          if (result.error) mineBox.appendChild(CT.el("p", { class: "ccp-err" }, "⚠ Line " + result.error.line + ": " + result.error.msg));
+          if (result.error) mineBox.appendChild(CT.el("p", { class: "ccp-err" }, "Error on line " + result.error.line + ": " + result.error.msg));
         }
         CT.append(board, [CT.roundChip(ri, d.rounds.length), CT.el("div", { class: "ccp-wrap" }, [longBox, mineBox])]);
         var f = board.querySelector(focus || "[data-blank]");
@@ -91,7 +91,7 @@
 
       start(0);
       return {
-        checkLabel: "▶ Run my loop",
+        checkLabel: "Run my loop",
         check: function () {
           var r = checkRound(rd, vals);
           if (!r.incomplete) { result = r; render(); }

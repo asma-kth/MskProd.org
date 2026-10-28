@@ -15,7 +15,7 @@ from . import illus_props as P
 
 # ------------------------------------------------------------------ code
 #
-# The window is dark in both themes, like the editors it imitates, so the
+# The window is dark, like the editors it imitates, so the
 # colours below are fixed and chosen to clear 4.5 to 1 on the window body.
 
 CODE_BG = ("#2A3A44", "#1C2831")

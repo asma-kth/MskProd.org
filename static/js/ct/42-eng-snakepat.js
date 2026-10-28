@@ -90,20 +90,20 @@
       }
       function render() {
         CT.clear(strip);
-        snake.slice(0, -1).forEach(function (s) { strip.appendChild(CT.el("li", null, CT.el("span", { role: "img", "aria-label": fruit(s.f).text }, fruit(s.f).icon))); });
-        strip.appendChild(CT.el("li", { class: "csn-next" }, "❓"));
+        snake.slice(0, -1).forEach(function (s) { strip.appendChild(CT.el("li", null, CT.el("span", { role: "img", "aria-label": fruit(s.f).text }, CT.ico(fruit(s.f).icon)))); });
+        strip.appendChild(CT.el("li", { class: "csn-next" }, CT.ico("question")));
         svg.setAttribute("aria-label", "Snake board. The head is at column " + (head().x + 1) + ", row " + (head().y + 1) +
           ". The next fruit in the pattern is somewhere on the board. Use the arrow keys to move.");
         CT.clear(svg);
         for (var y = 0; y < d.h; y++) for (var x = 0; x < d.w; x++) {
           svg.appendChild(CT.svg("rect", { x: x * S + 1, y: y * S + 1, width: S - 2, height: S - 2, rx: 6, class: "csn-cell" + ((x + y) % 2 ? " is-alt" : "") }));
         }
-        d.rocks.forEach(function (r) { svg.appendChild(CT.svg("text", { x: r[0] * S + S / 2, y: r[1] * S + S / 2 + 1, class: "csn-ico", text: "🪨" })); });
+        d.rocks.forEach(function (r) { svg.appendChild(CT.icoSvg("rock", r[0] * S + 5, r[1] * S + 5, S - 10, "csn-ico")); });
         Object.keys(food).forEach(function (k) {
           var p = food[k];
           if (!p) return;
           if (glow && k === want()) svg.appendChild(CT.svg("circle", { cx: p[0] * S + S / 2, cy: p[1] * S + S / 2, r: S / 2 - 1, class: "csn-glow" }));
-          svg.appendChild(CT.svg("text", { x: p[0] * S + S / 2, y: p[1] * S + S / 2 + 1, class: "csn-ico", text: fruit(k).icon }));
+          svg.appendChild(CT.icoSvg(fruit(k).icon, p[0] * S + 5, p[1] * S + 5, S - 10, "csn-ico"));
         });
         snake.forEach(function (s, i) {
           var isHead = i === snake.length - 1;
@@ -116,11 +116,11 @@
               g.appendChild(CT.svg("circle", { cx: ex, cy: ey, r: 4, class: "csn-eye" }));
               g.appendChild(CT.svg("circle", { cx: ex + dx * 1.5, cy: ey + dy * 1.5, r: 2, class: "csn-pupil" }));
             });
-          } else g.appendChild(CT.svg("text", { x: s.x * S + S / 2, y: s.y * S + S / 2 + 1, class: "csn-ico csn-small", text: fruit(s.f).icon }));
+          } else g.appendChild(CT.icoSvg(fruit(s.f).icon, s.x * S + S / 4, s.y * S + S / 4, S / 2, "csn-ico csn-small"));
           svg.appendChild(g);
         });
         CT.clear(progress);
-        CT.append(progress, ["🍽 ", CT.el("b", null, got.length + " of " + rd.answer.length), " eaten in the pattern", slips ? " · slips: " + slips + " of 3" : ""]);
+        CT.append(progress, [CT.el("b", null, got.length + " of " + rd.answer.length), " eaten in the pattern", slips ? " · slips: " + slips + " of 3" : ""]);
       }
 
       function steer(dname) {
@@ -197,7 +197,7 @@
 
       start(0);
       return {
-        checkLabel: "🐍 Check the pattern",
+        checkLabel: "Check the pattern",
         check: function () {
           if (got.length < rd.answer.length) return { ok: false, incomplete: true, msg: "Steer the snake to eat " + (rd.answer.length - got.length) + " more fruit, in the pattern." };
           return { ok: true };

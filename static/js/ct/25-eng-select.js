@@ -71,7 +71,7 @@
         CT.clear(top);
         CT.append(top, [CT.roundChip(ri, d.rounds.length),
           CT.el("div", { class: "ct-problem csel-job" }, [CT.el("span", { class: "ct-problem-k" }, "The job"),
-            CT.el("span", { class: "csel-job-i", "aria-hidden": "true" }, rd.icon || "🎯"), rd.purpose])]);
+            CT.el("span", { class: "csel-job-i", "aria-hidden": "true" }, CT.ico(rd.icon || "target")), rd.purpose])]);
         drawPicture();
         render();
         if (i > 0) api.say("New job: " + rd.purpose, "think", 2600);
@@ -119,10 +119,10 @@
         if (!waiting.length) tray.appendChild(CT.el("p", { class: "ct-tray-empty" }, "All sorted! Press Check."));
         cards.appendChild(tray);
         var zones = CT.el("div", { class: "cg-zones cg-n2" });
-        [["keep", "✅", "Keep: the job needs it"], ["bin", "🗑️", "Remove: not needed"]].forEach(function (z) {
+        [["keep", "tick", "Keep: the job needs it"], ["bin", "bin", "Remove: not needed"]].forEach(function (z) {
           var inZone = order.filter(function (id) { return ans[id] === z[0]; });
           var box = CT.el("div", { class: "cg-zone csel-" + z[0], "data-zone": z[0], "data-zone-label": z[2] }, [
-            CT.el("div", { class: "cg-zone-h" }, [CT.el("span", { class: "cg-zone-i", "aria-hidden": "true" }, z[1]), CT.el("b", null, z[2]),
+            CT.el("div", { class: "cg-zone-h" }, [CT.el("span", { class: "cg-zone-i", "aria-hidden": "true" }, CT.ico(z[1])), CT.el("b", null, z[2]),
               CT.el("span", { class: "cg-count" }, String(inZone.length))]),
             CT.el("button", { type: "button", class: "ct-drop", "aria-label": "Put the picked card in " + z[2] }, "Put here")
           ]);

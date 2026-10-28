@@ -90,9 +90,9 @@
             CT.card(it, { "aria-label": "Step " + (i + 1) + ": " + it.text + (wrong[id] ? ". Out of place." : "") }),
             CT.el("span", { class: "co-moves" }, [
               CT.el("button", { type: "button", class: "co-mv", "aria-label": "Move " + it.text + " up", disabled: i === 0 ? true : null,
-                onclick: function () { moveTo(id, i - 1); wrong = {}; render(); CT.sound.play("drop"); focusMv(id, "up"); } }, "▲"),
+                onclick: function () { moveTo(id, i - 1); wrong = {}; render(); CT.sound.play("drop"); focusMv(id, "up"); } }, CT.ico("arrow-up")),
               CT.el("button", { type: "button", class: "co-mv", "aria-label": "Move " + it.text + " down", disabled: i === order.length - 1 ? true : null,
-                onclick: function () { moveTo(id, i + 2); wrong = {}; render(); CT.sound.play("drop"); focusMv(id, "down"); } }, "▼")
+                onclick: function () { moveTo(id, i + 2); wrong = {}; render(); CT.sound.play("drop"); focusMv(id, "down"); } }, CT.ico("arrow-down"))
             ])
           ]);
           if (wrong[id]) li.querySelector(".ct-card").classList.add("is-wrong");
@@ -124,7 +124,7 @@
           var r = checkOne(d, order);
           if (r.ok && ri < rounds.length - 1) {
             setTimeout(function () { start(ri + 1); }, CT.calm() ? 50 : 900);
-            return { ok: true, more: true, msg: "Round " + (ri + 1) + " done! Here comes the next task.", toast: "⭐ Round " + (ri + 1) + " of " + rounds.length + " complete!" };
+            return { ok: true, more: true, msg: "Round " + (ri + 1) + " done! Here comes the next task.", toast: "Round " + (ri + 1) + " of " + rounds.length + " complete!" };
           }
           return r;
         },

@@ -9,10 +9,6 @@
 .fc .fc-decision .fc-shape, .fc .fc-while .fc-shape, .fc .fc-until .fc-shape { fill: #FCE7F3; stroke: #BE185D; }
 .fc .fc-shape.fc-empty, .fc .is-empty .fc-shape { fill: var(--surface-2); stroke: var(--w); stroke-dasharray: 7 5; }
 .fc .fc-node.is-path .fc-shape { stroke: #2563EB; stroke-width: 4; }
-[data-theme="dark"] .fc .fc-start .fc-shape, [data-theme="dark"] .fc .fc-end .fc-shape { fill: #064E3B; }
-[data-theme="dark"] .fc .fc-io .fc-shape { fill: #0C4A6E; }
-[data-theme="dark"] .fc .fc-process .fc-shape { fill: #422006; }
-[data-theme="dark"] .fc .fc-decision .fc-shape, [data-theme="dark"] .fc .fc-while .fc-shape, [data-theme="dark"] .fc .fc-until .fc-shape { fill: #500724; }
 .fc .fc-t { font: 700 13px var(--font-body); text-anchor: middle; fill: var(--ink); }
 .fc .fc-q { fill: var(--wd); font-weight: 800; }
 .fc .fc-line { fill: none; stroke: var(--ink-3); stroke-width: 2.2; }
@@ -20,7 +16,6 @@
 .fc .fc-dot { fill: var(--ink-3); }
 .fc .fc-yn { font: 800 12px var(--font-body); fill: var(--ink-2); }
 .fc .fc-node.is-on .fc-shape { stroke: #F59E0B; stroke-width: 5; fill: #FEF3C7; }
-[data-theme="dark"] .fc .fc-node.is-on .fc-shape { fill: #78350F; }
 .fc .fc-node.is-picked .fc-shape { stroke: #DC2626; stroke-width: 4; }
 .fc .fc-node.is-bad .fc-shape { stroke: #DC2626; stroke-width: 4; }
 .fc [role="button"] { cursor: pointer; }
@@ -39,14 +34,13 @@
 .cpg-wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 340px); gap: 1rem; align-items: start; }
 @media (max-width: 760px) { .cpg-wrap { grid-template-columns: 1fr; } }
 .cpg-map .cg-map { max-height: 60vh; }
-.cg-pond { fill: #BAE6FD; } [data-theme="dark"] .cg-pond { fill: #0C4A6E; }
+.cg-pond { fill: #BAE6FD; }
 .cpg-bot-body { fill: #475569; stroke: #0F172A; stroke-width: 2; }
 .cpg-bot-nose { fill: #F59E0B; stroke: #0F172A; stroke-width: 1.5; }
 .cpg-side { display: grid; gap: .6rem; }
 .cpg-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
 .cpg-main { padding: .3rem .7rem; border-radius: 10px; cursor: pointer; font: 800 .95rem var(--font-display); color: var(--ink); background: var(--surface-2); border: 2px solid var(--border); }
 .cpg-main.is-into { border-color: var(--w); background: var(--wl); }
-[data-theme="dark"] .cpg-main.is-into { background: color-mix(in srgb, var(--w) 18%, var(--surface)); }
 .cpg-count { font-weight: 800; font-size: .85rem; color: var(--ink-2); }
 .cpg-count.is-over { color: var(--bad); }
 .cpg-list, .cpg-inner { display: grid; gap: .3rem; margin: 0; padding: 0; list-style: none; counter-reset: blk; }
@@ -54,14 +48,12 @@
 .cpg-blk { counter-increment: blk; display: flex; align-items: center; gap: .4rem; padding: .3rem .5rem; border-radius: 10px; font-weight: 700; background: var(--surface); border: 2px solid var(--w); }
 .cpg-list > .cpg-blk::before { content: counter(blk); min-width: 1.4rem; font-size: .75rem; color: var(--ink-3); }
 .cpg-blk.is-bad { border-color: #DC2626; background: #FEF2F2; }
-[data-theme="dark"] .cpg-blk.is-bad { background: #3B1219; }
 .cpg-blk.is-into { box-shadow: 0 0 0 3px color-mix(in srgb, var(--w) 35%, transparent); }
 .cpg-ico { font-size: 1.1rem; }
 .cpg-x { margin-left: auto; width: 30px; height: 30px; border-radius: 8px; cursor: pointer; color: var(--ink-3); background: transparent; border: 1px solid var(--border); }
 .cpg-blk:has(.cpg-rep) { flex-direction: column; align-items: stretch; border-color: #7C3AED; }
 .cpg-rep { display: flex; align-items: center; gap: .3rem; }
 .cpg-rep-h { flex: 1; text-align: left; padding: .2rem .4rem; border-radius: 8px; cursor: pointer; font: 800 .9rem var(--font-body); color: #6D28D9; background: #F3E8FF; border: 1px solid #C4B5FD; }
-[data-theme="dark"] .cpg-rep-h { color: #DDD6FE; background: #3B0764; }
 .cpg-inner { margin-left: 1rem; padding: .3rem 0 .1rem .5rem; border-left: 4px solid #C4B5FD; }
 .cpg-inner .cpg-blk { border-color: #A78BFA; }
 .cpg-empty { padding: .4rem; font-size: .85rem; color: var(--ink-3); }
@@ -87,7 +79,6 @@
 .cfb-tests caption { caption-side: top; padding: .4rem .6rem; text-align: left; font-weight: 800; }
 .cfb-tests tr.is-pass td { background: var(--ok-bg); }
 .cfb-tests tr.is-fail td { background: #FEF2F2; }
-[data-theme="dark"] .cfb-tests tr.is-fail td { background: #3B1219; }
 .cfb-tests td { white-space: normal; }
 .cfb-sim { display: grid; grid-template-columns: auto auto 1fr; gap: 1rem; align-items: center; padding: .8rem; border-radius: 16px; background: #1F2937; color: #F8FAFC; }
 .cfb-tl { display: grid; gap: 5px; padding: 7px; border-radius: 12px; background: #111827; border: 2px solid #374151; }
@@ -114,7 +105,6 @@
 .ctt-in { width: 4.2rem; min-height: 38px; text-align: center; border-radius: 8px; font: 700 1rem var(--font-mono, ui-monospace, monospace); color: var(--ink); background: var(--surface); border: 2px solid var(--border-strong); }
 .ctt-in:focus { outline: none; border-color: var(--w); box-shadow: 0 0 0 3px color-mix(in srgb, var(--w) 30%, transparent); }
 .ctt-in.is-wrong { border-color: #DC2626; background: #FEF2F2; }
-[data-theme="dark"] .ctt-in.is-wrong { background: #3B1219; }
 
 /* botcode: the car and the snake */
 .cbc-wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; align-items: start; }
@@ -123,12 +113,10 @@
 .cbc-tabs { display: flex; flex-wrap: wrap; gap: .3rem; }
 .cbc-tab { padding: .35rem .8rem; border-radius: 999px; cursor: pointer; font: 700 .88rem var(--font-body); color: var(--ink); background: var(--surface-2); border: 2px solid var(--border); }
 .cbc-tab.is-on { border-color: var(--w); background: var(--wl); }
-[data-theme="dark"] .cbc-tab.is-on { background: color-mix(in srgb, var(--w) 18%, var(--surface)); }
 .cbc-tab.is-pass { color: var(--ok); } .cbc-tab.is-fail { color: var(--bad); }
 .cbc-map { display: block; width: 100%; height: auto; max-height: 52vh; border-radius: 16px; background: #14532D; }
 .cbc-grass { fill: #4ADE80; } .cbc-road { fill: #64748B; }
 .cbc-wall { fill: #334155; } .cbc-floor { fill: #DCFCE7; }
-[data-theme="dark"] .cbc-floor { fill: #1E3A2B; }
 .cbc-car-body { fill: #EF4444; stroke: #7F1D1D; stroke-width: 1.5; }
 .cbc-seg { fill: #FDE047; stroke: #A16207; stroke-width: 2; }
 .cbc-head { fill: #FACC15; stroke: #A16207; stroke-width: 2; }

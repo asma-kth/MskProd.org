@@ -68,7 +68,7 @@
           g.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choose(); } });
         });
         var right = CT.el("div", { class: "cfb-right" });
-        right.appendChild(CT.el("button", { type: "button", class: "ct-btn ct-btn-soft", onclick: runTests }, "🧪 Run the tests"));
+        right.appendChild(CT.el("button", { type: "button", class: "ct-btn ct-btn-soft", onclick: runTests }, "Run the tests"));
         right.appendChild(CT.el("p", { class: "cff-note" }, pick ? "Chosen step: " + label(pick) + ". Press Check when you are sure." : "Click a step in the flowchart to choose it."));
         if (results) right.appendChild(table(results));
         if (found) {
@@ -79,7 +79,7 @@
           });
           right.appendChild(CT.el("div", { class: "cseq-fix" }, [CT.el("p", { class: "ct-tray-h" }, "Change this step to"), opts]));
         }
-        CT.append(board, [CT.roundChip(ri, d.rounds.length), CT.el("h3", { class: "cff-title" }, "🔧 " + rd.title), CT.el("div", { class: "cfb-wrap" }, [chart, right])]);
+        CT.append(board, [CT.roundChip(ri, d.rounds.length), CT.el("h3", { class: "cff-title" }, rd.title), CT.el("div", { class: "cfb-wrap" }, [chart, right])]);
         if (focus) { var f = board.querySelector(focus); if (f) f.focus(); }
       }
       function label(id) { var n = CT.byId(CT.flow.nodes(rd.flow), id); return n ? n.text : id; }
@@ -89,7 +89,7 @@
           CT.el("thead", null, CT.el("tr", null, ["Input", "Expected", "Actual", ""].map(function (h) { return CT.el("th", { scope: "col" }, h); }))),
           CT.el("tbody", null, res.map(function (t, i) {
             return CT.el("tr", { class: t.pass ? "is-pass" : "is-fail" }, [CT.el("td", null, t.inputs.join(", ") || "none"), CT.el("td", null, t.expect.join(", ")),
-              CT.el("td", null, t.got ? t.got.join(", ") || "nothing" : "Error"), CT.el("td", null, [t.pass ? "✅" : "❌",
+              CT.el("td", null, t.got ? t.got.join(", ") || "nothing" : "Error"), CT.el("td", null, [CT.ico(t.pass ? "tick" : "no"),
                 !t.pass ? CT.el("button", { type: "button", class: "ct-btn ct-btn-mini", onclick: function () { path = pathOf(current(), rd.tests[i]); render(); } }, "Show its path") : null])]);
           }))]);
       }

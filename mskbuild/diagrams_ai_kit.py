@@ -2,16 +2,14 @@
 
 The rest of the site draws in calm theme colours. The AI course asked for
 vivid colour and depth, so its figures use saturated hues, gradients and
-isometric or perspective 3D. The rules that keep them readable in both the
-light and the dark theme:
+isometric or perspective 3D. The rules that keep them readable:
 
   * a vivid colour is used as a fill only behind white text, and each fill
     colour here has at least 4.5:1 contrast with white;
   * the brightest hues (amber, lime, cyan) are used for strokes, points and
     surfaces, or behind dark text, never behind white text;
-  * a tinted panel is the vivid colour at low opacity over the page, so it
-    darkens in the dark theme with everything else, and its text uses the
-    theme's own text colour.
+  * a tinted panel is the vivid colour at low opacity over the page, and its
+    text uses the page's own text colour.
 
 Nothing here registers a diagram. The diagram modules import these helpers.
 """
@@ -47,9 +45,8 @@ WHITE = "#FFFFFF"
 SERIES = [VIOLET, PINK, BLUE, TEAL, ORANGE, GREEN, INDIGO, RED]
 SLATE = "#475569"
 
-# The same hues as theme-aware variables (static/css/site.css), for text and
-# lines drawn straight onto the page: deep in the light theme, light in the
-# dark theme, so they keep their contrast in both.
+# The same hues as variables (static/css/site.css), for text and lines drawn
+# straight onto the page: deep enough to keep their contrast.
 _THEMED = {VIOLET: "var(--ai-violet)", PINK: "var(--ai-pink)", BLUE: "var(--ai-blue)",
            TEAL: "var(--ai-teal)", GREEN: "var(--ai-green)", ORANGE: "var(--ai-orange)",
            RED: "var(--ai-red)", INDIGO: "var(--ai-indigo)", SLATE: "var(--ai-slate)"}

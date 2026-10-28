@@ -14,7 +14,7 @@
   var CT = root.CT = root.CT || {};
   var DIR = { up: [0, -1], right: [1, 0], down: [0, 1], left: [-1, 0] };
   var LABEL = { up: "Up", down: "Down", left: "Left", right: "Right", F: "Forward", L: "Turn left", R: "Turn right" };
-  var ICON = { up: "⬆️", down: "⬇️", left: "⬅️", right: "➡️", F: "⬆️", L: "↩️", R: "↪️" };
+  var ICON = { up: "arrow-up", down: "arrow-down", left: "arrow-left", right: "arrow-right", F: "arrow-up", L: "turn-left", R: "turn-right" };
 
   function flat(prog) {
     var out = [];
@@ -111,10 +111,10 @@
       function drawMap() {
         CT.clear(mapBox);
         view = CT.grid.view(mapBox, map, { label: "The map", legend: {
-          H: { sticker: "🏠", tile: "cg-exit" }, B: { sticker: "🔋", tile: "cg-exit" }, F: { sticker: "🐟" }, "*": { sticker: "⭐" }, "~": { sticker: "💧", tile: "cg-pond" } } });
+          H: { sticker: "house", tile: "cg-exit" }, B: { sticker: "battery", tile: "cg-exit" }, F: { sticker: "fish" }, "*": { sticker: "star" }, "~": { sticker: "drop", tile: "cg-pond" } } });
         view.svg.setAttribute("tabindex", "0");
         if (rel) view.piece("me", pos[0], pos[1], botShape(), "is-turn");
-        else view.piece("me", pos[0], pos[1], "🐱");
+        else view.piece("me", pos[0], pos[1], "pixel");
         view.move("me", pos[0], pos[1], dir, true);
         if (rd.kind === "drive") CT.grid.controls(view.svg, drive);
       }
@@ -130,15 +130,15 @@
         var label = typeof c === "string" ? LABEL[c] : "repeat";
         var bad = wrongAt === k && !inner;
         return CT.el("li", { class: "cpg-blk" + (bad ? " is-bad" : "") + (typeof c !== "string" && into === k ? " is-into" : "") }, typeof c === "string" ? [
-          CT.el("span", { class: "cpg-ico", "aria-hidden": "true" }, ICON[c]), CT.el("span", null, label),
-          rd.kind === "drive" ? null : CT.el("button", { type: "button", class: "cpg-x", "aria-label": "Remove " + label, onclick: function () { remove(k, parentIdx); } }, "✕")
+          CT.el("span", { class: "cpg-ico", "aria-hidden": "true" }, CT.ico(ICON[c])), CT.el("span", null, label),
+          rd.kind === "drive" ? null : CT.el("button", { type: "button", class: "cpg-x", "aria-label": "Remove " + label, onclick: function () { remove(k, parentIdx); } }, CT.ui("cross"))
         ] : [
           CT.el("div", { class: "cpg-rep" }, [
             CT.el("button", { type: "button", class: "cpg-rep-h", "aria-pressed": into === k ? "true" : "false", onclick: function () { into = into === k ? null : k; render(); } },
-              ["🔁 repeat ", CT.el("b", null, String(c.repeat)), " times", into === k ? " (adding inside)" : ""]),
+              [CT.ico("cycle"), " repeat ", CT.el("b", null, String(c.repeat)), " times", into === k ? " (adding inside)" : ""]),
             CT.el("button", { type: "button", class: "cdz-step", "aria-label": "Fewer repeats", onclick: function () { c.repeat = Math.max(2, c.repeat - 1); render(); } }, "−"),
             CT.el("button", { type: "button", class: "cdz-step", "aria-label": "More repeats", onclick: function () { c.repeat = Math.min(9, c.repeat + 1); render(); } }, "+"),
-            CT.el("button", { type: "button", class: "cpg-x", "aria-label": "Remove the repeat block", onclick: function () { remove(k, null); } }, "✕")
+            CT.el("button", { type: "button", class: "cpg-x", "aria-label": "Remove the repeat block", onclick: function () { remove(k, null); } }, CT.ui("cross"))
           ]),
           CT.el("ol", { class: "cpg-inner" }, c.do.length ? c.do.map(function (x, j) { return chip(x, j, true, k); }) :
             [CT.el("li", { class: "cpg-empty" }, "Empty: choose this loop, then add commands")])
@@ -162,7 +162,7 @@
         CT.clear(side);
         var n = blocks(prog);
         var head = CT.el("div", { class: "cpg-head" }, [
-          CT.el("button", { type: "button", class: "cpg-main" + (into === null ? " is-into" : ""), onclick: function () { into = null; render(); } }, "📜 Your program"),
+          CT.el("button", { type: "button", class: "cpg-main" + (into === null ? " is-into" : ""), onclick: function () { into = null; render(); } }, "Your program"),
           CT.el("span", { class: "cpg-count" + (rd.max && n > rd.max ? " is-over" : "") }, n + (rd.max ? " / " + rd.max : "") + " blocks")]);
         var list = CT.el("ol", { class: "cpg-list", "aria-label": "Your program" }, prog.length ? prog.map(function (c, k) { return chip(c, k, false, null); }) :
           [CT.el("li", { class: "cpg-empty" }, rd.kind === "drive" ? "Your moves will appear here." : "Empty. Add commands below.")]);
@@ -171,9 +171,9 @@
         else {
           palette = CT.el("div", { class: "cpg-pal", role: "group", "aria-label": "Commands" }, [CT.el("p", { class: "ct-tray-h" }, into !== null ? "Add to the repeat loop" : "Add a command")]);
           (rel ? ["F", "L", "R"] : ["up", "down", "left", "right"]).forEach(function (c) {
-            palette.appendChild(CT.el("button", { type: "button", class: "cdz-move", onclick: function () { add(c); } }, [CT.el("span", { "aria-hidden": "true" }, ICON[c]), LABEL[c]]));
+            palette.appendChild(CT.el("button", { type: "button", class: "cdz-move", onclick: function () { add(c); } }, [CT.ico(ICON[c]), " ", LABEL[c]]));
           });
-          if (rel) palette.appendChild(CT.el("button", { type: "button", class: "cdz-move", disabled: into !== null ? true : null, onclick: function () { add("repeat"); } }, [CT.el("span", { "aria-hidden": "true" }, "🔁"), "Repeat"]));
+          if (rel) palette.appendChild(CT.el("button", { type: "button", class: "cdz-move", disabled: into !== null ? true : null, onclick: function () { add("repeat"); } }, [CT.ico("cycle"), " Repeat"]));
         }
         CT.append(side, [head, list, palette]);
       }
@@ -235,7 +235,7 @@
 
       start(0);
       return {
-        checkLabel: "▶ Run",
+        checkLabel: "Run",
         run: function (done) { animate(done); },
         mark: function () { render(); },
         reset: function () { if (!running) start(ri); },

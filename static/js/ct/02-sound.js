@@ -58,7 +58,7 @@
       if (!(force || CT.voice.on()) || !CT.voice.available() || !text) return;
       try {
         root.speechSynthesis.cancel();
-        var u = new root.SpeechSynthesisUtterance(String(text).replace(/[★☆]/g, ""));
+        var u = new root.SpeechSynthesisUtterance(String(text).replace(/[\u2605\u2606]/g, ""));
         var voices = root.speechSynthesis.getVoices() || [];
         var gb = voices.filter(function (v) { return /en-GB/i.test(v.lang); })[0] || voices.filter(function (v) { return /^en/i.test(v.lang); })[0];
         if (gb) u.voice = gb;

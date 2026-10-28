@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Audit every drawn illustration in a real browser.
 
-For each picture, in the light and the dark theme, this checks that
+For each picture, this checks that
 
   * no text runs off the picture or onto other text,
   * no text spills out of the pill, tile or cell it is drawn in,
@@ -13,9 +13,9 @@ It needs the built site (python3 build.py) for the stylesheet and fonts, plus
 Playwright and Pillow:
 
     pip install playwright pillow && playwright install chromium
-    python3 tools/check_illustrations.py                 # all pictures, both themes
+    python3 tools/check_illustrations.py                 # all pictures
     python3 tools/check_illustrations.py cpu-board mesh  # just these
-    python3 tools/check_illustrations.py --theme dark --no-contrast
+    python3 tools/check_illustrations.py --no-contrast
 
 Exits with status 1 if anything is found, so it can gate a build.
 """
@@ -173,7 +173,6 @@ def contrast_issues(fig, png):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("names", nargs="*", help="illustrations to check (default: all)")
-    ap.add_argument("--theme", choices=("light", "dark", "both"), default="both")
     ap.add_argument("--no-contrast", action="store_true", help="skip the contrast measurement")
     args = ap.parse_args()
     if not os.path.isdir(os.path.join(DIST, "assets")):
@@ -189,7 +188,6 @@ def main():
     if unknown:
         sys.exit("unknown illustration(s): %s" % ", ".join(unknown))
     body = "\n".join(reg[n]() for n in names)
-    themes = ("light", "dark") if args.theme == "both" else (args.theme,)
     srv = serve()
     port = srv.server_address[1]
     total = 0
@@ -197,33 +195,32 @@ def main():
     with sync_playwright() as p:
         kw = {"executable_path": chrome} if os.path.exists(chrome) else {}
         b = p.chromium.launch(**kw)
-        for theme in themes:
-            Handler.page = (
-                '<!doctype html><html lang="en-GB" data-theme="%s"><head><meta charset="utf-8">'
-                '<meta name="viewport" content="width=device-width,initial-scale=1">'
-                '<link rel="stylesheet" href="/assets/css/site.css"></head>'
-                '<body style="padding:20px"><div style="width:880px;margin:0 auto">%s</div></body></html>'
-                % (theme, body)).encode("utf-8")
-            pg = b.new_page(viewport={"width": 960, "height": 900}, device_scale_factor=2)
-            pg.goto("http://127.0.0.1:%d/_illus_check" % port, wait_until="load")
-            pg.wait_for_timeout(500)
-            data = pg.evaluate(JS_BOXES)
-            found = {f["name"]: layout_issues(f) for f in data}
-            if not args.no_contrast:
-                pg.add_style_tag(content=".illus text{visibility:hidden !important}")
-                pg.wait_for_timeout(150)
-                svgs = pg.locator("figure.illus > .illus-art > svg")
-                for i, f in enumerate(data):
-                    found[f["name"]] += contrast_issues(f, svgs.nth(i).screenshot())
-            pg.close()
-            n = sum(len(v) for v in found.values())
-            total += n
-            for name, issues in found.items():
-                if issues:
-                    print("== %s [%s]" % (name, theme))
-                    for s in issues:
-                        print("     " + s)
-            print("%s theme: %d pictures, %d issues" % (theme, len(data), n))
+        Handler.page = (
+            '<!doctype html><html lang="en-GB"><head><meta charset="utf-8">'
+            '<meta name="viewport" content="width=device-width,initial-scale=1">'
+            '<link rel="stylesheet" href="/assets/css/site.css"></head>'
+            '<body style="padding:20px"><div style="width:880px;margin:0 auto">%s</div></body></html>'
+            % body).encode("utf-8")
+        pg = b.new_page(viewport={"width": 960, "height": 900}, device_scale_factor=2)
+        pg.goto("http://127.0.0.1:%d/_illus_check" % port, wait_until="load")
+        pg.wait_for_timeout(500)
+        data = pg.evaluate(JS_BOXES)
+        found = {f["name"]: layout_issues(f) for f in data}
+        if not args.no_contrast:
+            pg.add_style_tag(content=".illus text{visibility:hidden !important}")
+            pg.wait_for_timeout(150)
+            svgs = pg.locator("figure.illus > .illus-art > svg")
+            for i, f in enumerate(data):
+                found[f["name"]] += contrast_issues(f, svgs.nth(i).screenshot())
+        pg.close()
+        n = sum(len(v) for v in found.values())
+        total += n
+        for name, issues in found.items():
+            if issues:
+                print("== %s" % name)
+                for s in issues:
+                    print("     " + s)
+        print("%d pictures, %d issues" % (len(data), n))
         b.close()
     srv.shutdown()
     sys.exit(1 if total else 0)

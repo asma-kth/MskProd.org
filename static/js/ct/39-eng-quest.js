@@ -29,7 +29,7 @@
       function drawStrip() {
         CT.clear(strip);
         d.stages.forEach(function (s, i) {
-          var mark = d.look === "vault" ? (i < si ? "🔓" : "🔒") : (i < si ? "✓" : String(i + 1));
+          var mark = d.look === "vault" ? CT.ico(i < si ? "unlock" : "lock") : (i < si ? CT.ui("check") : String(i + 1));
           strip.appendChild(CT.el("li", { class: "cq-step" + (d.look === "vault" ? " is-lock" : "") + (i < si ? " is-done" : i === si ? " is-now" : ""), "aria-current": i === si ? "step" : null },
             [CT.el("b", { "aria-hidden": d.look === "vault" ? "true" : null }, mark), " ", s.title, i < si && d.look === "vault" ? CT.el("span", { class: "sr-only" }, " (open)") : null]));
         });
@@ -40,7 +40,7 @@
           var from = si;
           CT.wait(1200, function () { if (api.alive() && si === from) mountStage(from + 1); });
           return { ok: true, more: true, msg: "Stage " + (from + 1) + " complete! On to stage " + (from + 2) + ".",
-                   toast: "🏆 Stage " + (from + 1) + " of " + d.stages.length + " complete!" };
+                   toast: "Stage " + (from + 1) + " of " + d.stages.length + " complete!" };
         }
         return res;
       }
@@ -56,7 +56,7 @@
           level: lv, rng: CT.rng(lv.id),
           result: function (res) { api.result(wrap(res)); }
         }));
-        api.label(sub.checkLabel || "✓ Check");
+        api.label(sub.checkLabel || "Check");
         if (i > 0) api.say("Stage " + (i + 1) + ": " + s.title + ".", "think", 2600);
       }
       mountStage(0);

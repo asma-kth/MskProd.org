@@ -154,8 +154,8 @@
         var lamp = function (c, onIf) { return CT.el("i", { class: "cfb-lamp cfb-" + c + (onIf ? " is-on" : "") }); };
         return CT.el("div", { class: "cfb-sim", role: "img", "aria-label": "Traffic lights: " + L + ". Pedestrian signal: " + M + " man." + (simState.pressed ? " The button has been pressed." : "") }, [
           CT.el("div", { class: "cfb-tl" }, [lamp("red", L === "red"), lamp("amber", L === "amber"), lamp("green", L === "green")]),
-          CT.el("div", { class: "cfb-ped" }, [CT.el("span", { class: "cfb-man" + (M === "red" ? " is-red" : "") }, "🧍"), CT.el("span", { class: "cfb-man" + (M === "green" ? " is-green" : "") }, "🚶")]),
-          CT.el("div", { class: "cfb-info" }, [CT.el("p", null, ["⏱ ", CT.el("b", null, simState.clock + " s")]), CT.el("p", { class: "cfb-btn" + (simState.pressed ? " is-on" : "") }, simState.pressed ? "🔴 Button pressed" : "⚪ Button not pressed")])
+          CT.el("div", { class: "cfb-ped" }, [CT.el("span", { class: "cfb-man" + (M === "red" ? " is-red" : "") }, CT.ico("person-red")), CT.el("span", { class: "cfb-man" + (M === "green" ? " is-green" : "") }, CT.ico("person-green"))]),
+          CT.el("div", { class: "cfb-info" }, [CT.el("p", null, [CT.ico("stopwatch"), " ", CT.el("b", null, simState.clock + " s")]), CT.el("p", { class: "cfb-btn" + (simState.pressed ? " is-on" : "") }, simState.pressed ? "Button pressed" : "Button not pressed")])
         ]);
       }
       function testTable(res) {
@@ -164,7 +164,7 @@
           CT.el("thead", null, CT.el("tr", null, ["Input", "Expected output", "Actual output", ""].map(function (h) { return CT.el("th", { scope: "col" }, h); }))),
           CT.el("tbody", null, res.map(function (t) {
             return CT.el("tr", { class: t.pass ? "is-pass" : "is-fail" }, [CT.el("td", null, t.inputs.join(", ") || "none"), CT.el("td", null, t.expect.join(", ")),
-              CT.el("td", null, t.got ? t.got.join(", ") || "nothing" : "Error: " + t.error.msg), CT.el("td", null, t.pass ? "✅" : "❌")]);
+              CT.el("td", null, t.got ? t.got.join(", ") || "nothing" : "Error: " + t.error.msg), CT.el("td", null, [CT.ico(t.pass ? "tick" : "no"), t.pass ? " Pass" : " Fail"])]);
           }))]);
       }
 
@@ -218,7 +218,7 @@
       }
 
       return {
-        checkLabel: "▶ Run the flowchart",
+        checkLabel: "Run the flowchart",
         run: function (done) {
           var r = checkRound(rd, ans);
           if (!r.ok) { done(r); return; }

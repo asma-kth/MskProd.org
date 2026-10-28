@@ -1,7 +1,6 @@
 /* The AI course certificate page. The certificate is one SVG drawn at A4
    landscape proportions; on screen it scales with the page, and in print it
-   fills one sheet with everything else on the page hidden. The certificate is
-   paper, so it stays light in the dark theme. */
+   fills one sheet with everything else on the page hidden. */
 .cert-head h1 { display: flex; align-items: center; gap: .6rem; }
 .cert-head h1 .icon { width: 1.1em; height: 1.1em; color: var(--accent); }
 .cert-app { display: grid; gap: var(--sp-4); margin-bottom: var(--sp-5); }

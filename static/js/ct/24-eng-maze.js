@@ -50,7 +50,7 @@
       var game = null;
 
       function legend() {
-        return { K: { sticker: "🔑" }, G: { tile: "cg-gate", sticker: "🔒" }, E: { tile: "cg-exit", sticker: "🚪" }, o: { sticker: "🪙" } };
+        return { K: { sticker: "key" }, G: { tile: "cg-gate", sticker: "lock" }, E: { tile: "cg-exit", sticker: "door" }, o: { sticker: "coin" } };
       }
 
       function renderPlan() {
@@ -89,7 +89,7 @@
         return px;
       }
       function addRescuer(svgEl, at) {
-        var g = CT.svg("g", { class: "cg-piece", "data-piece": "hero" }, [CT.svg("text", { x: 20, y: 21, class: "cg-sticker", text: "🤖" })]);
+        var g = CT.svg("g", { class: "cg-piece", "data-piece": "hero" }, [CT.icoSvg("robot", 4, 4, 32)]);
         svgEl.querySelector(".cg-pieces").appendChild(g);
         g.style.transform = "translate(" + at[0] * 40 + "px," + at[1] * 40 + "px)";
       }
@@ -108,11 +108,11 @@
         var list = CT.el("ol", { class: "cmz-check" });
         d.plan.forEach(function (id, i) {
           var c = CT.byId(d.cards, id);
-          list.appendChild(CT.el("li", { class: i === 0 ? "is-now" : "" }, [CT.el("span", { class: "cmz-tick", "aria-hidden": "true" }, "○"), " ", c.icon + " " + c.text]));
+          list.appendChild(CT.el("li", { class: i === 0 ? "is-now" : "" }, [CT.el("span", { class: "cmz-tick", "aria-hidden": "true" }), " ", CT.ico(c.icon), " ", c.text]));
         });
         game.list = list;
         var right = CT.el("div", { class: "cmz-plan" }, [CT.el("p", { class: "ct-tray-h" }, "Carry out your plan"), list,
-          CT.grid.pad(move), CT.el("p", { class: "ctl-muted" }, "Arrow keys, the buttons or a swipe on the maze.")]);
+          CT.grid.pad(move)]);
         CT.append(board, [CT.el("div", { class: "cmz-wrap" }, [left, right])]);
         CT.grid.controls(left, move);
         left.focus({ preventScroll: true });
@@ -121,7 +121,7 @@
       function tick(i) {
         var li = game.list.children[i];
         if (!li) return;
-        li.className = "is-done"; li.querySelector(".cmz-tick").textContent = "✓";
+        li.className = "is-done"; li.querySelector(".cmz-tick").appendChild(CT.ui("check"));
         if (game.list.children[i + 1]) game.list.children[i + 1].className = "is-now";
         game.step = i + 1;
         CT.sound.play("good");
@@ -177,13 +177,13 @@
       });
       renderPlan();
       return {
-        checkLabel: "✓ Check my plan",
+        checkLabel: "Check my plan",
         check: function () {
           if (phase === "play") return { ok: false, incomplete: true, msg: "Steer the robot to complete step " + (game.step + 1) + " of your plan." };
           var r = CT.check.maze(d, plan);
           if (r.ok) {
             setTimeout(startPlay, CT.calm() ? 50 : 900);
-            return { ok: true, more: true, msg: "Plan approved! Now carry it out.", toast: "⭐ Plan approved!" };
+            return { ok: true, more: true, msg: "Plan approved! Now carry it out.", toast: "Plan approved!" };
           }
           return r;
         },

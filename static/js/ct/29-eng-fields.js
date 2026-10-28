@@ -57,7 +57,7 @@
       function render() {
         CT.clear(board);
         var rule = CT.el("div", { class: "ct-problem cfl-rule" }, [CT.el("span", { class: "ct-problem-k" }, "The rule"),
-          CT.el("span", null, [CT.el("b", null, [rd.icon ? rd.icon + " " : "", rd.question]), " ", rd.rule])]);
+          CT.el("span", null, [CT.el("b", null, [rd.icon ? CT.ico(rd.icon) : null, " ", rd.question]), " ", rd.rule])]);
         var stepNote = CT.el("p", { class: "cfl-step" }, step === "cols"
           ? ["Step 1: choose each column the rule needs. ", CT.el("b", null, cols.length + " chosen")]
           : ["Step 2: every other column is hidden. Decide each row."]);
@@ -71,7 +71,7 @@
         var chips = step === "cols" ? CT.el("div", { class: "cfl-chips", role: "group", "aria-label": "Columns" }, d.columns.filter(function (c) { return c.id !== d.key; }).map(function (c) {
           var on = cols.indexOf(c.id) >= 0;
           return CT.el("button", { type: "button", class: "cfl-col" + (wrong[c.id] ? " is-wrong" : ""), "aria-pressed": on ? "true" : "false", "data-chip": c.id,
-            onclick: function () { toggle(c.id); var b = board.querySelector('[data-chip="' + c.id + '"]'); if (b) b.focus(); } }, [on ? "📌 " : "", c.text]);
+            onclick: function () { toggle(c.id); var b = board.querySelector('[data-chip="' + c.id + '"]'); if (b) b.focus(); } }, [on ? CT.ico("pin") : null, " ", c.text]);
         })) : null;
         var table = CT.el("table", { class: "cfl-table" + (step === "label" ? " is-label" : "") });
         var hr = CT.el("tr");
@@ -81,7 +81,7 @@
           hr.appendChild(CT.el("th", { scope: "col", class: (on ? "is-on" : "") + (wrong[c.id] ? " is-wrong" : "") }, [
             CT.el("button", { type: "button", class: "cfl-col", "aria-pressed": on ? "true" : "false", tabindex: "-1", "aria-hidden": "true", onclick: function () {
               toggle(c.id);
-            } }, [on ? "📌 " : "", c.text])]));
+            } }, [on ? CT.ico("pin") : null, " ", c.text])]));
         });
         if (step === "label") hr.appendChild(CT.el("th", { scope: "col", class: "cfl-dec" }, "Your decision"));
         table.appendChild(CT.el("thead", null, hr));
@@ -114,7 +114,7 @@
             var r = colsCheck(d, rd, cols);
             if (!r.ok) return r;
             CT.wait(700, function () { if (api.alive()) { step = "label"; wrong = {}; render(); } });
-            return { ok: true, more: true, msg: "Exactly the right columns! Now use them to decide each row.", toast: "⭐ Columns spot on!" };
+            return { ok: true, more: true, msg: "Exactly the right columns! Now use them to decide each row.", toast: "Columns spot on!" };
           }
           var l = labelsCheck(d, rd, labels);
           if (l.ok && ri < d.rounds.length - 1) return CT.nextRound(api, ri, d.rounds.length, start, "Question");

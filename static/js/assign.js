@@ -118,9 +118,7 @@
     fill.style.width = Math.round((done / Math.max(1, data.t.length)) * 100) + "%";
     track.appendChild(fill);
     bar.appendChild(track);
-    bar.appendChild(el("p", "muted",
-      "A topic counts as done at 80 per cent or better in its knowledge check. "
-      + "Only this browser can see the ticks, so screenshot the page if you need to show it."));
+    bar.appendChild(el("p", "muted", "Done means 80 per cent or better in the knowledge check."));
     root.appendChild(bar);
 
     var again = el("p");

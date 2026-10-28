@@ -20,6 +20,17 @@ from .diagrams_ai5 import _mix
 from .diagrams_ai6 import _bubble
 
 
+
+def _star(cx, cy, r, fill):
+    """A five-pointed star drawn as a path, centred on cx, cy."""
+    import math
+    pts = []
+    for i in range(10):
+        a = -math.pi / 2 + i * math.pi / 5
+        rr = r if i % 2 == 0 else r * 0.45
+        pts.append("%.1f %.1f" % (cx + rr * math.cos(a), cy + rr * math.sin(a)))
+    return '<path d="M%sZ" fill="%s"/>' % (" L".join(pts), fill)
+
 def _robot(cx, cy, s=1.0, colour=VIOLET):
     """A friendly robot head, for the agent."""
     w, h = 64 * s, 52 * s
@@ -56,7 +67,7 @@ def _rl_loop():
             col = {"#": SLATE, "G": AMBER, "A": VIOLET}.get(ch, FILL2)
             body.append('<rect x="%d" y="%d" width="26" height="26" rx="4" fill="%s"/>' % (x, y, col))
             if ch == "G":
-                body.append(text(x + 13, y + 18, "★", 14, 800, fill=DARK))
+                body.append(_star(x + 13, y + 13, 8, DARK))
     body.append(text(610, 228, "the environment", 12, 800, fill=tv(TEAL)))
     body.append('<path d="M240 110 C 330 60, 420 60, 498 110" fill="none" stroke="%s" stroke-width="3" '
                 'class="ai-flow" stroke-dasharray="6 8"/>' % tv(VIOLET))
@@ -321,7 +332,7 @@ def _bandit():
         body.append(cube(x, 48, 76, 66, 14, cols[k]))
         for j in range(3):
             body.append('<rect x="%d" y="62" width="18" height="26" rx="3" fill="%s"/>' % (x + 8 + j * 21, WHITE))
-            body.append(text(x + 17 + j * 21, 80, "7" if k == 3 else "★", 11, 900, fill=cols[k]))
+            body.append(text(x + 17 + j * 21, 80, "7", 11, 900, fill=cols[k]) if k == 3 else _star(x + 17 + j * 21, 76, 6, cols[k]))
         body.append(text(x + 38, 106, "machine %d" % k, 9.4, 800, fill=WHITE))
         base, top = 250, 140
         hpx = (base - top)

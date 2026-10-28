@@ -7,15 +7,13 @@ import json
 import re
 
 from mskbuild import cat, markup
-from mskbuild.render import SITE_NAME, SITE_URL, crumbs, crumbs_ld, esc, ico, layout, write
+from mskbuild.render import SITE_NAME, SITE_URL, crumbs, crumbs_ld, ico, layout, write
 
 from . import BANK, LEVELS, fallback, test_records, validate_all
 from .harness import HARNESS
 
 PATH = "/pixel-run/"
 TITLE = "Pixel Run: Learn Python by Playing a Platformer"
-LEAD = ("Pixel the robot cat runs through ten levels, and every obstacle is a Python function for you "
-        "to write. Pass the tests and she jumps on. Fail three times and you are sent back a level.")
 DESCRIPTION = ("Play Pixel Run, a free Python platformer. Write a function to clear each obstacle, "
                "from print and loops to recursion and graphs. Ten levels, GCSE to A Level.")
 
@@ -107,11 +105,10 @@ def _shell():
       <canvas id="pr-canvas" width="640" height="360" role="img"
               aria-label="Pixel the robot cat runs along a side scrolling level. A description of what is happening is read out below the picture."></canvas>
     </div>
-    <p class="pr-foot"><button class="tool-btn" type="button" id="pr-calm" aria-pressed="false">Calm mode</button>
-      <span>Calm mode stops the scrolling and the jumps.</span></p>
+    <p class="pr-foot"><button class="tool-btn" type="button" id="pr-calm" aria-pressed="false">Calm mode</button></p>
   </div>
   <div class="pr-console" id="pr-console" tabindex="-1">
-    <noscript><p>Pixel Run needs JavaScript, because the game and the Python it uses both run in your browser.</p></noscript>
+    <noscript><p>Pixel Run needs JavaScript.</p></noscript>
     <p class="pr-boot">Loading the game.</p>
   </div>
   <p class="sr-only" id="pr-live" role="status" aria-live="polite"></p>
@@ -124,13 +121,13 @@ def build(register, add_search):
     payload = json.dumps(data(), separators=(",", ":")).replace("</", "<\\/")
     body = """<div class="wrap">
   %s
-  <header class="section-head pr-head"><h1>Pixel Run</h1><p class="lead">%s</p></header>
+  <header class="section-head pr-head"><h1>Pixel Run</h1></header>
   %s
   <div class="wrap-narrow" style="width:100%%;margin-inline:auto">
     <article class="prose" style="padding-bottom:var(--sp-8)">%s</article>
   </div>
   <script type="application/json" id="pr-data">%s</script>
-</div>""" % (crumbs(trail), esc(LEAD), _shell(), markup.render(_prose()), payload)
+</div>""" % (crumbs(trail), _shell(), markup.render(_prose()), payload)
     write(PATH, layout(
         title=TITLE, description=DESCRIPTION, path=PATH, body=body, active="/python/",
         extra_head='<link rel="stylesheet" href="/assets/css/game.css">',

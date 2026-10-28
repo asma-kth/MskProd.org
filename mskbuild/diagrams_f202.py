@@ -687,7 +687,8 @@ def _validation():
                        [FILL, WARN_SOFT], h=26, size=9.6))
     body.append(box(530, 98, 206, 104, None, fill=FILL, stroke=WARN, r=8))
     body.append(box(530, 98, 206, 22, None, fill=WARN_SOFT, stroke=WARN, r=8))
-    body.append(text(542, 113, "⛔ Price out of range", 9.8, 750,
+    body.append('<circle cx="545" cy="109.5" r="6" fill="%s"/><rect x="541.5" y="108.3" width="7" height="2.4" fill="#FFFFFF"/>' % WARN)
+    body.append(text(556, 113, "Price out of range", 9.8, 750,
                      anchor="start", fill=WARN))
     body.append(text(542, 140, "Ticket prices must be between", 9.4, 500,
                      anchor="start"))
@@ -1091,24 +1092,24 @@ def _test_plan():
                                       "Expected result", "Actual result"],
                        TEAL_SOFT, h=26, size=9.4, tones=[TEAL] * 6))
     ROWS = [("1", "Profit at expected price", "price 27.50", "Normal",
-             "270 tickets, profit £2,075", "As expected ✓", True),
+             "270 tickets, profit £2,075", "As expected", True),
             ("2", "Hand-checked calculation", "price 20.00", "Normal",
              "360 tickets, revenue £7,200,\nprofit £1,400",
-             "As expected ✓", True),
+             "As expected", True),
             ("3", "Capacity limit applied", "price 10.00", "Normal",
-             "demand 480, so 400 tickets", "As expected ✓", True),
+             "demand 480, so 400 tickets", "As expected", True),
             ("4", "Lowest valid price", "price 5.00", "Boundary",
-             "accepted; 400 tickets", "As expected ✓", True),
+             "accepted; 400 tickets", "As expected", True),
             ("5", "Highest valid price", "price 60.00", "Boundary",
              "accepted; 0 tickets,\nprofit −£4,000",
-             "−120 tickets shown ✗\nMAX(0, …) added; retest ✓",
+             "−120 tickets shown: failed\nMAX(0, …) added; retest passed",
              False),
             ("6", "Price above the range", "price 75", "Invalid",
-             "rejected with stop alert", "As expected ✓", True),
+             "rejected with stop alert", "As expected", True),
             ("7", "Wrong data type", "\"twenty\"", "Erroneous",
-             "rejected with stop alert", "As expected ✓", True),
+             "rejected with stop alert", "As expected", True),
             ("8", "Break-even check", "price 15.00", "Normal",
-             "400 tickets, profit £0", "As expected ✓", True)]
+             "400 tickets, profit £0", "As expected", True)]
     for i, (n, pur, dat, typ, exp, act, ok) in enumerate(ROWS):
         y = 66 + i * 36
         fills = [FILL] * 5 + [FILL if ok else WARN_SOFT]
@@ -1161,8 +1162,9 @@ def _dashboard():
                      anchor="start"))
     body.append(box(X + 330, Y + 4, 160, 18, None, fill=FILL, stroke=LILAC,
                     r=4))
-    body.append(text(X + 338, Y + 17, "Scenario: Expected ▾", 9.2, 650,
+    body.append(text(X + 338, Y + 17, "Scenario: Expected", 9.2, 650,
                      anchor="start", fill=LILAC))
+    body.append('<path d="M%g %g h8 l-4 5 z" fill="%s"/>' % (X + 474, Y + 10, LILAC))
     KPI = [("PROFIT", money(profit(27.5)), TEAL, TEAL_SOFT),
            ("TICKETS", "270 / 400", INK, FILL2),
            ("BREAK-EVEN", "£15.00–£40.65", INK, FILL2),

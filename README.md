@@ -92,8 +92,8 @@ content/
   pages.py            About, privacy, accessibility, how to revise, glossary
   contact_page.py     Contact and report a problem (the form opens the reader's own email), and For teachers
 static/
-  css/site.css        Design system, light and dark themes
-  js/app.js           Theme, navigation, search, progress
+  css/site.css        Design system
+  js/app.js           Navigation, search, progress
   js/quiz.js          Quiz engine and exam answer auto marker
   js/certificate.js   The AI certificate: unlocking, the student's details, printing
   css/certificate.css The certificate page, and the print rules that put it on one A4 page
@@ -290,8 +290,7 @@ Topic(
 Topics that are easier to see than to read (a packet crossing a network, the layers
 of a graphics file, a stack of plates) carry a drawn illustration. Each one is a
 single inline SVG built in code, so it costs a few kilobytes, loads nothing and works
-with scripts off. The panel behind it follows the light or dark theme and the objects
-on it keep their own colours.
+with scripts off.
 
 A picture never carries the explanation alone. Under it is a numbered list that
 matches the numbered badges drawn into it, then a caption saying what to take away,
@@ -316,8 +315,7 @@ a typo fails the build instead of dropping a picture.
 
 ### Checking them
 
-`tools/check_illustrations.py` opens every drawing in a real browser, in the light and the
-dark theme, and checks that no text runs off the picture or onto other text, that no text
+`tools/check_illustrations.py` opens every drawing in a real browser and checks that no text runs off the picture or onto other text, that no text
 spills out of the pill or tile it sits in, and that every piece of text has at least 4.5 to 1
 contrast against what is actually behind it (3 to 1 for large text). It exits with status 1
 if anything is found, so it can gate a build:
@@ -325,7 +323,7 @@ if anything is found, so it can gate a build:
 ```
 pip install playwright pillow && playwright install chromium
 python3 build.py
-python3 tools/check_illustrations.py                 # every picture, both themes
+python3 tools/check_illustrations.py                 # every picture
 python3 tools/check_illustrations.py cpu-board mesh  # just these
 ```
 

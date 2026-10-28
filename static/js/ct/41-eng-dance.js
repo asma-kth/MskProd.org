@@ -76,7 +76,8 @@
       function pose(id) {
         dancer.className = "cdz-dancer" + (id ? " " + POSE[id] : "");
         px.mood(id && MOOD[id] ? MOOD[id] : "idle");
-        caption.textContent = id ? move(id).icon + " " + move(id).text : "Ready to dance!";
+        CT.clear(caption);
+        CT.append(caption, id ? [CT.ico(move(id).icon), " ", move(id).text] : "Ready to dance!");
       }
       // The full dance the student has programmed, gaps still empty.
       function programmed() {
@@ -87,7 +88,7 @@
 
       function chip(id, extra) {
         var m = id ? move(id) : null;
-        return CT.el("span", Object.assign({ class: "cdz-chip" + (m ? "" : " is-empty") }, extra || {}), m ? [CT.el("span", { "aria-hidden": "true" }, m.icon), CT.el("small", null, m.text)] : "?");
+        return CT.el("span", Object.assign({ class: "cdz-chip" + (m ? "" : " is-empty") }, extra || {}), m ? [CT.ico(m.icon), CT.el("small", null, m.text)] : "?");
       }
       function slotBtn(k) {
         var id = slots[k];
@@ -110,7 +111,7 @@
           if (rd.type === "next") slots.forEach(function (x, k) { strip.appendChild(CT.el("li", { class: "is-gap" + (rd.shown.length + k === hi ? " is-now" : "") }, slotBtn(k))); });
         }
         area.appendChild(CT.el("div", { class: "cdz-row" }, [strip,
-          CT.el("button", { type: "button", class: "ct-btn ct-btn-mini", disabled: playing ? true : null, onclick: function () { watch(); } }, rd.type === "loop" ? "▶ Watch the dance" : "▶ Watch it again")]));
+          CT.el("button", { type: "button", class: "ct-btn ct-btn-mini", disabled: playing ? true : null, onclick: function () { watch(); } }, rd.type === "loop" ? "Watch the dance" : "Watch it again")]));
         if (rd.type === "loop") {
           var loop = CT.el("div", { class: "cdz-loop" }, [
             CT.el("p", { class: "cdz-kw" }, [
@@ -134,7 +135,7 @@
             pose(m.id);
             CT.sound.play("drop");
             render();
-          } }, [CT.el("span", { "aria-hidden": "true" }, m.icon), m.text]));
+          } }, [CT.ico(m.icon), " ", m.text]));
         });
         area.appendChild(palEl);
         if (focus) { var f = area.querySelector(focus); if (f) f.focus(); }
@@ -149,7 +150,7 @@
           hi = i;
           pose(list[i]);
           if (list[i]) CT.sound.play("step");
-          else caption.textContent = "❓ ...";
+          else caption.textContent = "...";
           render();
           i++;
           CT.wait(650, step);
@@ -163,7 +164,7 @@
       start(0);
       CT.wait(500, function () { if (api.alive() && !playing) watch(); });
       return {
-        checkLabel: "▶ Dance!",
+        checkLabel: "Dance!",
         run: function (done) {
           var a = rd.type === "loop" ? { times: times, unit: slots } : slots;
           var r = checkRound(d, rd, a);

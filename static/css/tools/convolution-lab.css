@@ -1,6 +1,6 @@
 /* Convolution lab. Picture, kernel and feature map in a row on a wide screen,
-   wrapping on a phone. Drawn pixels use the ink colour, so the picture reads
-   in both themes; the feature map uses the course's blue-to-pink scale. */
+   wrapping on a phone. Drawn pixels use the ink colour; the feature map uses
+   the course's blue-to-pink scale. */
 .tool[data-tool="convolution-lab"] .cv-wrap {
   display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-start;
 }

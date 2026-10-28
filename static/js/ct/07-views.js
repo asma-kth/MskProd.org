@@ -14,11 +14,11 @@
       var snd = CT.store.state.settings.sound;
       CT.clear(bar);
       CT.append(bar, [
-        CT.el("a", { class: "ct-hud-home", href: "#/" }, [CT.el("span", { "aria-hidden": "true" }, "🧭"), " Adventure map"]),
+        CT.el("a", { class: "ct-hud-home", href: "#/" }, [CT.ui("map"), " Adventure map"]),
         CT.el("div", { class: "ct-hud-stats" }, [
-          CT.el("span", { class: "ct-hud-chip", title: "Stars" }, ["⭐ ", CT.el("b", null, String(t.stars)), CT.el("span", { class: "sr-only" }, " stars")]),
-          CT.el("span", { class: "ct-hud-chip", title: "XP" }, ["⚡ ", CT.el("b", null, String(t.xp)), " XP"]),
-          CT.el("span", { class: "ct-hud-chip", title: "Badges" }, ["🏅 ", CT.el("b", null, String(b)), CT.el("span", { class: "sr-only" }, " badges")]),
+          CT.el("span", { class: "ct-hud-chip", title: "Stars" }, [CT.ico("star"), " ", CT.el("b", null, String(t.stars)), CT.el("span", { class: "sr-only" }, " stars")]),
+          CT.el("span", { class: "ct-hud-chip", title: "XP" }, [CT.ico("bolt"), " ", CT.el("b", null, String(t.xp)), " XP"]),
+          CT.el("span", { class: "ct-hud-chip", title: "Badges" }, [CT.ico("medal"), " ", CT.el("b", null, String(b)), CT.el("span", { class: "sr-only" }, " badges")]),
           CT.el("span", { class: "ct-hud-chip ct-hud-pct", title: "Levels complete" }, [CT.el("b", null, t.pct + "%"), " done"])
         ]),
         CT.el("div", { class: "ct-hud-btns" }, [
@@ -28,9 +28,9 @@
               CT.store.state.settings.sound = !CT.store.state.settings.sound;
               CT.store.saveSettings(); render();
               CT.sound.play("good");
-            } }, snd ? "🔊" : "🔇"),
-          CT.el("a", { class: "ct-hud-btn", href: "#/daily", "aria-label": "Daily challenge" }, CT.daily.doneToday() ? "✅" : "⚡"),
-          CT.el("a", { class: "ct-hud-btn ct-hud-me", href: "#/me" }, ["🙂", CT.el("span", null, " Me")])
+            } }, CT.ui(snd ? "sound" : "mute")),
+          CT.el("a", { class: "ct-hud-btn", href: "#/daily", "aria-label": "Daily challenge" }, CT.ico(CT.daily.doneToday() ? "tick" : "bolt")),
+          CT.el("a", { class: "ct-hud-btn ct-hud-me", href: "#/me" }, [CT.ui("user"), CT.el("span", null, " Me")])
         ])
       ]);
     }
@@ -89,7 +89,7 @@
         '<g transform="translate(' + I.x + ' ' + I.y + ')">' + I.draw(w) +
         '<g transform="translate(0 72)"><rect x="-92" y="-20" width="184" height="46" rx="14" fill="#fff" stroke="' + w.colour + '" stroke-width="3"/>' +
         '<text x="0" y="-1" class="ct-isle-name" fill="' + w.deep + '">' + w.n + '. ' + w.place + '</text>' +
-        '<text x="0" y="17" class="ct-isle-sub">' + w.name + ' · ' + p.done + '/' + p.total + ' · ★' + p.stars + '</text></g>' +
+        '<text x="0" y="17" class="ct-isle-sub">' + w.name + ' · ' + p.done + '/' + p.total + '</text></g>' +
         (p.complete ? '<g transform="translate(78 -64)"><circle r="18" fill="#F5B700" stroke="#C98A00" stroke-width="3"/><path d="M-8 0 l5 6 l11 -12" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/></g>' : '') +
         '</g></a>');
     });
@@ -129,12 +129,11 @@
     CT.append(host, [
       CT.el("section", { class: "ct-hero" }, [
         CT.el("div", { class: "ct-hero-text" }, [
-          CT.el("p", { class: "ct-kicker" }, "🧭 Computational Thinking Adventure"),
+          CT.el("p", { class: "ct-kicker" }, "Computational Thinking Adventure"),
           h1,
-          CT.el("p", { class: "ct-lead" }, "Four island worlds and forty levels of puzzles, mazes and games. Finish a level to earn stars, XP and a Pixel celebration."),
           CT.el("div", { class: "ct-hero-btns" }, [
-            next ? CT.el("a", { class: "ct-btn ct-btn-big", href: "#/play/" + next.id }, (t.done ? "▶ Continue: " : "▶ Start: ") + CT.byId(CT.data.worlds, next.world).name + " " + next.n) : null,
-            CT.el("a", { class: "ct-btn ct-btn-soft", href: "#/daily" }, CT.daily.doneToday() ? "✅ Daily challenge done" : "⚡ Pixel's daily challenge")
+            next ? CT.el("a", { class: "ct-btn ct-btn-big", href: "#/play/" + next.id }, (t.done ? "Continue: " : "Start: ") + CT.byId(CT.data.worlds, next.world).name + " " + next.n) : null,
+            CT.el("a", { class: "ct-btn ct-btn-soft", href: "#/daily" }, CT.daily.doneToday() ? "Daily challenge done" : "Daily challenge")
           ])
         ]),
         comp.el
@@ -148,25 +147,25 @@
           CT.el("p", { class: "ct-world-tag" }, w.tag),
           CT.el("div", { class: "ct-bar", role: "progressbar", "aria-valuemin": "0", "aria-valuemax": String(p.total), "aria-valuenow": String(p.done), "aria-label": w.name + " progress" },
             CT.el("i", { style: { width: (p.total ? 100 * p.done / p.total : 0) + "%" } })),
-          CT.el("p", { class: "ct-world-meta" }, p.done + " of " + p.total + " levels · ★ " + p.stars + " of " + p.maxStars),
-          CT.el("p", { class: "ct-world-next" }, p.complete ? "🏆 Complete! Replay for stars." : (nx ? "Next: " + nx.title : ""))
+          CT.el("p", { class: "ct-world-meta" }, p.done + " of " + p.total + " levels · " + p.stars + " of " + p.maxStars + " stars"),
+          CT.el("p", { class: "ct-world-next" }, p.complete ? "Complete" : (nx ? "Next: " + nx.title : ""))
         ]);
       })),
       CT.el("section", { class: "ct-extras", "aria-label": "More to explore" }, [
-        extra("#/daily", "⚡", "Daily challenge", CT.daily.doneToday() ? "Done today. Streak: " + CT.store.state.daily.streak + " 🔥" : "One quick puzzle from what you have learned."),
-        extra("#/me", "🎁", "Mystery chests", ready.length ? ready.length + " chest" + (ready.length > 1 ? "s" : "") + " ready to open!" : "Earn a chest at 5, 10, 20, 30 and 40 levels."),
-        extra("#/lab/flowchart", "🔀", "Flowchart Lab", "Build a flowchart, run it and watch the robot follow it."),
-        extra("#/lab/pseudocode", "⌨️", "Pseudocode Playground", "Write pseudocode, run it and trace every step."),
-        extra("#/me", "🏅", "Badges and certificates", CT.progress.badges().length + " of " + CT.data.badges.length + " badges earned."),
-        extra("/computational-thinking/teacher/", "🍎", "Teacher mode", "All 40 levels, objectives, answers and previews.")
+        extra("#/daily", "bolt", "Daily challenge", CT.daily.doneToday() ? "Done today. Streak: " + CT.store.state.daily.streak : ""),
+        extra("#/me", "gift", "Treasure chests", ready.length ? ready.length + " ready to open" : ""),
+        extra("#/lab/flowchart", "flowchart", "Flowchart Lab", ""),
+        extra("#/lab/pseudocode", "keyboard", "Pseudocode Playground", ""),
+        extra("#/me", "medal", "Badges and certificates", CT.progress.badges().length + " of " + CT.data.badges.length + " badges"),
+        extra("/computational-thinking/teacher/", "apple", "Teacher mode", "")
       ])
     ]);
-    if (ready.length) comp.say("A mystery chest is waiting for you! Open it on your Me page.", "happy");
+    if (ready.length) comp.say("A treasure chest is ready! Open it on your Me page.", "happy");
     heading(h1);
   };
   function extra(href, icon, title, text) {
-    return CT.el("a", { class: "ct-extra", href: href }, [CT.el("span", { class: "ct-extra-i", "aria-hidden": "true" }, icon),
-      CT.el("span", null, [CT.el("b", null, title), CT.el("small", null, text)])]);
+    return CT.el("a", { class: "ct-extra", href: href }, [CT.el("span", { class: "ct-extra-i", "aria-hidden": "true" }, CT.ico(icon)),
+      CT.el("span", null, [CT.el("b", null, title), text ? CT.el("small", null, text) : null])]);
   }
 
   // --------------------------------------------------------- world path
@@ -180,14 +179,14 @@
     var h1 = CT.el("h1", { tabindex: "-1" }, [w.name + ": ", CT.el("span", null, w.tag)]);
     var comp = CT.companion({ mood: p.complete ? "proud" : "wave", cls: "ct-world-pal",
       say: p.complete ? "You conquered " + w.place + "! Replay any level to earn more stars." :
-        (p.done ? "Great progress! Next up: " + nx.title + "." : "Welcome to " + w.place + "! " + w.about) });
+        (p.done ? "Next up: " + nx.title + "." : "Welcome to " + w.place + "!") });
     var path = CT.el("div", { class: "ct-path", role: "list", "aria-label": w.name + " levels" });
     CT.append(host, [
       CT.el("header", { class: "ct-world-head" }, [
         CT.el("a", { class: "ct-back", href: "#/" }, "← Adventure map"),
         CT.el("div", { class: "ct-world-title" }, [CT.el("p", { class: "ct-kicker" }, "World " + w.n + " · " + w.place), h1, CT.el("p", { class: "ct-lead" }, w.about)]),
         CT.el("div", { class: "ct-world-stats" }, [
-          ring(p.done, p.total), CT.el("div", null, [CT.el("b", null, "★ " + p.stars + " / " + p.maxStars), CT.el("small", null, "stars")]),
+          ring(p.done, p.total), CT.el("div", null, [CT.el("b", null, [CT.ico("star"), " " + p.stars + " / " + p.maxStars]), CT.el("small", null, "stars")]),
           CT.el("div", { class: "ct-world-badge" + (earned ? " is-earned" : "") }, [CT.celebrate.badgeArt(earned ? w : { colour: "#94A3B8", deep: "#64748B" }, badge.icon),
             CT.el("small", null, earned ? badge.name : "Badge: " + badge.name)])
         ])
@@ -196,11 +195,10 @@
         nx ? CT.el("div", { class: "ct-next-card" }, [
           CT.el("p", { class: "ct-kicker" }, "Up next · Level " + nx.n + " · " + nx.band),
           CT.el("h2", null, nx.title),
-          CT.el("p", null, ["You will learn: ", nx.objective]),
-          CT.el("a", { class: "ct-btn ct-btn-big", href: "#/play/" + nx.id }, "▶ Play level " + nx.n)
-        ]) : CT.el("div", { class: "ct-next-card" }, [CT.el("p", { class: "ct-kicker" }, "🏆 World complete"),
+          CT.el("a", { class: "ct-btn ct-btn-big", href: "#/play/" + nx.id }, "Play level " + nx.n)
+        ]) : CT.el("div", { class: "ct-next-card" }, [CT.el("p", { class: "ct-kicker" }, "World complete"),
           CT.el("h2", null, "You are a " + badge.name + "!"),
-          CT.el("a", { class: "ct-btn ct-btn-big", href: "/computational-thinking/certificate/?world=" + wid }, "🎓 Your certificate")])
+          CT.el("a", { class: "ct-btn ct-btn-big", href: "/computational-thinking/certificate/?world=" + wid }, "Your certificate")])
       ])])
     ]);
     drawPath(path, levels, w);
@@ -255,11 +253,11 @@
         class: "ct-node" + (done ? " is-done" : "") + (isCur ? " is-current" : "") + (!open ? " is-locked" : ""),
         href: open ? "#/play/" + l.id : null, type: open ? null : "button",
         "aria-label": "Level " + l.n + ": " + l.title + ". " + l.band + ". " + (done ? stars + " stars." : open ? "Ready to play." : "Locked. Finish level " + (l.n - 1) + " first."),
-        onclick: open ? null : function () { CT.celebrate.toast("🔒 Finish level " + (l.n - 1) + " first"); }
+        onclick: open ? null : function () { CT.celebrate.toast("Finish level " + (l.n - 1) + " first"); }
       }, [
-        CT.el("span", { class: "ct-node-dot" }, done ? "✓" : (open ? String(l.n) : "🔒")),
+        CT.el("span", { class: "ct-node-dot" }, done ? CT.ui("check") : (open ? String(l.n) : CT.ui("lock"))),
         CT.el("span", { class: "ct-node-label" }, [CT.el("b", null, l.n + ". " + l.title),
-          CT.el("span", { class: "ct-node-stars", "aria-hidden": "true" }, [1, 2, 3].map(function (s) { return CT.el("i", { class: s <= stars ? "on" : "" }, "★"); }))])
+          CT.el("span", { class: "ct-node-stars", "aria-hidden": "true" }, [1, 2, 3].map(function (s) { return CT.ico(s <= stars ? "star" : "star-off"); }))])
       ]);
       // The list item is the wrapper, so the link or button inside keeps its own role.
       path.appendChild(CT.el("div", { class: "ct-node-li", role: "listitem",
@@ -294,14 +292,14 @@
       var have = CT.progress.wearables();
       wardrobe.appendChild(CT.el("div", { class: "ct-wardrobe-cat" }, [preview.svg]));
       var list = CT.el("div", { class: "ct-wardrobe-list" });
-      if (!have.length) list.appendChild(CT.el("p", { class: "ctl-muted" }, "Open mystery chests to win things for Pixel to wear."));
+      if (!have.length) list.appendChild(CT.el("p", { class: "ctl-muted" }, "Nothing to wear yet."));
       have.forEach(function (c) {
         var on = CT.store.state.wear.indexOf(c.wear) >= 0;
         list.appendChild(CT.el("button", { type: "button", class: "ct-chipbtn" + (on ? " is-on" : ""), "aria-pressed": on ? "true" : "false", onclick: function () {
           var wr = CT.store.state.wear, k = wr.indexOf(c.wear);
           if (k >= 0) wr.splice(k, 1); else wr.push(c.wear);
           CT.store.save(); preview.wear(wr); drawWardrobe(); CT.sound.play("tap");
-        } }, (on ? "✓ " : "") + c.wear_name));
+        } }, [on ? CT.ui("check") : null, c.wear_name]));
       });
       wardrobe.appendChild(list);
       preview.wear(CT.store.state.wear);
@@ -312,7 +310,7 @@
       CT.data.chests.forEach(function (c, i) {
         var opened = CT.store.state.chests.indexOf(c.at) >= 0, ready = !opened && t.done >= c.at;
         chests.appendChild(CT.el("div", { class: "ct-chest" + (opened ? " is-open" : ready ? " is-ready" : "") }, [
-          CT.el("span", { class: "ct-chest-i", "aria-hidden": "true" }, opened ? "📦" : ready ? "🎁" : "🔒"),
+          CT.el("span", { class: "ct-chest-i", "aria-hidden": "true" }, CT.ico(opened ? "box" : ready ? "gift" : "lock")),
           CT.el("b", null, "Chest " + (i + 1)),
           CT.el("small", null, opened ? c.wear_name + " + bonus puzzle" : ready ? "Ready to open!" : "Finish " + c.at + " levels"),
           ready ? CT.el("button", { type: "button", class: "ct-btn ct-btn-go", onclick: function () {
@@ -337,18 +335,17 @@
       [["auto", "Follow my device"], ["full", "Full animation"], ["calm", "Calm (no animation)"]].map(function (o) {
         return CT.el("option", { value: o[0], selected: s.motion === o[0] ? true : null }, o[1]); }));
     CT.append(host, [
-      CT.el("header", { class: "ct-me-head" }, [CT.el("a", { class: "ct-back", href: "#/" }, "← Adventure map"), h1,
-        CT.el("p", { class: "ct-lead" }, "Your stars, XP, badges and rewards, saved in this browser only.")]),
+      CT.el("header", { class: "ct-me-head" }, [CT.el("a", { class: "ct-back", href: "#/" }, "← Adventure map"), h1]),
       CT.el("div", { class: "ct-me-stats" }, [
-        stat("⭐", t.stars + " / " + t.maxStars, "stars"), stat("⚡", String(t.xp), "XP"),
-        stat("🗺", t.done + " / " + t.total, "levels"), stat("📈", t.pct + "%", "complete"),
-        stat("🔥", String(CT.store.state.daily.streak), "day streak")
+        stat("star", t.stars + " / " + t.maxStars, "stars"), stat("bolt", String(t.xp), "XP"),
+        stat("map", t.done + " / " + t.total, "levels"), stat("chart", t.pct + "%", "complete"),
+        stat("flame", String(CT.store.state.daily.streak), "day streak")
       ]),
       CT.el("section", { class: "ct-me-sec" }, [CT.el("h2", null, "Worlds"), CT.el("div", { class: "ct-me-worlds" }, CT.data.worlds.map(function (w) {
         var p = CT.progress.world(w.id);
         return CT.el("a", { class: "ct-me-world", href: "#/world/" + w.id, style: { "--w": w.colour } }, [CT.el("b", null, w.name),
           CT.el("div", { class: "ct-bar" }, CT.el("i", { style: { width: (p.total ? 100 * p.done / p.total : 0) + "%" } })),
-          CT.el("small", null, p.done + "/" + p.total + " levels · ★" + p.stars)]);
+          CT.el("small", null, p.done + "/" + p.total + " levels · " + p.stars + " stars")]);
       }))]),
       CT.el("section", { class: "ct-me-sec" }, [CT.el("h2", null, "Badges"), CT.el("div", { class: "ct-badges" }, CT.data.badges.map(function (b) {
         var on = earned.indexOf(b.id) >= 0, w = CT.byId(CT.data.worlds, (CT.data.worlds.filter(function (x) { return x.badge === b.id; })[0] || {}).id);
@@ -356,13 +353,13 @@
           CT.celebrate.badgeArt(on ? (w || { colour: "#D97706", deep: "#92400E" }) : { colour: "#94A3B8", deep: "#64748B" }, b.icon),
           CT.el("b", null, b.name), CT.el("small", null, on ? "Earned!" : b.desc)]);
       }))]),
-      CT.el("section", { class: "ct-me-sec" }, [CT.el("h2", null, "Mystery chests"), chests]),
+      CT.el("section", { class: "ct-me-sec" }, [CT.el("h2", null, "Treasure chests"), chests]),
       CT.el("section", { class: "ct-me-sec" }, [CT.el("h2", null, "Pixel's wardrobe"), wardrobe]),
       CT.el("section", { class: "ct-me-sec" }, [CT.el("h2", null, "Certificates"), CT.el("div", { class: "ct-certs" },
         CT.data.worlds.map(function (w) {
           var ok = CT.progress.world(w.id).complete;
-          return CT.el("a", { class: "ct-cert-link" + (ok ? " is-ready" : ""), href: "/computational-thinking/certificate/?world=" + w.id }, [ok ? "🎓 " : "🔒 ", w.name]);
-        }).concat([CT.el("a", { class: "ct-cert-link" + (t.done === t.total ? " is-ready" : ""), href: "/computational-thinking/certificate/?world=all" }, [t.done === t.total ? "👑 " : "🔒 ", "Champion"])]))]),
+          return CT.el("a", { class: "ct-cert-link" + (ok ? " is-ready" : ""), href: "/computational-thinking/certificate/?world=" + w.id }, [CT.ico(ok ? "medal" : "lock"), " ", w.name]);
+        }).concat([CT.el("a", { class: "ct-cert-link" + (t.done === t.total ? " is-ready" : ""), href: "/computational-thinking/certificate/?world=all" }, [CT.ico(t.done === t.total ? "medal-gold" : "lock"), " Champion"])]))]),
       CT.el("section", { class: "ct-me-sec" }, [CT.el("h2", null, "Settings"), CT.el("div", { class: "ct-settings" }, [
         toggle("sound", "Sound effects"),
         CT.voice.available() ? toggle("voice", "Read instructions aloud") : null,
@@ -375,7 +372,7 @@
     drawChests(); drawWardrobe();
     heading(h1);
   };
-  function stat(i, v, l) { return CT.el("div", { class: "ct-stat" }, [CT.el("span", { "aria-hidden": "true" }, i), CT.el("b", null, v), CT.el("small", null, l)]); }
+  function stat(i, v, l) { return CT.el("div", { class: "ct-stat" }, [CT.ico(i), CT.el("b", null, v), CT.el("small", null, l)]); }
 
   // ------------------------------------------------------------ bonus
   // A chest's bonus puzzle, played in the normal level player once the chest is open.
@@ -383,9 +380,9 @@
     var lv = CT.byId(CT.data.bonus || [], "bonus-" + n), chest = (CT.data.chests || [])[n - 1];
     var open = lv && chest && (CT.store.preview || CT.store.state.chests.indexOf(chest.at) >= 0);
     if (!open) {
-      var h = CT.el("h1", { tabindex: "-1" }, "🔒 Bonus puzzle " + n);
+      var h = CT.el("h1", { tabindex: "-1" }, [CT.ico("lock"), " Bonus puzzle " + n]);
       CT.append(host, [CT.el("header", { class: "ct-me-head" }, [CT.el("a", { class: "ct-back", href: "#/me" }, "← Chests and badges"), h,
-        CT.el("p", { class: "ct-lead" }, chest ? "Finish " + chest.at + " levels, then open treasure chest " + n + " to unlock this puzzle." : "There is no bonus puzzle here.")])]);
+        CT.el("p", { class: "ct-lead" }, chest ? "Unlocks with treasure chest " + n + ", after " + chest.at + " levels." : "There is no bonus puzzle here.")])]);
       heading(h);
       return null;
     }
@@ -395,15 +392,14 @@
   // ------------------------------------------------------------ daily
   V.daily = function (host) {
     var lv = CT.daily.pick();
-    var h1 = CT.el("h1", { tabindex: "-1" }, "⚡ Pixel's daily challenge");
+    var h1 = CT.el("h1", { tabindex: "-1" }, "Daily challenge");
     var comp = CT.companion({ mood: "think", cls: "ct-daily-pal" });
     var card = CT.el("div", { class: "ct-daily-card" });
-    CT.append(host, [CT.el("header", { class: "ct-me-head" }, [CT.el("a", { class: "ct-back", href: "#/" }, "← Adventure map"), h1,
-      CT.el("p", { class: "ct-lead" }, "One quick question a day from levels you have finished. Remembering is how learning sticks.")]),
+    CT.append(host, [CT.el("header", { class: "ct-me-head" }, [CT.el("a", { class: "ct-back", href: "#/" }, "← Adventure map"), h1]),
       CT.el("div", { class: "ct-daily" }, [comp.el, card])]);
     if (CT.daily.doneToday()) {
       comp.say("You've done today's challenge! Streak: " + CT.store.state.daily.streak + " days. See you tomorrow!", "proud");
-      card.appendChild(CT.el("p", { class: "ct-lead" }, "🔥 " + CT.store.state.daily.streak + " day streak. Best: " + CT.store.state.daily.best + "."));
+      card.appendChild(CT.el("p", { class: "ct-lead" }, [CT.ico("flame"), " " + CT.store.state.daily.streak + " day streak. Best: " + CT.store.state.daily.best + "."]));
       heading(h1); return;
     }
     if (!lv) { card.textContent = "No challenge today."; return; }
@@ -419,8 +415,8 @@
         Array.prototype.forEach.call(box.children, function (b) { b.disabled = true; });
         this.classList.add(right ? "is-right" : "is-wrong");
         if (!right) box.children[order.indexOf(q.answer)].classList.add("is-right");
-        card.appendChild(CT.el("p", { class: "ctl-why" }, [right ? "✓ Correct! " : "Not this time. ", q.why]));
-        card.appendChild(CT.el("p", { class: "ct-cel-xp" }, "+" + xp + " XP · 🔥 " + CT.store.state.daily.streak + " day streak"));
+        card.appendChild(CT.el("p", { class: "ctl-why" }, [right ? "Correct. " : "Not this time. ", q.why]));
+        card.appendChild(CT.el("p", { class: "ct-cel-xp" }, "+" + xp + " XP · " + CT.store.state.daily.streak + " day streak"));
         comp.say(right ? "Brilliant memory!" : "Now you'll remember it. Come back tomorrow!", right ? "cheer" : "wave", 3000);
         CT.sound.play(right ? "good" : "tap");
         CT.emit("hud");

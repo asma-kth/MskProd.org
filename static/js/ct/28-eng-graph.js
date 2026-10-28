@@ -77,8 +77,8 @@
   CT.solve.graph = function (d) { return d.rounds.map(function (rd) { return best(d, rd).path; }); };
 
   // Houses, trees and cars for the street view, placed clear of the roads.
-  var DECOR = [["🏠", 140, 290], ["🏠", 150, 360], ["🌳", 130, 140], ["🏢", 290, 290], ["🌳", 300, 140], ["🏠", 430, 270],
-               ["🌳", 560, 260], ["🏪", 440, 120], ["🌳", 170, 30], ["🏠", 470, 30], ["🌳", 610, 180], ["🚗", 140, 345], ["🚙", 420, 70]];
+  var DECOR = [["house", 140, 290], ["house", 150, 360], ["tree", 130, 140], ["office", 290, 290], ["tree", 300, 140], ["house", 430, 270],
+               ["tree", 560, 260], ["shop", 440, 120], ["tree", 170, 30], ["house", 470, 30], ["tree", 610, 180], ["car", 140, 345], ["car-blue", 420, 70]];
 
   CT.engines.graph = {
     mount: function (host, level, api) {
@@ -117,10 +117,10 @@
         var closed = closedSet(rd);
         var head = CT.el("div", { class: "cgr-head" }, [
           CT.roundChip(ri, d.rounds.length),
-          CT.el("p", { class: "cgr-goal" }, ["🎯 ", label(d, rd.start), " → ", rd.via ? label(d, rd.via) + " → " : "", label(d, rd.end)]),
-          CT.el("p", { class: "cgr-clock", "aria-live": "polite" }, ["⏱ ", CT.el("b", null, String(total())), " min so far"]),
+          CT.el("p", { class: "cgr-goal" }, ["Route: ", label(d, rd.start), " → ", rd.via ? label(d, rd.via) + " → " : "", label(d, rd.end)]),
+          CT.el("p", { class: "cgr-clock", "aria-live": "polite" }, [CT.ico("stopwatch"), " ", CT.el("b", null, String(total())), " min so far"]),
           CT.el("button", { type: "button", class: "ct-btn ct-btn-mini", "aria-pressed": street ? "true" : "false",
-            onclick: function () { street = !street; render(); } }, street ? "🕸 Show the graph" : (d.real || "🏙 Show the real streets"))
+            onclick: function () { street = !street; render(); } }, street ? "Show the graph" : (d.real || "Show the real streets"))
         ]);
         // On a narrow screen the map shrinks, so labels and junctions grow to stay readable and tappable.
         k = Math.max(1, Math.min(1.6, 0.92 * W / (board.clientWidth || W)));
@@ -128,7 +128,7 @@
           style: "--k: " + k.toFixed(2),
           "aria-label": "Road map. You are at " + label(d, here()) + "." });
         var deco = CT.svg("g", { class: "cgr-decor", "aria-hidden": "true" });
-        (d.decor || DECOR).forEach(function (x) { deco.appendChild(CT.svg("text", { x: x[1], y: x[2], text: x[0] })); });
+        (d.decor || DECOR).forEach(function (x) { deco.appendChild(CT.icoSvg(x[0], x[1] - 14, x[2] - 22, 28)); });
         svg.appendChild(deco);
         d.edges.forEach(function (e) {
           var a = at(e[0]), b = at(e[1]), isClosed = closed[key(e[0], e[1])];
@@ -138,7 +138,8 @@
           var mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
           var tag = CT.svg("g", { class: "cgr-tag" + (isClosed ? " is-closed" : "") });
           tag.appendChild(CT.svg("rect", { x: mx - 17 * k, y: my - 11 * k, width: 34 * k, height: 22 * k, rx: 11 * k }));
-          tag.appendChild(CT.svg("text", { x: mx, y: my + 5 * k, text: isClosed ? "🚧" : e[2] + "m" }));
+          if (isClosed) tag.appendChild(CT.icoSvg("roadworks", mx - 10 * k, my - 10 * k, 20 * k));
+          else tag.appendChild(CT.svg("text", { x: mx, y: my + 5 * k, text: e[2] + "m" }));
           svg.appendChild(tag);
         });
         d.nodes.forEach(function (n) {
@@ -146,16 +147,17 @@
           var g = CT.svg("g", { class: "cgr-node" + (n.icon ? " is-place" : "") + (near && !driving ? " is-next" : "") + (n.id === here() ? " is-here" : "") +
             (route.indexOf(n.id) >= 0 ? " is-been" : ""), transform: "translate(" + n.x + " " + n.y + ")" });
           g.appendChild(CT.svg("circle", { r: (n.icon ? 22 : 15) * k }));
-          g.appendChild(CT.svg("text", { y: (n.icon ? 7 : 5) * k, class: n.icon ? "cgr-ico" : "cgr-lab", text: n.icon || n.label }));
+          if (n.icon) g.appendChild(CT.icoSvg(n.icon, -15 * k, -15 * k, 30 * k, "cgr-ico"));
+          else g.appendChild(CT.svg("text", { y: 5 * k, class: "cgr-lab", text: n.label }));
           if (n.icon) g.appendChild(CT.svg("text", { y: 32 * k + 4, class: "cgr-name", text: n.label }));
-          if (rd.via === n.id && route.indexOf(n.id) < 0) g.appendChild(CT.svg("text", { x: 20 * k, y: -18 * k, class: "cgr-friend", text: "👋" }));
+          if (rd.via === n.id && route.indexOf(n.id) < 0) g.appendChild(CT.icoSvg("wave-hand", 10 * k, -36 * k, 22 * k, "cgr-friend"));
           g.addEventListener("click", function () { go(n.id); });
           svg.appendChild(g);
         });
         // The car starts where it was last drawn and glides to where it is now.
         var car = at(here()), from = lastPos || car;
         var carG = CT.svg("g", { class: "cgr-carg", style: "transform: translate(" + from.x + "px, " + from.y + "px)" });
-        carG.appendChild(CT.svg("text", { class: "cgr-car", x: 0, y: -24 * k, text: "🚗" }));
+        carG.appendChild(CT.icoSvg("car", -16 * k, -50 * k, 32 * k, "cgr-car"));
         svg.appendChild(carG);
         if (from !== car) requestAnimationFrame(function () { requestAnimationFrame(function () { carG.style.transform = "translate(" + car.x + "px, " + car.y + "px)"; }); });
         lastPos = car;
@@ -163,10 +165,10 @@
         var opts = CT.el("div", { class: "cgr-opts" }, [CT.el("p", { class: "ct-tray-h" }, "From " + label(d, here()) + ", drive to:")]);
         neighbours(here()).forEach(function (x) {
           opts.appendChild(CT.el("button", { type: "button", class: "ct-btn ct-btn-soft cgr-opt", disabled: x.closed || driving ? true : null,
-            onclick: function () { go(x.id); } }, [at(x.id).icon ? at(x.id).icon + " " : "", at(x.id).label, x.closed ? " (closed)" : " · " + x.mins + " min"]));
+            onclick: function () { go(x.id); } }, [at(x.id).icon ? CT.ico(at(x.id).icon) : null, " ", at(x.id).label, x.closed ? " (closed)" : " · " + x.mins + " min"]));
         });
         opts.appendChild(CT.el("button", { type: "button", class: "ct-btn ct-btn-mini", disabled: route.length < 2 || driving ? true : null,
-          onclick: function () { route.pop(); render(); CT.sound.play("tap"); } }, "↶ Back one road"));
+          onclick: function () { route.pop(); render(); CT.sound.play("tap"); } }, "Back one road"));
         CT.append(board, [head, CT.el("div", { class: "cgr-mapwrap" }, [svg]), opts]);
       }
 
@@ -199,7 +201,7 @@
       root.addEventListener("resize", onResize);
       start(0);
       return {
-        checkLabel: "🏁 Check my route",
+        checkLabel: "Check my route",
         check: evaluate,
         mark: function () { render(); },
         reset: function () { route = [rd.start]; render(); },

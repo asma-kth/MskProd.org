@@ -66,11 +66,11 @@
     var stage = CT.el("div", { class: "ctl-stage" });
     var feedback = CT.el("div", { class: "ctl-feedback", role: "status", "aria-live": "polite" });
     var hintList = CT.el("ol", { class: "ctl-hints" });
-    var bCheck = CT.el("button", { type: "button", class: "ct-btn ct-btn-go" }, "✓ Check");
-    var bHint = CT.el("button", { type: "button", class: "ct-btn ct-btn-soft" }, "💡 Hint (3 left)");
-    var bReset = CT.el("button", { type: "button", class: "ct-btn ct-btn-soft" }, "↺ Reset");
-    var bShow = CT.el("button", { type: "button", class: "ct-btn ct-btn-soft", hidden: true }, "👀 Show me");
-    var bRead = CT.el("button", { type: "button", class: "ct-btn ct-btn-mini", "aria-label": "Read the task aloud" }, "🔊 Read aloud");
+    var bCheck = CT.el("button", { type: "button", class: "ct-btn ct-btn-go" }, "Check");
+    var bHint = CT.el("button", { type: "button", class: "ct-btn ct-btn-soft" }, "Hint (3 left)");
+    var bReset = CT.el("button", { type: "button", class: "ct-btn ct-btn-soft" }, "Reset");
+    var bShow = CT.el("button", { type: "button", class: "ct-btn ct-btn-soft", hidden: true }, "Show me");
+    var bRead = CT.el("button", { type: "button", class: "ct-btn ct-btn-mini", "aria-label": "Read the task aloud" }, "Read aloud");
     var controls = CT.el("div", { class: "ctl-controls" }, [bCheck, bHint, bReset, bShow]);
     var stepsWrap = CT.el("div", { class: "ctl-steps-wrap" }, stepsBar("learn"));
     var best = CT.progress.stars(level.id);
@@ -84,17 +84,15 @@
         CT.el("h1", { class: "ctl-h", tabindex: "-1" }, level.title)
       ]),
       CT.el("div", { class: "ctl-best", "aria-label": best ? "Best: " + best + " stars" : "Not completed yet" },
-        [1, 2, 3].map(function (i) { return CT.el("span", { class: i <= best ? "is-on" : "" }, "★"); }))
+        [1, 2, 3].map(function (i) { return CT.ico(i <= best ? "star" : "star-off"); }))
     ]);
     var side = CT.el("aside", { class: "ctl-side" }, [
       comp.el,
-      CT.el("div", { class: "ctl-card" }, [CT.el("h2", null, "🎯 Goal"), CT.el("p", null, level.objective)]),
-      CT.el("div", { class: "ctl-card ctl-task" }, [CT.el("h2", null, "🕹 Your task"), CT.el("p", null, level.task), bRead]),
-      CT.el("div", { class: "ctl-card ctl-hintbox" }, [CT.el("h2", null, "💡 Pixel's hints"), hintList,
-        CT.el("p", { class: "ctl-muted" }, "Hints are free to use. Three stars needs no hints and at most one slip.")])
+      CT.el("div", { class: "ctl-card ctl-task" }, [CT.el("h2", null, "Your task"), CT.el("p", null, level.task), bRead]),
+      CT.el("div", { class: "ctl-card ctl-hintbox" }, [CT.el("h2", null, "Hints"), hintList])
     ]);
     // On narrow screens the side cards drop below the board, so the task is repeated above it.
-    var taskLine = CT.el("p", { class: "ctl-taskline", "aria-hidden": "true" }, ["🕹 ", level.task]);
+    var taskLine = CT.el("p", { class: "ctl-taskline", "aria-hidden": "true" }, level.task);
     var body = CT.el("div", { class: "ctl-body" }, [side, CT.el("div", { class: "ctl-main" }, [taskLine, stage, controls, feedback])]);
     CT.append(host, [header, stepsWrap, body]);
 
@@ -123,7 +121,7 @@
       // Engines with timers check this before every tick.
       alive: function () { return !dead; },
       // Engines whose main button changes job between stages rename it.
-      label: function (t) { bCheck.textContent = t || "✓ Check"; },
+      label: function (t) { bCheck.textContent = t || "Check"; },
       // Pressing Enter in an engine's own input presses the main button.
       submit: function () { if (!bCheck.disabled && !controls.hidden) bCheck.click(); }
     };
@@ -135,7 +133,7 @@
       var board = CT.el("div", { class: "ctl-board ctl-board-" + level.engine });
       stage.appendChild(board);
       ctl = eng.mount(board, level, api);
-      bCheck.textContent = ctl.checkLabel || "✓ Check";
+      bCheck.textContent = ctl.checkLabel || "Check";
       // For the automated play-through in tools/check_ct_play.py.
       CT.debug = { ctl: function () { return ctl; }, phase: function () { return st.phase; } };
       return ctl;
@@ -149,7 +147,7 @@
       say("Quick memory check before we start. No pressure!", "think");
       var q = past.remember;
       var box = CT.el("div", { class: "ctl-panel ctl-remember" }, [
-        CT.el("p", { class: "ctl-kicker" }, "🧠 Remember Level " + past.n + ": " + past.title),
+        CT.el("p", { class: "ctl-kicker" }, "Remember: level " + past.n + ", " + past.title),
         CT.el("h2", null, q.q)
       ]);
       var opts = CT.el("div", { class: "ct-mcq" });
@@ -160,7 +158,7 @@
           Array.prototype.forEach.call(opts.children, function (b) { b.disabled = true; });
           this.classList.add(right ? "is-right" : "is-wrong");
           if (!right) opts.children[order.indexOf(q.answer)].classList.add("is-right");
-          box.appendChild(CT.el("p", { class: "ctl-why" }, [right ? "✓ Yes! " : "Not quite. ", q.why]));
+          box.appendChild(CT.el("p", { class: "ctl-why" }, [right ? "Yes. " : "Not quite. ", q.why]));
           box.appendChild(CT.el("button", { type: "button", class: "ct-btn ct-btn-go", onclick: learn }, "Continue →"));
           if (right && !CT.progress.done(level.id)) { CT.progress.addXP(10); CT.emit("hud"); }
           say(right ? "Remembered it! +10 XP" : "Good to see it again. That is how memories get stronger.", right ? "happy" : "wave", 2400);
@@ -179,10 +177,10 @@
       var hasDemo = !!(level.watch || (eng && eng.demo));
       var panel = CT.el("div", { class: "ctl-panel ctl-learn" }, [
         CT.conceptArt(level.world),
-        CT.el("p", { class: "ctl-kicker" }, "📘 Learn"),
+        CT.el("p", { class: "ctl-kicker" }, "Learn"),
         CT.el("p", { class: "ctl-learn-text" }, level.learn),
         CT.el("div", { class: "ctl-learn-btns" }, [
-          hasDemo ? CT.el("button", { type: "button", class: "ct-btn ct-btn-go", onclick: watch }, "▶ Watch an example") : null,
+          hasDemo ? CT.el("button", { type: "button", class: "ct-btn ct-btn-go", onclick: watch }, "Watch an example") : null,
           CT.el("button", { type: "button", class: hasDemo ? "ct-btn ct-btn-soft" : "ct-btn ct-btn-go", onclick: play }, hasDemo ? "Skip to the game" : "Let's play →")
         ])
       ]);
@@ -197,13 +195,13 @@
       setPhase("watch");
       mount(true);
       var cap = CT.el("p", { class: "ctl-caption" }, (level.watch && level.watch.say) || "Watch Pixel do the first step.");
-      stage.insertBefore(CT.el("div", { class: "ctl-watchbar" }, [CT.el("span", { class: "ctl-kicker" }, "👀 Watch"), cap]), stage.firstChild);
+      stage.insertBefore(CT.el("div", { class: "ctl-watchbar" }, [CT.el("span", { class: "ctl-kicker" }, "Watch"), cap]), stage.firstChild);
       say((level.watch && level.watch.say) || "Watch me do the first one.", "think");
       CT.voice.say(cap.textContent);
       var after = function () {
         say("Your turn! You've got this.", "happy", 2200);
         var go = CT.el("button", { type: "button", class: "ct-btn ct-btn-go ctl-watch-go", onclick: function () { play(); } }, "My turn →");
-        var again = CT.el("button", { type: "button", class: "ct-btn ct-btn-soft", onclick: watch }, "↺ Watch again");
+        var again = CT.el("button", { type: "button", class: "ct-btn ct-btn-soft", onclick: watch }, "Watch again");
         stage.appendChild(CT.el("div", { class: "ctl-learn-btns" }, [go, again]));
         go.focus({ preventScroll: true });
       };
@@ -215,7 +213,7 @@
       setPhase("play");
       mount(false);
       tell("");
-      say(level.task, "idle");
+      say("Your turn.", "idle");
       var first = stage.querySelector("button, [tabindex='0'], input, select, textarea");
       if (first) first.focus({ preventScroll: true });
     }
@@ -226,7 +224,7 @@
         CT.sound.play("good");
         tell(res.msg || "Round complete!", "good");
         say(res.msg || "Round complete! On to the next one.", "happy", 2200);
-        CT.celebrate.toast(res.toast || "⭐ Round complete!");
+        CT.celebrate.toast(res.toast || "Round complete!");
         return;
       }
       if (res.ok) { win(); return; }
@@ -258,7 +256,7 @@
       var h = level.hints[st.hints];
       st.hints += 1;
       hintList.appendChild(CT.el("li", { class: "is-new" }, h));
-      bHint.textContent = st.hints >= 3 ? "💡 No hints left" : "💡 Hint (" + (3 - st.hints) + " left)";
+      bHint.textContent = st.hints >= 3 ? "No hints left" : "Hint (" + (3 - st.hints) + " left)";
       bHint.disabled = st.hints >= 3;
       say(h, "think");
       CT.voice.say(h);

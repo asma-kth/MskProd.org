@@ -91,7 +91,7 @@
   function starRow(n, of) {
     var row = CT.el("div", { class: "ct-cel-stars", role: "img", "aria-label": n + " out of " + (of || 3) + " stars" });
     for (var i = 0; i < (of || 3); i++) {
-      row.appendChild(CT.el("span", { class: "ct-star" + (i < n ? " is-on" : ""), style: { "--i": i }, "aria-hidden": "true" }, "★"));
+      row.appendChild(CT.el("span", { class: "ct-star" + (i < n ? " is-on" : ""), style: { "--i": i }, "aria-hidden": "true" }, CT.ico(i < n ? "star" : "star-off")));
     }
     return row;
   }
@@ -157,20 +157,20 @@
       var next = result.nextLabel || "NEXT LEVEL";
       CT.append(o.card, [
         CT.el("div", { class: "ct-cel-pixel" }, [px.svg]),
-        CT.el("p", { class: "ct-cel-kicker" }, ["🎉 ", level.preview ? "LEVEL COMPLETE (PREVIEW)" : "LEVEL COMPLETE!", " 🎉"]),
+        CT.el("p", { class: "ct-cel-kicker" }, level.preview ? "LEVEL COMPLETE (PREVIEW)" : "LEVEL COMPLETE!"),
         CT.el("h2", { class: "ct-cel-h", id: "ct-cel-h", tabindex: "-1" }, headline),
         starRow(result.stars),
         xpLine,
         CT.el("blockquote", { class: "ct-cel-say" }, [CT.el("b", null, "Pixel says: "), "“" + level.cheer + "”"]),
         CT.el("p", { class: "ct-cel-skill" }, [CT.el("span", { class: "ct-chip" }, "Skill unlocked"), " ", level.skill]),
         result.newBadges && result.newBadges.length ? CT.el("p", { class: "ct-cel-badge" },
-          ["🏅 New badge: ", result.newBadges.map(function (id) { return CT.byId(CT.data.badges, id).name; }).join(", ")]) : null,
-        result.chests && result.chests.length ? CT.el("p", { class: "ct-cel-badge" }, "🎁 A mystery chest has appeared on your map!") : null,
+          ["New badge: ", result.newBadges.map(function (id) { return CT.byId(CT.data.badges, id).name; }).join(", ")]) : null,
+        result.chests && result.chests.length ? CT.el("p", { class: "ct-cel-badge" }, "A treasure chest is ready to open.") : null,
         level.preview ? CT.el("p", { class: "ct-cel-note" }, "Teacher preview: progress is not saved.") : null,
         CT.el("div", { class: "ct-cel-btns" }, [
           on.next ? button(next + " →", "ct-btn-big", function () { o.close(false); on.next(); }) : null,
-          button("↺ Try again", "ct-btn-ghost", function () { o.close(false); on.again(); }),
-          button("🗺 Map", "ct-btn-ghost", function () { o.close(false); on.map(); })
+          button("Try again", "ct-btn-ghost", function () { o.close(false); on.again(); }),
+          button("Map", "ct-btn-ghost", function () { o.close(false); on.map(); })
         ]),
         button("Skip animation", "ct-cel-skip", function () { o.skip(); })
       ]);
@@ -198,15 +198,15 @@
       var st = CT.progress.world(world.id);
       CT.append(o.card, [
         CT.el("div", { class: "ct-cel-duo" }, [CT.el("div", { class: "ct-cel-pixel" }, [px.svg]), badgeArt(world, badge.icon)]),
-        CT.el("p", { class: "ct-cel-kicker" }, "🏆 WORLD COMPLETE! 🏆"),
+        CT.el("p", { class: "ct-cel-kicker" }, "WORLD COMPLETE!"),
         CT.el("h2", { class: "ct-cel-h", id: "ct-cel-h", tabindex: "-1" }, "You are a " + badge.name + "!"),
         starRow(Math.round(3 * st.stars / Math.max(1, st.maxStars))),
         CT.el("p", { class: "ct-cel-xp" }, st.stars + " of " + st.maxStars + " stars in " + world.name),
         CT.el("blockquote", { class: "ct-cel-say" }, [CT.el("b", null, "Pixel says: "),
           "“You conquered " + world.place + "! " + world.about + " You can do that now. Purr-fect!”"]),
         CT.el("div", { class: "ct-cel-btns" }, [
-          CT.el("a", { class: "ct-btn ct-btn-big", href: "/computational-thinking/certificate/?world=" + world.id }, "🎓 Get your certificate"),
-          button("🗺 Back to the map", "ct-btn-ghost", function () { o.close(false); on.map(); })
+          CT.el("a", { class: "ct-btn ct-btn-big", href: "/computational-thinking/certificate/?world=" + world.id }, "Get your certificate"),
+          button("Back to the map", "ct-btn-ghost", function () { o.close(false); on.map(); })
         ]),
         button("Skip animation", "ct-cel-skip", function () { o.skip(); })
       ]);
@@ -225,15 +225,15 @@
       var t = CT.progress.totals();
       CT.append(o.card, [
         CT.el("div", { class: "ct-cel-pixel ct-cel-pixel-xl" }, [px.svg]),
-        CT.el("p", { class: "ct-cel-kicker" }, "👑 ALL 40 LEVELS 👑"),
+        CT.el("p", { class: "ct-cel-kicker" }, "ALL 40 LEVELS"),
         CT.el("h2", { class: "ct-cel-h ct-cel-h-xl", id: "ct-cel-h", tabindex: "-1" }, "YOU ARE A COMPUTATIONAL THINKING CHAMPION!"),
         starRow(3),
         CT.el("p", { class: "ct-cel-xp" }, t.stars + " stars and " + t.xp + " XP"),
         CT.el("blockquote", { class: "ct-cel-say" }, [CT.el("b", null, "Pixel says: "),
           "“Decomposition, abstraction, patterns and algorithms: you think like a computer scientist now. I am SO proud of you!”"]),
         CT.el("div", { class: "ct-cel-btns" }, [
-          CT.el("a", { class: "ct-btn ct-btn-big", href: "/computational-thinking/certificate/?world=all" }, "🎓 Your champion certificate"),
-          button("🗺 Back to the map", "ct-btn-ghost", function () { o.close(false); on.map(); })
+          CT.el("a", { class: "ct-btn ct-btn-big", href: "/computational-thinking/certificate/?world=all" }, "Your champion certificate"),
+          button("Back to the map", "ct-btn-ghost", function () { o.close(false); on.map(); })
         ]),
         button("Skip animation", "ct-cel-skip", function () { o.skip(); })
       ]);
@@ -251,12 +251,11 @@
       var px = new CT.Pixel({ mood: "happy", wear: [chest.wear] });
       CT.append(o.card, [
         CT.el("div", { class: "ct-cel-pixel" }, [px.svg]),
-        CT.el("p", { class: "ct-cel-kicker" }, "🎁 MYSTERY CHEST OPENED!"),
+        CT.el("p", { class: "ct-cel-kicker" }, "TREASURE CHEST OPENED!"),
         CT.el("h2", { class: "ct-cel-h", id: "ct-cel-h", tabindex: "-1" }, "You found: " + chest.wear_name + "!"),
-        CT.el("p", { class: "ct-cel-skill" }, "Pixel can wear it now. Choose what he wears on your Me page."),
         CT.el("div", { class: "ct-cel-btns" }, [
-          button("🧩 Play the bonus puzzle", "ct-btn-big", function () { o.close(false); on.bonus(); }),
-          button("👕 Put it on Pixel", "ct-btn-ghost", function () { o.close(false); on.wear(); }),
+          button("Play the bonus puzzle", "ct-btn-big", function () { o.close(false); on.bonus(); }),
+          button("Put it on Pixel", "ct-btn-ghost", function () { o.close(false); on.wear(); }),
           button("Later", "ct-btn-ghost", function () { o.close(); })
         ]),
         button("Skip animation", "ct-cel-skip", function () { o.skip(); })

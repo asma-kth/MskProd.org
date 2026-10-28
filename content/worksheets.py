@@ -115,9 +115,6 @@ def _worksheet(course, unit, topic):
   <div class="ws-actions no-print">
     <button class="btn btn-primary" type="button" onclick="window.print()">%s Print this worksheet</button>
     <a class="btn btn-secondary" href="/%s/%s/">%s Back to the topic</a>
-    <p class="muted">The mark scheme starts on a new page, so you can print pages one
-      and two for a student and keep the last page yourself. Everything prints in black
-      on white whichever theme you are using.</p>
   </div>
   <article class="worksheet">
     %s
@@ -162,19 +159,17 @@ def build(register, add_search, courses):
         if rows:
             index_rows.append(
                 '<section class="section"><div class="section-head"><h2>%s</h2>'
-                '<p>%s</p></div><div class="unit-list">%s</div></section>'
-                % (esc(course.title), esc(course.blurb), "".join(rows)))
+                '</div><div class="unit-list">%s</div></section>'
+                % (esc(course.title), "".join(rows)))
 
     trail = [("Home", "/"), ("Worksheets", None)]
-    lead = ("Every topic on the site as a worksheet you can print: the knowledge check "
-            "as multiple choice, the exam-style questions with ruled answer space, and "
-            "the mark scheme on a separate sheet. Useful for revising away from a "
-            "screen, and for teachers who want a ready made lesson resource.")
+    lead = ("Every topic as a printable worksheet: the knowledge check, the exam-style "
+            "questions and the mark scheme.")
     body = """<div class="wrap">
   %s
-  <header class="section-head"><h1>Printable worksheets</h1><p class="lead">%s</p></header>
+  <header class="section-head"><h1>Printable worksheets</h1></header>
   %s
-</div>""" % (crumbs(trail), esc(lead), "".join(index_rows))
+</div>""" % (crumbs(trail), "".join(index_rows))
     path = "/worksheets/"
     write(path, layout(title="Printable Computing Worksheets", description=lead,
                        path=path, body=body,

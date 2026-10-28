@@ -25,10 +25,7 @@ THEMES = [
     ("royal", "Royal", ("#1E1B4B", "#7C3AED", "#D4A017")),
 ]
 
-LEAD = ("Pass every lesson quiz in the AI course with at least 70% and your certificate "
-        "unlocks here; your best score on each quiz counts. Add your name, choose your colours "
-        "and print it, or save it as a PDF. Scores are saved in this browser, so finish the "
-        "course on the same device.")
+LEAD = "Unlocks when every lesson quiz in the AI course is passed with 70% or more."
 
 
 
@@ -189,7 +186,7 @@ def certificate_svg(levels):
         _text(290, 702, "Date", "ct-label"),
         _text(290, 724, "", "ct-no", ident="cert-no"),
         _seal(CX, 664, c),
-        _text(833, 668, "Asma Kethiri", "ct-sig"),
+        _text(833, 668, "Ms Kethiri", "ct-sig"),
         '<line x1="733" y1="682" x2="933" y2="682" stroke="#94A3B8" stroke-width="1.2"/>',
         _text(833, 702, "Course author, MskProd Computing", "ct-label"),
         _text(833, 724, "mskprod.org/ai", "ct-no"),
@@ -231,8 +228,7 @@ def build(register, add_search):
     <h1>%s Your AI certificate</h1>
     <p class="lead">%s</p>
   </header>
-  <noscript><p class="muted">The certificate reads your saved quiz scores using JavaScript, so it needs
-  JavaScript switched on. Every lesson in the course works without it.</p></noscript>
+  <noscript><p class="muted">This page needs JavaScript.</p></noscript>
   <div id="cert" class="cert-app">
     <div class="card cert-status" id="cert-status" role="status" aria-live="polite">
       <p class="muted">Checking your quiz scores.</p>

@@ -17,16 +17,6 @@
   };
   window.MskStore = store;
 
-  /* ------------------------------------------------------------ theme */
-  // No manual toggle: the theme follows the reader's own system setting.
-  var root = document.documentElement;
-  var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
-  function applyTheme() {
-    root.setAttribute("data-theme", prefersDark && prefersDark.matches ? "dark" : "light");
-  }
-  applyTheme();
-  if (prefersDark && prefersDark.addEventListener) prefersDark.addEventListener("change", applyTheme);
-
   /* -------------------------------------------------------------- nav */
   var navBtn = document.getElementById("navToggle");
   var nav = document.getElementById("primaryNav");

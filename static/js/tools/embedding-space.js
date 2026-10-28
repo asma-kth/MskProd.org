@@ -115,9 +115,9 @@
       return { w: canvas.width, h: canvas.height, k: k, cy: canvas.height / 2 - 0.275 * k, dpr: dpr };
     }
     function draw() {
-      var S = fit(), g = canvas.getContext("2d"), dark = document.documentElement.getAttribute("data-theme") === "dark";
+      var S = fit(), g = canvas.getContext("2d");
       g.clearRect(0, 0, S.w, S.h);
-      var ink = dark ? "#E5E7EB" : "#111827", faint = dark ? "rgba(229,231,235,0.18)" : "rgba(17,24,39,0.14)";
+      var ink = "#111827", faint = "rgba(17,24,39,0.14)";
       // a floor grid under the words, for orientation
       var F = 0.9, Z = -0.85, corners = [[-F, -F, Z], [F, -F, Z], [F, F, Z], [-F, F, Z]];
       g.strokeStyle = faint; g.lineWidth = S.dpr;
@@ -153,7 +153,7 @@
         it.r = (w === st.focus ? 7.5 : 5.2) * S.dpr * p[3];
         g.beginPath(); g.arc(p[0], p[1], it.r, 0, Math.PI * 2);
         g.fillStyle = COLOUR[w]; g.globalAlpha = it.hot ? 1 : 0.75; g.fill(); g.globalAlpha = 1;
-        g.lineWidth = 1.5 * S.dpr; g.strokeStyle = dark ? "#0B1220" : "#FFFFFF"; g.stroke();
+        g.lineWidth = 1.5 * S.dpr; g.strokeStyle = "#FFFFFF"; g.stroke();
       });
       // Labels go on last: the focus word always, then the other highlighted
       // words, then the rest from front to back, skipping any label that would
@@ -169,7 +169,7 @@
         var clash = placed.some(function (q) { return box[0] < q[2] && q[0] < box[2] && box[1] < q[3] && q[1] < box[3]; });
         if (clash && it.w !== st.focus) return;
         placed.push(box);
-        g.lineWidth = 3 * S.dpr; g.strokeStyle = dark ? "rgba(11,18,32,0.85)" : "rgba(255,255,255,0.9)";
+        g.lineWidth = 3 * S.dpr; g.strokeStyle = "rgba(255,255,255,0.9)";
         g.strokeText(it.w, x, y);
         g.fillStyle = ink; g.globalAlpha = it.hot ? 1 : 0.8;
         g.fillText(it.w, x, y); g.globalAlpha = 1;
@@ -223,7 +223,6 @@
       if (used) { ev.preventDefault(); draw(); }
     });
     window.addEventListener("resize", draw);
-    new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
     body.appendChild(row); body.appendChild(arow); body.appendChild(btns); body.appendChild(wrap);
     body.appendChild(status); body.appendChild(note);

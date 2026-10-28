@@ -178,7 +178,7 @@
       });
       CT.append(board, [CT.roundChip(ri, d.rounds.length, "Poster"),
         CT.el("div", { class: "cid-top" }, [mine, poster]),
-        CT.el("div", { class: "cid-tablewrap" }, [CT.el("p", { class: "ct-tray-h" }, "🧸 The lost-property table"), table]),
+        CT.el("div", { class: "cid-tablewrap" }, [CT.el("p", { class: "ct-tray-h" }, "The lost-property table"), table]),
         tray]);
     }
     var dd = CT.dnd(board, {
@@ -198,7 +198,7 @@
       else done(r);
     }
     return {
-      checkLabel: "📮 Send the poster",
+      checkLabel: "Send the poster",
       run: function (done) {
         var r = posterRound(d, rd, picks);
         if (!r.matches) { done(r); return; }
@@ -275,20 +275,20 @@
       d.items.forEach(function (it) {
         var c = cls(it.cls);
         var li = CT.el("div", { class: "cid-item" + (scan[it.id] ? " is-" + scan[it.id] : "") + (bad[it.id] ? " is-bad" : ""), role: "listitem" }, [
-          CT.el("span", { class: "cid-item-i", "aria-hidden": "true" }, it.icon),
+          CT.el("span", { class: "cid-item-i", "aria-hidden": "true" }, CT.ico(it.icon)),
           CT.el("b", null, it.text),
-          CT.el("span", { class: "cid-bin cid-bin-" + it.cls }, c.icon + " " + c.text)
+          CT.el("span", { class: "cid-bin cid-bin-" + it.cls }, c.text)
         ]);
         if (scan[it.id]) li.appendChild(CT.readings(chosen().map(function (s) { return [sensor(s).icon, sensor(s).text, it.r[s]]; })));
         belt.appendChild(li);
       });
       CT.append(board, [CT.el("div", { class: "cid-top" }, [bot, tray]),
-        CT.el("p", { class: "ct-tray-h cid-belt-h" }, "🏭 The robot must put each item in the right bin"), belt]);
+        CT.el("p", { class: "ct-tray-h cid-belt-h" }, "The robot must put each item in the right bin"), belt]);
     }
     function renderMystery() {
       var tray = CT.el("div", { class: "ct-tray", "data-zone": "tray", "data-zone-label": "the mystery items" }, [CT.el("p", { class: "ct-tray-h" }, "Mystery items: only the readings are known")]);
       function mcard(m) {
-        var c = CT.card({ id: m.id, icon: revealed ? "✅" : "❓", text: m.label + (revealed ? ": " + m.reveal : "") });
+        var c = CT.card({ id: m.id, icon: revealed ? "tick" : "question", text: m.label + (revealed ? ": " + m.reveal : "") });
         c.classList.add("cid-mcard");
         c.appendChild(CT.readings(chosen().map(function (s) { return [sensor(s).icon, sensor(s).text, m.r[s]]; })));
         if (wrong[m.id]) c.classList.add("is-wrong");
@@ -299,7 +299,7 @@
       d.classes.forEach(function (c) {
         var inBin = mysteryOrder.filter(function (id) { return sort[id] === c.id; });
         var box = CT.el("div", { class: "cg-zone", "data-zone": "bin-" + c.id, "data-zone-label": "the " + c.text + " bin" }, [
-          CT.el("div", { class: "cg-zone-h" }, [CT.el("span", { class: "cg-zone-i", "aria-hidden": "true" }, c.icon), CT.el("b", null, c.text),
+          CT.el("div", { class: "cg-zone-h" }, [CT.el("span", { class: "cg-zone-i", "aria-hidden": "true" }, CT.ico(c.icon)), CT.el("b", null, c.text),
             CT.el("span", { class: "cg-count" }, String(inBin.length))]),
           CT.el("button", { type: "button", class: "ct-drop", "aria-label": "Put the picked item in the " + c.text + " bin" }, "Put here")]);
         inBin.forEach(function (id) { box.appendChild(mcard(CT.byId(d.mystery, id))); });
@@ -325,10 +325,10 @@
     });
     fresh(); render();
 
-    function startMystery() { phase = "mystery"; wrong = {}; api.label("✓ Check the bins"); render(); api.say("Now you are the detective. Use the readings to sort the mystery items.", "think", 3200); }
+    function startMystery() { phase = "mystery"; wrong = {}; api.label("Check the bins"); render(); api.say("Now you are the detective. Use the readings to sort the mystery items.", "think", 3200); }
 
     return {
-      checkLabel: "▶ Run the robot",
+      checkLabel: "Run the robot",
       run: function (done) {
         if (phase === "mystery") {
           var m = mysteryRound(d, sort);

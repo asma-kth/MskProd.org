@@ -52,7 +52,7 @@
 
   CT.card = function (item, extra) {
     return CT.el("button", Object.assign({ type: "button", class: "ct-card", "data-item": item.id, "aria-pressed": "false" }, extra || {}), [
-      item.icon ? CT.el("span", { class: "ct-card-i", "aria-hidden": "true" }, item.icon) : null,
+      item.icon ? CT.el("span", { class: "ct-card-i", "aria-hidden": "true" }, CT.ico(item.icon)) : null,
       CT.el("span", { class: "ct-card-t" }, item.text)
     ]);
   };
@@ -83,7 +83,7 @@
           var inZone = order.filter(function (id) { return ans[id] === z.id; });
           var box = CT.el("div", { class: "cg-zone", "data-zone": z.id, "data-zone-label": z.label }, [
             CT.el("div", { class: "cg-zone-h" }, [z.pin ? CT.el("span", { class: "cg-pin", "aria-label": "Part " + z.pin }, String(z.pin)) : null,
-              CT.el("span", { class: "cg-zone-i", "aria-hidden": "true" }, z.icon || "📦"),
+              CT.el("span", { class: "cg-zone-i", "aria-hidden": "true" }, CT.ico(z.icon || "box")),
               CT.el("b", null, z.label), CT.el("span", { class: "cg-count" }, String(inZone.length))]),
             CT.el("button", { type: "button", class: "ct-drop", "aria-label": "Put the picked card in " + z.label }, "Put here")
           ]);
@@ -102,7 +102,7 @@
       var showFollow = false;
       function followBox() {
         var f = data.followup;
-        var box = CT.el("div", { class: "cg-follow" }, [CT.el("p", { class: "ct-kicker" }, "🧠 Pixel's question"), CT.el("h3", null, f.q)]);
+        var box = CT.el("div", { class: "cg-follow" }, [CT.el("p", { class: "ct-kicker" }, "Question"), CT.el("h3", null, f.q)]);
         var opts = CT.el("div", { class: "ct-mcq" });
         CT.shuffle(f.options.map(function (o, i) { return i; }), CT.rng(level.id + ":f")).forEach(function (i) {
           opts.appendChild(CT.el("button", { type: "button", class: "ct-mcq-opt" + (ans.follow === i ? (i === f.answer ? " is-right" : " is-wrong") : ""), onclick: function () {

@@ -88,9 +88,6 @@
     if (!opened.length && !studied.length) {
       var empty = el("div", "card dash-empty");
       empty.appendChild(el("h2", null, "Nothing recorded yet"));
-      empty.appendChild(el("p", null,
-        "This page fills itself in as you work: open a topic, do its knowledge "
-        + "check, then come back here. Scores are stored in this browser only."));
       var links = el("p");
       manifest.courses.forEach(function (c, i) {
         if (i) links.appendChild(document.createTextNode("  "));
@@ -138,11 +135,8 @@
     var pickSection = el("section", "dash-section");
     pickSection.appendChild(el("h2", null, "Revise these five today"));
     if (!due.length) {
-      pickSection.appendChild(el("p", "muted",
-        "Nothing is due yet, so start a topic you have not opened."));
+      pickSection.appendChild(el("p", "muted", "Nothing due yet."));
     } else {
-      pickSection.appendChild(el("p", "muted",
-        "Ranked by how weak the last score was and how long ago it was."));
       var list = el("ol", "dash-list");
       due.slice(0, 5).forEach(function (r) {
         var li = el("li");
@@ -171,9 +165,6 @@
     if (fresh.length) {
       var newSection = el("section", "dash-section");
       newSection.appendChild(el("h2", null, "Not started yet"));
-      newSection.appendChild(el("p", "muted",
-        fresh.length + " topics on the site are still untouched. Here are the next "
-        + "three in specification order."));
       var ul = el("ul", "dash-list");
       fresh.slice(0, 3).forEach(function (r) {
         var li = el("li");
@@ -230,9 +221,6 @@
         .slice(0, 10);
       var weakSection = el("section", "dash-section");
       weakSection.appendChild(el("h2", null, "Weakest topics"));
-      weakSection.appendChild(el("p", "muted",
-        "Your lowest knowledge check scores, worst first. A score below 50 per cent "
-        + "means read the explanation again before retaking it, not just retake it."));
       var table = document.createElement("table");
       table.className = "dash-table";
       var thead = document.createElement("thead");

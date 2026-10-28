@@ -50,7 +50,7 @@
       b.type = "button";
       b.className = "ctc-tab" + (c === pick ? " is-on" : "") + (s.complete ? " is-ready" : "");
       b.setAttribute("aria-pressed", c === pick ? "true" : "false");
-      b.textContent = (s.complete ? "🎓 " : "🔒 ") + (c.id === "all" ? "Champion" : c.name);
+      b.textContent = (c.id === "all" ? "Champion" : c.name) + (s.complete ? "" : " (locked)");
       b.addEventListener("click", function () { pick = c; history.replaceState(null, "", "?world=" + c.id); render(); });
       tabs.appendChild(b);
     });
@@ -62,8 +62,8 @@
     $("ctc-has").textContent = pick.id === "all" ? "has completed all forty levels and is a" : "has completed every level of";
     $("ctc-world").textContent = pick.id === "all" ? "Computational Thinking Champion" : "World " + pick.n + ": " + pick.name;
     $("ctc-tag").textContent = pick.id === "all" ? "Decomposition · Abstraction · Pattern Recognition · Algorithms" : pick.tag + " at " + pick.place;
-    $("ctc-stars").textContent = "★ " + s.stars + " of " + s.total * 3 + " stars";
-    $("ctc-medal-t").textContent = pick.id === "all" ? "👑" : String(pick.n);
+    $("ctc-stars").textContent = s.stars + " of " + s.total * 3 + " stars";
+    $("ctc-medal-t").textContent = pick.id === "all" ? "40" : String(pick.n);
     $("ctc-date").textContent = longDate(s.complete ? s.last : null);
     paper.classList.toggle("is-locked", !s.complete);
     $("ctc-form").hidden = !s.complete;

@@ -75,9 +75,9 @@ Run it and follow the four attempts. `"abc"` fails the type check. `"-5"` fails 
 **Sanitising** input means cleaning it so it is safe and consistent before it is used. Remove stray spaces, fix the case, and strip out anything the program should never receive.
 
 ```python
-raw = "   aShA  kETHIRI "
+raw = "   sAM  pATEL "
 clean = " ".join(raw.split()).title()
-print(repr(clean))               # 'Asha Kethiri'
+print(repr(clean))               # 'Sam Patel'
 ```
 
 The most important reason to sanitise is that an attacker can type program code into a text box. A name field that is pasted into a database query can become an instruction, which is called **SQL injection**. The SQL topic shows the proper fix, which is never to build a query out of typed text at all.

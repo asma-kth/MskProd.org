@@ -63,7 +63,11 @@
           if (ch === "#") tiles.appendChild(CT.svg("rect", { x: x * S + 1, y: y * S + 1, width: S - 2, height: S - 2, rx: 7, class: "cg-wall" }));
           else {
             tiles.appendChild(CT.svg("rect", { x: x * S + 1, y: y * S + 1, width: S - 2, height: S - 2, rx: 6, class: "cg-floor" + ((x + y) % 2 ? " is-alt" : "") + (L.tile ? " " + L.tile : "") }));
-            if (L.sticker) stickers.appendChild(CT.svg("text", { x: x * S + S / 2, y: y * S + S / 2 + 1, class: "cg-sticker", "data-at": x + "," + y, "data-ch": ch, text: L.sticker }));
+            if (L.sticker) {
+              var st = CT.icoSvg(L.sticker, x * S + 6, y * S + 6, S - 12, "cg-sticker");
+              st.setAttribute("data-at", x + "," + y); st.setAttribute("data-ch", ch);
+              stickers.appendChild(st);
+            }
           }
         }
       }
@@ -77,10 +81,10 @@
           var t = tiles.children[y * map.w + x];
           if (t) t.setAttribute("class", "cg-floor " + cls);
         },
-        // A piece is an emoji or an element, moved by translating its group.
+        // A piece is a picture name or an element, moved by translating its group.
         piece: function (id, x, y, content, cls) {
           var g = CT.svg("g", { class: "cg-piece " + (cls || ""), "data-piece": id });
-          if (typeof content === "string") g.appendChild(CT.svg("text", { x: S / 2, y: S / 2 + 1, class: "cg-sticker", text: content }));
+          if (typeof content === "string") g.appendChild(CT.icoSvg(content, 4, 4, S - 8));
           else { content.setAttribute("x", 2); content.setAttribute("y", 1); content.setAttribute("width", S - 4); content.setAttribute("height", S - 2); g.appendChild(content); }
           pieces.appendChild(g);
           api.move(id, x, y, null, true);
@@ -113,7 +117,7 @@
     pad: function (onDir, labels) {
       labels = labels || { up: "Up", left: "Left", right: "Right", down: "Down" };
       var b = function (d, t) { return CT.el("button", { type: "button", class: "cg-pad-" + d, "aria-label": labels[d], onclick: function () { onDir(d); } }, t); };
-      return CT.el("div", { class: "cg-pad", role: "group", "aria-label": "Move" }, [b("up", "▲"), b("left", "◀"), b("down", "▼"), b("right", "▶")]);
+      return CT.el("div", { class: "cg-pad", role: "group", "aria-label": "Move" }, [b("up", CT.ico("arrow-up")), b("left", CT.ico("arrow-left")), b("down", CT.ico("arrow-down")), b("right", CT.ico("arrow-right"))]);
     },
     // Swipes on a touch screen, and the arrow keys when the map has focus.
     controls: function (el, onDir) {

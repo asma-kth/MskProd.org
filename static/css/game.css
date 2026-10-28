@@ -1,4 +1,4 @@
-/* Pixel Run. Built only from the site's own tokens, so both themes follow. */
+/* Pixel Run. Built only from the site's own tokens. */
 
 .pr { display: grid; gap: var(--sp-3); margin: 0 0 var(--sp-7); }
 .pr-head { margin-bottom: var(--sp-4); }
@@ -159,14 +159,11 @@
 .pr-model { margin: .8rem 0 0; }
 .pr-model summary { cursor: pointer; font-weight: 600; color: var(--accent); }
 .pr-stars-big { font-size: var(--step-1); font-weight: 700; display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
-.pr-starline { color: #8a6100; letter-spacing: .1em; font-size: 1.35em; }
+.pr-starline { display: inline-flex; gap: .1em; font-size: 1.35em; vertical-align: -.15em; }
+.pr-starline .pr-star { width: 1em; height: 1em; fill: #E2E8F0; stroke: #8a6100; stroke-width: 1.2; }
+.pr-starline .pr-star.is-on { fill: #F5B700; }
 .pr-weak { margin: .4rem 0 0; padding-left: 1.1rem; display: grid; gap: .35rem; }
 .pr-status p { color: var(--ink-3); margin: 0; }
-
-[data-theme="dark"] .pr-starline { color: #f0c55c; }
-[data-theme="dark"] .pr-stars .icon { fill: #f0c55c; stroke: #f0c55c; }
-[data-theme="dark"] .pr-coins i { border-color: #ffe08a; }
-[data-theme="dark"] .pr-stage { background: #1c2250; }
 
 @media (prefers-reduced-motion: reduce) {
   .pr * { transition: none !important; scroll-behavior: auto !important; }

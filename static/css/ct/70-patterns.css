@@ -18,12 +18,10 @@
 .cseq-pos { font-size: .68rem; font-weight: 700; color: var(--ink-3); }
 .cseq-cell, .cseq-gap, .cseq-in { min-width: 54px; min-height: 54px; display: grid; place-items: center; border-radius: 14px; background: var(--surface); border: 2px solid var(--border); }
 .cseq-gap { cursor: pointer; border: 3px dashed var(--w); background: var(--wl); }
-[data-theme="dark"] .cseq-gap { background: color-mix(in srgb, var(--w) 16%, var(--surface)); }
 .cseq-gap.is-full { border-style: solid; background: var(--surface); }
 .cseq-gap.is-active { box-shadow: 0 0 0 4px color-mix(in srgb, var(--w) 35%, transparent); }
 [data-ct-motion="full"] .cseq-gap.is-active:not(.is-full) { animation: ct-pulse 1.4s ease-in-out infinite; }
 .cseq-gap.is-wrong, .cseq-in.is-wrong, .cseq-cell.is-wrong { border-color: #DC2626; background: #FEF2F2; }
-[data-theme="dark"] .cseq-gap.is-wrong, [data-theme="dark"] .cseq-in.is-wrong, [data-theme="dark"] .cseq-cell.is-wrong { background: #3B1219; }
 .cseq-q { font: 800 1.5rem var(--font-display); color: var(--wd); }
 .cseq-pickable { cursor: pointer; }
 .cseq-pickable:hover { border-color: var(--w); }
@@ -47,7 +45,6 @@
 .cseq-pbtn:hover { border-color: var(--w); }
 .cseq-pbtn:active { transform: translateY(2px); box-shadow: none; }
 .cseq-pbtn.is-chosen, .ct-mcq-opt.is-chosen { border-color: var(--w); background: var(--wl); box-shadow: 0 0 0 3px color-mix(in srgb, var(--w) 30%, transparent); }
-[data-theme="dark"] .cseq-pbtn.is-chosen, [data-theme="dark"] .ct-mcq-opt.is-chosen { background: color-mix(in srgb, var(--w) 20%, var(--surface)); }
 .cseq-pbtn.is-struck, .ct-mcq-opt.is-struck { opacity: .35; text-decoration: line-through; }
 .cseq-fix { margin-top: .6rem; }
 .cseq-code { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 1rem; align-items: start; }
@@ -58,7 +55,6 @@
 .cseq-out.is-good pre { border-color: #86EFAC; background: var(--ok-bg); }
 .cseq-fixopt code { font: 600 .95rem var(--font-mono, ui-monospace, monospace); white-space: pre; background: none; border: 0; padding: 0; }
 .cseq-fixopt code .hl-k { color: #BE185D; } .cseq-fixopt code .hl-s { color: #15803D; } .cseq-fixopt code .hl-n { color: #C2410C; }
-[data-theme="dark"] .cseq-fixopt code .hl-k { color: #F472B6; } [data-theme="dark"] .cseq-fixopt code .hl-s { color: #86EFAC; } [data-theme="dark"] .cseq-fixopt code .hl-n { color: #FDBA74; }
 
 /* dance */
 .cdz-stage { position: relative; display: grid; justify-items: center; gap: .3rem; padding: 1rem .5rem .6rem; margin-bottom: .8rem; border-radius: 20px; overflow: hidden;
@@ -83,7 +79,6 @@
 .cdz-chip small { font-size: .62rem; font-weight: 700; color: var(--ink-3); }
 .cdz-chip.is-empty { font: 800 1.3rem var(--font-display); color: var(--wd); border: 0; background: none; }
 .cdz-slot { padding: 0; border-radius: 16px; cursor: pointer; border: 3px dashed var(--w); background: var(--wl); }
-[data-theme="dark"] .cdz-slot { background: color-mix(in srgb, var(--w) 16%, var(--surface)); }
 .cdz-slot .cdz-chip { border: 0; background: transparent; min-height: 56px; align-content: center; }
 .cdz-slot.is-full { border-style: solid; background: var(--surface); }
 .cdz-slot.is-active { box-shadow: 0 0 0 4px color-mix(in srgb, var(--w) 35%, transparent); }
@@ -91,7 +86,6 @@
 .cdz-loop { display: grid; gap: .4rem; padding: .8rem; margin-bottom: .8rem; border-radius: 16px; border-left: 6px solid var(--w); background: var(--surface-2); font-family: var(--font-mono, ui-monospace, monospace); }
 .cdz-kw { margin: 0; display: flex; align-items: center; gap: .4rem; }
 .cdz-kw b { color: var(--wd); }
-[data-theme="dark"] .cdz-kw b { color: color-mix(in srgb, var(--w) 60%, #fff); }
 .cdz-step { width: 38px; height: 38px; border-radius: 10px; cursor: pointer; font: 800 1.1rem var(--font-body); color: var(--ink); background: var(--surface); border: 2px solid var(--border-strong); }
 .cdz-times { min-width: 2.2rem; text-align: center; font: 800 1.3rem var(--font-display); }
 .cdz-body { display: flex; flex-wrap: wrap; gap: .4rem; padding-left: 1.5rem; }
@@ -106,7 +100,6 @@
 /* snake */
 .csn-top { margin-bottom: .6rem; }
 .csn-strip { display: flex; flex-wrap: wrap; gap: .25rem; margin: .3rem 0 0; padding: .4rem .6rem; list-style: none; border-radius: 999px; background: #DCFCE7; border: 2px solid #22C55E; width: fit-content; max-width: 100%; }
-[data-theme="dark"] .csn-strip { background: #12301F; }
 .csn-strip li { font-size: 1.4rem; line-height: 1; }
 .csn-next { font-size: 1.2rem; }
 [data-ct-motion="full"] .csn-next { animation: ct-bob 1.4s ease-in-out infinite; }

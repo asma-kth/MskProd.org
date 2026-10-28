@@ -70,7 +70,7 @@ def _fairness_metrics():
             body.append(text(X0 + 14, yy + 10, "AB"[g], 9, 800, fill=tv(col), anchor="end"))
             body.append(text(X0 + 26 + 230 * v, yy + 10, "%d%%" % round(100 * v), 9.4, 800, fill=INK, anchor="start"))
         equal = abs(vals[0][k] - vals[1][k]) < 0.005
-        body.append(text(X0 + 320, y + 28, "equal ✓" if equal else "unequal ✗", 10, 800,
+        body.append(text(X0 + 320, y + 28, "equal" if equal else "unequal", 10, 800,
                          fill=tv(GREEN) if equal else tv(RED), anchor="end"))
     desc = ("Two waffle charts of 100 squares, each square ten applicants. Group A: 36 squares would "
             "repay and were approved, 4 would repay but were refused, 12 were approved but did not "

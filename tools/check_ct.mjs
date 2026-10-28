@@ -585,6 +585,20 @@ const SIMULATE = {
 
 // ------------------------------------------------------------------ run
 let failures = 0, levels = 0;
+
+// Every picture a level names must exist in static/js/ct/14-icons.js, or the
+// card shows nothing. Pattern pieces count too, unless they are bead letters.
+function missingIcons(x, key, out) {
+  if (Array.isArray(x)) {
+    if (key === "decor") { x.forEach((d) => { if (Array.isArray(d) && !CT.isIcon(d[0])) out.add("decor " + d[0]); }); return out; }
+    const named = x.length && x.every((v) => typeof v === "string" && /^[a-z]+(-[a-z0-9]+)+$|^[a-z]{3,}$/.test(v));
+    if (named && ["seq", "palette", "answers"].includes(key)) x.forEach((v) => { if (!CT.isIcon(v) && !/^(up|down|left|right)$/.test(v)) out.add(key + " " + v); });
+    x.forEach((v) => missingIcons(v, key, out));
+  } else if (x && typeof x === "object") {
+    for (const k of Object.keys(x)) missingIcons(x[k], k, out);
+  } else if (key === "icon" && typeof x === "string" && !CT.isIcon(x)) out.add("icon " + x);
+  return out;
+}
 const fail = (id, msg) => { failures++; console.log("  FAIL " + id + ": " + msg); };
 const rng = CT.rng("check-ct");
 
@@ -613,6 +627,8 @@ for (const lv of DATA.levels.concat(DATA.bonus || [])) {
 
   if (SIMULATE[lv.engine]) { const s = SIMULATE[lv.engine](lv.data); if (s) fail(lv.id, s); }
   if (lv.hints.length !== 3) fail(lv.id, "needs exactly three hints");
+  const lost = [...missingIcons(lv.data, "", new Set())];
+  if (lost.length) fail(lv.id, "unknown pictures: " + lost.join(", "));
   console.log("ok   " + lv.id.padEnd(18) + " " + lv.engine.padEnd(10) + " " + String(mistakes.length).padStart(3) + " mistakes rejected" +
     (wins ? ", random boards pass " + (100 * wins / tries).toFixed(2) + "% of the time" : ""));
 }

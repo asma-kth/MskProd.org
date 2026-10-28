@@ -52,7 +52,7 @@
       if (!lv) { location.hash = "#/"; return; }
       if (!CT.progress.unlocked(lv.id)) {
         location.hash = "#/world/" + lv.world;
-        setTimeout(function () { CT.celebrate.toast("🔒 Finish level " + (lv.n - 1) + " first"); }, 50);
+        setTimeout(function () { CT.celebrate.toast("Finish level " + (lv.n - 1) + " first"); }, 50);
         return;
       }
       view.classList.add("is-level");

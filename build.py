@@ -87,15 +87,12 @@ def build_course(course):
 
 def _pixel_run_band():
     """The home page's way into the game: a picture of it, and two buttons."""
-    return """<section class="section section-alt">
+    return """<section class="section">
   <div class="wrap">
     <div class="grid grid-2" style="align-items:center;gap:var(--sp-6)">
       <div>
-        <span class="eyebrow">%s New: a game</span>
-        <h2>Learn Python by playing</h2>
-        <p class="lead">Pixel the robot cat runs through ten levels, and every obstacle is a Python function for you to write.
-        Pass the tests and she jumps on; fail three times and you go back a level. It runs in your browser,
-        from your first <code>print()</code> to Dijkstra's algorithm.</p>
+        <span class="eyebrow">%s Game</span>
+        <h2>Pixel Run: learn Python by playing</h2>
         <div class="btn-row" style="margin-top:1.4rem">
           <a class="btn btn-primary" href="/pixel-run/">%s Play Pixel Run</a>
           <a class="btn btn-secondary" href="/python/">%s The Python course</a>
@@ -112,15 +109,13 @@ def _pixel_run_band():
 
 def _adventure_band():
     """The home page's way into the Computational Thinking Adventure."""
-    return """<section class="section">
+    return """<section class="section section-alt">
   <div class="wrap">
     <div class="grid grid-2" style="align-items:center;gap:var(--sp-6)">
       <figure class="hero-figure ct-home-fig">%s</figure>
       <div>
-        <span class="eyebrow">%s New: 40 game levels</span>
+        <span class="eyebrow">%s Game</span>
         <h2>The Computational Thinking Adventure</h2>
-        <p class="lead">Four worlds, forty levels: break problems down, focus on what matters, spot patterns and build algorithms
-        as flowcharts and pseudocode. Pixel cheers every win, and your progress saves in your browser with no account.</p>
         <div class="btn-row" style="margin-top:1.4rem">
           <a class="btn btn-primary" href="/computational-thinking/">%s Start the adventure</a>
           <a class="btn btn-secondary" href="/computational-thinking/teacher/">%s Teacher mode</a>
@@ -133,15 +128,28 @@ def _adventure_band():
 
 def _adventure_art():
     """Four islands on a sea, one per world, joined by a dotted route."""
-    isles = [("#EA580C", 70, 150, "🧩", "Decomposition"), ("#0284C7", 190, 80, "🔭", "Abstraction"),
-             ("#9333EA", 310, 150, "💎", "Patterns"), ("#059669", 430, 80, "🤖", "Algorithms")]
+    K = 'stroke="#1E293B" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"'
+    # A small picture for each world, drawn on a 32 by 32 grid around its centre.
+    pics = {
+        "puzzle": '<path d="M-12 -12 H-3 C-4 -18 4 -18 3 -12 H12 V-3 C18 -4 18 4 12 3 V12 H-12 Z" fill="#FDBA74" %s/>' % K,
+        "telescope": ('<path d="M-13 4 L10 -9 L13 -4 L-10 9 Z" fill="#7DD3FC" %s/>'
+                      '<path d="M-1 4 L-7 15 M1 4 L7 15" fill="none" %s/>' % (K, K)),
+        "gem": ('<path d="M-12 -5 L-6 -12 H6 L12 -5 L0 12 Z" fill="#C4B5FD" %s/>'
+                '<path d="M-12 -5 H12 M-6 -12 L-3 -5 L0 12 L3 -5 L6 -12" fill="none" stroke="#1E293B" stroke-width="1.4"/>' % K),
+        "robot": ('<rect x="-11" y="-9" width="22" height="18" rx="5" fill="#CBD5E1" %s/>'
+                  '<rect x="-7" y="-5" width="14" height="7" rx="3" fill="#334155"/>'
+                  '<circle cx="-3.5" cy="-1.5" r="1.8" fill="#5EEAD4"/><circle cx="3.5" cy="-1.5" r="1.8" fill="#5EEAD4"/>'
+                  '<path d="M0 -9 V-14" fill="none" %s/>' % (K, K)),
+    }
+    isles = [("#EA580C", 70, 150, "puzzle", "Decomposition"), ("#0284C7", 190, 80, "telescope", "Abstraction"),
+             ("#9333EA", 310, 150, "gem", "Patterns"), ("#059669", 430, 80, "robot", "Algorithms")]
     out = ['<svg viewBox="0 0 500 230" role="img" aria-label="Four islands, one for each world of the adventure: '
            'Decomposition, Abstraction, Patterns and Algorithms, joined by a dotted route">',
            '<rect width="500" height="230" rx="22" fill="#BAE6FD"/>',
            '<path d="M70 150 Q130 60 190 80 T310 150 T430 80" fill="none" stroke="#0F172A" stroke-width="3" stroke-dasharray="2 9" stroke-linecap="round"/>']
-    for c, x, y, e, name in isles:
+    for c, x, y, pic, name in isles:
         out.append('<ellipse cx="%d" cy="%d" rx="58" ry="26" fill="#FDE68A"/><ellipse cx="%d" cy="%d" rx="44" ry="18" fill="%s"/>'
-                   '<text x="%d" y="%d" font-size="30" text-anchor="middle">%s</text>' % (x, y + 14, x, y + 8, c, x, y + 4, e))
+                   '<g transform="translate(%d %d)">%s</g>' % (x, y + 14, x, y + 8, c, x, y - 6, pics[pic]))
         out.append('<text x="%d" y="%d" font-size="15" font-weight="700" fill="#0F172A" text-anchor="middle" '
                    'font-family="system-ui, sans-serif">%s</text>' % (max(x, 80), y + 64 if y > 100 else y - 40, name))
     out.append("</svg>")
@@ -152,25 +160,25 @@ def build_home():
     cards = []
     meta = {
         "ks3": ("Key Stage 3", "/ks3/", "i-layers",
-                "Years 7, 8 and 9. Build the foundation that makes GCSE feel easy instead of sudden."),
+                "Years 7, 8 and 9"),
         "ks4/computer-science": ("GCSE Computer Science", "/ks4/computer-science/", "i-cpu",
-                                 "OCR J277. Every topic on both papers, written as a route to grade 9."),
+                                 "OCR J277"),
         "ks4/aqa-computer-science": ("AQA GCSE Computer Science", "/ks4/aqa-computer-science/", "i-cpu",
-                                     "AQA 8525. Every section of the specification, written to AQA's own pseudo-code, units and topics."),
+                                     "AQA 8525"),
         "ks4/edexcel-computer-science": ("Edexcel GCSE Computer Science", "/ks4/edexcel-computer-science/", "i-cpu",
-                                         "Pearson Edexcel 1CP2. Paper 1 principles in full, plus the programming Paper 2 sits on screen."),
+                                         "Pearson Edexcel 1CP2"),
         "ks4/imedia": ("Creative iMedia", "/ks4/imedia/", "i-palette",
-                       "OCR J834. The R093 exam unit in full, plus R094 and R097 topic by topic, with a guide to every coursework task."),
+                       "OCR J834"),
         "ks5": ("A Level Computer Science", "/ks5/", "i-brain",
-                "OCR H446. Both components, the NEA, and the depth an A star actually needs."),
+                "OCR H446"),
         "data-analytics": ("Data Analytics", "/data-analytics/", "i-chart",
-                           "OCR Cambridge Advanced National. F200 and F201, the exam units, and F202, the spreadsheet modelling coursework, with graphs and interactive models."),
+                           "OCR H019 and H119"),
         "python": ("Python from scratch", "/python/", "i-python",
-                   "From your first line of code to GCSE and A Level programming, advanced Python, simulation and machine learning, with a platformer to practise it in."),
+                   "First program to A Level"),
         "ai": ("Artificial Intelligence: Zero to Hero", "/ai/", "i-sparkle",
-               "Fifteen levels from the history of AI to neural networks, transformers, generative AI and agents. Build your own AI and earn a printable certificate."),
+               "Fifteen levels"),
     }
-    for slug, (title, href, icon, blurb) in meta.items():
+    for slug, (title, href, icon, label) in meta.items():
         course = next((c for c in COURSES if c.slug == slug), None)
         if course is None:
             continue
@@ -180,27 +188,17 @@ def build_home():
             '<a class="tile" href="%s">'
             '<span class="tile-icon">%s</span><h3>%s</h3><p>%s</p>'
             '<span class="tile-meta"><span>%d %s</span><span>%d quiz questions</span></span></a>'
-            % (href, ico(icon, "icon"), esc(title), esc(blurb), n_top,
+            % (href, ico(icon, "icon"), esc(title), esc(label), n_top,
                "lessons" if course.levels else "topics", n_q))
 
     body = """<section class="hero">
   <div class="wrap hero-grid">
     <div>
-      <h1>Revise computing properly.</h1>
-      <p class="lead">Key Stage 3, GCSE and A Level, written board by board for OCR, AQA and Edexcel.
-      Every topic is explained in full, then tested with a ten question check and exam-style questions
-      marked against the real mark scheme. No account, no subscription, no paywall.</p>
+      <h1>Computing revision</h1>
+      <p class="lead">Key Stage 3, GCSE and A Level, for OCR, AQA and Edexcel.</p>
       <div class="btn-row" style="margin-top:1.8rem">
         <a class="btn btn-primary" href="/ks4/computer-science/">%s Start GCSE Computer Science</a>
-        <a class="btn btn-secondary" href="/how-to-revise/">%s How to revise properly</a>
-      </div>
-      <div class="pill-row" style="margin-top:1.6rem">
-        <span class="pill">%s OCR J277</span>
-        <span class="pill">%s AQA 8525</span>
-        <span class="pill">%s Edexcel 1CP2</span>
-        <span class="pill">%s OCR H446</span>
-        <span class="pill">%s OCR J834 iMedia</span>
-        <span class="pill">%s KS3 Years 7 to 9</span>
+        <a class="btn btn-secondary" href="/exam-papers/">%s Exam papers</a>
       </div>
     </div>
     <figure class="hero-figure">
@@ -212,109 +210,36 @@ def build_home():
 
 <section class="section">
   <div class="wrap">
-    <div class="section-head">
-      <h2>Choose where you are</h2>
-      <p>Each course follows the order it is taught in school.</p>
-    </div>
+    <div class="section-head"><h2>Courses</h2></div>
     <div class="grid grid-3">%s</div>
   </div>
 </section>
 
-<section class="section section-alt">
-  <div class="wrap">
-    <div class="section-head">
-      <h2>How every topic is built</h2>
-    </div>
-    <div class="grid grid-4">
-      <div class="card"><span class="tile-icon">%s</span>
-        <h3 style="font-size:var(--step-1)">Explanation</h3>
-        <p style="color:var(--ink-3);font-size:.94rem;margin:0">Every idea explained with the reason behind it.</p></div>
-      <div class="card"><span class="tile-icon">%s</span>
-        <h3 style="font-size:var(--step-1)">Key terms and flashcards</h3>
-        <p style="color:var(--ink-3);font-size:.94rem;margin:0">Exam ready definitions, and flip cards to test your recall.</p></div>
-      <div class="card"><span class="tile-icon">%s</span>
-        <h3 style="font-size:var(--step-1)">Ten question check</h3>
-        <p style="color:var(--ink-3);font-size:.94rem;margin:0">Instant feedback on every answer, explaining why.</p></div>
-      <div class="card"><span class="tile-icon">%s</span>
-        <h3 style="font-size:var(--step-1)">Auto marked exam questions</h3>
-        <p style="color:var(--ink-3);font-size:.94rem;margin:0">Your answer marked against the mark scheme, then a model answer.</p></div>
-    </div>
-  </div>
-</section>
-
 %s
 
 %s
-
-<section class="section">
-  <div class="wrap">
-    <div class="grid grid-2" style="align-items:center;gap:var(--sp-6)">
-      <div>
-        <h2>Practice papers you can actually sit</h2>
-        <p class="lead">Full length original papers in the real format, with a timer and complete mark schemes.
-        Sit one properly and you will learn more in ninety minutes than in a week of rereading notes.</p>
-        <div class="btn-row" style="margin-top:1.4rem">
-          <a class="btn btn-primary" href="/exam-papers/">%s Go to exam papers</a>
-        </div>
-      </div>
-      <div class="card">
-        <h3 style="font-size:var(--step-1)">Why original papers</h3>
-        <p style="color:var(--ink-3);font-size:.95rem">Real past papers belong to the exam boards, so every paper
-        here is written from scratch to the same structure, command words and marks, with a full mark scheme.
-        Links to the official past papers are alongside them.</p>
-      </div>
-    </div>
-  </div>
-</section>
 
 <section class="section section-alt">
   <div class="wrap">
     <div class="grid grid-2" style="align-items:center;gap:var(--sp-6)">
       <div>
-        <span class="eyebrow"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-user"></use></svg> Who writes this</span>
-        <h2>Written by a head of computing</h2>
-        <p class="lead">MskProd Computing is written by Asma Kethiri, Head of Computing at a secondary school in London,
-        where students make strong progress and achieve high results every year. The same teaching is here for every
-        student, free, from Key Stage 3 to A Level.</p>
-        <div class="btn-row" style="margin-top:1.4rem">
-          <a class="btn btn-secondary" href="/about/">Why I built this site</a>
-        </div>
+        <span class="eyebrow">%s Who writes this</span>
+        <h2>Ms Kethiri</h2>
+        <p class="lead">Head of the computing department at a school in London.</p>
       </div>
       <div class="card">
-        <h3 style="font-size:var(--step-1)">Teachers: resources on request</h3>
-        <p style="color:var(--ink-3);font-size:.95rem">Use anything here with your classes, free. If you need a test,
-        a worksheet or a topic that is not on the site yet, ask, and it can be made for you.</p>
+        <h3 style="font-size:var(--step-1)">Teachers</h3>
         <div class="btn-row"><a class="btn btn-primary btn-sm" href="/teachers/">For teachers</a>
         <a class="btn btn-secondary btn-sm" href="/contact/?type=teacher">Request a resource</a></div>
       </div>
     </div>
   </div>
-</section>
-
-<section class="section">
-  <div class="wrap">
-    <div class="grid grid-2" style="align-items:center;gap:var(--sp-6)">
-      <div class="center">%s</div>
-      <div>
-        <span class="eyebrow">%s Meet Pixel</span>
-        <h2>You are not doing this alone</h2>
-        <p class="lead">Pixel is the small robot cat in the corner of every page. Tap for a fun fact, a
-        revision tip, or a reminder that finding this hard is normal.</p>
-        <p class="muted" style="font-size:.9rem">Your scores and answers never leave your browser.</p>
-      </div>
-    </div>
-  </div>
 </section>""" % (
-        ico("i-play"), ico("i-bulb"),
-        ico("i-cpu"), ico("i-cpu"), ico("i-cpu"), ico("i-brain"),
-        ico("i-palette"), ico("i-layers"),
+        ico("i-play"), ico("i-paper"),
         "".join(cards),
-        ico("i-book"), ico("i-list"), ico("i-check-circle"), ico("i-paper"),
         _adventure_band(),
         _pixel_run_band(),
-        ico("i-arrow-right"),
-        render.mascot_svg().replace('<svg ', '<svg style="max-width:260px;margin:0 auto" ', 1),
-        ico("i-sparkle"),
+        ico("i-user"),
     )
 
     ld = [{
@@ -323,7 +248,7 @@ def build_home():
         "description": "Free computing revision for UK students at Key Stage 3, GCSE and A Level.",
         "logo": SITE_URL + "/assets/img/logo.svg",
         "email": render.CONTACT_EMAIL,
-        "founder": {"@type": "Person", "name": "Asma Kethiri", "jobTitle": "Head of Computing"},
+        "founder": {"@type": "Person", "name": "Ms Kethiri", "jobTitle": "Head of the computing department"},
     }, {
         "@context": "https://schema.org", "@type": "WebSite",
         "name": SITE_NAME, "url": SITE_URL, "inLanguage": "en-GB",
@@ -358,10 +283,6 @@ def build_pwa():
         body="""<div class="wrap"><div class="empty-screen">
   %s
   <h1>You are offline</h1>
-  <p class="lead">This page has not been opened on this device before, so there is no
-    saved copy to show you.</p>
-  <p>Anything you have already read is still here. Pick a topic you have visited
-    before, or reconnect and try again.</p>
   <div class="btn-row">
     <a class="btn btn-primary" href="/">Go to the home page</a>
   </div>
@@ -482,9 +403,7 @@ def build_sitemap():
     from mskbuild import cat
     body = """<div class="wrap"><div class="empty-screen">
   %s
-  <h1>Nothing here to wake up for</h1>
-  <p class="lead">That page does not exist. The link may be old, or there may be a
-    typo in the address.</p>
+  <h1>Page not found</h1>
   <div class="btn-row">
     <a class="btn btn-primary" href="/">Back to the home page</a>
     <a class="btn btn-secondary" href="#" data-search-open>Search the site</a>
@@ -508,35 +427,6 @@ def build_manifest():
     with open(os.path.join(out, "progress.json"), "w", encoding="utf-8") as fh:
         json.dump({"courses": MANIFEST}, fh, separators=(",", ":"))
 
-
-
-def dark_media(css):
-    """Make the dark theme work before, and without, JavaScript.
-
-    Every dark rule in the stylesheet is written as [data-theme="dark"] X, and
-    that attribute is only set by app.js, which is deferred. A reader whose
-    system is set to dark therefore gets a flash of the light theme on every
-    page load, and with JavaScript off never gets the dark theme at all.
-
-    Rather than rewrite 38 hand written rules and have the next one forget,
-    each is mirrored here into a prefers-color-scheme block, guarded so an
-    explicit [data-theme="light"] still wins. The attribute keeps working, so
-    nothing else has to change.
-    """
-    rules = re.findall(r'(\[data-theme="dark"\][^{}]*)\{([^{}]*)\}', css)
-    if not rules:
-        return css
-    out = ['\n\n/* Generated by build.py: the dark rules above, repeated for readers',
-           '   whose system asks for dark before any script has run. An explicit',
-           '   data-theme="light" still overrides them. */',
-           '@media (prefers-color-scheme: dark) {']
-    for sel, body in rules:
-        sel = ", ".join(
-            s.strip().replace('[data-theme="dark"]', ':root:not([data-theme="light"])', 1)
-            for s in sel.split(","))
-        out.append("  %s {%s}" % (sel, body.strip()))
-    out.append("}\n")
-    return css + "\n".join(out)
 
 
 def copy_static():
@@ -574,7 +464,7 @@ def copy_static():
     with open(site_css, encoding="utf-8") as fh:
         rest = fh.read()
     with open(site_css, "w", encoding="utf-8") as fh:
-        fh.write(dark_media(head + "\n" + rest))
+        fh.write(head + "\n" + rest)
     os.remove(fonts_css)
 
     # The favicon is the same cat, generated from the same source as the logo
@@ -583,14 +473,6 @@ def copy_static():
     with open(os.path.join(dst, "img", "favicon.svg"), "w", encoding="utf-8") as fh:
         fh.write(_cat.flat(head_only=True, plate=True, label="MskProd Computing"))
 
-    # The tools bundle and the game each carry their own dark rules, so each
-    # gets the same prefers-color-scheme mirror as the main stylesheet.
-    for name in ("tools.css", "game.css", "ct.css", "ct-pages.css"):
-        extra_css = os.path.join(css_dir, name)
-        with open(extra_css, encoding="utf-8") as fh:
-            t = fh.read()
-        with open(extra_css, "w", encoding="utf-8") as fh:
-            fh.write(dark_media(t))
 
 
 def check_icons():

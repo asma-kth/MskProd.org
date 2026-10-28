@@ -48,10 +48,13 @@
   }
   function $(sel) { return root.querySelector(sel); }
   function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  var STAR = '<path d="m12 2.8 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.6l6.5-.9z"/>';
   function stars(n, of) {
+    var span = h("span", { class: "pr-starline", role: "img", "aria-label": n + " out of " + (of || 3) + " stars" });
     var s = "";
-    for (var i = 0; i < (of || 3); i++) s += i < n ? "★" : "☆";
-    return h("span", { class: "pr-starline", "aria-label": n + " out of " + (of || 3) + " stars" }, s);
+    for (var i = 0; i < (of || 3); i++) s += '<svg class="pr-star' + (i < n ? " is-on" : "") + '" viewBox="0 0 24 24" aria-hidden="true">' + STAR + "</svg>";
+    span.innerHTML = s;
+    return span;
   }
 
   var mqReduce = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;

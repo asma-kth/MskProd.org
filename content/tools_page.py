@@ -86,11 +86,11 @@ def _page(path, title, description, trail, body_md):
   %s
   <div class="wrap-narrow" style="width:100%%;margin-inline:auto">
     <article class="prose" style="padding-bottom:var(--sp-8)">
-      <header class="topic-header"><h1>%s</h1><p class="lead">%s</p></header>
+      <header class="topic-header"><h1>%s</h1></header>
       %s
     </article>
   </div>
-</div>""" % (crumbs(trail), esc(title), esc(description), markup.render(body_md))
+</div>""" % (crumbs(trail), esc(title), markup.render(body_md))
     return path, layout(title=title, description=description, path=path, body=body,
                         active="/tools/",
                         jsonld=[crumbs_ld(trail)])
@@ -101,31 +101,24 @@ def build(register, add_search):
     def tiles(names):
         return "".join(
             '<a class="tile" href="/tools/%s/">'
-            '<span class="tile-icon">%s</span><h3>%s</h3><p>%s</p></a>'
-            % (name, ico(TOOLS[name]["icon"], "icon"), esc(TOOLS[name]["title"]),
-               esc(TOOLS[name]["blurb"])) for name in names)
+            '<span class="tile-icon">%s</span><h3>%s</h3></a>'
+            % (name, ico(TOOLS[name]["icon"], "icon"), esc(TOOLS[name]["title"])) for name in names)
     cards = [tiles(ORDER)]
     trail = [("Home", "/"), ("Tools", None)]
     body = """<div class="wrap">
   %s
-  <header class="section-head"><h1>Interactive tools</h1><p class="lead">%s</p></header>
+  <header class="section-head"><h1>Interactive tools</h1></header>
   <div class="grid grid-3">%s</div>
-  <header class="section-head" style="margin-top:var(--sp-7)"><h2>AI labs</h2>
-    <p class="lead">From the <a href="/ai/">Artificial Intelligence course</a>: watch models learn, in colour and in 3D.</p></header>
+  <header class="section-head" style="margin-top:var(--sp-7)"><h2>AI labs</h2></header>
   <div class="grid grid-3">%s</div>
-  <header class="section-head" style="margin-top:var(--sp-7)"><h2>Games</h2>
-    <p class="lead">Practice that does not feel like practice.</p></header>
-  <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(min(265px,100%%),1fr))">
-    <a class="tile" href="/computational-thinking/"><span class="tile-icon">%s</span><h3>Computational Thinking Adventure</h3>
-      <p>Forty levels across four worlds: decomposition, abstraction, pattern recognition and algorithms.</p></a>
-    <a class="tile" href="/computational-thinking/#/lab/pseudocode"><span class="tile-icon">%s</span><h3>Pseudocode Playground</h3>
-      <p>Write OCR-style pseudocode, run it, step through it and watch a trace table build itself.</p></a>
-    <a class="tile" href="/computational-thinking/#/lab/flowchart"><span class="tile-icon">%s</span><h3>Flowchart Lab</h3>
-      <p>Build a flowchart from blocks, see it drawn with the standard symbols, then run it step by step.</p></a>
-    <a class="tile" href="/pixel-run/"><span class="tile-icon">%s</span><h3>Pixel Run</h3>
-      <p>A platformer where every obstacle is a Python function to write. Ten levels, from print to Dijkstra's algorithm.</p></a>
+  <header class="section-head" style="margin-top:var(--sp-7)"><h2>Games</h2></header>
+  <div class="grid grid-3">
+    <a class="tile" href="/computational-thinking/"><span class="tile-icon">%s</span><h3>Computational Thinking Adventure</h3></a>
+    <a class="tile" href="/computational-thinking/#/lab/pseudocode"><span class="tile-icon">%s</span><h3>Pseudocode Playground</h3></a>
+    <a class="tile" href="/computational-thinking/#/lab/flowchart"><span class="tile-icon">%s</span><h3>Flowchart Lab</h3></a>
+    <a class="tile" href="/pixel-run/"><span class="tile-icon">%s</span><h3>Pixel Run</h3></a>
   </div>
-</div>""" % (crumbs(trail), esc(INTRO), "".join(cards), tiles(AI_ORDER), ico("i-map", "icon"), ico("i-code", "icon"), ico("i-flow", "icon"), ico("i-flag", "icon"))
+</div>""" % (crumbs(trail), "".join(cards), tiles(AI_ORDER), ico("i-map", "icon"), ico("i-code", "icon"), ico("i-flow", "icon"), ico("i-flag", "icon"))
     path = "/tools/"
     write(path, layout(title="Interactive Computing Tools",
                        description=INTRO, path=path, body=body, active="/tools/",

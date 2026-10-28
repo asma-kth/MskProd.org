@@ -5,15 +5,9 @@ manifest at /assets/data/progress.json and whatever this browser has saved in
 local storage, so no score ever leaves the student's own machine and there is
 nothing to sign in to.
 """
-from mskbuild import markup
-from mskbuild.render import layout, crumbs, crumbs_ld, esc, write
+from mskbuild.render import layout, crumbs, crumbs_ld, write
 
-LEAD = ("What you have covered, what you are weak at, and the five topics worth "
-        "opening today. It is worked out in your browser, and nothing is uploaded.")
-
-FOOT = """
-!info How the five picks work :: A topic you scored well on comes back after up to ten days, and a weak one comes back tomorrow.
-"""
+LEAD = "What you have covered, your weakest topics and what to revise today."
 
 
 def build(register, add_search):
@@ -22,18 +16,12 @@ def build(register, add_search):
   %s
   <header class="section-head" style="margin-bottom:var(--sp-5)">
     <h1>Your progress</h1>
-    <p class="lead">%s</p>
   </header>
   <div id="dash" class="dash">
-    <noscript><p class="muted">The dashboard reads your saved scores using JavaScript,
-    so it needs JavaScript switched on. Every topic, quiz and exam paper on the rest of
-    the site works without it.</p></noscript>
+    <noscript><p class="muted">This page needs JavaScript.</p></noscript>
     <p class="muted">Working out where you are.</p>
   </div>
-  <div class="wrap-narrow" style="width:100%%;margin-inline:auto">
-    <article class="prose" style="padding-bottom:var(--sp-8)">%s</article>
-  </div>
-</div>""" % (crumbs(trail), esc(LEAD), markup.render(FOOT))
+</div>""" % crumbs(trail)
     path = "/progress/"
     write(path, layout(
         title="Your Revision Progress", description=LEAD, path=path, body=body,

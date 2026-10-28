@@ -2,7 +2,7 @@
 machines learn, and data.
 
 Vivid colours and 3D come from diagrams_ai_kit, which explains the contrast
-rules that keep them readable in both themes. Registered into the shared
+rules that keep them readable. Registered into the shared
 diagram registry, so `!diagram <name>` works as everywhere else.
 """
 import math

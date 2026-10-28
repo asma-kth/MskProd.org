@@ -90,7 +90,7 @@
         board.appendChild(CT.el("div", { class: "cas-belt" }, [line]));
         if (carAt === "out") {
           var out = CT.el("div", { class: "cas-out" }); out.innerHTML = carSvg(4, null);
-          out.appendChild(CT.el("p", null, "🎉 A finished car rolls off the line!"));
+          out.appendChild(CT.el("p", null, "A finished car rolls off the line!"));
           board.appendChild(out);
         }
       }
@@ -123,7 +123,7 @@
 
       fresh(); render();
       return {
-        checkLabel: "▶ Run the line",
+        checkLabel: "Run the line",
         run: function (done) {
           var r = CT.check.assembly(d, st);
           if (r.incomplete) { done(r); return; }

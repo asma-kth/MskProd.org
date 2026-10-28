@@ -101,7 +101,7 @@
             "data-zone": given(hid) ? null : "slot-" + i, "data-zone-label": "sub-problem box " + (i + 1) });
           if (hid) {
             var hd = find(d, hid);
-            if (given(hid)) head.appendChild(CT.el("div", { class: "ctr-headtxt" }, [hd.icon ? CT.el("span", { "aria-hidden": "true" }, hd.icon + " ") : null, hd.text]));
+            if (given(hid)) head.appendChild(CT.el("div", { class: "ctr-headtxt" }, [hd.icon ? CT.ico(hd.icon) : null, " ", hd.text]));
             else { var hc = CT.card(hd); hc.classList.add("is-head"); if (wrong[hid]) hc.classList.add("is-wrong"); head.appendChild(hc); }
           } else {
             head.appendChild(CT.el("span", { class: "ctr-empty" }, "Sub-problem " + (i + 1)));
@@ -191,10 +191,10 @@
         var lane = CT.el("div", { class: "ctr-lane" });
         st.slots.forEach(function (hid, i) {
           var hd = hid ? find(d, hid) : null;
-          lane.appendChild(CT.el("div", { class: "ctr-stage" }, [CT.el("span", { class: "ctr-stage-i" }, hd && hd.icon ? hd.icon : "❔"),
+          lane.appendChild(CT.el("div", { class: "ctr-stage" }, [CT.el("span", { class: "ctr-stage-i" }, CT.ico(hd && hd.icon ? hd.icon : "question")),
             CT.el("small", null, hd ? hd.text : "Stage " + (i + 1))]));
         });
-        lane.appendChild(CT.el("div", { class: "ctr-rocket" }, "🚀"));
+        lane.appendChild(CT.el("div", { class: "ctr-rocket" }, CT.ico("rocket")));
         strip.appendChild(lane);
         return strip;
       }
@@ -264,7 +264,7 @@
         destroy: function () { dd.destroy(); }
       };
       if (d.mission) {
-        ctl.checkLabel = "🚀 Launch mission";
+        ctl.checkLabel = "Launch mission";
         ctl.run = function (done) {
           var r = CT.check.tree(d, st);
           if (r.incomplete) { done(r); return; }

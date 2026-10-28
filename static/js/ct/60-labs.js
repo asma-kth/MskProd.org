@@ -39,7 +39,7 @@
       ["Strings", "s.length  s.upper  s.lower  s.substring(start, length)  s.left(n)  s.right(n)"],
       ["Comments", "// this line is a note for humans"]
     ];
-    return CT.el("details", { class: "clab-guide" }, [CT.el("summary", null, "📘 OCR-style pseudocode guide"),
+    return CT.el("details", { class: "clab-guide" }, [CT.el("summary", null, "OCR-style pseudocode guide"),
       CT.el("p", null, "This adventure writes pseudocode in the style of the OCR Exam Reference Language used in GCSE Computer Science (J277). = stores a value; == compares two values."),
       CT.el("table", { class: "cfl-table clab-ref" }, [CT.el("tbody", null, rows.map(function (r) {
         return CT.el("tr", null, [CT.el("th", { scope: "row" }, r[0]), CT.el("td", null, CT.el("pre", null, r[1]))]);
@@ -81,10 +81,9 @@
   // ------------------------------------------------------- the playground
   function playground(host) {
     var code = EXAMPLES[2].code, inputs = EXAMPLES[2].inputs || "", stepper = null, stepLine = null, vars = {}, output = [], error = null, showTrace = null, timer = null;
-    var h1 = CT.el("h1", { tabindex: "-1" }, "⌨️ Pseudocode Playground");
+    var h1 = CT.el("h1", { tabindex: "-1" }, "Pseudocode Playground");
     var page = CT.el("div", { class: "clab" });
-    CT.append(host, [CT.el("header", { class: "ct-me-head" }, [CT.el("a", { class: "ct-back", href: "#/" }, "← Adventure map"), h1,
-      CT.el("p", { class: "ct-lead" }, "Write pseudocode in the OCR style, run it, and step through it line by line. It runs safely inside this page and nothing you type is sent anywhere.")]), page]);
+    CT.append(host, [CT.el("header", { class: "ct-me-head" }, [CT.el("a", { class: "ct-back", href: "#/" }, "← Adventure map"), h1]), page]);
 
     function stop() { if (timer) clearTimeout(timer); timer = null; stepper = null; stepLine = null; }
     function render(focusSel) {
@@ -92,12 +91,12 @@
       var pick = CT.el("select", { "aria-label": "Load an example", onchange: function () {
         var ex = EXAMPLES[Number(this.value)]; if (!ex) return;
         stop(); code = ex.code; inputs = ex.inputs || ""; output = []; error = null; vars = {}; showTrace = null; render();
-      } }, [CT.el("option", { value: "" }, "📂 Load an example…")].concat(EXAMPLES.map(function (e, i) { return CT.el("option", { value: String(i) }, e.name); })));
+      } }, [CT.el("option", { value: "" }, "Load an example…")].concat(EXAMPLES.map(function (e, i) { return CT.el("option", { value: String(i) }, e.name); })));
       var bar = CT.el("div", { class: "clab-bar" }, [pick,
-        CT.el("button", { type: "button", class: "ct-btn ct-btn-go", onclick: runAll }, "▶ Run"),
-        CT.el("button", { type: "button", class: "ct-btn ct-btn-soft", onclick: step }, stepper ? "⏭ Next line" : "⏭ Step through"),
-        stepper ? CT.el("button", { type: "button", class: "ct-btn ct-btn-soft", onclick: function () { stop(); render(); } }, "⏹ Stop") : null,
-        CT.el("button", { type: "button", class: "ct-btn ct-btn-soft", onclick: function () { showTrace = trace(code, inputsOf(inputs)); render(); } }, "📋 Trace table")]);
+        CT.el("button", { type: "button", class: "ct-btn ct-btn-go", onclick: runAll }, "Run"),
+        CT.el("button", { type: "button", class: "ct-btn ct-btn-soft", onclick: step }, stepper ? "Next line" : "Step through"),
+        stepper ? CT.el("button", { type: "button", class: "ct-btn ct-btn-soft", onclick: function () { stop(); render(); } }, "Stop") : null,
+        CT.el("button", { type: "button", class: "ct-btn ct-btn-soft", onclick: function () { showTrace = trace(code, inputsOf(inputs)); render(); } }, "Trace table")]);
       var editor;
       if (stepper) editor = CT.el("div", { class: "clab-view" }, [CT.codeView(code, { mark: stepLine }), CT.el("p", { class: "clab-note" }, "Stepping: the highlighted line runs next. Stop to edit.")]);
       else {
@@ -114,7 +113,7 @@
         CT.el("textarea", { rows: "3", spellcheck: "false", oninput: function () { inputs = this.value; } }, inputs)]);
       var outBox = CT.el("div", { class: "clab-out" }, [CT.el("p", { class: "ct-tray-h" }, "Output"),
         CT.el("pre", { "aria-live": "polite" }, output.join("\n") || " "),
-        error ? CT.el("p", { class: "clab-err", role: "alert" }, "⚠ Line " + error.line + ": " + error.msg) : null]);
+        error ? CT.el("p", { class: "clab-err", role: "alert" }, "Error on line " + error.line + ": " + error.msg) : null]);
       var varBox = Object.keys(vars).length ? CT.el("div", { class: "clab-vars" }, [CT.el("p", { class: "ct-tray-h" }, "Variables now"),
         CT.el("table", { class: "cfl-table" }, CT.el("tbody", null, Object.keys(vars).map(function (k) {
           return CT.el("tr", null, [CT.el("th", { scope: "row" }, k), CT.el("td", null, CT.pseudo.show(vars[k]))]);
@@ -160,7 +159,8 @@
       return [blk("process", "total = 0"), blk("until", "total > 20", { body: [blk("input", "x", { num: true }), blk("process", "total = total + x")] }), blk("output", "total")];
     } },
   ];
-  var KIND = { input: ["▱", "Input"], output: ["▱", "Output"], process: ["▭", "Process"], if: ["◇", "If (decision)"], while: ["◇", "While loop"], until: ["◇", "Repeat until"] };
+  var KIND = { input: ["shape-io", "Input"], output: ["shape-io", "Output"], process: ["shape-process", "Process"], if: ["shape-decision", "If (decision)"],
+               while: ["shape-decision", "While loop"], until: ["shape-decision", "Repeat until"] };
   function toFlow(blocks) {
     function conv(list) {
       return list.map(function (b) {
@@ -177,10 +177,9 @@
 
   function flowLab(host) {
     var ex = FLOW_EXAMPLES[0], blocks = ex.blocks(), inputs = ex.inputs || "", into = null, on = null, output = [], error = null, timer = null, running = false;
-    var h1 = CT.el("h1", { tabindex: "-1" }, "🔀 Flowchart Lab");
+    var h1 = CT.el("h1", { tabindex: "-1" }, "Flowchart Lab");
     var page = CT.el("div", { class: "clab" });
-    CT.append(host, [CT.el("header", { class: "ct-me-head" }, [CT.el("a", { class: "ct-back", href: "#/" }, "← Adventure map"), h1,
-      CT.el("p", { class: "ct-lead" }, "Build a flowchart from blocks and watch it drawn with the standard symbols. See the matching pseudocode, then run it step by step.")]), page]);
+    CT.append(host, [CT.el("header", { class: "ct-me-head" }, [CT.el("a", { class: "ct-back", href: "#/" }, "← Adventure map"), h1]), page]);
 
     function find(list, id, parent) {
       for (var i = 0; i < list.length; i++) {
@@ -207,14 +206,14 @@
     function rowFor(b) {
       var f = function () { return find(blocks, b.id); };
       var li = CT.el("li", { class: "clab-blk clab-" + b.kind + (on === b.id ? " is-on" : "") }, [
-        CT.el("span", { class: "clab-kind", title: KIND[b.kind][1] }, [CT.el("span", { "aria-hidden": "true" }, KIND[b.kind][0] + " "), KIND[b.kind][1]]),
+        CT.el("span", { class: "clab-kind", title: KIND[b.kind][1] }, [CT.ico(KIND[b.kind][0]), " ", KIND[b.kind][1]]),
         CT.el("input", { type: "text", class: "clab-val", value: b.value, "data-val": b.id, spellcheck: "false", "aria-label": KIND[b.kind][1] + (b.kind === "if" || b.kind === "while" || b.kind === "until" ? " condition" : ""),
           oninput: function () { b.value = this.value; stopRun(); draw(); } }),
         b.kind === "input" ? CT.el("label", { class: "clab-num" }, [CT.el("input", { type: "checkbox", checked: b.num ? true : null, onchange: function () { b.num = this.checked; draw(); } }), " number"]) : null,
         CT.el("span", { class: "clab-ops" }, [
           CT.el("button", { type: "button", "aria-label": "Move up", onclick: function () { var x = f(); if (x && x.i > 0) { x.list.splice(x.i - 1, 0, x.list.splice(x.i, 1)[0]); render(); } } }, "↑"),
           CT.el("button", { type: "button", "aria-label": "Move down", onclick: function () { var x = f(); if (x && x.i < x.list.length - 1) { x.list.splice(x.i + 1, 0, x.list.splice(x.i, 1)[0]); render(); } } }, "↓"),
-          CT.el("button", { type: "button", "aria-label": "Delete", onclick: function () { var x = f(); if (x) { x.list.splice(x.i, 1); if (into && into.id === b.id) into = null; stopRun(); render(); } } }, "✕")])
+          CT.el("button", { type: "button", "aria-label": "Delete", onclick: function () { var x = f(); if (x) { x.list.splice(x.i, 1); if (into && into.id === b.id) into = null; stopRun(); render(); } } }, CT.ui("cross"))])
       ]);
       ["yes", "no", "body"].forEach(function (part) {
         if (!b[part]) return;
@@ -238,22 +237,22 @@
       var pick = CT.el("select", { "aria-label": "Load an example", onchange: function () {
         var e = FLOW_EXAMPLES[Number(this.value)]; if (!e) return;
         stopRun(); blocks = e.blocks(); inputs = e.inputs || ""; into = null; output = []; error = null; render();
-      } }, [CT.el("option", { value: "" }, "📂 Load an example…")].concat(FLOW_EXAMPLES.map(function (e, i) { return CT.el("option", { value: String(i) }, e.name); })));
+      } }, [CT.el("option", { value: "" }, "Load an example…")].concat(FLOW_EXAMPLES.map(function (e, i) { return CT.el("option", { value: String(i) }, e.name); })));
       var addBar = CT.el("div", { class: "clab-add", role: "group", "aria-label": "Add a block" }, [CT.el("p", { class: "ct-tray-h" }, into ? "Add inside the chosen branch" : "Add a block")]
         .concat(["input", "output", "process", "if", "while", "until"].map(function (k) {
-          return CT.el("button", { type: "button", class: "cdz-move", onclick: function () { add(k); } }, [CT.el("span", { "aria-hidden": "true" }, KIND[k][0]), KIND[k][1]]);
+          return CT.el("button", { type: "button", class: "cdz-move", onclick: function () { add(k); } }, [CT.ico(KIND[k][0]), " ", KIND[k][1]]);
         })));
       var list = CT.el("ol", { class: "clab-list clab-main" }, blocks.length ? blocks.map(rowFor) : [CT.el("li", { class: "cpg-empty" }, "No blocks yet. Add one above.")]);
       chartBox = CT.el("div", { class: "cfb-chart" });
       codeBox = CT.el("div");
       var run = CT.el("div", { class: "clab-bar" }, [
-        CT.el("button", { type: "button", class: "ct-btn ct-btn-go", disabled: running ? true : null, onclick: function () { play(false); } }, "▶ Run"),
-        CT.el("button", { type: "button", class: "ct-btn ct-btn-soft", onclick: function () { play(true); } }, running ? "⏸ Pause" : "⏭ Step"),
-        CT.el("button", { type: "button", class: "ct-btn ct-btn-soft", onclick: function () { stopRun(); stepper = null; output = []; error = null; render(); } }, "⏹ Reset")]);
+        CT.el("button", { type: "button", class: "ct-btn ct-btn-go", disabled: running ? true : null, onclick: function () { play(false); } }, "Run"),
+        CT.el("button", { type: "button", class: "ct-btn ct-btn-soft", onclick: function () { play(true); } }, running ? "Pause" : "Step"),
+        CT.el("button", { type: "button", class: "ct-btn ct-btn-soft", onclick: function () { stopRun(); stepper = null; output = []; error = null; render(); } }, "Reset")]);
       var inBox = CT.el("label", { class: "clab-inputs" }, [CT.el("span", null, "Test inputs, one per line"),
         CT.el("textarea", { rows: "3", spellcheck: "false", oninput: function () { inputs = this.value; } }, inputs)]);
       var outBox = CT.el("div", { class: "clab-out" }, [CT.el("p", { class: "ct-tray-h" }, "Output"), CT.el("pre", { "aria-live": "polite" }, output.join("\n") || " "),
-        error ? CT.el("p", { class: "clab-err", role: "alert" }, "⚠ " + error.msg) : null]);
+        error ? CT.el("p", { class: "clab-err", role: "alert" }, "Error: " + error.msg) : null]);
       CT.append(page, [CT.el("div", { class: "clab-bar" }, [pick]), CT.el("div", { class: "clab-grid" }, [
         CT.el("div", null, [CT.el("p", { class: "ct-tray-h" }, "Your blocks"), addBar, list]),
         CT.el("div", null, [chartBox, run, inBox, outBox, CT.el("p", { class: "ct-tray-h" }, "The same algorithm in pseudocode"), codeBox])])]);

@@ -288,7 +288,7 @@ print(sign, exponent, mantissa)
 A character is stored as a number. **ASCII** uses 7 bits, 128 codes, which holds English letters, digits and punctuation. **Unicode** is a table of more than a hundred thousand characters in every writing system, plus emoji, each with a **code point**. **UTF-8** stores a code point in **one to four bytes**, and its first 128 codes are identical to ASCII, so every ASCII file is already valid UTF-8.
 
 ```python
-for character in ["A", "é", "€", "😀"]:
+for character in ["A", "é", "€", "𝄞"]:
     print(character, ord(character), len(character.encode("utf-8")), "bytes")
 ```
 """),

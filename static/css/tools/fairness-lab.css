@@ -1,9 +1,7 @@
 /* Fairness lab. Two rows of applicants, one per group, each with its own
    threshold line; the table below compares the groups, and the gap row turns
-   green when a measure is within three points. Group colours are tokens so
-   the dark theme can lift them. */
+   green when a measure is within three points. */
 .tool[data-tool="fairness-lab"] { --fl-a: #2563EB; --fl-b: #C0266D; }
-[data-theme="dark"] .tool[data-tool="fairness-lab"] { --fl-a: #7DA7F5; --fl-b: #F08BBE; }
 .tool[data-tool="fairness-lab"] .fl-num { font-family: var(--font-mono); font-size: .85rem; color: var(--ink); }
 .tool[data-tool="fairness-lab"] .fl-checks { justify-content: flex-end; }
 .tool[data-tool="fairness-lab"] .fl-checks input { width: 1.05rem; height: 1.05rem; accent-color: var(--teal); }

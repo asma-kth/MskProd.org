@@ -537,7 +537,7 @@ def pixel_cat(cv, x, y, size=80):
 # ---------------------------------------------------------- panels and marks
 
 def band(cv, x, y, w, h, r=16):
-    """A soft strip that groups a row of things, light on light and dark on dark."""
+    """A soft strip that groups a row of things."""
     return cv.rect(x, y, w, h, r, "var(--il-band)")
 
 

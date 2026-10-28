@@ -1,7 +1,6 @@
 /* Neuron lab. Sliders in a row above the plot; the plot and the truth table
    side by side on a wide screen and stacked on a phone. The plane's shading
-   is drawn by the script in fixed vivid colours with partial opacity, so it
-   darkens with the page in the dark theme. */
+   is drawn by the script in fixed vivid colours with partial opacity. */
 .tool[data-tool="neuron-lab"] .nl-sliders {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: .6rem 1rem;
   margin-bottom: .9rem;

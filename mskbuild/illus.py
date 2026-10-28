@@ -9,9 +9,7 @@ A picture never carries the explanation alone. Under it sits a numbered list tha
 matches the numbered badges drawn into the picture, the caption says what to
 take away, and the SVG itself holds a full text description for a screen reader.
 
-The panel behind every picture follows the page theme (light or dark). The
-objects keep their own colours in both, because a laptop is the same laptop in
-either theme.
+Every picture sits on a pale panel and the objects keep their own colours.
 """
 import itertools
 
