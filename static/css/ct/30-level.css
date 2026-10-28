@@ -8,8 +8,7 @@
 .ctl-band { padding: .12rem .5rem; border-radius: 999px; color: #fff; background: #0F766E; }
 .ctl-band-intermediate { background: #2563EB; } .ctl-band-advanced { background: #9333EA; } .ctl-band-expert { background: #DC2626; }
 .ctl-preview { margin-left: .4rem; padding: .12rem .5rem; border-radius: 999px; color: #78350F; background: #FDE68A; }
-.ctl-best { font-size: 1.6rem; letter-spacing: .05em; color: #CBD5E1; }
-.ctl-best .is-on { color: #F5B700; text-shadow: 0 2px 0 #C98A00; }
+.ctl-best { display: flex; gap: .1em; font-size: 1.6rem; }
 @media (max-width: 640px) {
   .ctl-top { grid-template-columns: 1fr auto; }
   .ctl-back { grid-column: 1 / -1; justify-self: start; }

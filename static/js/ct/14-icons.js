@@ -444,13 +444,15 @@
   };
   // Inside another SVG: a nested picture at x, y, size by size.
   CT.icoSvg = function (name, x, y, size, cls) {
-    var s = CT.svg("svg", { x: x, y: y, width: size, height: size, viewBox: "0 0 48 48", class: "ct-icosvg" + (cls ? " " + cls : ""), "aria-hidden": "true" });
+    // The inline size beats the page-wide "svg { height: auto }", which would
+    // otherwise stretch a nested svg to its parent's height.
+    var s = CT.svg("svg", { x: x, y: y, width: size, height: size, style: "width:" + size + "px;height:" + size + "px", viewBox: "0 0 48 48", class: "ct-icosvg" + (cls ? " " + cls : ""), "aria-hidden": "true" });
     s.innerHTML = CT.icoMarkup(name);
     return s;
   };
   // The same as a string, for boards built as markup.
   CT.icoSvgText = function (name, x, y, size) {
-    return '<svg x="' + x + '" y="' + y + '" width="' + size + '" height="' + size + '" viewBox="0 0 48 48" aria-hidden="true">' + CT.icoMarkup(name) + "</svg>";
+    return '<svg x="' + x + '" y="' + y + '" width="' + size + '" height="' + size + '" style="width:' + size + "px;height:" + size + 'px" viewBox="0 0 48 48" class="ct-icosvg" aria-hidden="true">' + CT.icoMarkup(name) + "</svg>";
   };
   // One of the site's line icons (static/img/icons.svg), for buttons.
   CT.ui = function (name) {

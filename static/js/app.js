@@ -288,19 +288,22 @@
   window.addEventListener("pageshow", hide);
   window.addEventListener("pagehide", hide);
 
-  /* ------------------------------------------- illustrations and tables
-     On a narrow screen a picture or a wide table keeps a readable size and scrolls sideways.
-     A region that scrolls has to be reachable from the keyboard, so it takes
-     focus only while it actually overflows, and not on a wide screen where it
-     would be one more stop for nothing. */
-  var arts = [].slice.call(document.querySelectorAll(".illus-art, .table-scroll"));
+  /* ------------------------------------ illustrations, tables and code
+     On a narrow screen a picture, a wide table or a long line of code keeps a
+     readable size and scrolls sideways. A region that scrolls has to be
+     reachable from the keyboard, so it takes focus only while it actually
+     overflows, and not on a wide screen where it would be one more stop for nothing. */
+  var arts = [].slice.call(document.querySelectorAll(".illus-art, .table-scroll, .code-block > pre"));
   if (arts.length) {
+    var kindOf = function (a) {
+      return a.classList.contains("table-scroll") ? "Table" : a.tagName === "PRE" ? "Code" : "Picture";
+    };
     var syncArts = function () {
       arts.forEach(function (a) {
         if (a.scrollWidth > a.clientWidth + 1) {
           a.setAttribute("tabindex", "0");
           a.setAttribute("role", "group");
-          a.setAttribute("aria-label", a.classList.contains("table-scroll") ? "Table, scrolls sideways" : "Picture, scrolls sideways");
+          a.setAttribute("aria-label", kindOf(a) + ", scrolls sideways");
         } else {
           a.removeAttribute("tabindex");
           a.removeAttribute("role");

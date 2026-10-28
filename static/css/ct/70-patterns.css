@@ -108,8 +108,6 @@
 .csn-map { display: block; width: 100%; max-width: 440px; height: auto; border-radius: 16px; background: #14532D; touch-action: none; }
 .csn-map:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px; }
 .csn-cell { fill: #22C55E; } .csn-cell.is-alt { fill: #16A34A; }
-.csn-ico { font-size: 26px; text-anchor: middle; dominant-baseline: central; }
-.csn-small { font-size: 18px; }
 .csn-seg rect { fill: #FDE047; stroke: #A16207; stroke-width: 2; }
 .csn-seg.is-head rect { fill: #FACC15; }
 .csn-eye { fill: #fff; } .csn-pupil { fill: #111827; }

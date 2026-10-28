@@ -321,7 +321,7 @@ You can also opt out of personalised advertising across the whole web at [Google
 
 ## Data stored on your own device
 
-The quizzes, the exam answer marker and the theme switch need to remember a few things between visits. These are stored in your browser's **local storage**, which is a small area of your own device.
+The quizzes, exam papers and games remember a few things between visits. These are stored in your browser's **local storage**, on your own device.
 
 The following may be stored locally:
 
@@ -459,7 +459,7 @@ If you have a question about privacy on this site, email [a.kethiri@mskprod.org]
 
 ### Without JavaScript
 
-Every explanation, key term, quiz question and exam question is present in the HTML and fully readable with JavaScript disabled. JavaScript adds interactivity such as instant marking, the theme switch and the search dialog, but nothing that is needed to read and learn from the content.
+Every explanation, key term, quiz question and exam question is present in the HTML and fully readable with JavaScript disabled. JavaScript adds instant marking and the search dialog, but nothing that is needed to read and learn from the content.
 
 ## Known limitations
 

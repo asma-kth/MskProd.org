@@ -146,6 +146,10 @@
     var status = el("p", "tool-status");
     panel.appendChild(status);
     var working = el("div", "tool-working");
+    // The working scrolls sideways (see base-converter.css), so it must take keyboard focus.
+    working.tabIndex = 0;
+    working.setAttribute("role", "group");
+    working.setAttribute("aria-label", "Working");
     panel.appendChild(working);
     body.appendChild(panel);
 
@@ -268,6 +272,9 @@
     ansRow.appendChild(btnWrap);
     var pStatus = el("p", "tool-status");
     var pWorking = el("div", "tool-working");
+    pWorking.tabIndex = 0;
+    pWorking.setAttribute("role", "group");
+    pWorking.setAttribute("aria-label", "Working");
     var score = el("p", "tool-note", "Score 0 out of 0");
     practice.appendChild(qLine);
     practice.appendChild(qText);

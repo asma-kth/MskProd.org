@@ -119,8 +119,7 @@
     stat(String(studied.length), "quizzes completed",
          studied.length ? "average " + avg + " per cent" : "none yet");
     var strong = studied.filter(function (r) { return r.pct >= 80; }).length;
-    stat(String(strong), "topics at 80 per cent or better",
-         "that is the grade 9 threshold on knowledge");
+    stat(String(strong), "topics at 80 per cent or better");
     root.appendChild(stats);
 
     /* -------------------------------------------------- revise these five */

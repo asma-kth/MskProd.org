@@ -85,7 +85,6 @@
 .cg-floor { fill: #F8FAFC; }
 .cg-floor.is-alt { fill: #F1F5F9; }
 .cg-gate { fill: #FDE68A; } .cg-open { fill: #BBF7D0; } .cg-exit { fill: #BFDBFE; }
-.cg-sticker { font-size: 24px; text-anchor: middle; dominant-baseline: central; }
 .cg-piece { transition: transform .22s ease; }
 .cg-piece.is-bump { animation: cg-bump .3s ease 1; }
 @keyframes cg-bump { 50% { opacity: .5; } }

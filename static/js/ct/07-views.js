@@ -30,7 +30,7 @@
               CT.sound.play("good");
             } }, CT.ui(snd ? "sound" : "mute")),
           CT.el("a", { class: "ct-hud-btn", href: "#/daily", "aria-label": "Daily challenge" }, CT.ico(CT.daily.doneToday() ? "tick" : "bolt")),
-          CT.el("a", { class: "ct-hud-btn ct-hud-me", href: "#/me" }, [CT.ui("user"), CT.el("span", null, " Me")])
+          CT.el("a", { class: "ct-hud-btn ct-hud-me", href: "#/me", "aria-label": "Me" }, [CT.ui("user"), CT.el("span", null, " Me")])
         ])
       ]);
     }

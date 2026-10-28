@@ -144,4 +144,4 @@
 .ct-ui { display: inline-flex; vertical-align: -.15em; }
 .ct-ui .icon { width: 1.1em; height: 1.1em; }
 .ct-icorow { display: inline-flex; gap: .15em; align-items: center; }
-.ct-icosvg { overflow: visible; }
+.ct-icosvg { overflow: visible; max-width: none; }

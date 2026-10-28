@@ -83,7 +83,7 @@
           level.preview ? CT.el("span", { class: "ctl-preview" }, "Teacher preview") : null]),
         CT.el("h1", { class: "ctl-h", tabindex: "-1" }, level.title)
       ]),
-      CT.el("div", { class: "ctl-best", "aria-label": best ? "Best: " + best + " stars" : "Not completed yet" },
+      CT.el("div", { class: "ctl-best", role: "img", "aria-label": best ? "Best: " + best + " stars" : "Not completed yet" },
         [1, 2, 3].map(function (i) { return CT.ico(i <= best ? "star" : "star-off"); }))
     ]);
     var side = CT.el("aside", { class: "ctl-side" }, [

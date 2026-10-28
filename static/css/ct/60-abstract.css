@@ -103,12 +103,10 @@
 @keyframes cgr-pulse { 50% { stroke-width: 8; } }
 .cgr-lab { font: 800 calc(14px * var(--k, 1)) var(--font-body); text-anchor: middle; fill: #0F172A; pointer-events: none; }
 .cgr-node.is-here .cgr-lab { fill: #fff; }
-.cgr-ico { font-size: calc(20px * var(--k, 1)); text-anchor: middle; pointer-events: none; }
+.cgr-ico { pointer-events: none; }
 .cgr-name { font: 800 calc(12px * var(--k, 1)) var(--font-body); text-anchor: middle; fill: #0F172A; paint-order: stroke; stroke: #fff; stroke-width: 3px; pointer-events: none; }
-.cgr-friend { font-size: calc(18px * var(--k, 1)); text-anchor: middle; }
 .cgr-carg { transition: transform .45s ease-in-out; pointer-events: none; }
 [data-ct-motion="calm"] .cgr-carg { transition: none; }
-.cgr-car { font-size: calc(26px * var(--k, 1)); text-anchor: middle; }
 .cgr-opts { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; margin-top: .7rem; }
 .cgr-opts .ct-tray-h { flex-basis: 100%; max-width: none; }
 .cgr-opt { min-height: 42px; padding: .35rem .8rem; }
