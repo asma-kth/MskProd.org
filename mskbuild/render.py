@@ -315,6 +315,7 @@ def footer(path: str = "") -> str:
         <h4>Practise</h4>
         <ul>
           <li><a href="/exam-papers/">Practice exam papers</a></li>
+          <li><a href="/ks3/stretch/">KS3 stretch tasks</a></li>
           <li><a href="/computational-thinking/">Computational Thinking Adventure</a></li>
           <li><a href="/pixel-run/">Pixel Run, the Python game</a></li>
           <li><a href="/progress/">Your progress</a></li>

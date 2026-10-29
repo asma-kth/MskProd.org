@@ -401,8 +401,11 @@
   }
   startBtn.addEventListener("click", begin);
 
-  /* Tab stays inside the game, Escape offers to leave, and number keys pick tiles. */
-  stage.addEventListener("keydown", function (e) {
+  /* Tab stays inside the game, Escape offers to leave, and number keys pick
+     tiles. Listened for on the document, not the stage, because focus can land
+     on the page itself for a moment when one screen replaces another. */
+  document.addEventListener("keydown", function (e) {
+    if (!G || stage.hidden) return;
     if (e.key === "Escape") { e.preventDefault(); leave(true); return; }
     if (e.key === "Tab") {
       var f = Array.prototype.filter.call(stage.querySelectorAll("button, input, textarea, select, a[href], [tabindex='0']"), function (n) {
@@ -410,7 +413,8 @@
       });
       if (!f.length) return;
       var first = f[0], last = f[f.length - 1];
-      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      if (!stage.contains(document.activeElement)) { e.preventDefault(); (e.shiftKey ? last : first).focus(); }
+      else if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
       return;
     }
