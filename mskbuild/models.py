@@ -118,6 +118,62 @@ class EQ:
 
 
 @dataclass
+class Blitz:
+    """One question in the quiz game that opens a Key Stage 3 stretch task.
+
+    kind:
+      choice  pick one: `options` written correct answer first
+      multi   pick every right one: the first `n` of `options` are correct
+      tf      true or false: the statement is `q`, the answer is `answer`
+      order   put in order: `options` written in the correct order
+      type    type the answer: `accept` lists every answer to credit
+
+    The game shuffles options on every play, so the written order is never
+    shown. `code` is a short program or snippet printed with the question.
+    """
+    q: str
+    kind: str = "choice"
+    options: List[str] = field(default_factory=list)
+    n: int = 1
+    answer: bool = True
+    accept: List[str] = field(default_factory=list)
+    explain: str = ""
+    code: str = ""
+    lang: str = "python"      # of `code`: python, pseudo, html, css, formula or text
+    time: int = 0             # seconds; 0 takes the kind's default
+
+
+@dataclass
+class Written:
+    """A short or long written answer in a stretch task, marked like an exam answer.
+
+    Every mark point carries the phrasings the auto marker accepts. There can
+    be more points than marks ("any two from three"); the score is capped at
+    `marks`. `frame` holds sentence starters offered to a student who is stuck.
+    """
+    q: str
+    marks: int
+    points: List[MP]
+    model: str
+    command: str = ""
+    frame: List[str] = field(default_factory=list)
+    code: str = ""
+    lang: str = "python"
+
+
+@dataclass
+class Stretch:
+    """The stretch task for one lesson: a quiz game, short answers, long answers.
+
+    `lesson` is the title of the topic section it belongs to, exactly.
+    """
+    lesson: str
+    blitz: List[Blitz]
+    short: List[Written]
+    long: List[Written]
+
+
+@dataclass
 class Section:
     title: str
     body: str            # mini-markup, parsed at build time

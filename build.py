@@ -292,7 +292,8 @@ def build_pwa():
     shell = []
     for rel in ("css/site.css", "js/app.js", "js/mascot.js", "js/tools.js",
                 "css/game.css", "js/game.js", "js/game-art.js",
-                "css/certificate.css", "js/certificate.js", "css/ct.css", "js/ct.js", "css/ct-pages.css", "js/ct-pages.js"):
+                "css/certificate.css", "js/certificate.js", "css/ct.css", "js/ct.js", "css/ct-pages.css", "js/ct-pages.js",
+                "css/stretch.css", "js/stretch.js", "js/quiz.js"):
         f = os.path.join(DIST, "assets", rel)
         if os.path.exists(f):
             with open(f, "rb") as fh:
@@ -450,6 +451,15 @@ def copy_static():
         fh.write(ctbundle.bundle(ROOT, "js"))
     with open(os.path.join(dst, "css", "ct.css"), "w", encoding="utf-8") as fh:
         fh.write(ctbundle.bundle(ROOT, "css"))
+    # The stretch tasks are hosted by the adventure's Pixel, so they share his
+    # pose sheet rather than keeping a second copy of it.
+    with open(os.path.join(src, "css", "ct", "10-pixel.css"), encoding="utf-8") as fh:
+        pixel_css = fh.read()
+    stretch_css = os.path.join(dst, "css", "stretch.css")
+    with open(stretch_css, encoding="utf-8") as fh:
+        rest = fh.read()
+    with open(stretch_css, "w", encoding="utf-8") as fh:
+        fh.write(pixel_css + "\n" + rest)
     # The parts are in the bundles now, so they are not published one by one.
     shutil.rmtree(os.path.join(dst, "js", "ct"))
     shutil.rmtree(os.path.join(dst, "css", "ct"))
@@ -527,6 +537,9 @@ def main():
     # before any topic page is written.
     from content import papers
     papers.attach_exam_links()
+    # Year 8 and 9 lessons end with a link to their stretch task.
+    from content import stretch_page
+    stretch_page.attach_links()
 
     for mod in modules:
         build_course(mod.COURSE)
@@ -554,6 +567,8 @@ def main():
 
     from content import ct_page
     ct_page.build(register, add_search)
+
+    stretch_page.build(register, add_search)
 
     from content import worksheets
     worksheets.build(register, add_search, COURSES)

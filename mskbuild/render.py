@@ -728,6 +728,18 @@ def _unit_exams_aside(topic) -> str:
     return '<div class="aside-block"><h4>Unit exams</h4>%s</div>' % links
 
 
+def _stretch_cta(href: str, n: int) -> str:
+    """The way from a Key Stage 3 lesson into its stretch task."""
+    shapes = ('<svg class="stretch-cta-art" viewBox="0 0 50 50" aria-hidden="true" focusable="false">'
+              '<rect width="24" height="24" rx="6" fill="#D7263D"/><path d="M12 6.5 18.5 17.5h-13Z" fill="#fff"/>'
+              '<rect x="26" width="24" height="24" rx="6" fill="#1F5FD1"/><path d="M38 5.5 44.5 12 38 18.5 31.5 12Z" fill="#fff"/>'
+              '<rect y="26" width="24" height="24" rx="6" fill="#F2B705"/><circle cx="12" cy="38" r="6.3" fill="#1F1A05"/>'
+              '<rect x="26" y="26" width="24" height="24" rx="6" fill="#1E7B34"/><rect x="32" y="32" width="12" height="12" rx="2" fill="#fff"/></svg>')
+    return ('<a class="stretch-cta" href="%s">%s<span class="stretch-cta-txt"><b>Stretch task: lesson %d</b>'
+            '<span>Quiz game, short answers and long answers</span></span>'
+            '<span class="stretch-cta-go">Play %s</span></a>' % (href, shapes, n, ico("i-arrow-right")))
+
+
 def _unit_exams_note(topic) -> str:
     exams = getattr(topic, "exams", None)
     if not exams:
@@ -754,10 +766,12 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
 
     # sections
     sec_html, toc = [], []
+    stretch = getattr(topic, "stretch", None) or {}
     for s in topic.sections:
         sid = s.id or slugify(s.title)
         toc.append((sid, s.title))
-        sec_html.append('<h2 id="%s">%s</h2>\n%s' % (sid, esc(s.title), markup.render(s.body)))
+        sec_html.append('<h2 id="%s">%s</h2>\n%s%s' % (sid, esc(s.title), markup.render(s.body),
+                                                      _stretch_cta(*stretch[s.title]) if s.title in stretch else ""))
 
     if topic.keyterms:
         toc.append(("key-terms", "Key terms"))

@@ -190,7 +190,10 @@
     normalise(text).trim().split(" ").forEach(function (w) { if (w) { set[w] = 1; set[stem(w)] = 1; } });
     return set;
   }
-  function containsPhrase(answerNorm, answerStems, phrase) {
+  /* Synonyms are followed one step only. loop and iteration list each other,
+     so following them further went round in a circle until the stack ran out,
+     and the question could never be marked. */
+  function containsPhrase(answerNorm, answerStems, phrase, viaSynonym) {
     var p = normalise(phrase).trim();
     if (!p) return false;
     if (answerNorm.indexOf(" " + p + " ") > -1) return true;
@@ -198,8 +201,8 @@
     if (words.length === 1) {
       var w = words[0];
       if (answerStems[w] || answerStems[stem(w)]) return true;
-      var syn = SYNONYMS[w];
-      if (syn) { for (var i = 0; i < syn.length; i++) { if (containsPhrase(answerNorm, answerStems, syn[i])) return true; } }
+      var syn = viaSynonym ? null : SYNONYMS[w];
+      if (syn) { for (var i = 0; i < syn.length; i++) { if (containsPhrase(answerNorm, answerStems, syn[i], true)) return true; } }
       return false;
     }
     /* multi word: every word (stemmed) must be present somewhere in the answer */
@@ -508,6 +511,15 @@
     });
   }
   window.MskExam = { markAll: markAll, markOne: markOne, clearOne: clearOne };
+  /* The same keyword marker for the stretch tasks' written rounds:
+     which of a list of mark points (each a list of phrasings) an answer earns.
+     mskbuild/stretchcheck.py is this marker in Python, used at build time. */
+  window.MskMarker = {
+    hits: function (text, points) {
+      var has = !!String(text || "").trim(), a = normalise(text), s = stemSet(text);
+      return points.map(function (p) { return has && pointHit(a, s, p); });
+    }
+  };
 
   document.addEventListener("click", function (e) {
     var b = e.target.closest && e.target.closest("[data-mark]");

@@ -3914,6 +3914,7 @@ COURSE = Course(
     accent="var(--lilac-deep)",
     blurb="Years 7, 8 and 9 in the order they are taught. Computer science, information technology and digital literacy, explained properly so that starting GCSE feels like carrying on rather than starting again.",
     intro="",
+    extra_cta=("Stretch tasks", "/ks3/stretch/", "i-target"),
     units=[
         Unit("year-7", "Year 7", "Your first year of computing: using computers properly, your first programs in Scratch and Python, what is inside the machine, and vector graphics.",
              [Y7_USING, Y7_SCRATCH, Y7_PYTHON, Y7_UNDERSTAND, Y7_VECTOR], icon="i-play", term="Year 7"),

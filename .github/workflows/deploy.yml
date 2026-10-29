@@ -36,6 +36,9 @@ jobs:
       - name: Check every level of the Computational Thinking Adventure
         run: node tools/check_ct.mjs
 
+      - name: Check the marking of every Key Stage 3 stretch task
+        run: node tools/check_stretch.mjs
+
       - name: Build the site
         run: python3 build.py
 

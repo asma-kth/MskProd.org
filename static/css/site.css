@@ -814,6 +814,30 @@ pre code { background: none; border: 0; padding: 0; color: inherit; white-space:
 @media (max-width: 560px) { .mascot-btn { width: 3.6rem; height: 3.6rem; } .mascot-dock { right: .7rem; bottom: .7rem; } }
 @media print { .mascot-dock, .site-header, .progress-bar { display: none !important; } }
 
+/* ------------------------------------------------------ stretch task link
+   Ends each Year 8 and 9 lesson on its topic page: the way into its game. */
+.stretch-cta {
+  display: flex; align-items: center; gap: 1rem; margin: var(--sp-4) 0 var(--sp-3); padding: .9rem 1.1rem;
+  border-radius: var(--r-l); text-decoration: none; color: #fff;
+  background: radial-gradient(130% 160% at 0% 0%, #5B2A9E 0%, #3D1C78 45%, #26105A 100%);
+  box-shadow: 0 10px 26px rgba(38, 16, 90, .26); transition: transform .2s ease, box-shadow .2s ease;
+}
+.stretch-cta:hover { color: #fff; transform: translateY(-2px); box-shadow: 0 14px 32px rgba(38, 16, 90, .34); }
+.stretch-cta-art { flex: none; width: 50px; height: 50px; }
+.stretch-cta:hover .stretch-cta-art { animation: cta-wiggle .6s ease; }
+.stretch-cta-txt { flex: 1; min-width: 0; display: grid; gap: .1rem; line-height: 1.35; }
+.stretch-cta-txt b { font-family: var(--font-display); font-size: 1.04rem; color: #fff; }
+.stretch-cta-txt span { font-size: .87rem; color: #E9D5FF; }
+.stretch-cta-go {
+  flex: none; display: inline-flex; align-items: center; gap: .35rem; padding: .45rem 1rem; border-radius: var(--r-pill);
+  font-weight: 800; font-size: .92rem; color: #1F1A05; background: #FDE047;
+}
+.stretch-cta-go .icon { width: 1em; height: 1em; }
+@keyframes cta-wiggle { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-9deg) scale(1.06); } 60% { transform: rotate(7deg); } }
+@media (max-width: 520px) { .stretch-cta { flex-wrap: wrap; } .stretch-cta-go { margin-left: calc(50px + 1rem); } }
+@media print { .stretch-cta { display: none; } }
+
+
 /* ----------------------------------------------------------------- search */
 .search-shell {
   position: fixed; inset: 0; z-index: 150; display: grid; place-items: start center;
