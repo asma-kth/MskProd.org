@@ -375,6 +375,8 @@ def _hub(recs):
 
 def build(register, add_search):
     missing = check()
+    if missing:
+        raise SystemExit("Year 8 and 9 lessons with no stretch task:\n  " + "\n  ".join(missing))
     recs = records()
     for i, r in enumerate(recs):
         nxt = recs[i + 1] if i + 1 < len(recs) else None
@@ -391,5 +393,3 @@ def build(register, add_search):
                "stretch tasks challenge extension fast finishers quiz game kahoot ks3 year 8 year 9 lessons")
     n_q = sum(len(r["stretch"].blitz) + len(r["stretch"].short) + len(r["stretch"].long) for r in recs)
     print("Stretch tasks: %d lessons, %d questions checked" % (len(recs), n_q))
-    if missing:
-        print("Stretch tasks still to write (%d): %s" % (len(missing), "; ".join(missing)))
