@@ -72,6 +72,8 @@ def stem(w):
         return w[:-2]
     if len(w) > 3 and w.endswith("s") and not (w.endswith("ss") or w.endswith("us")):
         return w[:-1]
+    if len(w) > 3 and w.endswith("e"):
+        return w[:-1]
     return w
 
 

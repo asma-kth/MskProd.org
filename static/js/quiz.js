@@ -183,6 +183,8 @@
     if (w.length > 4 && /(ing|ed)$/.test(w)) return w.replace(/(ing|ed)$/, "");
     if (w.length > 3 && /(es)$/.test(w) && !/(ss|us)$/.test(w)) return w.slice(0, -2);
     if (w.length > 3 && /s$/.test(w) && !/(ss|us)$/.test(w)) return w.slice(0, -1);
+    /* file, files, change, changed and changing all meet at fil or chang */
+    if (w.length > 3 && /e$/.test(w)) return w.slice(0, -1);
     return w;
   }
   function stemSet(text) {
