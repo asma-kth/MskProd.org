@@ -21,7 +21,7 @@ TEACHERS = """
 ## Ready to use
 
 + [Timed exam papers](/exam-papers/)
-+ [Stretch tasks for every Year 8 and Year 9 lesson](/ks3/stretch/)
++ [Stretch tasks for every Key Stage 3 lesson](/ks3/stretch/)
 + [Printable worksheets](/worksheets/)
 + [Assignment links](/assign/)
 + [Interactive tools](/tools/)

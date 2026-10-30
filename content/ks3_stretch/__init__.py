@@ -1,4 +1,4 @@
-"""Stretch tasks for every Year 8 and Year 9 lesson of the Key Stage 3 course.
+"""Stretch tasks for every lesson of the Key Stage 3 course, Year 7 to Year 9.
 
 One module per unit, in the order the units are taught. Each defines TOPIC,
 the slug of its unit, and LESSONS, one Stretch per lesson of that unit in the
@@ -7,6 +7,7 @@ order the unit teaches them. A lesson is a section of the unit's topic page.
 import importlib
 
 MODULES = [
+    "y7_using_computers", "y7_scratch", "y7_python", "y7_understanding_computers", "y7_vector_graphics",
     "y8_digital_literacy", "y8_computational_thinking", "y8_python", "y8_spreadsheets",
     "y8_networks", "y8_web",
     "y9_law", "y9_data_representation", "y9_python", "y9_apps", "y9_ai", "y9_3d",

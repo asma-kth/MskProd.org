@@ -537,7 +537,7 @@ def main():
     # before any topic page is written.
     from content import papers
     papers.attach_exam_links()
-    # Year 8 and 9 lessons end with a link to their stretch task.
+    # Every Key Stage 3 lesson ends with a link to its stretch tasks.
     from content import stretch_page
     stretch_page.attach_links()
 

@@ -1,4 +1,4 @@
-"""Key Stage 3 stretch tasks: three for every Year 8 and Year 9 lesson.
+"""Key Stage 3 stretch tasks: three for every lesson from Year 7 to Year 9.
 
 Each lesson of a unit (a section of its topic page) gets a page of its own with
 three tasks. The Quiz Challenge has three rounds: a quiz game against the
@@ -22,7 +22,7 @@ from content import ks3_stretch
 
 HUB = "/ks3/stretch/"
 HUB_TITLE = "Stretch tasks"
-HUB_LEAD = ("Three tasks for every Year 8 and Year 9 lesson: a quiz challenge, This or That with "
+HUB_LEAD = ("Three tasks for every Year 7, 8 and 9 lesson: a quiz challenge, This or That with "
             "Pixel the cat, and Memory Match.")
 
 ROUNDS = [("Quiz Blitz", "blitz"), ("Quick Fire", "short"), ("Big Think", "long")]
@@ -113,7 +113,7 @@ def records():
 
 
 def attach_links():
-    """Give each Year 8 and 9 topic a link to the stretch task for every lesson.
+    """Give each Key Stage 3 topic a link to the stretch tasks for every lesson.
 
     Called before the topic pages are built, so each lesson can end with it."""
     for r in records():
@@ -124,15 +124,13 @@ def attach_links():
 
 
 def check():
-    """Prove every task, and that every Year 8 and 9 lesson has one."""
+    """Prove every task, and that every Key Stage 3 lesson has one."""
     units = ks3_stretch.units()
     topics = {t.slug: t for u in ks3.COURSE.units for t in u.topics}
     stretchcheck.validate(units, topics)
     have = {(slug, st.lesson) for slug, lessons in units for st in lessons}
     missing = []
     for u in ks3.COURSE.units:
-        if u.slug not in ("year-8", "year-9"):
-            continue
         for t in u.topics:
             for s in t.sections:
                 if (t.slug, s.title) not in have and (t.slug, s.title) not in ks3_stretch.NOT_LESSONS:
@@ -458,7 +456,7 @@ def _hub_tasks():
 def _hub(recs):
     trail = [("Home", "/"), ("Key Stage 3", "/ks3/"), (HUB_TITLE, None)]
     years = []
-    for year in ("Year 8", "Year 9"):
+    for year in ("Year 7", "Year 8", "Year 9"):
         units = []
         seen = []
         for r in recs:
@@ -503,7 +501,7 @@ def _hub(recs):
 def build(register, add_search):
     missing = check()
     if missing:
-        raise SystemExit("Year 8 and 9 lessons with no stretch task:\n  " + "\n  ".join(missing))
+        raise SystemExit("Key Stage 3 lessons with no stretch task:\n  " + "\n  ".join(missing))
     recs = records()
     for i, r in enumerate(recs):
         nxt = recs[i + 1] if i + 1 < len(recs) else None
@@ -516,9 +514,9 @@ def build(register, add_search):
                     % (r["year"], r["topic"].title, r["stretch"].lesson)).lower())
     write(HUB, _hub(recs))
     register(HUB, 0.8, "weekly")
-    add_search(HUB_TITLE, HUB, "Year 8 and Year 9: three tasks for every lesson",
+    add_search(HUB_TITLE, HUB, "Years 7, 8 and 9: three tasks for every lesson",
                "stretch tasks challenge extension fast finishers quiz game kahoot this or that pixel cat "
-               "memory match pairs ks3 year 8 year 9 lessons")
+               "memory match pairs ks3 year 7 year 8 year 9 lessons")
     n_q = sum(len(r["stretch"].blitz) + len(r["stretch"].short) + len(r["stretch"].long) for r in recs)
     n_p = sum(len(r["stretch"].picks) for r in recs)
     n_m = sum(len(r["stretch"].pairs) for r in recs)
