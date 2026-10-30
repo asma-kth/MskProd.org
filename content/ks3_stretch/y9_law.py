@@ -1,5 +1,5 @@
 """Y9.1 Digital Literacy and the Law: stretch tasks."""
-from mskbuild.models import Blitz, Written, Stretch, MP
+from mskbuild.models import Blitz, Written, Stretch, MP, Pick, Pair
 
 TOPIC = "digital-literacy-and-the-law"
 

@@ -1,10 +1,12 @@
-"""Key Stage 3 stretch tasks: one game for every Year 8 and Year 9 lesson.
+"""Key Stage 3 stretch tasks: three for every Year 8 and Year 9 lesson.
 
 Each lesson of a unit (a section of its topic page) gets a page of its own with
-three rounds: a quiz game against the clock, short written answers, and long
-written answers marked against a mark scheme. The game itself is
-static/js/stretch.js; this module writes the pages, the hub that lists them,
-and the link under each lesson on the topic pages.
+three tasks. The Quiz Challenge has three rounds: a quiz game against the
+clock, short written answers, and long written answers marked against a mark
+scheme. In This or That, Pixel the cat asks questions with two answers to
+choose from. Memory Match is a card game: find each word's meaning. The games
+themselves are static/js/stretch.js; this module writes the pages, the hub
+that lists them, and the link under each lesson on the topic pages.
 
 Every page also carries the whole task as plain HTML: it is what a browser
 without JavaScript shows, and what prints when a teacher wants it on paper.
@@ -20,9 +22,14 @@ from content import ks3_stretch
 
 HUB = "/ks3/stretch/"
 HUB_TITLE = "Stretch tasks"
-HUB_LEAD = "A quiz game, short answers and long answers for every Year 8 and Year 9 lesson."
+HUB_LEAD = ("Three tasks for every Year 8 and Year 9 lesson: a quiz challenge, This or That with "
+            "Pixel the cat, and Memory Match.")
 
 ROUNDS = [("Quiz Blitz", "blitz"), ("Quick Fire", "short"), ("Big Think", "long")]
+
+# The tasks on every lesson's page, in the order they are offered. The key is
+# also what the game and the saved results call each one.
+TASKS = [("quiz", "Quiz Challenge"), ("cat", "This or That"), ("match", "Memory Match")]
 
 # Seconds on the clock for each kind of game question, before any extra for
 # code to read or a long question.
@@ -63,6 +70,28 @@ def _round_icon(kind):
             '<path d="M21 20c1-3 3-4.5 5.5-4.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>'
             '<path d="M5 20H1.5M48.5 20H45M9 6.5 6.5 4M41 6.5 43.5 4M25 2.5V0" stroke="#F59E0B" stroke-width="2.6" '
             'stroke-linecap="round"/></svg>')
+
+
+def _task_icon(task):
+    """The drawn picture on each task's card: the quiz's four shapes, Pixel's
+    head for This or That, and two playing cards for Memory Match."""
+    if task == "quiz":
+        return _round_icon("blitz")
+    if task == "cat":
+        head = cat.flat(head_only=True, cls="st-cat-head")
+        return head.replace(' role="img" aria-label="Pixel the robot cat"', ' aria-hidden="true" focusable="false"')
+    return ('<svg viewBox="0 0 50 50" aria-hidden="true" focusable="false">'
+            '<g transform="rotate(-11 17 27)"><rect x="4" y="9" width="25" height="33" rx="5" fill="#1F5FD1" '
+            'stroke="#1E293B" stroke-width="2.2"/><rect x="8" y="13" width="17" height="25" rx="3" fill="none" '
+            'stroke="#fff" stroke-opacity=".5" stroke-width="1.6" stroke-dasharray="3 2"/>'
+            '<path d="M13.4 21.6a3.6 3.6 0 1 1 5 3.3c-1.1.5-1.6 1.2-1.6 2.4" fill="none" stroke="#fff" stroke-width="2.6" '
+            'stroke-linecap="round"/><circle cx="16.8" cy="31.4" r="1.6" fill="#fff"/></g>'
+            '<g transform="rotate(9 33 25)"><rect x="21" y="8" width="25" height="33" rx="5" fill="#fff" '
+            'stroke="#1E293B" stroke-width="2.2"/><path d="M26.5 17h14M26.5 23h10M26.5 29h12" stroke="#1E293B" '
+            'stroke-width="2.6" stroke-linecap="round"/></g>'
+            '<circle cx="40" cy="40" r="7.5" fill="#16A34A" stroke="#fff" stroke-width="2.2"/>'
+            '<path d="M36.4 40.2l2.5 2.5 4.6-4.8" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" '
+            'stroke-linejoin="round"/></svg>')
 
 
 def records():
@@ -157,6 +186,13 @@ def _written(w):
     return d
 
 
+def _pick(p):
+    d = {"q": markup.inline(p.q), "r": markup.inline(p.right), "w": markup.inline(p.wrong), "x": markup.inline(p.why)}
+    if p.code:
+        d["c"] = _code(p.code, p.lang)
+    return d
+
+
 def payload(r, nxt):
     st = r["stretch"]
     return {
@@ -167,6 +203,9 @@ def payload(r, nxt):
         "blitz": [_blitz(b) for b in st.blitz],
         "short": [_written(w) for w in st.short],
         "long": [_written(w) for w in st.long],
+        "picks": [_pick(p) for p in st.picks],
+        "pairs": [{"a": markup.inline(p.a), "b": markup.inline(p.b)} for p in st.pairs],
+        "pn": list(st.pair_names),
     }
 
 
@@ -220,25 +259,58 @@ def _sheet(r):
 
     sq, sk = written(st.short, 3)
     lq, lk = written(st.long, 9)
+
+    picks, pick_keys = [], []
+    for p in st.picks:
+        two = [p.right, p.wrong] if _seed(p.q) % 2 else [p.wrong, p.right]
+        picks.append('<li class="st-sheet-q"><p>%s</p>%s<ul class="st-sheet-opts st-sheet-tf">%s</ul></li>'
+                     % (markup.inline(p.q), _sheet_code(p.code, p.lang),
+                        "".join('<li><span class="st-box"></span>%s</li>' % markup.inline(o) for o in two)))
+        pick_keys.append("<li><b>%s</b> %s</li>" % (markup.inline(p.right), markup.inline(p.why)))
+
+    # Meanings in a fixed order in which none sits beside its own word.
+    n_pairs = len(st.pairs)
+    mixed = sorted(range(n_pairs), key=lambda i: _seed(st.pairs[i].b))
+    order = next((mixed[r:] + mixed[:r] for r in range(n_pairs)
+                  if all(i != k for k, i in enumerate(mixed[r:] + mixed[:r]))),
+                 [(k + 1) % n_pairs for k in range(n_pairs)])
+    letters = "ABCDEFGH"
+    rows = "".join('<tr><td><b>%s</b> %s</td><td><b>%d</b> %s</td></tr>'
+                   % (letters[k], markup.inline(st.pairs[k].a), n + 1, markup.inline(st.pairs[i].b))
+                   for n, (k, i) in enumerate(zip(range(len(st.pairs)), order)))
+    match_key = "".join("<li><b>%s %d</b> %s: %s</li>" % (letters[k], order.index(k) + 1, markup.inline(p.a), markup.inline(p.b))
+                        for k, p in enumerate(st.pairs))
+    word, meaning = (n.lower() for n in st.pair_names)
     return """<section class="st-sheet" id="st-sheet" aria-labelledby="st-sheet-title">
   <h2 id="st-sheet-title">%s: the questions</h2>
-  <h3>Round 1: Quiz Blitz</h3><ol class="st-sheet-list">%s</ol>
-  <h3>Round 2: Quick Fire</h3><ol class="st-sheet-list">%s</ol>
-  <h3>Round 3: Big Think</h3><ol class="st-sheet-list">%s</ol>
+  <h3>Quiz Challenge, round 1: Quiz Blitz</h3><ol class="st-sheet-list">%s</ol>
+  <h3>Quiz Challenge, round 2: Quick Fire</h3><ol class="st-sheet-list">%s</ol>
+  <h3>Quiz Challenge, round 3: Big Think</h3><ol class="st-sheet-list">%s</ol>
+  <h3>This or That: tick the right answer</h3><ol class="st-sheet-list">%s</ol>
+  <h3>Memory Match: match each %s to its %s</h3>
+  <table class="st-sheet-match"><thead><tr><th scope="col">%s</th><th scope="col">%s</th></tr></thead><tbody>%s</tbody></table>
   <details class="st-key" id="st-key">
     <summary>Answers</summary>
-    <h3>Round 1</h3><ol class="st-sheet-list">%s</ol>
-    <h3>Round 2</h3><ol class="st-sheet-list">%s</ol>
-    <h3>Round 3</h3><ol class="st-sheet-list">%s</ol>
+    <h3>Round 1: Quiz Blitz</h3><ol class="st-sheet-list">%s</ol>
+    <h3>Round 2: Quick Fire</h3><ol class="st-sheet-list">%s</ol>
+    <h3>Round 3: Big Think</h3><ol class="st-sheet-list">%s</ol>
+    <h3>This or That</h3><ol class="st-sheet-list">%s</ol>
+    <h3>Memory Match</h3><ul class="st-sheet-list st-sheet-pairs">%s</ul>
   </details>
-</section>""" % (esc(st.lesson), "".join(qs), sq, lq, "".join(keys), sk, lk)
+</section>""" % (esc(st.lesson), "".join(qs), sq, lq, "".join(picks), esc(word), esc(meaning),
+                 esc(st.pair_names[0]), esc(st.pair_names[1]), rows,
+                 "".join(keys), sk, lk, "".join(pick_keys), match_key)
+
+
+def _seed(text):
+    import hashlib
+    return int(hashlib.sha256(text.encode("utf-8")).hexdigest(), 16)
 
 
 def _sheet_order(b):
     """A fixed, deterministic order for options on paper, never the written one."""
-    import hashlib
     opts = list(b.options)
-    seed = int(hashlib.sha256(b.q.encode("utf-8")).hexdigest(), 16)
+    seed = _seed(b.q)
     shifted = opts[seed % len(opts):] + opts[:seed % len(opts)]
     if b.kind == "order" and shifted == opts:
         shifted = opts[1:] + opts[:1]
@@ -256,13 +328,41 @@ def _lobby(r):
         '<li class="st-round st-round-%s"><span class="st-round-ico">%s</span>'
         '<span class="st-round-txt"><b>%s</b><span>%s</span></span></li>'
         % (kind, _round_icon(kind), name, counts[kind]) for name, kind in ROUNDS)
+    word, meaning = (n.lower() for n in st.pair_names)
+    about = {
+        "quiz": ("A quiz game against four computer players, then short and long written answers.",
+                 "About 20 minutes"),
+        "cat": ("Pixel the cat asks %d questions. Each has two answers: pick the right one." % len(st.picks),
+                "About 4 minutes"),
+        "match": ("Flip the cards two at a time to match each %s card to its %s card." % (word, meaning),
+                  "%d pairs, about 4 minutes" % len(st.pairs)),
+    }
+    points = {
+        "cat": ["Two answers to every question", "A fish treat for every right answer",
+                "Streaks win Pixel shades, then a party hat"],
+        "match": ["%d cards: each %s has a %s" % (2 * len(st.pairs), word, meaning), "One peek at every card",
+                  "Combo points for pairs found in a row"],
+    }
+    cards = []
+    for n, (task, name) in enumerate(TASKS, 1):
+        cards.append("""<div class="st-task st-task-%(t)s" role="group" aria-labelledby="st-t-%(t)s">
+        <div class="st-task-head"><span class="st-task-art" data-st-art="%(t)s" aria-hidden="true">%(art)s</span><span class="st-task-n">Task %(n)d</span></div>
+        <h2 id="st-t-%(t)s">%(name)s</h2>
+        <p class="st-task-sum">%(sum)s</p>
+        %(rounds)s<p class="st-task-time">%(clock)s %(time)s</p>
+        <p class="st-best" data-st-best="%(t)s" hidden></p>
+        <button class="st-start" type="button" data-st-start="%(t)s">%(play)s Play<span class="sr-only"> %(name)s</span></button>
+      </div>""" % dict(t=task, n=n, name=name, art=_task_icon(task), sum=esc(about[task][0]), time=about[task][1],
+                       rounds=('<ol class="st-rounds">%s</ol>' % rounds if task == "quiz" else
+                               '<ul class="st-points">%s</ul>' % "".join("<li>%s%s</li>" % (ico("i-check"), esc(t))
+                                                                         for t in points[task])),
+                       clock=ico("i-clock"), play=ico("i-play")))
     return """<section class="st-lobby" id="st-lobby" aria-labelledby="st-title">
   <div class="st-bg" aria-hidden="true">%s</div>
   <div class="st-lobby-host" aria-hidden="true">%s</div>
   <div class="st-lobby-main">
     <p class="st-kicker">%s &middot; %s %s &middot; Lesson %d</p>
-    <h1 id="st-title"><span class="st-h1-tag">Stretch task</span> %s</h1>
-    <ol class="st-rounds">%s</ol>
+    <h1 id="st-title"><span class="st-h1-tag">Stretch tasks</span> %s</h1>
     <div class="st-setup">
       <label class="st-name"><span>Your name</span><input type="text" id="st-name" maxlength="16" autocomplete="off" spellcheck="false" placeholder="Player"></label>
       <div class="st-toggles" role="group" aria-label="Game settings">
@@ -270,16 +370,17 @@ def _lobby(r):
         <button type="button" class="st-toggle" data-st-opt="sound" aria-pressed="false">%s Sound</button>
       </div>
     </div>
-    <p class="st-best" data-st-best hidden></p>
-    <div class="st-lobby-go">
-      <button class="st-start" type="button" data-st-start>%s Start</button>
-      <button class="st-link" type="button" data-st-print="sheet">%s Print the questions</button>
-      <button class="st-link" type="button" data-st-print="answers">%s Print with answers</button>
-    </div>
-    <p class="st-nojs">The game needs JavaScript. Every question is below, with the answers at the end.</p>
   </div>
+  <div class="st-tasks">
+      %s
+  </div>
+  <div class="st-lobby-go">
+    <button class="st-link" type="button" data-st-print="sheet">%s Print the questions</button>
+    <button class="st-link" type="button" data-st-print="answers">%s Print with answers</button>
+  </div>
+  <p class="st-nojs">The games need JavaScript. Every question is below, with the answers at the end.</p>
 </section>""" % (BG, cat.rig(cls="px st-px"), esc(r["year"]), esc(r["topic"].spec), esc(r["topic"].title), r["n"],
-                 esc(st.lesson), rounds, ico("i-timer"), ico("i-sound"), ico("i-play"), ico("i-paper"), ico("i-check"))
+                 esc(st.lesson), ico("i-timer"), ico("i-sound"), "\n      ".join(cards), ico("i-paper"), ico("i-check"))
 
 
 def _lesson_page(r, nxt, prev):
@@ -308,8 +409,8 @@ def _lesson_page(r, nxt, prev):
 <script type="application/json" id="st-data">%s</script>""" % (
         crumbs(trail), _lobby(r), r["lesson_url"], ico("i-book"), esc(st.lesson), _sheet(r), "".join(nav),
         cat.rig(), data)
-    title = "Stretch task: %s" % st.lesson
-    desc = "%s, %s lesson %d: a quiz game, short answers and long answers to stretch Key Stage 3 students." % (
+    title = "Stretch tasks: %s" % st.lesson
+    desc = "%s, %s lesson %d: a quiz challenge, This or That with Pixel the cat, and Memory Match, to stretch Key Stage 3 students." % (
         st.lesson, r["topic"].title, r["n"])
     ld = [crumbs_ld(trail), {
         "@context": "https://schema.org", "@type": "LearningResource",
@@ -324,8 +425,29 @@ def _lesson_page(r, nxt, prev):
                   scripts=["/assets/js/quiz.js", "/assets/js/stretch.js"], jsonld=ld)
 
 
-def _stars_html():
-    return '<span class="st-stars" data-st-stars aria-label="Not played yet">%s</span>' % (ico("i-star", "icon st-star") * 3)
+# Small marks for the three tasks on the hub's cards, drawn once and reused.
+GLYPHS = ('<svg class="st-glyphs" width="0" height="0" aria-hidden="true" focusable="false">'
+          '<symbol id="st-g-quiz" viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="2.4" fill="#D7263D"/>'
+          '<rect x="13" y="2" width="9" height="9" rx="2.4" fill="#1F5FD1"/><rect x="2" y="13" width="9" height="9" rx="2.4" '
+          'fill="#F2B705"/><rect x="13" y="13" width="9" height="9" rx="2.4" fill="#1E7B34"/></symbol>'
+          '<symbol id="st-g-cat" viewBox="0 0 24 24"><path d="M3.6 10 4.3 2.8l5.2 3.6h5L19.7 2.8l.7 7.2A8.6 8.2 0 0 1 '
+          '12 21.6 8.6 8.2 0 0 1 3.6 10Z" fill="#02848B"/><circle cx="8.8" cy="12.6" r="1.7" fill="#fff"/>'
+          '<circle cx="15.2" cy="12.6" r="1.7" fill="#fff"/><path d="M10.9 15.8h2.2L12 17.1Z" fill="#fff"/></symbol>'
+          '<symbol id="st-g-match" viewBox="0 0 24 24"><rect x="1.5" y="4" width="11" height="15" rx="2.4" fill="#1F5FD1" '
+          'transform="rotate(-9 7 11.5)"/><rect x="11" y="3.5" width="11" height="15" rx="2.4" fill="#fff" stroke="#1E293B" '
+          'stroke-width="1.6" transform="rotate(8 16.5 11)"/><path d="M14 8.5h5M14 11.5h3.6" stroke="#1E293B" '
+          'stroke-width="1.6" stroke-linecap="round" transform="rotate(8 16.5 11)"/></symbol></svg>')
+
+
+def _hub_tasks():
+    """Each task's best stars on a hub card, filled in from this device's results."""
+    out = []
+    for task, name in TASKS:
+        out.append('<span class="st-hub-task" data-st-task="%s"><svg class="st-g" aria-hidden="true" focusable="false">'
+                   '<use href="#st-g-%s"></use></svg><span class="st-stars" data-st-stars aria-hidden="true">%s</span>'
+                   '<span class="sr-only" data-st-sr>%s: not played yet.</span></span>'
+                   % (task, task, ico("i-star", "icon st-star") * 3, name))
+    return '<span class="st-hub-tasks">%s</span>' % "".join(out)
 
 
 def _hub(recs):
@@ -342,7 +464,7 @@ def _hub(recs):
             cards = "".join(
                 '<a class="st-hub-card" href="%s" data-st-key="%s">'
                 '<span class="st-hub-n">Lesson %d</span><b>%s</b>%s</a>'
-                % (x["url"], esc(x["key"]), x["n"], esc(x["stretch"].lesson), _stars_html()) for x in mine)
+                % (x["url"], esc(x["key"]), x["n"], esc(x["stretch"].lesson), _hub_tasks()) for x in mine)
             units.append('<div class="st-hub-unit" id="%s"><h3><span class="badge badge-spec">%s</span> %s</h3>'
                          '<div class="st-hub-cards">%s</div></div>'
                          % (esc(r["topic"].slug), esc(r["topic"].spec), esc(r["topic"].title), cards))
@@ -359,9 +481,9 @@ def _hub(recs):
     <div class="st-hub-art" aria-hidden="true">%s%s%s</div>
   </div>
 </div></section>
-<div class="wrap st-hub">%s</div>""" % (crumbs(trail), HUB_TITLE, HUB_LEAD,
-                                        _round_icon("blitz"), _round_icon("short"), _round_icon("long"),
-                                        "".join(years))
+<div class="wrap st-hub">%s%s</div>""" % (crumbs(trail), HUB_TITLE, HUB_LEAD,
+                                          _task_icon("quiz"), _task_icon("cat"), _task_icon("match"),
+                                          GLYPHS, "".join(years))
     ld = [crumbs_ld(trail), {
         "@context": "https://schema.org", "@type": "CollectionPage", "name": HUB_TITLE,
         "description": HUB_LEAD, "url": SITE_URL + HUB, "inLanguage": "en-GB",
@@ -383,13 +505,17 @@ def build(register, add_search):
         prev = recs[i - 1] if i else None
         write(r["url"], _lesson_page(r, nxt, prev))
         register(r["url"], 0.6, "monthly")
-        add_search("Stretch task: %s" % r["stretch"].lesson, r["url"],
+        add_search("Stretch tasks: %s" % r["stretch"].lesson, r["url"],
                    "%s %s, lesson %d" % (r["topic"].spec, r["topic"].title, r["n"]),
-                   ("stretch task challenge quiz game ks3 %s %s %s"
+                   ("stretch task challenge quiz game this or that pixel cat memory match pairs ks3 %s %s %s"
                     % (r["year"], r["topic"].title, r["stretch"].lesson)).lower())
     write(HUB, _hub(recs))
     register(HUB, 0.8, "weekly")
-    add_search(HUB_TITLE, HUB, "Year 8 and Year 9: a challenge for every lesson",
-               "stretch tasks challenge extension fast finishers quiz game kahoot ks3 year 8 year 9 lessons")
+    add_search(HUB_TITLE, HUB, "Year 8 and Year 9: three tasks for every lesson",
+               "stretch tasks challenge extension fast finishers quiz game kahoot this or that pixel cat "
+               "memory match pairs ks3 year 8 year 9 lessons")
     n_q = sum(len(r["stretch"].blitz) + len(r["stretch"].short) + len(r["stretch"].long) for r in recs)
-    print("Stretch tasks: %d lessons, %d questions checked" % (len(recs), n_q))
+    n_p = sum(len(r["stretch"].picks) for r in recs)
+    n_m = sum(len(r["stretch"].pairs) for r in recs)
+    print("Stretch tasks: %d lessons, %d quiz questions, %d This or That questions and %d Memory Match pairs checked"
+          % (len(recs), n_q, n_p, n_m))

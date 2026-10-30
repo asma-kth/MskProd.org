@@ -17,6 +17,7 @@ question:
   question.
   A blank or "I don't know" answer earns nothing.
 """
+import html
 import re
 
 from mskbuild.models import Blitz, Written, Stretch
@@ -124,6 +125,16 @@ _IDK = ("I don't know", "not sure", "yes")
 
 Q_MAX = 240          # characters in a game question, so it fits above four tiles
 OPTION_MAX = 90      # characters on a tile
+PICK_Q_MAX = 200     # characters in Pixel's speech bubble
+PICK_MAX = 80        # characters on a This or That answer
+WHY_MAX = 260        # characters in Pixel's explanation
+CARD_A_MAX = 32      # characters on a Memory Match word card
+CARD_B_MAX = 64      # characters on a Memory Match meaning card, which a phone shows three across
+PICKS = (8, 10)      # This or That questions in a lesson
+PAIRS = 6            # Memory Match pairs: twelve cards, four by three or three by four
+# The right answer may be the clearly longer one in at most this many of a
+# lesson's This or That questions, so length never gives the answer away.
+LONGER_RIGHT_MAX = 3
 
 
 class StretchError(Exception):
@@ -195,6 +206,54 @@ def _written_problems(where, w, long_answer):
     return out
 
 
+def _plain(text):
+    """What a card or answer shows: markup and backticks gone, entities decoded."""
+    return html.unescape(re.sub(r"[`*_]", "", str(text or ""))).strip()
+
+
+def _pick_problems(where, p):
+    out = []
+    if not p.q.strip():
+        out.append("%s: no question" % where)
+    if len(_plain(p.q)) > PICK_Q_MAX:
+        out.append("%s: question is %d characters, Pixel's bubble holds %d" % (where, len(_plain(p.q)), PICK_Q_MAX))
+    for name, ans in (("right", p.right), ("wrong", p.wrong)):
+        if not ans.strip():
+            out.append("%s: no %s answer" % (where, name))
+        if len(_plain(ans)) > PICK_MAX:
+            out.append("%s: %s answer is %d characters, at most %d: %s" % (where, name, len(_plain(ans)), PICK_MAX, ans))
+        if _POINTING.search(_plain(ans)):
+            out.append("%s: %s answer points at the other one, which swapping sides breaks: %s" % (where, name, ans))
+    if _plain(p.right).lower() == _plain(p.wrong).lower():
+        out.append("%s: the right and wrong answers are the same" % where)
+    if not p.why.strip():
+        out.append("%s: Pixel gives no reason" % where)
+    if len(_plain(p.why)) > WHY_MAX:
+        out.append("%s: the reason is %d characters, at most %d" % (where, len(_plain(p.why)), WHY_MAX))
+    return out
+
+
+def _pair_problems(where, pairs):
+    out = []
+    if len(pairs) != PAIRS:
+        return ["%s: %d Memory Match pairs, expected %d" % (where, len(pairs), PAIRS)]
+    for side, limit in (("a", CARD_A_MAX), ("b", CARD_B_MAX)):
+        texts = [_plain(getattr(p, side)) for p in pairs]
+        if any(not t for t in texts):
+            out.append("%s: an empty Memory Match card" % where)
+        if len(set(t.lower() for t in texts)) != len(texts):
+            out.append("%s: two Memory Match cards say the same thing" % where)
+        for t in texts:
+            if len(t) > limit:
+                out.append("%s: Memory Match card is %d characters, at most %d: %s" % (where, len(t), limit, t))
+    for p in pairs:
+        a, b = _plain(p.a).lower(), _plain(p.b).lower()
+        # a word that appears in its own meaning gives the pair away
+        if re.match(r"^[a-z][a-z ]*$", a) and re.search(r"\b%s\b" % re.escape(a), b):
+            out.append("%s: the card %r gives itself away in its partner: %s" % (where, p.a, p.b))
+    return out
+
+
 def validate(units, topics):
     """units: [(topic slug, [Stretch])]; topics: {slug: Topic}. Raises StretchError."""
     problems = []
@@ -227,6 +286,25 @@ def validate(units, topics):
                 problems += _written_problems("%s long answer %d" % (where, n + 1), w, True)
                 if w.marks < 3:
                     problems.append("%s long answer %d: a long answer is worth at least 3 marks" % (where, n + 1))
+            if not PICKS[0] <= len(st.picks) <= PICKS[1]:
+                problems.append("%s: %d This or That questions, expected %d to %d" % (where, len(st.picks), PICKS[0], PICKS[1]))
+            asked = {b.q.strip().lower() for b in st.blitz}
+            seen = set()
+            for n, p in enumerate(st.picks):
+                problems += _pick_problems("%s This or That %d" % (where, n + 1), p)
+                key = (p.q.strip().lower(), p.code.strip())
+                if key in seen:
+                    problems.append("%s: This or That %d repeats an earlier one" % (where, n + 1))
+                if p.q.strip().lower() in asked and not p.code:
+                    problems.append("%s: This or That %d is also a quiz game question" % (where, n + 1))
+                seen.add(key)
+            longer = sum(1 for p in st.picks if len(_plain(p.right)) > len(_plain(p.wrong)) + 15)
+            if longer > LONGER_RIGHT_MAX:
+                problems.append("%s: the right answer is the clearly longer one in %d This or That questions, at most %d"
+                                % (where, longer, LONGER_RIGHT_MAX))
+            problems += _pair_problems(where, st.pairs)
+            if len(st.pair_names) != 2 or not all(n.strip() for n in st.pair_names):
+                problems.append("%s: pair_names needs two labels" % where)
         order = [titles.index(s.lesson) for s in lessons if s.lesson in titles]
         if order != sorted(order):
             problems.append("%s: lessons are not in the order the topic teaches them" % slug)

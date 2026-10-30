@@ -1,5 +1,5 @@
 """Y8.3 Python: Loops, Lists and Functions: stretch tasks."""
-from mskbuild.models import Blitz, Written, Stretch, MP
+from mskbuild.models import Blitz, Written, Stretch, MP, Pick, Pair
 
 TOPIC = "python-loops-and-lists"
 

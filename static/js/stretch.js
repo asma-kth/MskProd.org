@@ -1,14 +1,16 @@
 /* MskProd Computing - Key Stage 3 stretch tasks.
  *
- * One lesson's challenge in three rounds. Quiz Blitz is a quiz show: a clock,
- * four coloured tiles that each carry a shape, points for speed, an answer
- * streak and four computer players to race to the podium. Quick Fire and Big
- * Think are written answers, marked by the keyword marker in quiz.js
- * (window.MskMarker); the mark scheme and a model answer are shown afterwards
- * and the student can change the mark, as on the exam pages. Best scores are
- * kept on this device only.
+ * Three tasks for one lesson. The Quiz Challenge has three rounds. Quiz Blitz
+ * is a quiz show: a clock, four coloured tiles that each carry a shape, points
+ * for speed, an answer streak and four computer players to race to the
+ * podium. Quick Fire and Big Think are written answers, marked by the keyword
+ * marker in quiz.js (window.MskMarker); the mark scheme and a model answer are
+ * shown afterwards and the student can change the mark, as on the exam pages.
+ * In This or That, Pixel the cat asks questions with two answers and reacts
+ * to each choice. Memory Match is a card game: flip two cards at a time to
+ * pair each word with its meaning. Best scores are kept on this device only.
  *
- * The hub page uses only showStars() at the bottom of this file.
+ * The hub page uses only the star painting near the top of this file.
  */
 (function () {
   "use strict";
@@ -81,7 +83,9 @@
     fire: '<path d="M32 18c2 6 9 9 9 16a9 9 0 0 1-18 0c0-5 3-7 4-10 1.6 2.3 2 4 1.6 6.2C31 28 32.6 24 32 18Z" fill="#FDE047" stroke="#9A3412" stroke-width="2"/>',
     bolt: '<path d="M35 17 23 33h8l-3 13 13-17h-8Z" fill="#FDE047" stroke="#713F12" stroke-width="2" stroke-linejoin="round"/>',
     pen: '<path d="M22 41l3-9 14-14 6 6-14 14Z" fill="#fff" stroke="#1E293B" stroke-width="2" stroke-linejoin="round"/><path d="M22 41l9-3" stroke="#1E293B" stroke-width="2"/>',
-    bulb: '<path d="M32 17a9 9 0 0 0-5 16.5V37h10v-3.5A9 9 0 0 0 32 17Z" fill="#FDE047" stroke="#713F12" stroke-width="2"/><path d="M28 41h8" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>'
+    bulb: '<path d="M32 17a9 9 0 0 0-5 16.5V37h10v-3.5A9 9 0 0 0 32 17Z" fill="#FDE047" stroke="#713F12" stroke-width="2"/><path d="M28 41h8" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>',
+    fish: '<path d="M19 29c4.5-6.5 13-7 18.5-2.2L43 22.5v13L37.5 31.2C32 36 23.5 35.5 19 29Z" fill="#FDBA74" stroke="#9A3412" stroke-width="2" stroke-linejoin="round"/><circle cx="25" cy="28" r="1.8" fill="#1E293B"/>',
+    cards: '<rect x="19" y="18" width="14" height="19" rx="3" fill="#fff" stroke="#1E293B" stroke-width="2" transform="rotate(-10 26 27.5)"/><rect x="31" y="18" width="14" height="19" rx="3" fill="#FDE047" stroke="#1E293B" stroke-width="2" transform="rotate(9 38 27.5)"/>'
   };
   function medalSvg(art, colour) {
     return '<svg viewBox="0 0 64 74" aria-hidden="true"><path d="M20 2h10l6 20h-10ZM44 2H34l-6 20h10Z" fill="#EF4444"/><path d="M26 2h4l6 20h-4ZM38 2h-4l-6 20h4Z" fill="#fff" opacity=".55"/>' +
@@ -180,19 +184,34 @@
     setMood(svg, mood || "idle");
     return svg;
   }
-  function setMood(svg, mood) { if (svg) svg.setAttribute("class", "px is-" + mood); }
+  /* A pose, keeping whatever Pixel is wearing. */
+  function setMood(svg, mood) {
+    if (!svg) return;
+    svg._mood = mood;
+    svg.setAttribute("class", "px is-" + mood + (svg._wear ? " " + svg._wear : ""));
+  }
+  function wear(svg, list) {
+    if (!svg) return;
+    svg._wear = (list || []).map(function (w) { return "wear-" + w; }).join(" ");
+    setMood(svg, svg._mood || "idle");
+  }
 
   /* ================================================================ HUB */
-  function showStars(node, stars) {
-    var icons = node.querySelectorAll(".icon");
-    Array.prototype.forEach.call(icons, function (s, i) { s.classList.toggle("is-on", i < stars); });
-    node.setAttribute("aria-label", stars ? stars + " of 3 stars" : "Not played yet");
-  }
+  var TASKS = ["quiz", "cat", "match"];
+  var TASK_NAMES = { quiz: "Quiz Challenge", cat: "This or That", match: "Memory Match" };
+  /* The Quiz Challenge keeps the lesson's own key, so results saved before
+     the other tasks existed still count. */
+  function recKey(base, task) { return task === "quiz" ? base : base + "/" + task; }
   var records = store.get(RECORDS, {}) || {};
   Array.prototype.forEach.call(document.querySelectorAll("[data-st-key]"), function (card) {
-    var r = records[card.getAttribute("data-st-key")];
-    var stars = card.querySelector("[data-st-stars]");
-    if (stars) showStars(stars, r ? r.s : 0);
+    var base = card.getAttribute("data-st-key");
+    Array.prototype.forEach.call(card.querySelectorAll("[data-st-task]"), function (b) {
+      var task = b.getAttribute("data-st-task"), r = records[recKey(base, task)], n = r ? r.s : 0;
+      Array.prototype.forEach.call(b.querySelectorAll("[data-st-stars] .icon"), function (s, i) { s.classList.toggle("is-on", i < n); });
+      var sr = b.querySelector("[data-st-sr]");
+      if (sr) sr.textContent = TASK_NAMES[task] + ": " + (r ? n + " of 3 stars." : "not played yet.");
+      b.classList.toggle("is-played", !!r);
+    });
   });
 
   /* Hooks for tools/check_stretch.mjs and the browser tests. typedRight is
@@ -226,22 +245,32 @@
 
   var lobby = document.getElementById("st-lobby");
   var stage = document.getElementById("st-stage");
-  var startBtn = lobby.querySelector("[data-st-start]");
+  var starts = {};
+  Array.prototype.forEach.call(lobby.querySelectorAll("[data-st-start]"), function (b) {
+    starts[b.getAttribute("data-st-start")] = b;
+  });
   var nameIn = document.getElementById("st-name");
   var lobbyCat = lobby.querySelector(".st-px");
   if (lobbyCat) setMood(lobbyCat, "wave");
+  function art(task) {
+    var a = lobby.querySelector('[data-st-art="' + task + '"]');
+    return a ? a.innerHTML : "";
+  }
 
   /* ------------------------------------------------------------- lobby */
   function paintBest() {
-    var best = lobby.querySelector("[data-st-best]");
-    var r = (store.get(RECORDS, {}) || {})[D.key];
-    if (!best) return;
-    if (!r) { best.hidden = true; return; }
-    best.hidden = false;
-    best.innerHTML = '<span class="st-stars" aria-hidden="true">' + [0, 1, 2].map(function (i) {
-      return '<svg class="icon' + (i < r.s ? " is-on" : "") + '" aria-hidden="true" focusable="false"><use href="#i-star"></use></svg>';
-    }).join("") + "</span>";
-    best.appendChild(document.createTextNode("Your best: " + fmt(r.b) + " points, " + plural(r.s, "star")));
+    var all = store.get(RECORDS, {}) || {};
+    TASKS.forEach(function (task) {
+      var best = lobby.querySelector('[data-st-best="' + task + '"]');
+      var r = all[recKey(D.key, task)];
+      if (!best) return;
+      if (!r) { best.hidden = true; return; }
+      best.hidden = false;
+      best.innerHTML = '<span class="st-stars" aria-hidden="true">' + [0, 1, 2].map(function (i) {
+        return '<svg class="icon' + (i < r.s ? " is-on" : "") + '" aria-hidden="true" focusable="false"><use href="#i-star"></use></svg>';
+      }).join("") + "</span>";
+      best.appendChild(document.createTextNode("Your best: " + plural(r.s, "star") + ", " + fmt(r.b) + " points"));
+    });
   }
   paintBest();
   if (nameIn) {
@@ -311,28 +340,44 @@
   }
 
   /* ------------------------------------------------------------- stage */
-  function buildStage() {
+  function buildStage(task) {
     stage.innerHTML = "";
     stage.setAttribute("role", "dialog");
     stage.setAttribute("aria-modal", "true");
-    stage.setAttribute("aria-label", "Stretch task: " + D.lesson);
+    stage.setAttribute("aria-label", TASK_NAMES[task] + ": " + D.lesson);
     stage.setAttribute("data-motion", calm() ? "calm" : "full");
     stage.appendChild(el("div", { class: "st-bg", "aria-hidden": "true", html: lobby.querySelector(".st-bg") ? lobby.querySelector(".st-bg").innerHTML : "" }));
     ui.confetti = el("canvas", { class: "st-confetti", "aria-hidden": "true" });
-    ui.l1 = el("b", { text: "Quiz Blitz" });
+    ui.l1 = el("b", { text: TASK_NAMES[task] });
     ui.l2 = el("span", { text: "" });
-    ui.rank = el("span", { class: "st-chip st-chip-rank", hidden: true });
-    ui.score = el("span", { text: "0" });
-    ui.scoreChip = el("span", { class: "st-chip st-chip-score" }, [el("small", { text: "Points" }), ui.score]);
     ui.streakN = el("span", { text: "0" });
     ui.streak = el("span", { class: "st-chip st-chip-streak", hidden: true, title: "Answer streak", html: FLAME }, []);
     ui.streak.appendChild(ui.streakN);
+    var chips;
+    if (task === "quiz") {
+      ui.rank = el("span", { class: "st-chip st-chip-rank", hidden: true });
+      ui.score = el("span", { text: "0" });
+      ui.scoreChip = el("span", { class: "st-chip st-chip-score" }, [el("small", { text: "Points" }), ui.score]);
+      chips = [ui.rank, ui.scoreChip, ui.streak];
+    } else if (task === "cat") {
+      ui.fishN = el("span", { text: "0" });
+      ui.fishChip = el("span", { class: "st-chip st-chip-fish" }, [el("span", { class: "st-fish", html: FISH }), el("small", { text: "Treats" }), ui.fishN]);
+      chips = [ui.fishChip, ui.streak];
+    } else {
+      ui.pairsN = el("span", { text: "0 / " + D.pairs.length });
+      ui.missN = el("span", { text: "0" });
+      ui.timeN = el("span", { text: "0:00" });
+      ui.pairsChip = el("span", { class: "st-chip" }, [el("small", { text: "Pairs" }), ui.pairsN]);
+      ui.missChip = el("span", { class: "st-chip" }, [el("small", { text: "Misses" }), ui.missN]);
+      ui.timeChip = el("span", { class: "st-chip st-chip-time", hidden: !opts.timer }, [el("span", { html: ico("i-timer") }).firstChild, ui.timeN]);
+      chips = [ui.pairsChip, ui.missChip, ui.timeChip];
+    }
     ui.dots = el("div", { class: "st-dots", "aria-hidden": "true" });
     var top = el("div", { class: "st-top" }, [
       el("button", { class: "st-x", type: "button", "aria-label": "Leave the game", html: ico("i-cross"), onclick: function () { leave(true); } }),
       el("div", { class: "st-top-label" }, [ui.l1, ui.l2]),
       el("span", { class: "st-top-gap" }),
-      el("div", { class: "st-chips" }, [ui.rank, ui.scoreChip, ui.streak]),
+      el("div", { class: "st-chips" }, chips),
       ui.dots
     ]);
     ui.screen = el("div", { class: "st-screen" });
@@ -377,29 +422,40 @@
   }
 
   function lockScroll(on) { document.documentElement.classList.toggle("st-locked", on); }
-  var lastFocus = null;
-  function begin() {
-    lastFocus = document.activeElement;
-    G = { round: "blitz", qi: 0, streak: 0, bestStreak: 0, right: 0, blitzPts: 0, writtenPts: 0, times: [], marks: [],
-          rivals: RIVALS.map(function (r) { return { id: r.id, name: r.name, av: r.av, face: r.face, skill: r.skill, pace: r.pace, pts: 0, streak: 0 }; }),
-          order: ["you", "ada", "alan", "grace", "tim"], written: { short: [], long: [] }, done: false };
-    buildStage();
+  function begin(task) {
+    task = TASK_NAMES[task] ? task : "quiz";
+    if (task === "quiz") {
+      G = { round: "blitz", qi: 0, streak: 0, bestStreak: 0, right: 0, blitzPts: 0, writtenPts: 0, times: [], marks: [],
+            rivals: RIVALS.map(function (r) { return { id: r.id, name: r.name, av: r.av, face: r.face, skill: r.skill, pace: r.pace, pts: 0, streak: 0 }; }),
+            order: ["you", "ada", "alan", "grace", "tim"], written: { short: [], long: [] }, done: false };
+    } else {
+      G = { round: task, qi: 0, streak: 0, bestStreak: 0, right: 0, pts: 0, answers: [], done: false, locked: false };
+    }
+    G.task = task;
+    buildStage(task);
     stage.hidden = false;
-    stage.setAttribute("data-round", "blitz");
+    stage.setAttribute("data-round", task === "quiz" ? "blitz" : task);
     lockScroll(true);
-    splash("blitz");
+    if (task === "quiz") splash("blitz");
+    else if (task === "cat") catSplash();
+    else matchSplash();
   }
   function leave(ask) {
     if (ask && G && !G.done && !window.confirm("Leave the game? This game's score will not be saved.")) return;
+    var task = G ? G.task : "quiz";
     stopClock();
+    if (G && G.tick) clearInterval(G.tick);
+    if (G && G.busy) clearTimeout(G.busy);
     stage.hidden = true;
     stage.innerHTML = "";
     lockScroll(false);
     G = null;
     paintBest();
-    focusFirst(startBtn);
+    focusFirst(starts[task]);
   }
-  startBtn.addEventListener("click", begin);
+  TASKS.forEach(function (task) {
+    if (starts[task]) starts[task].addEventListener("click", function () { begin(task); });
+  });
 
   /* Tab stays inside the game, Escape offers to leave, and number keys pick
      tiles. Listened for on the document, not the stage, because focus can land
@@ -1129,19 +1185,495 @@
       });
       s.appendChild(row);
     }
-    var go = el("div", { class: "st-res-go" });
-    go.appendChild(el("button", { class: "st-go", type: "button", html: ico("i-repeat") + " Play again", onclick: function () { leave(false); begin(); } }));
-    if (D.next) go.appendChild(el("a", { class: "st-ghost", href: D.next.u, html: "Next: " + D.next.t + " " + ico("i-arrow-right") }));
-    go.appendChild(el("a", { class: "st-ghost", href: D.back, html: ico("i-book") + " Back to the lesson" }));
-    go.appendChild(el("button", { class: "st-ghost", type: "button", html: ico("i-paper") + " Print my result", onclick: function () { printAs("result"); } }));
-    go.appendChild(el("button", { class: "st-ghost", type: "button", html: ico("i-cross") + " Close", onclick: function () { leave(false); } }));
-    s.appendChild(go);
+    s.appendChild(resultButtons("quiz"));
 
     countUp(totalN, 0, total, 1600);
     if (stars >= 2) setTimeout(function () { confetti(ui.confetti, 4200); }, calm() ? 0 : 900);
     sfx("win");
     say("Finished. " + stars + " of 3 stars and " + fmt(total) + " points." + (newBest ? " New personal best." : ""));
     focusFirst(s.querySelector("h2"));
+  }
+
+  /* ------------------------------------------------- shared result screen */
+  var NEXT_TASK = { quiz: "cat", cat: "match", match: null };
+  function resultButtons(task) {
+    var go = el("div", { class: "st-res-go" });
+    go.appendChild(el("button", { class: "st-go", type: "button", html: ico("i-repeat") + " Play again", onclick: function () { leave(false); begin(task); } }));
+    var nt = NEXT_TASK[task];
+    if (nt) go.appendChild(el("button", { class: "st-ghost", type: "button", html: "Next task: " + TASK_NAMES[nt] + " " + ico("i-arrow-right"), onclick: function () { leave(false); begin(nt); } }));
+    else if (D.next) go.appendChild(el("a", { class: "st-ghost", href: D.next.u, html: "Next lesson: " + escHtml(D.next.t) + " " + ico("i-arrow-right") }));
+    go.appendChild(el("a", { class: "st-ghost", href: D.back, html: ico("i-book") + " Back to the lesson" }));
+    go.appendChild(el("button", { class: "st-ghost", type: "button", html: ico("i-paper") + " Print my result", onclick: function () { printAs("result"); } }));
+    go.appendChild(el("button", { class: "st-ghost", type: "button", html: ico("i-cross") + " Close", onclick: function () { leave(false); } }));
+    return go;
+  }
+  /* A copy of a drawing whose ids, and the fills that point at them, are its
+     own, so two copies on one page never share a gradient. */
+  function freshIds(html) {
+    var box = el("div", { html: html });
+    pxSeq += 1;
+    var map = {};
+    Array.prototype.forEach.call(box.querySelectorAll("[id]"), function (n) { map[n.id] = n.id + "-r" + pxSeq; n.id = map[n.id]; });
+    Array.prototype.forEach.call(box.querySelectorAll("[fill^='url(#']"), function (n) {
+      var m = /^url\(#([^)]+)\)$/.exec(n.getAttribute("fill"));
+      if (m && map[m[1]]) n.setAttribute("fill", "url(#" + map[m[1]] + ")");
+    });
+    return box.innerHTML;
+  }
+
+  function taskResults(o) {
+    G.done = true;
+    G.round = "done";
+    stage.setAttribute("data-round", "done");
+    label("Results", TASK_NAMES[G.task]);
+    ui.dots.innerHTML = "";
+    var key = recKey(D.key, G.task);
+    var all = store.get(RECORDS, {}) || {};
+    var old = all[key];
+    var newBest = !!old && o.pts > old.b;
+    all[key] = { b: Math.max(o.pts, old ? old.b : 0), s: Math.max(o.stars, old ? old.s : 0),
+                 p: Math.max(Math.round(o.pct * 100), old ? old.p || 0 : 0), d: Date.now(), n: (old ? old.n || 0 : 0) + 1 };
+    store.set(RECORDS, all);
+
+    var s = screen("st-results");
+    var cat = pixel(o.mood);
+    if (o.wear) wear(cat, o.wear);
+    s.appendChild(el("div", { class: "st-res-top" }, [cat, el("p", { class: "st-res-title", text: o.title })]));
+    s.appendChild(el("h2", { tabindex: "-1", text: D.lesson }));
+    s.appendChild(el("div", { class: "st-res-stars", role: "img", "aria-label": o.stars + " of 3 stars", html: bigStar(o.stars >= 1) + bigStar(o.stars >= 2) + bigStar(o.stars >= 3) }));
+    var totalN = el("span", { text: "0" });
+    s.appendChild(el("div", { class: "st-res-total" }, [totalN, el("small", { text: "points" })]));
+    if (newBest) s.appendChild(el("span", { class: "st-res-best", text: "New personal best!" }));
+
+    var card = el("div", { class: "st-res-card" });
+    var who = (opts.name || "").trim();
+    card.appendChild(el("p", { class: "st-res-name", text: (who ? who + " · " : "") + TASK_NAMES[G.task] + " · " + D.spec + " " + D.unit +
+      ", lesson " + D.n + " · " + new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) }));
+    o.rows.forEach(function (r) {
+      card.appendChild(el("div", { class: "st-res-row" }, [
+        el("span", { class: "st-round-ico", "aria-hidden": "true", html: r[0] }),
+        el("span", {}, [el("b", { text: r[1] }), el("span", { text: r[2] })]),
+        el("strong", { text: r[3] })]));
+    });
+    if (o.extra) card.appendChild(o.extra);
+    s.appendChild(card);
+    if (o.medals.length) {
+      var row = el("div", { class: "st-medals" });
+      o.medals.forEach(function (m, k) {
+        row.appendChild(el("div", { class: "st-medal", style: "animation-delay:" + (1.2 + k * 0.18) + "s" },
+          [el("span", { html: medalSvg(m[0], m[1]) }).firstChild, el("b", { text: m[2] }), el("span", { text: m[3] })]));
+      });
+      s.appendChild(row);
+    }
+    s.appendChild(resultButtons(G.task));
+    countUp(totalN, 0, o.pts, 1400);
+    if (o.stars >= 2) setTimeout(function () { confetti(ui.confetti, 4200); }, calm() ? 0 : 900);
+    sfx("win");
+    say("Finished. " + o.summary + " " + o.stars + " of 3 stars and " + fmt(o.pts) + " points." + (newBest ? " New personal best." : ""));
+    focusFirst(s.querySelector("h2"));
+  }
+  function reviewList(head, items) {
+    var box = el("div", { class: "st-res-review" }, [el("b", { text: head })]);
+    var ul = el("ul", {});
+    items.forEach(function (h) { ul.appendChild(el("li", { html: h })); });
+    box.appendChild(ul);
+    return box;
+  }
+
+  /* ======================================================= THIS OR THAT */
+  var FISH = '<svg viewBox="0 0 30 18" aria-hidden="true" focusable="false"><path d="M2.5 9C7 2.6 15.5 2.4 21 7.2L27.5 2.5v13L21 10.8C15.5 15.6 7 15.4 2.5 9Z" fill="#FDBA74" stroke="#9A3412" stroke-width="1.6" stroke-linejoin="round"/>' +
+    '<path d="M15 5.8c1.3 1.1 1.3 5.3 0 6.4" fill="none" stroke="#9A3412" stroke-width="1.3" stroke-linecap="round"/><circle cx="8" cy="8" r="1.5" fill="#1E293B"/></svg>';
+  var HEART = '<svg viewBox="0 0 24 22" aria-hidden="true" focusable="false"><path d="M12 20.5S2 14.4 2 7.7A5.2 5.2 0 0 1 12 5.4a5.2 5.2 0 0 1 10 2.3c0 6.7-10 12.8-10 12.8Z" fill="#F472B6" stroke="#fff" stroke-width="1.6"/></svg>';
+  var DROP = '<svg viewBox="0 0 16 22" aria-hidden="true" focusable="false"><path d="M8 1.5C10.5 7 14 10 14 14a6 6 0 0 1-12 0c0-4 3.5-7 6-12.5Z" fill="#7DD3FC" stroke="#fff" stroke-width="1.5"/></svg>';
+  var CAT_INTROS = ["Here's one for you.", "Paws for thought...", "Ooh, I like this one.", "Whisker-twister time!",
+                    "Think carefully.", "Which one is it?", "Try this one.", "Ready? Here it comes."];
+  var CAT_RIGHT = ["Purr-fect!", "Paw-some!", "Meow-velous!", "Clawsome!", "Fur-tastic!", "You're the cat's whiskers!"];
+  var CAT_WRONG = ["Oh, whiskers!", "Not that one.", "Hiss... so close.", "Not quite!"];
+  var lastIntro = -1;
+  function catIntro(i) {
+    if (i === 0) return "First question!";
+    if (i === D.picks.length - 1) return "Last one!";
+    var k;
+    do { k = Math.floor(Math.random() * CAT_INTROS.length); } while (k === lastIntro);
+    lastIntro = k;
+    return CAT_INTROS[k];
+  }
+  function catDots() { return D.picks.map(function (q, i) { return i < G.answers.length ? (G.answers[i] ? 1 : 0) : -1; }); }
+  function catChips(bump) {
+    ui.fishN.textContent = String(G.right);
+    ui.fishChip.setAttribute("aria-label", plural(G.right, "fish treat"));
+    if (bump) { ui.fishChip.classList.remove("is-bump"); void ui.fishChip.offsetWidth; ui.fishChip.classList.add("is-bump"); }
+    ui.streak.hidden = G.streak < 2;
+    ui.streakN.textContent = String(G.streak);
+    ui.streak.classList.toggle("is-hot", G.streak >= 3);
+    ui.streak.setAttribute("aria-label", "Answer streak " + G.streak);
+  }
+  /* What Pixel wears depends on the answer streak. */
+  function catWear() { return G.streak >= 5 ? ["shades", "party"] : G.streak >= 3 ? ["shades"] : []; }
+
+  function catSplash() {
+    label("This or That", plural(D.picks.length, "question"));
+    ui.dots.innerHTML = "";
+    var s = screen("st-splash st-cat-splash");
+    var px = pixel("wave");
+    if (px) s.appendChild(el("div", { class: "st-cat-hero", "aria-hidden": "true" }, [px]));
+    s.appendChild(el("span", { class: "st-splash-tag", text: "This or That" }));
+    s.appendChild(el("h2", { tabindex: "-1", text: "Hello! I'm Pixel." }));
+    var sub = "I have " + plural(D.picks.length, "question") + " about " + D.lesson + ". Each one has two answers. Pick the right one and I get a fish treat!";
+    s.appendChild(el("p", { text: sub }));
+    var go = el("button", { class: "st-go", type: "button", html: ico("i-play") + " Let's go" });
+    go.addEventListener("click", function () { catQ(0); });
+    s.appendChild(go);
+    sfx("board");
+    say("This or That with Pixel the cat. " + sub);
+    focusFirst(go);
+  }
+
+  /* The question arrives a word at a time while Pixel talks, and the answers
+     appear once it has been asked. Returns how long that takes. */
+  function sayWords(node) {
+    if (calm()) return 0;
+    var texts = [], walker = document.createTreeWalker(node, 4, null), count = 0, n = 0;
+    while (walker.nextNode()) texts.push(walker.currentNode);
+    texts.forEach(function (t) { count += (t.nodeValue.match(/\S+/g) || []).length; });
+    var step = Math.min(70, 1100 / Math.max(1, count));
+    texts.forEach(function (t) {
+      var frag = document.createDocumentFragment();
+      t.nodeValue.split(/(\s+)/).forEach(function (part) {
+        if (!part) return;
+        if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+        var w = document.createElement("span");
+        w.className = "st-w";
+        w.textContent = part;
+        w.style.animationDelay = Math.round(n * step) + "ms";
+        n += 1;
+        frag.appendChild(w);
+      });
+      t.parentNode.replaceChild(frag, t);
+    });
+    return Math.round(n * step) + 250;
+  }
+
+  function catQ(i) {
+    if (!G) return;
+    G.qi = i;
+    G.locked = true;
+    var q = D.picks[i];
+    label("This or That", "Question " + (i + 1) + " of " + D.picks.length);
+    paintDots(catDots(), i);
+    catChips(false);
+    var s = screen("st-cat");
+    var px = G.cat = pixel("talk");
+    wear(px, catWear());
+    var fx = el("span", { class: "st-cat-fx", "aria-hidden": "true",
+                          html: '<i class="st-heart">' + HEART + '</i><i class="st-heart">' + HEART + '</i><i class="st-heart">' + HEART + '</i><i class="st-drop">' + DROP + "</i>" });
+    ui.catBox = el("div", { class: "st-cat-pixel" }, [px, fx]);
+    var bubble = el("div", { class: "st-bubble" });
+    bubble.appendChild(el("p", { class: "st-bubble-intro", text: catIntro(i) }));
+    var h = el("h2", { class: "st-bubble-q", tabindex: "-1", html: q.q });
+    bubble.appendChild(h);
+    if (q.c) bubble.appendChild(el("pre", { class: "st-code" }, [el("code", { html: q.c })]));
+    s.appendChild(el("div", { class: "st-cat-scene" }, [ui.catBox, bubble]));
+
+    var duo = el("div", { class: "st-duo" });
+    ui.tiles = [];
+    (Math.random() < 0.5 ? [true, false] : [false, true]).forEach(function (right, k) {
+      var html = right ? q.r : q.w;
+      var b = el("button", { class: "st-duo-btn st-duo-" + (k ? "b" : "a"), type: "button", "aria-label": "Answer " + (k + 1) + ": " + stripTags(html) },
+        [el("span", { class: "st-duo-k", "aria-hidden": "true", text: String(k + 1) }),
+         el("span", { class: "st-duo-t", html: html }),
+         el("span", { class: "st-mark", "aria-hidden": "true" })]);
+      b._right = right;
+      b.addEventListener("click", function () { catAnswer(b); });
+      ui.tiles.push(b);
+      duo.appendChild(b);
+      if (!k) duo.appendChild(el("span", { class: "st-duo-or", "aria-hidden": "true", text: "or" }));
+    });
+    s.appendChild(duo);
+    ui.fb = el("div", { class: "st-fbslot" });
+    s.appendChild(ui.fb);
+
+    var wait = sayWords(h), game = G;
+    setTimeout(function () {
+      if (G !== game || G.qi !== i) return;
+      setMood(px, "think");
+      duo.classList.add("is-ready");
+      G.locked = false;
+    }, wait);
+    say("Question " + (i + 1) + " of " + D.picks.length + ".");
+    focusFirst(h);
+  }
+
+  function flyFish(from) {
+    var land = function () { if (G && G.task === "cat") catChips(true); };
+    if (calm() || !ui.fishChip) { land(); return; }
+    var a = from.getBoundingClientRect(), b = ui.fishChip.getBoundingClientRect();
+    var x0 = a.left + a.width / 2 - 18, y0 = a.top + a.height / 2 - 11;
+    var f = el("span", { class: "st-flyfish", "aria-hidden": "true", html: FISH, style: "left:" + Math.round(x0) + "px;top:" + Math.round(y0) + "px" });
+    stage.appendChild(f);
+    void f.offsetWidth;
+    f.style.transform = "translate(" + Math.round(b.left + 6 - x0) + "px," + Math.round(b.top + 4 - y0) + "px) scale(.55) rotate(-25deg)";
+    setTimeout(function () { if (f.parentNode) f.parentNode.removeChild(f); land(); }, 720);
+  }
+
+  function catAnswer(btn) {
+    if (!G || G.locked) return;
+    G.locked = true;
+    var q = D.picks[G.qi], ok = btn._right, hadWear = catWear().length > 0;
+    ui.tiles.forEach(function (t) {
+      t.disabled = true;
+      if (t._right) markTile(t, true);
+      else if (t === btn) markTile(t, false);
+      else t.classList.add("is-dim");
+    });
+    G.answers.push(ok);
+    var gain = 0;
+    if (ok) {
+      G.right += 1; G.streak += 1;
+      G.bestStreak = Math.max(G.bestStreak, G.streak);
+      gain = 100 + 25 * Math.min(G.streak - 1, 5);
+      G.pts += gain;
+    } else G.streak = 0;
+    wear(G.cat, catWear());
+    setMood(G.cat, ok ? (G.streak >= 3 ? "cheer" : "happy") : "oops");
+    ui.catBox.classList.remove("is-love", "is-oops");
+    void ui.catBox.offsetWidth;
+    ui.catBox.classList.add(ok ? "is-love" : "is-oops");
+    paintDots(catDots(), -1);
+    if (ok) flyFish(btn); else catChips(false);
+    sfx(ok ? "good" : "bad");
+
+    var last = G.qi === D.picks.length - 1;
+    var extra = ok && G.streak === 3 ? "Three in a row: shades on!" : ok && G.streak === 5 ? "Five in a row: party hat time!" :
+      !ok && hadWear ? "The streak is over, so the shades come off." : "";
+    var next = el("button", { class: "st-go", type: "button", html: (last ? "See my result" : "Next question") + " " + ico("i-arrow-right") });
+    next.addEventListener("click", function () { if (last) catResults(); else catQ(G.qi + 1); });
+    var fb = el("div", { class: "st-catfb " + (ok ? "is-ok" : "is-bad"), role: "status" }, [
+      el("div", { class: "st-catfb-head" }, [
+        el("span", { class: "st-catfb-badge", "aria-hidden": "true", html: ico(ok ? "i-check" : "i-cross") }),
+        el("b", { text: ok ? pick(CAT_RIGHT) : pick(CAT_WRONG) }),
+        ok ? el("span", { class: "st-catfb-pts", text: "+" + gain }) : null]),
+      extra ? el("p", { class: "st-catfb-streak", html: FLAME + "<span>" + extra + "</span>" }) : null,
+      el("p", { class: "st-catfb-x", html: (ok ? "" : '<span class="st-fb-ans"><b>Answer:</b> ' + q.r + "</span>") + q.x }),
+      el("div", { class: "st-fb-go" }, [next])
+    ]);
+    ui.fb.appendChild(fb);
+    setTimeout(function () {
+      try { fb.scrollIntoView({ behavior: calm() ? "auto" : "smooth", block: "nearest" }); } catch (e) { fb.scrollIntoView(false); }
+      next.focus({ preventScroll: true });
+    }, calm() ? 0 : 350);
+  }
+
+  function catResults() {
+    var n = D.picks.length, pct = G.right / n;
+    var stars = G.right === n ? 3 : pct >= 0.75 ? 2 : 1;
+    var medals = [];
+    if (G.right === n) medals.push(["crown", "#D97706", "Cat's whiskers", "Every answer right"]);
+    if (G.bestStreak >= 5) medals.push(["fish", "#EA580C", "Cool cat", "A streak of " + G.bestStreak]);
+    var missed = [];
+    D.picks.forEach(function (q, i) { if (!G.answers[i]) missed.push(q.q + ' <span class="st-res-ans">' + q.r + "</span>"); });
+    taskResults({
+      stars: stars, pts: G.pts, pct: pct,
+      title: stars === 3 ? "Top cat! Every answer right" : stars === 2 ? "Purr-fectly good" : "A good start: play again to beat it",
+      mood: stars === 3 ? "proud" : stars === 2 ? "cheer" : "happy", wear: stars === 3 ? ["crown"] : null,
+      rows: [[freshIds(art("cat")), "Pixel's questions", G.right + " of " + n + " right", fmt(G.pts)],
+             [FLAME, "Best streak", plural(G.bestStreak, "answer") + " in a row", ""]],
+      medals: medals,
+      extra: missed.length ? reviewList("Worth another look", missed) : null,
+      summary: G.right + " of " + n + " right."
+    });
+  }
+
+  /* ======================================================= MEMORY MATCH */
+  var CARD_BACK = '<svg viewBox="0 0 80 56" aria-hidden="true" focusable="false"><rect x="5" y="5" width="70" height="46" rx="8" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="2" stroke-dasharray="4 3"/>' +
+    '<circle cx="40" cy="28" r="13" fill="#fff"/><path d="M35.6 24.6a4.6 4.6 0 1 1 6.3 4.2c-1.4.6-1.9 1.4-1.9 2.9" fill="none" stroke="#1F5FD1" stroke-width="3" stroke-linecap="round"/><circle cx="40" cy="35.6" r="1.9" fill="#1F5FD1"/>' +
+    '<path d="M13 18l4-7 4 7Z" fill="#FCA5A5"/><path d="M63 10.5l4 4-4 4-4-4Z" fill="#FDE68A"/><circle cx="17" cy="41" r="3.5" fill="#86EFAC"/><rect x="59.5" y="37.5" width="7" height="7" rx="1.5" fill="#C4B5FD"/></svg>';
+  function mmss(ms) { var t = Math.floor(ms / 1000); return Math.floor(t / 60) + ":" + ("0" + (t % 60)).slice(-2); }
+  function watch() { return G.t0 ? (G.tEnd || performance.now()) - G.t0 : 0; }
+  function startWatch() {
+    if (G.t0) return;
+    G.t0 = performance.now();
+    if (opts.timer) G.tick = setInterval(function () { if (G && ui.timeN) ui.timeN.textContent = mmss(watch()); }, 250);
+  }
+  function misses(n) { return n === 1 ? "1 miss" : n + " misses"; }
+  function matchChips(bump) {
+    ui.pairsN.textContent = G.found + " / " + D.pairs.length;
+    ui.missN.textContent = String(G.misses);
+    if (bump) { ui.pairsChip.classList.remove("is-bump"); void ui.pairsChip.offsetWidth; ui.pairsChip.classList.add("is-bump"); }
+  }
+
+  function matchSplash() {
+    label("Memory Match", plural(D.pairs.length, "pair"));
+    ui.dots.innerHTML = "";
+    var s = screen("st-splash");
+    s.appendChild(el("span", { class: "st-splash-tag", text: "Memory Match" }));
+    s.appendChild(el("div", { class: "st-splash-ico", "aria-hidden": "true", html: art("match") }));
+    s.appendChild(el("h2", { tabindex: "-1", text: "Memory Match" }));
+    var sub = D.pairs.length * 2 + " cards lie face down. Flip two at a time to match each " + D.pn[0].toLowerCase() + " card to its " +
+      D.pn[1].toLowerCase() + " card. You can peek once.";
+    s.appendChild(el("p", { text: sub }));
+    var go = el("button", { class: "st-go", type: "button", html: ico("i-play") + " Deal the cards" });
+    go.addEventListener("click", matchDeal);
+    s.appendChild(go);
+    sfx("board");
+    say("Memory Match. " + sub);
+    focusFirst(go);
+  }
+
+  function cardLabel(c) {
+    var n = "Card " + (c.i + 1);
+    if (c.done) return n + ": " + c.text + ", matched";
+    return c.up ? n + ": " + c.text + ", " + D.pn[c.side].toLowerCase() : n + ", face down";
+  }
+  function setUp(c, up) {
+    c.up = up;
+    c.el.classList.toggle("is-up", up);
+    c.el.setAttribute("aria-label", cardLabel(c));
+  }
+
+  function matchDeal() {
+    if (!G) return;
+    G.found = 0; G.misses = 0; G.combo = 0; G.bestCombo = 0; G.pts = 0; G.open = []; G.peeks = 1; G.t0 = 0; G.tEnd = 0;
+    label("Memory Match", "Find the " + D.pairs.length + " pairs");
+    matchChips(false);
+    var s = screen("st-match");
+    var deck = [];
+    D.pairs.forEach(function (p, k) { deck.push({ k: k, side: 0, html: p.a }); deck.push({ k: k, side: 1, html: p.b }); });
+    deck = shuffle(deck);
+    var grid = el("div", { class: "st-cards", role: "group", "aria-label": "Cards" });
+    deck.forEach(function (c, i) {
+      c.i = i; c.up = false; c.done = false; c.text = stripTags(c.html);
+      c.el = el("button", { class: "st-card st-card-" + (c.side ? "b" : "a"), type: "button", style: "--i:" + i, "aria-label": cardLabel(c) }, [
+        el("span", { class: "st-card-in" }, [
+          el("span", { class: "st-card-back", "aria-hidden": "true", html: CARD_BACK }),
+          el("span", { class: "st-card-front", "aria-hidden": "true" }, [
+            el("small", { class: "st-card-tag", text: D.pn[c.side] }), el("span", { class: "st-card-t", html: c.html })])]),
+        el("span", { class: "st-card-badge", "aria-hidden": "true" })]);
+      c.el.addEventListener("click", function () { flipCard(c); });
+      grid.appendChild(c.el);
+    });
+    G.cards = deck;
+    grid.addEventListener("keydown", function (e) { cardKeys(e, grid); });
+    ui.peek = el("button", { class: "st-ghost st-peek", type: "button", html: ico("i-eye") + ' Peek <span class="st-peek-n">1 left</span>' });
+    ui.peek.addEventListener("click", function () { peek(grid); });
+    s.appendChild(el("div", { class: "st-match-bar" }, [
+      el("p", { class: "st-match-hint", text: "Match each " + D.pn[0].toLowerCase() + " card to its " + D.pn[1].toLowerCase() + " card." }), ui.peek]));
+    s.appendChild(grid);
+    sfx("board");
+    say("The cards are dealt: " + deck.length + " cards, face down. Move with Tab or the arrow keys and press Enter to flip a card.");
+    focusFirst(deck[0].el);
+  }
+
+  function cardKeys(e, grid) {
+    if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].indexOf(e.key) < 0 || !G || !G.cards) return;
+    var cards = G.cards.map(function (c) { return c.el; });
+    var i = cards.indexOf(document.activeElement);
+    if (i < 0) return;
+    var cols = getComputedStyle(grid).gridTemplateColumns.split(" ").length || 4;
+    var j = e.key === "ArrowLeft" ? i - 1 : e.key === "ArrowRight" ? i + 1 : e.key === "ArrowUp" ? i - cols :
+      e.key === "ArrowDown" ? i + cols : e.key === "Home" ? 0 : cards.length - 1;
+    if (j < 0 || j >= cards.length) return;
+    e.preventDefault();
+    cards[j].focus();
+  }
+
+  function turnBack() {
+    G.open.forEach(function (c) { c.el.classList.remove("is-miss"); setUp(c, false); });
+    G.open = [];
+  }
+  function popText(c, text, cls) {
+    var p = el("span", { class: "st-pop" + (cls ? " " + cls : ""), "aria-hidden": "true", text: text });
+    c.el.appendChild(p);
+    setTimeout(function () { if (p.parentNode) p.parentNode.removeChild(p); }, 1300);
+  }
+
+  function flipCard(c) {
+    if (!G || G.done || c.done || c.up || G.peeking) return;
+    if (G.busy) { clearTimeout(G.busy); G.busy = 0; turnBack(); }
+    startWatch();
+    setUp(c, true);
+    sfx("pop");
+    G.open.push(c);
+    if (G.open.length < 2) { say(c.text + ", " + D.pn[c.side].toLowerCase() + ". Now find its partner."); return; }
+    var a = G.open[0];
+    if (a.k === c.k) cardsMatch(a, c); else cardsMiss(a, c);
+  }
+  function cardsMatch(a, b) {
+    G.open = [];
+    G.found += 1; G.combo += 1;
+    G.bestCombo = Math.max(G.bestCombo, G.combo);
+    var gain = 100 + 50 * Math.min(G.combo - 1, 4);
+    G.pts += gain;
+    var colour = (G.found - 1) % 6;
+    [a, b].forEach(function (c) {
+      c.done = true;
+      c.el.classList.add("is-matched", "st-pair-" + colour);
+      c.el.setAttribute("aria-disabled", "true");
+      c.el.querySelector(".st-card-badge").innerHTML = '<svg viewBox="0 0 24 24">' + SHAPES[colour] + "</svg>";
+      c.el.setAttribute("aria-label", cardLabel(c));
+    });
+    popText(b, "+" + gain);
+    if (G.combo >= 2) popText(a, "Combo x" + G.combo + "!", "is-combo");
+    matchChips(true);
+    sfx("good");
+    var w = a.side === 0 ? a : b, m = a.side === 0 ? b : a;
+    say("Match! " + w.text + ": " + m.text + "." + (G.combo >= 2 ? " A combo of " + G.combo + "." : "") + " " +
+        G.found + " of " + D.pairs.length + " pairs found.");
+    if (G.found === D.pairs.length) {
+      G.tEnd = performance.now();
+      clearInterval(G.tick); G.tick = 0;
+      if (ui.timeN) ui.timeN.textContent = mmss(watch());
+      setTimeout(matchResults, calm() ? 400 : 1200);
+    }
+  }
+  function cardsMiss(a, b) {
+    G.misses += 1; G.combo = 0;
+    a.el.classList.add("is-miss");
+    b.el.classList.add("is-miss");
+    matchChips(false);
+    sfx("bad");
+    say("Not a pair: " + a.text + " and " + b.text + ". They turn back over.");
+    var game = G;
+    G.busy = setTimeout(function () { if (G === game && !G.done) { G.busy = 0; turnBack(); } }, 1400);
+  }
+  function peek(grid) {
+    if (!G || G.done || G.peeks < 1 || G.peeking) return;
+    if (G.busy) { clearTimeout(G.busy); G.busy = 0; turnBack(); }
+    startWatch();
+    G.peeks -= 1;
+    G.peeking = true;
+    ui.peek.setAttribute("aria-disabled", "true");
+    ui.peek.querySelector(".st-peek-n").textContent = "used";
+    grid.classList.add("is-peek");
+    sfx("pop");
+    say("Peek! Every card is face up for two seconds.");
+    var game = G;
+    setTimeout(function () { grid.classList.remove("is-peek"); if (G === game) G.peeking = false; }, 2000);
+  }
+
+  function matchResults() {
+    if (!G || G.done) return;
+    var secs = Math.floor(watch() / 1000);
+    var bonus = opts.timer ? Math.max(0, 600 - 5 * secs) : 0;
+    var matchPts = G.pts;
+    G.pts += bonus;
+    var stars = G.misses <= 4 ? 3 : G.misses <= 8 ? 2 : 1;
+    var medals = [];
+    if (G.misses === 0) medals.push(["sweep", "#16A34A", "Photographic memory", "No misses at all"]);
+    if (G.bestCombo >= 3) medals.push(["fire", "#EA580C", "Combo master", plural(G.bestCombo, "pair") + " in a row"]);
+    if (opts.timer && secs <= 60) medals.push(["bolt", "#7C3AED", "Speed run", "Done in " + mmss(secs * 1000)]);
+    if (G.peeks === 1 && stars === 3) medals.push(["cards", "#0F766E", "No peeking", "Three stars without a peek"]);
+    var rows = [[art("match"), "Pairs found", D.pairs.length + " pairs, " + misses(G.misses), fmt(matchPts)]];
+    if (opts.timer) rows.push([ico("i-timer"), "Time", mmss(secs * 1000) + (bonus ? ", with a time bonus" : ""), "+" + fmt(bonus)]);
+    rows.push([FLAME, "Best combo", plural(G.bestCombo, "pair") + " in a row", ""]);
+    taskResults({
+      stars: stars, pts: G.pts, pct: Math.max(0, 1 - G.misses / 12),
+      title: stars === 3 ? "Memory master" : stars === 2 ? "Sharp memory" : "Every pair found: play again for fewer misses",
+      mood: stars === 3 ? "proud" : stars === 2 ? "cheer" : "happy", wear: stars === 3 ? ["crown"] : null,
+      rows: rows, medals: medals,
+      extra: reviewList("The pairs", D.pairs.map(function (p) { return '<span class="st-res-a">' + p.a + "</span> " + p.b; })),
+      summary: "Every pair found, with " + misses(G.misses) + "."
+    });
   }
 
   hooks.data = D;

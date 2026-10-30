@@ -1,5 +1,5 @@
 """Y8.6 Web Development: stretch tasks."""
-from mskbuild.models import Blitz, Written, Stretch, MP
+from mskbuild.models import Blitz, Written, Stretch, MP, Pick, Pair
 
 TOPIC = "web-development"
 
@@ -92,6 +92,41 @@ LESSONS = [
                command="Explain",
                frame=["The main heading would use", "Each section would", "For photos I would use", "Lists, tables and links"]),
         ],
+        picks=[
+            Pick("Which part of a page holds everything you can see on screen?",
+                 "`<body>`", "`<head>`",
+                 "The body holds the visible content. The head holds facts about the page, such as its title and the stylesheet link."),
+            Pick("Which is the closing tag for a paragraph?",
+                 "`</p>`", "`<\\p>`",
+                 "A closing tag repeats the tag's name after a forward slash. A backslash is not part of HTML."),
+            Pick("You want to group a heading and two paragraphs into one block. Which tag?",
+                 "`<div>`", "`<span>`",
+                 "A div is a block section that can hold other elements. A span is a small inline section inside a line of text."),
+            Pick("Which tag is one cell of a table?",
+                 "`<td>`", "`<tr>`",
+                 "tr is a whole table row. td is one cell of data inside that row."),
+            Pick("What does this show in the browser?", "Hello world, with world in bold", "The tags, printed as text",
+                 "The browser treats tags as instructions and never shows them. strong makes its text bold.",
+                 code="<p>Hello <strong>world</strong></p>", lang="html"),
+            Pick("What does the H in HTML stand for?",
+                 "HyperText", "High-level",
+                 "HTML is HyperText Markup Language: text that links to other text, marked up with tags."),
+            Pick("Which line attaches an external stylesheet?",
+                 '`<link rel="stylesheet" href="style.css">`', '`<style src="style.css">`',
+                 "The link tag in the head attaches a .css file. A style tag holds CSS written inside the page and has no src."),
+            Pick("Which heading tag is the least important?",
+                 "`<h6>`", "`<h1>`",
+                 "Headings run from h1, the most important, down to h6, the least important."),
+        ],
+        pairs=[
+            Pair("`<p>`", "A paragraph of text"),
+            Pair("`<a>`", "A link to another page"),
+            Pair("`<img>`", "A picture, which needs src and alt"),
+            Pair("`<ol>`", "A numbered list"),
+            Pair("`<td>`", "One cell in a table"),
+            Pair("`<h1>`", "The most important heading"),
+        ],
+        pair_names=("Tag", "Meaning"),
     ),
     Stretch(
         lesson="CSS: style",

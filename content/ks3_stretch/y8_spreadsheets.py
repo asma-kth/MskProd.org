@@ -1,5 +1,5 @@
 """Y8.4 Spreadsheets and Data Modelling: stretch tasks."""
-from mskbuild.models import Blitz, Written, Stretch, MP
+from mskbuild.models import Blitz, Written, Stretch, MP, Pick, Pair
 
 TOPIC = "spreadsheets"
 

@@ -736,8 +736,8 @@ def _stretch_cta(href: str, n: int) -> str:
               '<rect x="26" width="24" height="24" rx="6" fill="#1F5FD1"/><path d="M38 5.5 44.5 12 38 18.5 31.5 12Z" fill="#fff"/>'
               '<rect y="26" width="24" height="24" rx="6" fill="#F2B705"/><circle cx="12" cy="38" r="6.3" fill="#1F1A05"/>'
               '<rect x="26" y="26" width="24" height="24" rx="6" fill="#1E7B34"/><rect x="32" y="32" width="12" height="12" rx="2" fill="#fff"/></svg>')
-    return ('<a class="stretch-cta" href="%s">%s<span class="stretch-cta-txt"><b>Stretch task: lesson %d</b>'
-            '<span>Quiz game, short answers and long answers</span></span>'
+    return ('<a class="stretch-cta" href="%s">%s<span class="stretch-cta-txt"><b>Stretch tasks: lesson %d</b>'
+            '<span>Quiz Challenge, This or That with Pixel the cat, and Memory Match</span></span>'
             '<span class="stretch-cta-go">Play %s</span></a>' % (href, shapes, n, ico("i-arrow-right")))
 
 

@@ -162,15 +162,44 @@ class Written:
 
 
 @dataclass
-class Stretch:
-    """The stretch task for one lesson: a quiz game, short answers, long answers.
+class Pick:
+    """A question Pixel the cat asks in This or That: one right answer, one wrong.
 
+    The game decides which side each answer goes on, so neither may point at
+    the other. `why` is what Pixel says once the student has chosen.
+    """
+    q: str
+    right: str
+    wrong: str
+    why: str
+    code: str = ""
+    lang: str = "python"
+
+
+@dataclass
+class Pair:
+    """Two cards that belong together in Memory Match: a word and its meaning,
+    or a piece of code and what it gives."""
+    a: str
+    b: str
+
+
+@dataclass
+class Stretch:
+    """The stretch tasks for one lesson.
+
+    The quiz challenge is three rounds: a quiz game, short answers and long
+    answers. This or That is Pixel's two-choice questions, and Memory Match is
+    a card game of pairs; `pair_names` labels the two kinds of card.
     `lesson` is the title of the topic section it belongs to, exactly.
     """
     lesson: str
     blitz: List[Blitz]
     short: List[Written]
     long: List[Written]
+    picks: List[Pick] = field(default_factory=list)
+    pairs: List[Pair] = field(default_factory=list)
+    pair_names: Tuple[str, str] = ("Word", "Meaning")
 
 
 @dataclass

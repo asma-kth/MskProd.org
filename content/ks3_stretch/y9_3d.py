@@ -1,5 +1,5 @@
 """Y9.6 3D Modelling and Animation: stretch tasks."""
-from mskbuild.models import Blitz, Written, Stretch, MP
+from mskbuild.models import Blitz, Written, Stretch, MP, Pick, Pair
 
 TOPIC = "3d-modelling-and-animation"
 

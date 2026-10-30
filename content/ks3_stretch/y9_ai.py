@@ -1,5 +1,5 @@
 """Y9.5 Artificial Intelligence and the Impact of Computing: stretch tasks."""
-from mskbuild.models import Blitz, Written, Stretch, MP
+from mskbuild.models import Blitz, Written, Stretch, MP, Pick, Pair
 
 TOPIC = "artificial-intelligence"
 

@@ -1,5 +1,5 @@
 """Y8.1 Digital Literacy and Online Safety: stretch tasks."""
-from mskbuild.models import Blitz, Written, Stretch, MP
+from mskbuild.models import Blitz, Written, Stretch, MP, Pick, Pair
 
 TOPIC = "digital-literacy"
 
