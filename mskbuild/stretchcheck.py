@@ -16,6 +16,12 @@ question:
   at most one mark on a long one, so no mark is given for repeating the
   question.
   A blank or "I don't know" answer earns nothing.
+
+The two shorter tasks are checked too. Each This or That question has one
+right and one different wrong answer that fit Pixel's speech bubble and the
+buttons, and across a lesson the right answer is not usually the longer one,
+so length never gives it away. Memory Match has six pairs whose cards fit a
+phone, no two cards alike, and no word that appears in its own meaning.
 """
 import html
 import re
