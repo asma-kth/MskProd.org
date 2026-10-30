@@ -166,6 +166,11 @@
     })(t0);
   }
   function escHtml(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  /* A program printed with a question. On a phone it can be wider than the
+     screen and scroll sideways, so it takes keyboard focus to be scrolled. */
+  function codeBox(html) {
+    return el("pre", { class: "st-code", tabindex: "0", role: "region", "aria-label": "Code" }, [el("code", { html: html })]);
+  }
 
   /* --------------------------------------------------------------- Pixel */
   var pxSeq = 0;
@@ -591,7 +596,7 @@
       (q.k === "multi" ? "Pick " + q.n : KIND[q.k].label) + "</span>" }));
     var h = el("h2", { class: "st-qtext", tabindex: "-1", html: q.q });
     card.appendChild(h);
-    if (q.c) card.appendChild(el("pre", { class: "st-code" }, [el("code", { html: q.c })]));
+    if (q.c) card.appendChild(codeBox(q.c));
     var hint = q.k === "multi" ? "Pick " + q.n + " answers, then lock them in." : q.k === "order" ? "Tap them in order, first to last." :
       q.k === "type" ? "Type your answer, then press Enter." : "";
     if (hint) card.appendChild(el("p", { class: "st-qhint", text: hint }));
@@ -998,7 +1003,7 @@
     card.appendChild(head);
     var h = el("h2", { class: "st-wq", tabindex: "-1", html: w.q });
     card.appendChild(h);
-    if (w.c) card.appendChild(el("pre", { class: "st-code" }, [el("code", { html: w.c })]));
+    if (w.c) card.appendChild(codeBox(w.c));
 
     var target = kind === "long" ? w.m * 15 : Math.max(8, w.m * 10);
     var area = el("textarea", { class: "st-answer" + (kind === "long" ? " is-long" : ""), rows: kind === "long" ? "8" : "3",
@@ -1372,7 +1377,7 @@
     bubble.appendChild(el("p", { class: "st-bubble-intro", text: catIntro(i) }));
     var h = el("h2", { class: "st-bubble-q", tabindex: "-1", html: q.q });
     bubble.appendChild(h);
-    if (q.c) bubble.appendChild(el("pre", { class: "st-code" }, [el("code", { html: q.c })]));
+    if (q.c) bubble.appendChild(codeBox(q.c));
     s.appendChild(el("div", { class: "st-cat-scene" }, [ui.catBox, bubble]));
 
     var duo = el("div", { class: "st-duo" });
@@ -1488,6 +1493,8 @@
   var CARD_BACK = '<svg viewBox="0 0 80 56" aria-hidden="true" focusable="false"><rect x="5" y="5" width="70" height="46" rx="8" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="2" stroke-dasharray="4 3"/>' +
     '<circle cx="40" cy="28" r="13" fill="#fff"/><path d="M35.6 24.6a4.6 4.6 0 1 1 6.3 4.2c-1.4.6-1.9 1.4-1.9 2.9" fill="none" stroke="#1F5FD1" stroke-width="3" stroke-linecap="round"/><circle cx="40" cy="35.6" r="1.9" fill="#1F5FD1"/>' +
     '<path d="M13 18l4-7 4 7Z" fill="#FCA5A5"/><path d="M63 10.5l4 4-4 4-4-4Z" fill="#FDE68A"/><circle cx="17" cy="41" r="3.5" fill="#86EFAC"/><rect x="59.5" y="37.5" width="7" height="7" rx="1.5" fill="#C4B5FD"/></svg>';
+  /* A card label inside a sentence: "Tag" reads as tag, but CSS stays CSS. */
+  function pn(side) { var t = D.pn[side]; return /^[A-Z0-9]+$/.test(t) ? t : t.toLowerCase(); }
   function mmss(ms) { var t = Math.floor(ms / 1000); return Math.floor(t / 60) + ":" + ("0" + (t % 60)).slice(-2); }
   function watch() { return G.t0 ? (G.tEnd || performance.now()) - G.t0 : 0; }
   function startWatch() {
@@ -1509,8 +1516,8 @@
     s.appendChild(el("span", { class: "st-splash-tag", text: "Memory Match" }));
     s.appendChild(el("div", { class: "st-splash-ico", "aria-hidden": "true", html: art("match") }));
     s.appendChild(el("h2", { tabindex: "-1", text: "Memory Match" }));
-    var sub = D.pairs.length * 2 + " cards lie face down. Flip two at a time to match each " + D.pn[0].toLowerCase() + " card to its " +
-      D.pn[1].toLowerCase() + " card. You can peek once.";
+    var sub = D.pairs.length * 2 + " cards lie face down. Flip two at a time to match each " + pn(0) + " card to its " +
+      pn(1) + " card. You can peek once.";
     s.appendChild(el("p", { text: sub }));
     var go = el("button", { class: "st-go", type: "button", html: ico("i-play") + " Deal the cards" });
     go.addEventListener("click", matchDeal);
@@ -1523,7 +1530,7 @@
   function cardLabel(c) {
     var n = "Card " + (c.i + 1);
     if (c.done) return n + ": " + c.text + ", matched";
-    return c.up ? n + ": " + c.text + ", " + D.pn[c.side].toLowerCase() : n + ", face down";
+    return c.up ? n + ": " + c.text + ", " + pn(c.side) : n + ", face down";
   }
   function setUp(c, up) {
     c.up = up;
@@ -1557,7 +1564,7 @@
     ui.peek = el("button", { class: "st-ghost st-peek", type: "button", html: ico("i-eye") + ' Peek <span class="st-peek-n">1 left</span>' });
     ui.peek.addEventListener("click", function () { peek(grid); });
     s.appendChild(el("div", { class: "st-match-bar" }, [
-      el("p", { class: "st-match-hint", text: "Match each " + D.pn[0].toLowerCase() + " card to its " + D.pn[1].toLowerCase() + " card." }), ui.peek]));
+      el("p", { class: "st-match-hint", text: "Match each " + pn(0) + " card to its " + pn(1) + " card." }), ui.peek]));
     s.appendChild(grid);
     sfx("board");
     say("The cards are dealt: " + deck.length + " cards, face down. Move with Tab or the arrow keys and press Enter to flip a card.");
@@ -1594,7 +1601,7 @@
     setUp(c, true);
     sfx("pop");
     G.open.push(c);
-    if (G.open.length < 2) { say(c.text + ", " + D.pn[c.side].toLowerCase() + ". Now find its partner."); return; }
+    if (G.open.length < 2) { say(c.text + ", " + pn(c.side) + ". Now find its partner."); return; }
     var a = G.open[0];
     if (a.k === c.k) cardsMatch(a, c); else cardsMiss(a, c);
   }

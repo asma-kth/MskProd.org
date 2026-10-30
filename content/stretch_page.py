@@ -280,7 +280,7 @@ def _sheet(r):
                    for n, (k, i) in enumerate(zip(range(len(st.pairs)), order)))
     match_key = "".join("<li><b>%s %d</b> %s: %s</li>" % (letters[k], order.index(k) + 1, markup.inline(p.a), markup.inline(p.b))
                         for k, p in enumerate(st.pairs))
-    word, meaning = (n.lower() for n in st.pair_names)
+    word, meaning = (_in_sentence(n) for n in st.pair_names)
     return """<section class="st-sheet" id="st-sheet" aria-labelledby="st-sheet-title">
   <h2 id="st-sheet-title">%s: the questions</h2>
   <h3>Quiz Challenge, round 1: Quiz Blitz</h3><ol class="st-sheet-list">%s</ol>
@@ -300,6 +300,11 @@ def _sheet(r):
 </section>""" % (esc(st.lesson), "".join(qs), sq, lq, "".join(picks), esc(word), esc(meaning),
                  esc(st.pair_names[0]), esc(st.pair_names[1]), rows,
                  "".join(keys), sk, lk, "".join(pick_keys), match_key)
+
+
+def _in_sentence(name):
+    """A card label inside a sentence: Tag reads as tag, but CSS stays CSS."""
+    return name if name.isupper() else name.lower()
 
 
 def _seed(text):
@@ -328,7 +333,7 @@ def _lobby(r):
         '<li class="st-round st-round-%s"><span class="st-round-ico">%s</span>'
         '<span class="st-round-txt"><b>%s</b><span>%s</span></span></li>'
         % (kind, _round_icon(kind), name, counts[kind]) for name, kind in ROUNDS)
-    word, meaning = (n.lower() for n in st.pair_names)
+    word, meaning = (_in_sentence(n) for n in st.pair_names)
     about = {
         "quiz": ("A quiz game against four computer players, then short and long written answers.",
                  "About 20 minutes"),

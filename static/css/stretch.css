@@ -275,6 +275,11 @@ html.st-locked, html.st-locked body { overflow: hidden; }
   transition: transform .12s ease, box-shadow .12s ease;
 }
 .st-go .icon { width: 1.1em; height: 1.1em; }
+/* Buttons lift a little on hover. A pointer resting on the bottom edge would
+   then fall off the lifted button, drop it, and land on it again, frame after
+   frame; an invisible margin keeps the pointer inside while it is lifted. */
+.st-go, .st-start, .st-tile, .st-duo-btn { position: relative; }
+.st-go::before, .st-start::before, .st-tile::before, .st-duo-btn::before { content: ""; position: absolute; inset: -5px 0; }
 .st-go:hover { transform: translateY(-2px); }
 .st-go:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--st-yellow-d), 0 6px 12px rgba(0, 0, 0, .25); }
 .st-go[disabled] { opacity: .5; cursor: not-allowed; transform: none; }
@@ -856,6 +861,9 @@ html.st-locked, html.st-locked body { overflow: hidden; }
 .st-sheet-marks { font-weight: 500; color: var(--ink-3); white-space: nowrap; }
 .st-line { margin: 0; height: 1.9rem; border-bottom: 1px solid var(--border-strong); }
 .st-sheet-code { margin: .3rem 0 .5rem; padding: .6rem .8rem; border-radius: 8px; background: var(--surface-2); font: .88rem/1.5 var(--font-mono); overflow-x: auto; }
+/* site.css draws code light on dark; on the sheet's pale panel, and on paper, it must be dark */
+.st-sheet-code { color: var(--ink); border-color: var(--border-strong); box-shadow: none; }
+.st-sheet-code [class^="tok-"] { color: inherit; }
 .st-key { margin-top: var(--sp-4); }
 .st-key summary { cursor: pointer; font-weight: 700; }
 .st-sheet-ms { margin: .2rem 0 .4rem; font-size: .92rem; }
