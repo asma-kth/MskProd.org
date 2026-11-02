@@ -1,6 +1,6 @@
-/* MskProd Computing - Key Stage 3 stretch tasks.
+/* MskProd Computing - stretch tasks, Key Stage 3 and Key Stage 4.
  *
- * Three tasks for one lesson. The Quiz Challenge has three rounds. Quiz Blitz
+ * The tasks for one lesson. The Quiz Challenge has three rounds. Quiz Blitz
  * is a quiz show: a clock, four coloured tiles that each carry a shape, points
  * for speed, an answer streak and four computer players to race to the
  * podium. Quick Fire and Big Think are written answers, marked by the keyword
@@ -8,7 +8,9 @@
  * shown afterwards and the student can change the mark, as on the exam pages.
  * In This or That, Pixel the cat asks questions with two answers and reacts
  * to each choice. Memory Match is a card game: flip two cards at a time to
- * pair each word with its meaning. Best scores are kept on this device only.
+ * pair each word with its meaning. Key Stage 4 lessons add Sort It: drag each
+ * statement into the right box, tap a box, or press its number. Best scores
+ * are kept on this device only.
  *
  * The hub page uses only the star painting near the top of this file.
  */
@@ -85,7 +87,8 @@
     pen: '<path d="M22 41l3-9 14-14 6 6-14 14Z" fill="#fff" stroke="#1E293B" stroke-width="2" stroke-linejoin="round"/><path d="M22 41l9-3" stroke="#1E293B" stroke-width="2"/>',
     bulb: '<path d="M32 17a9 9 0 0 0-5 16.5V37h10v-3.5A9 9 0 0 0 32 17Z" fill="#FDE047" stroke="#713F12" stroke-width="2"/><path d="M28 41h8" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>',
     fish: '<path d="M19 29c4.5-6.5 13-7 18.5-2.2L43 22.5v13L37.5 31.2C32 36 23.5 35.5 19 29Z" fill="#FDBA74" stroke="#9A3412" stroke-width="2" stroke-linejoin="round"/><circle cx="25" cy="28" r="1.8" fill="#1E293B"/>',
-    cards: '<rect x="19" y="18" width="14" height="19" rx="3" fill="#fff" stroke="#1E293B" stroke-width="2" transform="rotate(-10 26 27.5)"/><rect x="31" y="18" width="14" height="19" rx="3" fill="#FDE047" stroke="#1E293B" stroke-width="2" transform="rotate(9 38 27.5)"/>'
+    cards: '<rect x="19" y="18" width="14" height="19" rx="3" fill="#fff" stroke="#1E293B" stroke-width="2" transform="rotate(-10 26 27.5)"/><rect x="31" y="18" width="14" height="19" rx="3" fill="#FDE047" stroke="#1E293B" stroke-width="2" transform="rotate(9 38 27.5)"/>',
+    box: '<path d="M20.5 26.5h23l-2.4 13h-18.2Z" fill="#fff" stroke="#1E293B" stroke-width="2" stroke-linejoin="round"/><path d="M25.5 21.5l5 5 9.5-9.5" fill="none" stroke="#FDE047" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>'
   };
   function medalSvg(art, colour) {
     return '<svg viewBox="0 0 64 74" aria-hidden="true"><path d="M20 2h10l6 20h-10ZM44 2H34l-6 20h10Z" fill="#EF4444"/><path d="M26 2h4l6 20h-4ZM38 2h-4l-6 20h4Z" fill="#fff" opacity=".55"/>' +
@@ -202,8 +205,8 @@
   }
 
   /* ================================================================ HUB */
-  var TASKS = ["quiz", "cat", "match"];
-  var TASK_NAMES = { quiz: "Quiz Challenge", cat: "This or That", match: "Memory Match" };
+  var TASKS = ["quiz", "cat", "match", "sort"];
+  var TASK_NAMES = { quiz: "Quiz Challenge", cat: "This or That", match: "Memory Match", sort: "Sort It" };
   /* The Quiz Challenge keeps the lesson's own key, so results saved before
      the other tasks existed still count. */
   function recKey(base, task) { return task === "quiz" ? base : base + "/" + task; }
@@ -368,6 +371,14 @@
       ui.fishN = el("span", { text: "0" });
       ui.fishChip = el("span", { class: "st-chip st-chip-fish" }, [el("span", { class: "st-fish", html: FISH }), el("small", { text: "Treats" }), ui.fishN]);
       chips = [ui.fishChip, ui.streak];
+    } else if (task === "sort") {
+      ui.sortN = el("span", { text: "0 / " + D.sort.i.length });
+      ui.missN = el("span", { text: "0" });
+      ui.timeN = el("span", { text: "0:00" });
+      ui.sortChip = el("span", { class: "st-chip" }, [el("small", { text: "Sorted" }), ui.sortN]);
+      ui.missChip = el("span", { class: "st-chip" }, [el("small", { text: "Misses" }), ui.missN]);
+      ui.timeChip = el("span", { class: "st-chip st-chip-time", hidden: !opts.timer }, [el("span", { html: ico("i-timer") }).firstChild, ui.timeN]);
+      chips = [ui.sortChip, ui.missChip, ui.timeChip];
     } else {
       ui.pairsN = el("span", { text: "0 / " + D.pairs.length });
       ui.missN = el("span", { text: "0" });
@@ -428,7 +439,7 @@
 
   function lockScroll(on) { document.documentElement.classList.toggle("st-locked", on); }
   function begin(task) {
-    task = TASK_NAMES[task] ? task : "quiz";
+    task = TASK_NAMES[task] && (task !== "sort" || D.sort) ? task : "quiz";
     if (task === "quiz") {
       G = { round: "blitz", qi: 0, streak: 0, bestStreak: 0, right: 0, blitzPts: 0, writtenPts: 0, times: [], marks: [],
             rivals: RIVALS.map(function (r) { return { id: r.id, name: r.name, av: r.av, face: r.face, skill: r.skill, pace: r.pace, pts: 0, streak: 0 }; }),
@@ -443,6 +454,7 @@
     lockScroll(true);
     if (task === "quiz") splash("blitz");
     else if (task === "cat") catSplash();
+    else if (task === "sort") sortSplash();
     else matchSplash();
   }
   function leave(ask) {
@@ -1170,7 +1182,7 @@
 
     var card = el("div", { class: "st-res-card" });
     var who = (opts.name || "").trim();
-    card.appendChild(el("p", { class: "st-res-name", text: (who ? who + " \u00b7 " : "") + D.spec + " " + D.unit + ", lesson " + D.n + " \u00b7 " +
+    card.appendChild(el("p", { class: "st-res-name", text: (who ? who + " \u00b7 " : "") + D.where + " \u00b7 " +
       new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) }));
     var icons = lobby.querySelectorAll(".st-round-ico");
     [[0, "Quiz Blitz", G.right + " of " + D.blitz.length + " right, " + ordinal(G.place || 5) + " place", fmt(G.blitzPts)],
@@ -1200,11 +1212,12 @@
   }
 
   /* ------------------------------------------------- shared result screen */
-  var NEXT_TASK = { quiz: "cat", cat: "match", match: null };
+  var NEXT_TASK = { quiz: "cat", cat: "match", match: "sort", sort: null };
   function resultButtons(task) {
     var go = el("div", { class: "st-res-go" });
     go.appendChild(el("button", { class: "st-go", type: "button", html: ico("i-repeat") + " Play again", onclick: function () { leave(false); begin(task); } }));
     var nt = NEXT_TASK[task];
+    if (nt === "sort" && !D.sort) nt = null;
     if (nt) go.appendChild(el("button", { class: "st-ghost", type: "button", html: "Next task: " + TASK_NAMES[nt] + " " + ico("i-arrow-right"), onclick: function () { leave(false); begin(nt); } }));
     else if (D.next) go.appendChild(el("a", { class: "st-ghost", href: D.next.u, html: "Next lesson: " + escHtml(D.next.t) + " " + ico("i-arrow-right") }));
     go.appendChild(el("a", { class: "st-ghost", href: D.back, html: ico("i-book") + " Back to the lesson" }));
@@ -1252,8 +1265,8 @@
 
     var card = el("div", { class: "st-res-card" });
     var who = (opts.name || "").trim();
-    card.appendChild(el("p", { class: "st-res-name", text: (who ? who + " · " : "") + TASK_NAMES[G.task] + " · " + D.spec + " " + D.unit +
-      ", lesson " + D.n + " · " + new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) }));
+    card.appendChild(el("p", { class: "st-res-name", text: (who ? who + " · " : "") + TASK_NAMES[G.task] + " · " + D.where +
+      " · " + new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) }));
     o.rows.forEach(function (r) {
       card.appendChild(el("div", { class: "st-res-row" }, [
         el("span", { class: "st-round-ico", "aria-hidden": "true", html: r[0] }),
@@ -1680,6 +1693,296 @@
       rows: rows, medals: medals,
       extra: reviewList("The pairs", D.pairs.map(function (p) { return '<span class="st-res-a">' + p.a + "</span> " + p.b; })),
       summary: "Every pair found, with " + misses(G.misses) + "."
+    });
+  }
+
+  /* ============================================================= SORT IT */
+  /* One card at a time: drag it into a box, tap a box, or press the box's
+     number. A wrong box shows where the card belongs and why before the next
+     card is dealt. */
+  var BIN_SHAPES = [0, 2, 3, 1];
+  var GRIP = '<svg viewBox="0 0 24 10" aria-hidden="true" focusable="false"><circle cx="6" cy="3" r="1.6"/><circle cx="12" cy="3" r="1.6"/><circle cx="18" cy="3" r="1.6"/><circle cx="6" cy="8" r="1.6"/><circle cx="12" cy="8" r="1.6"/><circle cx="18" cy="8" r="1.6"/></svg>';
+  function binName(k) { return stripTags(D.sort.b[k]); }
+  function binsSpoken() { return D.sort.b.map(function (b, k) { return (k + 1) + ", " + stripTags(b); }).join("; "); }
+  function sortChips(bump) {
+    ui.sortN.textContent = G.deck.filter(function (c) { return c.ok !== undefined; }).length + " / " + G.deck.length;
+    ui.missN.textContent = String(G.misses);
+    if (bump) { ui.sortChip.classList.remove("is-bump"); void ui.sortChip.offsetWidth; ui.sortChip.classList.add("is-bump"); }
+    paintDots(G.deck.map(function (c) { return c.ok === true ? 1 : c.ok === false ? 0 : -1; }), G.si);
+  }
+  function binLabel(k) {
+    var n = G.inBin[k];
+    return binName(k) + ", box " + (k + 1) + (n ? ", " + plural(n, "card") + " so far" : "");
+  }
+
+  function sortSplash() {
+    var n = D.sort.i.length;
+    label("Sort It", plural(n, "card"));
+    ui.dots.innerHTML = "";
+    var s = screen("st-splash");
+    s.appendChild(el("span", { class: "st-splash-tag", text: "Sort It" }));
+    s.appendChild(el("div", { class: "st-splash-ico", "aria-hidden": "true", html: art("sort") }));
+    s.appendChild(el("h2", { tabindex: "-1", text: "Sort It" }));
+    s.appendChild(el("p", { class: "st-sort-prompt", html: D.sort.p }));
+    var how = "Drag each of the " + n + " cards into the right box, tap a box, or press its number. Cards sorted in a row win combo points.";
+    s.appendChild(el("p", { text: how }));
+    var row = el("div", { class: "st-sort-preview", "aria-hidden": "true" });
+    D.sort.b.forEach(function (b, k) {
+      row.appendChild(el("span", { class: "st-bin-chip st-bin-" + k, html: '<span class="st-bin-key">' + (k + 1) + "</span>" + b }));
+    });
+    s.appendChild(row);
+    var go = el("button", { class: "st-go", type: "button", html: ico("i-play") + " Deal the cards" });
+    go.addEventListener("click", sortDeal);
+    s.appendChild(go);
+    sfx("board");
+    say("Sort It. " + stripTags(D.sort.p) + " " + how + " The boxes are " + binsSpoken() + ".");
+    focusFirst(go);
+  }
+
+  function sortDeal() {
+    if (!G) return;
+    G.deck = shuffle(D.sort.i.map(function (c, k) { return { k: k, t: c.t, b: c.b, x: c.x, text: stripTags(c.t) }; }));
+    G.si = 0; G.right = 0; G.misses = 0; G.combo = 0; G.bestCombo = 0; G.pts = 0; G.t0 = 0; G.tEnd = 0;
+    G.locked = false; G.drag = null; G.lastBin = 0;
+    G.inBin = D.sort.b.map(function () { return 0; });
+    var s = screen("st-sort");
+    ui.sortLeft = el("span", { class: "st-sort-left" });
+    s.appendChild(el("div", { class: "st-sort-head" }, [el("p", { class: "st-sort-q", html: D.sort.p }), ui.sortLeft]));
+    ui.pile = el("div", { class: "st-sort-pile", "aria-hidden": "true" });
+    ui.slot = el("div", { class: "st-sort-slot" });
+    s.appendChild(el("div", { class: "st-sort-deck" }, [ui.pile, ui.slot]));
+    ui.hint = el("p", { class: "st-sort-hint", text: "Drag the card into a box, tap a box, or press 1 to " + D.sort.b.length + "." });
+    s.appendChild(ui.hint);
+    ui.bins = D.sort.b.map(function (b, k) {
+      var bin = el("button", { class: "st-bin st-bin-" + k, type: "button", "data-bin": k }, [
+        el("span", { class: "st-bin-top", "aria-hidden": "true" }, [
+          el("span", { class: "st-bin-key", text: String(k + 1) }),
+          el("span", { class: "st-bin-shape", html: '<svg viewBox="0 0 24 24">' + SHAPES[BIN_SHAPES[k]] + "</svg>" }),
+          el("span", { class: "st-bin-n", text: "0" })]),
+        el("span", { class: "st-bin-label", html: b }),
+        el("span", { class: "st-bin-tray", "aria-hidden": "true" })]);
+      bin.addEventListener("click", function () { G.lastBin = k; sortDrop(k); });
+      return bin;
+    });
+    ui.binRow = el("div", { class: "st-bins", role: "group", "aria-label": "Boxes", "data-n": D.sort.b.length }, ui.bins);
+    s.appendChild(ui.binRow);
+    ui.bins.forEach(function (b, k) { b.setAttribute("aria-label", binLabel(k)); });
+    ui.tiles = ui.bins;
+    sfx("board");
+    sortCard();
+    focusFirst(ui.bins[0]);
+  }
+
+  function paintPile() {
+    var left = G.deck.length - G.si - 1;
+    ui.pile.innerHTML = "";
+    for (var i = Math.min(3, left); i > 0; i--) ui.pile.appendChild(el("i", { style: "--n:" + i }));
+    ui.sortLeft.textContent = left > 0 ? plural(left, "card") + " to come" : "Last card";
+  }
+
+  function sortCard() {
+    var c = G.deck[G.si];
+    label("Sort It", "Card " + (G.si + 1) + " of " + G.deck.length);
+    paintPile();
+    var card = el("div", { class: "st-sort-card" }, [
+      el("span", { class: "st-sort-grip", html: GRIP }),
+      el("p", { class: "st-sort-t", html: c.t })]);
+    card.addEventListener("pointerdown", dragStart);
+    card.addEventListener("pointermove", dragMove);
+    card.addEventListener("pointerup", dragEnd);
+    card.addEventListener("pointercancel", dragEnd);
+    ui.slot.innerHTML = "";
+    ui.slot.appendChild(card);
+    ui.card = card;
+    G.locked = false;
+    sortChips(false);
+    say("Card " + (G.si + 1) + " of " + G.deck.length + ": " + c.text + ". Which box? " + binsSpoken() + ".");
+  }
+
+  /* ----- dragging */
+  function binAt(x, y) {
+    for (var k = 0; k < ui.bins.length; k++) {
+      var r = ui.bins[k].getBoundingClientRect();
+      if (x >= r.left - 6 && x <= r.right + 6 && y >= r.top - 6 && y <= r.bottom + 6) return k;
+    }
+    return -1;
+  }
+  function overBin(k) {
+    var d = G.drag;
+    if (k === d.over) return;
+    if (d.over >= 0) ui.bins[d.over].classList.remove("is-over");
+    if (k >= 0) { ui.bins[k].classList.add("is-over"); sfx("tick"); }
+    d.over = k;
+  }
+  function dragStart(e) {
+    if (!G || G.done || G.locked || G.drag || (e.button !== undefined && e.button > 0)) return;
+    if (e.target.closest && e.target.closest("button")) return;
+    e.preventDefault();
+    startWatch();
+    try { ui.card.setPointerCapture(e.pointerId); } catch (err) { /* capture is a nicety */ }
+    G.drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, moved: false, over: -1 };
+    ui.card.classList.add("is-drag");
+  }
+  function dragMove(e) {
+    var d = G && G.drag;
+    if (!d || e.pointerId !== d.id) return;
+    var dx = e.clientX - d.x0, dy = e.clientY - d.y0;
+    if (!d.moved && Math.abs(dx) + Math.abs(dy) < 6) return;
+    d.moved = true;
+    ui.card._at = { x: dx, y: dy };
+    ui.card.style.translate = dx + "px " + dy + "px";
+    ui.card.style.rotate = Math.max(-9, Math.min(9, dx / 22)) + "deg";
+    overBin(binAt(e.clientX, e.clientY));
+  }
+  function dragEnd(e) {
+    var d = G && G.drag;
+    if (!d || e.pointerId !== d.id) return;
+    var k = e.type === "pointerup" ? binAt(e.clientX, e.clientY) : -1;
+    overBin(-1);
+    G.drag = null;
+    ui.card.classList.remove("is-drag");
+    if (!d.moved) { sortNudge(); return; }
+    if (k >= 0) { G.lastBin = k; sortDrop(k); } else springBack(ui.card);
+  }
+  function springBack(card) {
+    card._at = { x: 0, y: 0 };
+    card.style.translate = "";
+    card.style.rotate = "";
+  }
+  function sortNudge() {
+    ui.card.classList.remove("is-nudge"); void ui.card.offsetWidth; ui.card.classList.add("is-nudge");
+    ui.hint.classList.remove("is-flash"); void ui.hint.offsetWidth; ui.hint.classList.add("is-flash");
+    say(ui.hint.textContent);
+  }
+  /* The card flies into a box: from wherever it is, dragged or not, to the
+     middle of the box, shrinking as it goes. */
+  function flyTo(card, k, done) {
+    var game = G;
+    var finish = function () { if (G === game && !G.done) done(); };
+    if (calm()) { finish(); return; }
+    var a = card.getBoundingClientRect(), b = ui.bins[k].getBoundingClientRect(), at = card._at || { x: 0, y: 0 };
+    var dx = at.x + (b.left + b.width / 2) - (a.left + a.width / 2), dy = at.y + (b.top + b.height / 2) - (a.top + a.height / 2);
+    card.classList.add("is-flying");
+    void card.offsetWidth;
+    card.style.translate = dx + "px " + dy + "px";
+    card.style.rotate = (dx > 0 ? 8 : -8) + "deg";
+    card.style.scale = "0.18";
+    card.style.opacity = "0";
+    setTimeout(finish, 430);
+  }
+  function landIn(k, ok) {
+    var bin = ui.bins[k];
+    G.inBin[k] += 1;
+    bin.querySelector(".st-bin-n").textContent = String(G.inBin[k]);
+    bin.querySelector(".st-bin-tray").appendChild(el("i", { class: ok ? "" : "is-miss" }));
+    bin.setAttribute("aria-label", binLabel(k));
+    bin.classList.remove("is-hit"); void bin.offsetWidth; bin.classList.add("is-hit");
+  }
+  function popIn(node, text, cls) {
+    if (!cls) Array.prototype.forEach.call(ui.binRow.querySelectorAll(".st-pop"), function (o) { o.remove(); });
+    var p = el("span", { class: "st-pop" + (cls ? " " + cls : ""), "aria-hidden": "true", text: text });
+    node.appendChild(p);
+    setTimeout(function () { if (p.parentNode) p.parentNode.removeChild(p); }, 1300);
+  }
+
+  /* ----- sorting */
+  function sortDrop(k) {
+    if (!G || G.done || G.locked || !ui.card || G.drag) return;
+    startWatch();
+    G.locked = true;
+    var c = G.deck[G.si];
+    if (c.b === k) sortRight(c, k); else sortWrong(c, k);
+  }
+  function sortRight(c, k) {
+    c.ok = true;
+    G.right += 1; G.combo += 1;
+    G.bestCombo = Math.max(G.bestCombo, G.combo);
+    var gain = 100 + 50 * Math.min(G.combo - 1, 4);
+    G.pts += gain;
+    sortChips(true);
+    sfx("good");
+    say("Right: " + binName(k) + "." + (G.combo >= 3 ? " A combo of " + G.combo + "." : ""));
+    flyTo(ui.card, k, function () {
+      landIn(k, true);
+      popIn(ui.bins[k], "+" + gain);
+      if (G.combo >= 3) popIn(ui.bins[k], "Combo x" + G.combo + "!", "is-combo");
+      sortNext();
+    });
+  }
+  function sortWrong(c, k) {
+    c.ok = false;
+    G.misses += 1; G.combo = 0;
+    var card = ui.card, last = G.si === G.deck.length - 1;
+    springBack(card);
+    card.classList.add("is-wrong");
+    ui.bins[k].classList.add("is-no");
+    ui.bins[c.b].classList.add("is-answer");
+    var next = el("button", { class: "st-go st-sort-next", type: "button", html: (last ? "See my results " : "Next card ") + ico("i-arrow-right") });
+    card.appendChild(el("div", { class: "st-sort-fb" }, [
+      el("p", { class: "st-sort-fb-h", html: '<span class="st-nw">' + ico("i-cross") + " Not " + D.sort.b[k] + ".</span> It goes in <b>" + D.sort.b[c.b] + "</b>." }),
+      el("p", { class: "st-sort-fb-x", html: c.x }), next]));
+    next.addEventListener("click", function () {
+      if (!G || G.done || next.disabled) return;
+      next.disabled = true;
+      ui.bins[k].classList.remove("is-no");
+      ui.bins[c.b].classList.remove("is-answer");
+      card.classList.remove("is-wrong");
+      flyTo(card, c.b, function () { landIn(c.b, false); sortNext(); });
+    });
+    sortChips(false);
+    sfx("bad");
+    say("Not quite. It goes in " + binName(c.b) + ". " + stripTags(c.x));
+    focusFirst(next);
+  }
+  function sortNext() {
+    G.si += 1;
+    if (G.si >= G.deck.length) {
+      G.tEnd = performance.now();
+      clearInterval(G.tick); G.tick = 0;
+      if (ui.timeN) ui.timeN.textContent = mmss(watch());
+      ui.slot.innerHTML = "";
+      ui.pile.innerHTML = "";
+      ui.sortLeft.textContent = "All sorted";
+      sortChips(false);
+      var game = G;
+      setTimeout(function () { if (G === game) sortResults(); }, calm() ? 300 : 800);
+      return;
+    }
+    sortCard();
+    if (!stage.contains(document.activeElement) || document.activeElement === document.body) focusFirst(ui.bins[G.lastBin] || ui.bins[0]);
+  }
+
+  function sortResults() {
+    if (!G || G.done) return;
+    var n = G.deck.length, secs = Math.floor(watch() / 1000);
+    var bonus = opts.timer ? Math.max(0, 500 - 5 * secs) : 0;
+    var sortPts = G.pts;
+    G.pts += bonus;
+    var pct = G.right / n;
+    var stars = G.right === n ? 3 : pct >= 0.75 ? 2 : 1;
+    var medals = [];
+    if (G.right === n) medals.push(["box", "#16A34A", "Perfect sort", "Every card in the right box"]);
+    if (G.bestCombo >= 6) medals.push(["fire", "#EA580C", "Combo king", plural(G.bestCombo, "card") + " in a row"]);
+    if (opts.timer && secs <= 50 && pct >= 0.75) medals.push(["bolt", "#7C3AED", "Speed sorter", "Done in " + mmss(secs * 1000)]);
+    var rows = [[art("sort"), "Cards sorted", G.right + " of " + n + " right first time", fmt(sortPts)]];
+    if (opts.timer) rows.push([ico("i-timer"), "Time", mmss(secs * 1000) + (bonus ? ", with a time bonus" : ""), "+" + fmt(bonus)]);
+    rows.push([FLAME, "Best combo", plural(G.bestCombo, "card") + " in a row", ""]);
+    var extra = el("div", { class: "st-res-extra" });
+    var missed = G.deck.filter(function (c) { return !c.ok; });
+    if (missed.length) {
+      extra.appendChild(reviewList("Look again at these", missed.map(function (c) {
+        return c.t + ' <span class="st-res-ans">' + D.sort.b[c.b] + ": " + c.x + "</span>";
+      })));
+    }
+    extra.appendChild(reviewList("The boxes", D.sort.b.map(function (b, k) {
+      return '<span class="st-res-a">' + b + "</span> " + D.sort.i.filter(function (c) { return c.b === k; }).map(function (c) { return c.t; }).join("; ");
+    })));
+    taskResults({
+      stars: stars, pts: G.pts, pct: pct,
+      title: stars === 3 ? "Sorting champion" : stars === 2 ? "Sharp sorting" : "All sorted: play again to get more right first time",
+      mood: stars === 3 ? "proud" : stars === 2 ? "cheer" : "happy", wear: stars === 3 ? ["crown"] : null,
+      rows: rows, medals: medals, extra: extra,
+      summary: G.right + " of " + n + " cards right first time."
     });
   }
 

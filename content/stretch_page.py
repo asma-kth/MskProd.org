@@ -1,35 +1,55 @@
-"""Key Stage 3 stretch tasks: three for every lesson from Year 7 to Year 9.
+"""Stretch tasks: games for every lesson at Key Stage 3 and Key Stage 4.
 
-Each lesson of a unit (a section of its topic page) gets a page of its own with
-three tasks. The Quiz Challenge has three rounds: a quiz game against the
-clock, short written answers, and long written answers marked against a mark
-scheme. In This or That, Pixel the cat asks questions with two answers to
-choose from. Memory Match is a card game: find each word's meaning. The games
-themselves are static/js/stretch.js; this module writes the pages, the hub
-that lists them, and the link under each lesson on the topic pages.
+A Key Stage 3 lesson is a section of a unit's topic page; at Key Stage 4 a
+lesson is a whole topic. Each lesson gets a page of its own. The Quiz
+Challenge has three rounds: a quiz game against the clock, short written
+answers, and long written answers marked against a mark scheme. In This or
+That, Pixel the cat asks questions with two answers to choose from. Memory
+Match is a card game: find each word's meaning. Key Stage 4 lessons add Sort
+It: drag each statement into the right box, like the tick-box tables on GCSE
+papers. The games themselves are static/js/stretch.js; this module writes the
+pages, a hub for each key stage, and the links from the lessons to them.
 
 Every page also carries the whole task as plain HTML: it is what a browser
 without JavaScript shows, and what prints when a teacher wants it on paper.
 """
+import importlib
 import json
 
-from mskbuild import cat, markup
+from mskbuild import cat, markup, render
 from mskbuild.render import (SITE_NAME, SITE_URL, crumbs, crumbs_ld, esc, ico, layout, write)
 from mskbuild.util import slugify
 from mskbuild import stretchcheck
 from content import ks3
 from content import ks3_stretch
+from content import ks4_stretch
 
 HUB = "/ks3/stretch/"
 HUB_TITLE = "Stretch tasks"
 HUB_LEAD = ("Three tasks for every Year 7, 8 and 9 lesson: a quiz challenge, This or That with "
             "Pixel the cat, and Memory Match.")
 
+HUB4 = "/ks4/stretch/"
+HUB4_TITLE = "Key Stage 4 stretch tasks"
+
 ROUNDS = [("Quiz Blitz", "blitz"), ("Quick Fire", "short"), ("Big Think", "long")]
 
-# The tasks on every lesson's page, in the order they are offered. The key is
-# also what the game and the saved results call each one.
-TASKS = [("quiz", "Quiz Challenge"), ("cat", "This or That"), ("match", "Memory Match")]
+# The tasks on a lesson's page, in the order they are offered. The key is also
+# what the game and the saved results call each one. Sort It is the fourth
+# task, at Key Stage 4 only.
+TASKS = [("quiz", "Quiz Challenge"), ("cat", "This or That"), ("match", "Memory Match"), ("sort", "Sort It")]
+
+# The module that defines each Key Stage 4 course.
+KS4_SOURCES = {"ks4/computer-science": "ks4_cs", "ks4/aqa-computer-science": "aqa_gcse",
+               "ks4/edexcel-computer-science": "edexcel_gcse", "ks4/imedia": "ks4_imedia"}
+
+
+def _tasks(st):
+    return TASKS if st.sort else TASKS[:3]
+
+
+def _ks4_course(slug):
+    return importlib.import_module("content." + KS4_SOURCES[slug]).COURSE
 
 # Seconds on the clock for each kind of game question, before any extra for
 # code to read or a long question.
@@ -80,6 +100,17 @@ def _task_icon(task):
     if task == "cat":
         head = cat.flat(head_only=True, cls="st-cat-head")
         return head.replace(' role="img" aria-label="Pixel the robot cat"', ' aria-hidden="true" focusable="false"')
+    if task == "sort":
+        return ('<svg viewBox="0 0 50 50" aria-hidden="true" focusable="false">'
+                '<path d="M2.5 30h19.5l-2.3 16.5H4.8Z" fill="#F97316" stroke="#1E293B" stroke-width="2.2" stroke-linejoin="round"/>'
+                '<path d="M28 30h19.5l-2.3 16.5H30.3Z" fill="#1F5FD1" stroke="#1E293B" stroke-width="2.2" stroke-linejoin="round"/>'
+                '<path d="M7 35.5h10.5M32.5 35.5H43" stroke="#fff" stroke-opacity=".65" stroke-width="2" stroke-linecap="round"/>'
+                '<g transform="rotate(-12 21 13)"><rect x="9" y="4" width="24" height="17" rx="3.5" fill="#fff" '
+                'stroke="#1E293B" stroke-width="2.2"/><path d="M14 10h14M14 15h9" stroke="#1E293B" stroke-width="2.4" '
+                'stroke-linecap="round"/></g>'
+                '<path d="M34 15.5c5.5 0 8.4 3.8 8.4 9.4" fill="none" stroke="#16A34A" stroke-width="3" stroke-linecap="round"/>'
+                '<path d="M38.4 22.6l4 4.4 4-4.4" fill="none" stroke="#16A34A" stroke-width="3" stroke-linecap="round" '
+                'stroke-linejoin="round"/></svg>')
     return ('<svg viewBox="0 0 50 50" aria-hidden="true" focusable="false">'
             '<g transform="rotate(-11 17 27)"><rect x="4" y="9" width="25" height="33" rx="5" fill="#1F5FD1" '
             'stroke="#1E293B" stroke-width="2.2"/><rect x="8" y="13" width="17" height="25" rx="3" fill="none" '
@@ -94,37 +125,90 @@ def _task_icon(task):
             'stroke-linejoin="round"/></svg>')
 
 
-def records():
-    """Every stretch task in teaching order, with what its pages need to know."""
+def ks3_records():
+    """Every Key Stage 3 stretch task in teaching order, with what its pages need to know."""
     topics = {t.slug: (u, t) for u in ks3.COURSE.units for t in u.topics}
     out = []
     for slug, lessons in ks3_stretch.units():
         unit, topic = topics[slug]
         for n, st in enumerate(lessons, 1):
             sec = next(s for s in topic.sections if s.title == st.lesson)
+            url = "%s%s/lesson-%d/" % (HUB, slug, n)
             out.append({
-                "stretch": st, "topic": topic, "unit": unit, "n": n,
-                "key": "%s/%d" % (slug, n),
-                "url": "%s%s/lesson-%d/" % (HUB, slug, n),
+                "stage": "ks3", "stretch": st, "topic": topic, "unit": unit, "n": n, "title": st.lesson,
+                "key": "%s/%d" % (slug, n), "url": url,
                 "lesson_url": "/ks3/%s/#%s" % (slug, sec.id or slugify(sec.title)),
                 "year": unit.title,
+                "kicker": [unit.title, "%s %s" % (topic.spec, topic.title), "Lesson %d" % n],
+                "where": "%s %s, lesson %d" % (topic.spec, topic.title, n),
+                "trail": [("Home", "/"), ("Key Stage 3", "/ks3/"), (HUB_TITLE, HUB),
+                          (topic.title, "%s#%s" % (HUB, slug)), ("Lesson %d" % n, None)],
+                "hub": HUB, "active": "/ks3/", "level": "Key Stage 3, %s" % unit.title,
+                "course_name": ks3.COURSE.title, "course_url": "/ks3/",
+                "desc": "%s, %s lesson %d: a quiz challenge, This or That with Pixel the cat, and Memory Match, "
+                        "to stretch Key Stage 3 students." % (st.lesson, topic.title, n),
             })
     return out
 
 
-def attach_links():
-    """Give each Key Stage 3 topic a link to the stretch tasks for every lesson.
+def ks4_records():
+    """Every Key Stage 4 stretch task, course by course in teaching order."""
+    out = []
+    for key, slug, name, lessons in ks4_stretch.courses():
+        course = _ks4_course(slug)
+        topics = {t.slug: (u, t) for u in course.units for t in u.topics}
+        order = list(topics)
+        unknown = [st.lesson for st in lessons if st.lesson not in topics]
+        if unknown:
+            raise SystemExit("content/ks4_stretch: %s has no topic called %s" % (slug, ", ".join(unknown)))
+        audience = "Creative iMedia" if slug == "ks4/imedia" else "GCSE Computer Science"
+        for n, st in enumerate(sorted(lessons, key=lambda st: order.index(st.lesson)), 1):
+            unit, topic = topics[st.lesson]
+            out.append({
+                "stage": "ks4", "stretch": st, "topic": topic, "unit": unit, "n": n, "title": topic.title,
+                "course": course, "ckey": key, "cname": name,
+                "key": "ks4/%s/%s" % (key, topic.slug), "url": "%s%s/%s/" % (HUB4, key, topic.slug),
+                "lesson_url": "/%s/%s/" % (slug, topic.slug),
+                "kicker": [name, unit.title],
+                "where": "%s %s" % (course.code, topic.spec),
+                "trail": [("Home", "/"), (course.short, "/%s/" % slug), (HUB_TITLE, "%s#%s" % (HUB4, key)),
+                          (topic.title, None)],
+                "hub": HUB4, "active": "/%s/" % slug, "level": "Key Stage 4, %s" % name,
+                "course_name": course.title, "course_url": "/%s/" % slug,
+                "desc": "%s (%s %s): a quiz challenge, This or That with Pixel the cat, Memory Match and Sort It, "
+                        "to stretch %s students." % (topic.title, course.board, topic.spec, audience),
+            })
+    return out
 
-    Called before the topic pages are built, so each lesson can end with it."""
-    for r in records():
-        links = getattr(r["topic"], "stretch", None)
-        if links is None:
-            links = r["topic"].stretch = {}
-        links[r["stretch"].lesson] = (r["url"], r["n"])
+
+def records():
+    """Every stretch task on the site: Key Stage 3, then Key Stage 4."""
+    return ks3_records() + ks4_records()
+
+
+def attach_links():
+    """Link the lessons to their stretch tasks, before the topic pages are built.
+
+    A Key Stage 3 lesson ends with a link to its own; a Key Stage 4 topic
+    closes with one, and its course's page gets a button to the hub."""
+    recs = records()
+    for r in recs:
+        if r["stage"] == "ks3":
+            links = getattr(r["topic"], "stretch", None)
+            if links is None:
+                links = r["topic"].stretch = {}
+            links[r["stretch"].lesson] = (r["url"], r["n"])
+        else:
+            r["topic"].stretch_all = r["url"]
+            r["course"].extra_cta = ("Stretch tasks", "%s#%s" % (HUB4, r["ckey"]), "i-target")
+    link = ("KS4 stretch tasks", HUB4)
+    if any(r["stage"] == "ks4" for r in recs) and link not in render.PRACTISE_LINKS:
+        render.PRACTISE_LINKS.append(link)
 
 
 def check():
-    """Prove every task, and that every Key Stage 3 lesson has one."""
+    """Prove every task, and that every lesson has one: every Key Stage 3
+    lesson, and every lesson of a published Key Stage 4 course."""
     units = ks3_stretch.units()
     topics = {t.slug: t for u in ks3.COURSE.units for t in u.topics}
     stretchcheck.validate(units, topics)
@@ -135,6 +219,16 @@ def check():
             for s in t.sections:
                 if (t.slug, s.title) not in have and (t.slug, s.title) not in ks3_stretch.NOT_LESSONS:
                     missing.append("%s: %s" % (t.slug, s.title))
+    lessons4, topics4 = [], {}
+    for key, slug, name, lessons in ks4_stretch.courses():
+        course = _ks4_course(slug)
+        mine = [t.slug for u in course.units for t in u.topics]
+        topics4.update({(slug, t.slug): t for u in course.units for t in u.topics})
+        lessons4 += [(slug, st) for st in lessons]
+        if ks4_stretch.complete(slug):
+            done = {st.lesson for st in lessons}
+            missing += ["%s: %s" % (slug, t) for t in mine if t not in done and (slug, t) not in ks4_stretch.NOT_LESSONS]
+    stretchcheck.validate_ks4(lessons4, topics4)
     return missing
 
 
@@ -193,11 +287,10 @@ def _pick(p):
 
 def payload(r, nxt):
     st = r["stretch"]
-    return {
-        "key": r["key"], "lesson": st.lesson, "n": r["n"],
-        "unit": r["topic"].title, "spec": r["topic"].spec, "year": r["year"],
+    d = {
+        "key": r["key"], "lesson": r["title"], "where": r["where"],
         "back": r["lesson_url"],
-        "next": {"t": nxt["stretch"].lesson, "u": nxt["url"]} if nxt else None,
+        "next": {"t": nxt["title"], "u": nxt["url"]} if nxt else None,
         "blitz": [_blitz(b) for b in st.blitz],
         "short": [_written(w) for w in st.short],
         "long": [_written(w) for w in st.long],
@@ -205,6 +298,10 @@ def payload(r, nxt):
         "pairs": [{"a": markup.inline(p.a), "b": markup.inline(p.b)} for p in st.pairs],
         "pn": list(st.pair_names),
     }
+    if st.sort:
+        d["sort"] = {"p": markup.inline(st.sort.prompt), "b": [markup.inline(b) for b in st.sort.bins],
+                     "i": [{"t": markup.inline(i.text), "b": i.bin, "x": markup.inline(i.why)} for i in st.sort.items]}
+    return d
 
 
 # -------------------------------------------------------------- the sheet
@@ -279,6 +376,7 @@ def _sheet(r):
     match_key = "".join("<li><b>%s %d</b> %s: %s</li>" % (letters[k], order.index(k) + 1, markup.inline(p.a), markup.inline(p.b))
                         for k, p in enumerate(st.pairs))
     word, meaning = (_in_sentence(n) for n in st.pair_names)
+    sort_q, sort_k = _sheet_sort(st.sort) if st.sort else ("", "")
     return """<section class="st-sheet" id="st-sheet" aria-labelledby="st-sheet-title">
   <h2 id="st-sheet-title">%s: the questions</h2>
   <h3>Quiz Challenge, round 1: Quiz Blitz</h3><ol class="st-sheet-list">%s</ol>
@@ -287,6 +385,7 @@ def _sheet(r):
   <h3>This or That: tick the right answer</h3><ol class="st-sheet-list">%s</ol>
   <h3>Memory Match: match each %s to its %s</h3>
   <table class="st-sheet-match"><thead><tr><th scope="col">%s</th><th scope="col">%s</th></tr></thead><tbody>%s</tbody></table>
+  %s
   <details class="st-key" id="st-key">
     <summary>Answers</summary>
     <h3>Round 1: Quiz Blitz</h3><ol class="st-sheet-list">%s</ol>
@@ -294,10 +393,26 @@ def _sheet(r):
     <h3>Round 3: Big Think</h3><ol class="st-sheet-list">%s</ol>
     <h3>This or That</h3><ol class="st-sheet-list">%s</ol>
     <h3>Memory Match</h3><ul class="st-sheet-list st-sheet-pairs">%s</ul>
+    %s
   </details>
-</section>""" % (esc(st.lesson), "".join(qs), sq, lq, "".join(picks), esc(word), esc(meaning),
-                 esc(st.pair_names[0]), esc(st.pair_names[1]), rows,
-                 "".join(keys), sk, lk, "".join(pick_keys), match_key)
+</section>""" % (esc(r["title"]), "".join(qs), sq, lq, "".join(picks), esc(word), esc(meaning),
+                 esc(st.pair_names[0]), esc(st.pair_names[1]), rows, sort_q,
+                 "".join(keys), sk, lk, "".join(pick_keys), match_key, sort_k)
+
+
+def _sheet_sort(so):
+    """Sort It on paper: a table with a box to tick in each row, as GCSE papers set it."""
+    order = sorted(range(len(so.items)), key=lambda i: _seed(so.items[i].text))
+    head = "".join('<th scope="col">%s</th>' % markup.inline(b) for b in so.bins)
+    tick = '<td class="st-sheet-tick"><span class="st-box"></span></td>' * len(so.bins)
+    rows = "".join("<tr><td>%s</td>%s</tr>" % (markup.inline(so.items[i].text), tick) for i in order)
+    q = ('<h3>Sort It: tick one box in each row</h3><p class="st-sheet-hint">%s</p>'
+         '<table class="st-sheet-sort"><thead><tr><th scope="col">Statement</th>%s</tr></thead><tbody>%s</tbody></table>'
+         % (markup.inline(so.prompt), head, rows))
+    key = ('<h3>Sort It</h3><ol class="st-sheet-list">%s</ol>'
+           % "".join("<li><b>%s</b> %s %s</li>" % (markup.inline(so.bins[so.items[i].bin]), markup.inline(so.items[i].text),
+                                                  markup.inline(so.items[i].why)) for i in order))
+    return q, key
 
 
 def _in_sentence(name):
@@ -332,6 +447,7 @@ def _lobby(r):
         '<span class="st-round-txt"><b>%s</b><span>%s</span></span></li>'
         % (kind, _round_icon(kind), name, counts[kind]) for name, kind in ROUNDS)
     word, meaning = (_in_sentence(n) for n in st.pair_names)
+    n_sort = len(st.sort.items) if st.sort else 0
     about = {
         "quiz": ("A quiz game against four computer players, then short and long written answers.",
                  "About 20 minutes"),
@@ -339,15 +455,20 @@ def _lobby(r):
                 "About 4 minutes"),
         "match": ("Flip the cards two at a time to match each %s card to its %s card." % (word, meaning),
                   "%d pairs, about 4 minutes" % len(st.pairs)),
+        "sort": ("Sort each statement into the right box, like the tick-box tables in the exam.",
+                 "%d cards, about 4 minutes" % n_sort),
     }
     points = {
         "cat": ["Two answers to every question", "A fish treat for every right answer",
                 "Streaks win Pixel shades, then a party hat"],
         "match": ["%d cards: each %s has a %s" % (2 * len(st.pairs), word, meaning), "One peek at every card",
                   "Combo points for pairs found in a row"],
+        "sort": ["%d cards to sort into %d boxes" % (n_sort, len(st.sort.bins) if st.sort else 0),
+                 "Drag a card, tap a box or press its number", "Combo points for cards sorted in a row"],
     }
+    tasks = _tasks(st)
     cards = []
-    for n, (task, name) in enumerate(TASKS, 1):
+    for n, (task, name) in enumerate(tasks, 1):
         cards.append("""<div class="st-task st-task-%(t)s" role="group" aria-labelledby="st-t-%(t)s">
         <div class="st-task-head"><span class="st-task-art" data-st-art="%(t)s" aria-hidden="true">%(art)s</span><span class="st-task-n">Task %(n)d</span></div>
         <h2 id="st-t-%(t)s">%(name)s</h2>
@@ -364,7 +485,7 @@ def _lobby(r):
   <div class="st-bg" aria-hidden="true">%s</div>
   <div class="st-lobby-host" aria-hidden="true">%s</div>
   <div class="st-lobby-main">
-    <p class="st-kicker">%s &middot; %s %s &middot; Lesson %d</p>
+    <p class="st-kicker">%s</p>
     <h1 id="st-title"><span class="st-h1-tag">Stretch tasks</span> %s</h1>
     <div class="st-setup">
       <label class="st-name"><span>Your name</span><input type="text" id="st-name" maxlength="16" autocomplete="off" spellcheck="false" placeholder="Player"></label>
@@ -374,7 +495,7 @@ def _lobby(r):
       </div>
     </div>
   </div>
-  <div class="st-tasks">
+  <div class="st-tasks" data-n="%d">
       %s
   </div>
   <div class="st-lobby-go">
@@ -382,22 +503,22 @@ def _lobby(r):
     <button class="st-link" type="button" data-st-print="answers">%s Print with answers</button>
   </div>
   <p class="st-nojs">The games need JavaScript. Every question is below, with the answers at the end.</p>
-</section>""" % (BG, cat.rig(cls="px st-px"), esc(r["year"]), esc(r["topic"].spec), esc(r["topic"].title), r["n"],
-                 esc(st.lesson), ico("i-timer"), ico("i-sound"), "\n      ".join(cards), ico("i-paper"), ico("i-check"))
+</section>""" % (BG, cat.rig(cls="px st-px"), " &middot; ".join(esc(k) for k in r["kicker"]),
+                 esc(r["title"]), ico("i-timer"), ico("i-sound"), len(tasks), "\n      ".join(cards),
+                 ico("i-paper"), ico("i-check"))
 
 
 def _lesson_page(r, nxt, prev):
-    st = r["stretch"]
-    trail = [("Home", "/"), ("Key Stage 3", "/ks3/"), (HUB_TITLE, HUB),
-             (r["topic"].title, "%s#%s" % (HUB, r["topic"].slug)), ("Lesson %d" % r["n"], None)]
+    trail = r["trail"]
     data = json.dumps(payload(r, nxt), separators=(",", ":"), ensure_ascii=False).replace("</", "<\\/")
     nav = []
     if prev:
-        nav.append('<a class="prev" href="%s"><span>%s Previous</span><b>%s</b></a>' % (prev["url"], ico("i-arrow-left"), esc(prev["stretch"].lesson)))
+        nav.append('<a class="prev" href="%s"><span>%s Previous</span><b>%s</b></a>' % (prev["url"], ico("i-arrow-left"), esc(prev["title"])))
     else:
-        nav.append('<a class="prev" href="%s"><span>%s Back</span><b>%s</b></a>' % (HUB, ico("i-arrow-left"), HUB_TITLE))
+        back = r["hub"] + ("#" + r["ckey"] if r["stage"] == "ks4" else "")
+        nav.append('<a class="prev" href="%s"><span>%s Back</span><b>%s</b></a>' % (back, ico("i-arrow-left"), HUB_TITLE))
     if nxt:
-        nav.append('<a class="next" href="%s"><span>Next %s</span><b>%s</b></a>' % (nxt["url"], ico("i-arrow-right"), esc(nxt["stretch"].lesson)))
+        nav.append('<a class="next" href="%s"><span>Next %s</span><b>%s</b></a>' % (nxt["url"], ico("i-arrow-right"), esc(nxt["title"])))
     body = """<div class="wrap">%s</div>
 <div class="wrap st-page">
   <div class="st" id="st" data-motion="full">
@@ -410,25 +531,23 @@ def _lesson_page(r, nxt, prev):
 </div>
 <template id="st-pixel">%s</template>
 <script type="application/json" id="st-data">%s</script>""" % (
-        crumbs(trail), _lobby(r), r["lesson_url"], ico("i-book"), esc(st.lesson), _sheet(r), "".join(nav),
+        crumbs(trail), _lobby(r), r["lesson_url"], ico("i-book"), esc(r["title"]), _sheet(r), "".join(nav),
         cat.rig(), data)
-    title = "Stretch tasks: %s" % st.lesson
-    desc = "%s, %s lesson %d: a quiz challenge, This or That with Pixel the cat, and Memory Match, to stretch Key Stage 3 students." % (
-        st.lesson, r["topic"].title, r["n"])
+    title = "Stretch tasks: %s" % r["title"]
     ld = [crumbs_ld(trail), {
         "@context": "https://schema.org", "@type": "LearningResource",
-        "name": title, "description": desc, "url": SITE_URL + r["url"], "inLanguage": "en-GB",
+        "name": title, "description": r["desc"], "url": SITE_URL + r["url"], "inLanguage": "en-GB",
         "isAccessibleForFree": True, "learningResourceType": "Quiz",
-        "educationalLevel": "Key Stage 3, %s" % r["year"], "teaches": st.lesson,
-        "isPartOf": {"@type": "Course", "name": ks3.COURSE.title, "url": SITE_URL + "/ks3/"},
+        "educationalLevel": r["level"], "teaches": r["title"],
+        "isPartOf": {"@type": "Course", "name": r["course_name"], "url": SITE_URL + r["course_url"]},
         "provider": {"@type": "Organization", "name": SITE_NAME, "url": SITE_URL},
     }]
-    return layout(title=title, description=desc, path=r["url"], body=body, active="/ks3/",
+    return layout(title=title, description=r["desc"], path=r["url"], body=body, active=r["active"],
                   extra_head='<link rel="stylesheet" href="/assets/css/stretch.css">',
                   scripts=["/assets/js/quiz.js", "/assets/js/stretch.js"], jsonld=ld)
 
 
-# Small marks for the three tasks on the hub's cards, drawn once and reused.
+# Small marks for the tasks on the hub's cards, drawn once and reused.
 GLYPHS = ('<svg class="st-glyphs" width="0" height="0" aria-hidden="true" focusable="false">'
           '<symbol id="st-g-quiz" viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="2.4" fill="#D7263D"/>'
           '<rect x="13" y="2" width="9" height="9" rx="2.4" fill="#1F5FD1"/><rect x="2" y="13" width="9" height="9" rx="2.4" '
@@ -439,22 +558,59 @@ GLYPHS = ('<svg class="st-glyphs" width="0" height="0" aria-hidden="true" focusa
           '<symbol id="st-g-match" viewBox="0 0 24 24"><rect x="1.5" y="4" width="11" height="15" rx="2.4" fill="#1F5FD1" '
           'transform="rotate(-9 7 11.5)"/><rect x="11" y="3.5" width="11" height="15" rx="2.4" fill="#fff" stroke="#1E293B" '
           'stroke-width="1.6" transform="rotate(8 16.5 11)"/><path d="M14 8.5h5M14 11.5h3.6" stroke="#1E293B" '
-          'stroke-width="1.6" stroke-linecap="round" transform="rotate(8 16.5 11)"/></symbol></svg>')
+          'stroke-width="1.6" stroke-linecap="round" transform="rotate(8 16.5 11)"/></symbol>'
+          '<symbol id="st-g-sort" viewBox="0 0 24 24"><path d="M1.5 14h9l-1 8.5h-7Z" fill="#F97316"/>'
+          '<path d="M13.5 14h9l-1 8.5h-7Z" fill="#1F5FD1"/><rect x="7" y="2" width="10" height="8" rx="1.8" fill="#fff" '
+          'stroke="#1E293B" stroke-width="1.5" transform="rotate(-10 12 6)"/></symbol></svg>')
 
 
-def _hub_tasks():
+def _hub_tasks(tasks):
     """Each task's best stars on a hub card, filled in from this device's results."""
     out = []
-    for task, name in TASKS:
+    for task, name in tasks:
         out.append('<span class="st-hub-task" data-st-task="%s"><svg class="st-g" aria-hidden="true" focusable="false">'
                    '<use href="#st-g-%s"></use></svg><span class="st-stars" data-st-stars aria-hidden="true">%s</span>'
                    '<span class="sr-only" data-st-sr>%s: not played yet.</span></span>'
                    % (task, task, ico("i-star", "icon st-star") * 3, name))
-    return '<span class="st-hub-tasks">%s</span>' % "".join(out)
+    return '<span class="st-hub-tasks%s">%s</span>' % (" is-four" if len(tasks) == 4 else "", "".join(out))
+
+
+def _hub_card(r, label):
+    return ('<a class="st-hub-card" href="%s" data-st-key="%s"><span class="st-hub-n">%s</span><b>%s</b>%s</a>'
+            % (r["url"], esc(r["key"]), esc(label), esc(_card_title(r)), _hub_tasks(_tasks(r["stretch"]))))
+
+
+def _card_title(r):
+    """A Creative iMedia topic's title starts with its specification reference,
+    which its hub card already shows."""
+    t, spec = r["title"], r["topic"].spec
+    return t[len(spec) + 2:] if r["stage"] == "ks4" and spec and t.startswith(spec + ": ") else t
+
+
+def _hub_page(*, path, title, h1, lead, trail, sections, tasks, course_name, course_url, active, jump=""):
+    body = """<div class="wrap">%s</div>
+<section class="hero st-hub-hero"><div class="wrap">
+  <div class="st-hub-head">
+    <div>
+      <h1>%s</h1>
+      <p class="lead">%s</p>%s
+    </div>
+    <div class="st-hub-art" aria-hidden="true">%s</div>
+  </div>
+</div></section>
+<div class="wrap st-hub">%s%s</div>""" % (crumbs(trail), esc(h1), esc(lead), jump,
+                                          "".join(_task_icon(t) for t, _ in tasks), GLYPHS, sections)
+    ld = [crumbs_ld(trail), {
+        "@context": "https://schema.org", "@type": "CollectionPage", "name": h1,
+        "description": lead, "url": SITE_URL + path, "inLanguage": "en-GB",
+        "isPartOf": {"@type": "Course", "name": course_name, "url": SITE_URL + course_url},
+    }]
+    return layout(title=title, description=lead + " Free, no account needed.", path=path, body=body, active=active,
+                  extra_head='<link rel="stylesheet" href="/assets/css/stretch.css">',
+                  scripts=["/assets/js/stretch.js"], jsonld=ld)
 
 
 def _hub(recs):
-    trail = [("Home", "/"), ("Key Stage 3", "/ks3/"), (HUB_TITLE, None)]
     years = []
     for year in ("Year 7", "Year 8", "Year 9"):
         units = []
@@ -463,62 +619,95 @@ def _hub(recs):
             if r["year"] != year or r["topic"].slug in seen:
                 continue
             seen.append(r["topic"].slug)
-            mine = [x for x in recs if x["topic"].slug == r["topic"].slug]
-            cards = "".join(
-                '<a class="st-hub-card" href="%s" data-st-key="%s">'
-                '<span class="st-hub-n">Lesson %d</span><b>%s</b>%s</a>'
-                % (x["url"], esc(x["key"]), x["n"], esc(x["stretch"].lesson), _hub_tasks()) for x in mine)
+            cards = "".join(_hub_card(x, "Lesson %d" % x["n"]) for x in recs if x["topic"].slug == r["topic"].slug)
             units.append('<div class="st-hub-unit" id="%s"><h3><span class="badge badge-spec">%s</span> %s</h3>'
                          '<div class="st-hub-cards">%s</div></div>'
                          % (esc(r["topic"].slug), esc(r["topic"].spec), esc(r["topic"].title), cards))
         if units:
             years.append('<section class="section st-hub-year" id="%s"><h2>%s</h2>%s</section>'
                          % (slugify(year), year, "".join(units)))
-    body = """<div class="wrap">%s</div>
-<section class="hero st-hub-hero"><div class="wrap">
-  <div class="st-hub-head">
-    <div>
-      <h1>%s</h1>
-      <p class="lead">%s</p>
-    </div>
-    <div class="st-hub-art" aria-hidden="true">%s%s%s</div>
-  </div>
-</div></section>
-<div class="wrap st-hub">%s%s</div>""" % (crumbs(trail), HUB_TITLE, HUB_LEAD,
-                                          _task_icon("quiz"), _task_icon("cat"), _task_icon("match"),
-                                          GLYPHS, "".join(years))
-    ld = [crumbs_ld(trail), {
-        "@context": "https://schema.org", "@type": "CollectionPage", "name": HUB_TITLE,
-        "description": HUB_LEAD, "url": SITE_URL + HUB, "inLanguage": "en-GB",
-        "isPartOf": {"@type": "Course", "name": ks3.COURSE.title, "url": SITE_URL + "/ks3/"},
-    }]
-    return layout(title="KS3 Computing stretch tasks", description=HUB_LEAD + " Free, no account needed.",
-                  path=HUB, body=body, active="/ks3/",
-                  extra_head='<link rel="stylesheet" href="/assets/css/stretch.css">',
-                  scripts=["/assets/js/stretch.js"], jsonld=ld)
+    return _hub_page(path=HUB, title="KS3 Computing stretch tasks", h1=HUB_TITLE, lead=HUB_LEAD,
+                     trail=[("Home", "/"), ("Key Stage 3", "/ks3/"), (HUB_TITLE, None)],
+                     sections="".join(years), tasks=TASKS[:3], course_name=ks3.COURSE.title, course_url="/ks3/",
+                     active="/ks3/")
 
 
-def build(register, add_search):
-    missing = check()
-    if missing:
-        raise SystemExit("Key Stage 3 lessons with no stretch task:\n  " + "\n  ".join(missing))
-    recs = records()
+def _hub4_lead(names):
+    names = list(names)
+    which = names[0] if len(names) == 1 else ", ".join(names[:-1]) + " and " + names[-1]
+    return ("Four tasks for every lesson of %s: a quiz challenge, This or That with Pixel the cat, "
+            "Memory Match and Sort It." % which)
+
+
+def _hub4(recs):
+    courses = []
+    for r in recs:
+        if r["ckey"] not in [c[0] for c in courses]:
+            courses.append((r["ckey"], r["cname"]))
+    sections = []
+    for key, name in courses:
+        mine = [r for r in recs if r["ckey"] == key]
+        units = []
+        for u in mine[0]["course"].units:
+            cards = "".join(_hub_card(r, r["topic"].spec) for r in mine if r["unit"] is u)
+            if cards:
+                units.append('<div class="st-hub-unit" id="%s-%s"><h3>%s</h3><div class="st-hub-cards">%s</div></div>'
+                             % (key, esc(u.slug), esc(u.title), cards))
+        sections.append('<section class="section st-hub-year" id="%s"><h2>%s</h2>%s</section>'
+                        % (key, esc(name), "".join(units)))
+    jump = ""
+    if len(courses) > 1:
+        jump = ('\n      <p class="st-hub-jump">%s</p>'
+                % "".join('<a class="btn btn-secondary" href="#%s">%s</a>' % (k, esc(n)) for k, n in courses))
+    first = recs[0]
+    title = "GCSE Computer Science%s stretch tasks" % (" and Creative iMedia" if "imedia" in [k for k, _ in courses] else "")
+    return _hub_page(path=HUB4, title=title, h1=HUB4_TITLE,
+                     lead=_hub4_lead(n for _, n in courses), trail=[("Home", "/"), (HUB4_TITLE, None)],
+                     sections="".join(sections), tasks=TASKS, jump=jump,
+                     course_name=first["course_name"], course_url=first["course_url"], active=first["active"])
+
+
+def _publish(recs, register, add_search):
     for i, r in enumerate(recs):
         nxt = recs[i + 1] if i + 1 < len(recs) else None
         prev = recs[i - 1] if i else None
         write(r["url"], _lesson_page(r, nxt, prev))
         register(r["url"], 0.6, "monthly")
-        add_search("Stretch tasks: %s" % r["stretch"].lesson, r["url"],
-                   "%s %s, lesson %d" % (r["topic"].spec, r["topic"].title, r["n"]),
-                   ("stretch task challenge quiz game this or that pixel cat memory match pairs ks3 %s %s %s"
-                    % (r["year"], r["topic"].title, r["stretch"].lesson)).lower())
-    write(HUB, _hub(recs))
+        if r["stage"] == "ks3":
+            add_search("Stretch tasks: %s" % r["title"], r["url"],
+                       "%s %s, lesson %d" % (r["topic"].spec, r["topic"].title, r["n"]),
+                       ("stretch task challenge quiz game this or that pixel cat memory match pairs ks3 %s %s %s"
+                        % (r["year"], r["topic"].title, r["title"])).lower())
+        else:
+            add_search("Stretch tasks: %s" % r["title"], r["url"], "%s %s" % (r["cname"], r["topic"].spec),
+                       ("stretch task challenge quiz game this or that pixel cat memory match sort it ks4 gcse %s %s %s"
+                        % (r["cname"], r["topic"].spec, r["title"])).lower())
+
+
+def build(register, add_search):
+    missing = check()
+    if missing:
+        raise SystemExit("Lessons with no stretch task:\n  " + "\n  ".join(missing))
+    recs = records()
+    ks3r = [r for r in recs if r["stage"] == "ks3"]
+    ks4r = [r for r in recs if r["stage"] == "ks4"]
+    _publish(ks3r, register, add_search)
+    write(HUB, _hub(ks3r))
     register(HUB, 0.8, "weekly")
     add_search(HUB_TITLE, HUB, "Years 7, 8 and 9: three tasks for every lesson",
                "stretch tasks challenge extension fast finishers quiz game kahoot this or that pixel cat "
                "memory match pairs ks3 year 7 year 8 year 9 lessons")
+    if ks4r:
+        for key in dict.fromkeys(r["ckey"] for r in ks4r):
+            _publish([r for r in ks4r if r["ckey"] == key], register, add_search)
+        write(HUB4, _hub4(ks4r))
+        register(HUB4, 0.8, "weekly")
+        add_search(HUB4_TITLE, HUB4, "GCSE: four tasks for every topic",
+                   "stretch tasks challenge extension fast finishers quiz game kahoot this or that pixel cat "
+                   "memory match sort it ks4 gcse computer science revision games")
     n_q = sum(len(r["stretch"].blitz) + len(r["stretch"].short) + len(r["stretch"].long) for r in recs)
     n_p = sum(len(r["stretch"].picks) for r in recs)
     n_m = sum(len(r["stretch"].pairs) for r in recs)
-    print("Stretch tasks: %d lessons, %d quiz questions, %d This or That questions and %d Memory Match pairs checked"
-          % (len(recs), n_q, n_p, n_m))
+    n_s = sum(len(r["stretch"].sort.items) for r in recs if r["stretch"].sort)
+    print("Stretch tasks: %d lessons (%d at Key Stage 4), %d quiz questions, %d This or That questions, "
+          "%d Memory Match pairs and %d Sort It cards checked" % (len(recs), len(ks4r), n_q, n_p, n_m, n_s))

@@ -1,4 +1,4 @@
-// Checks every Key Stage 3 stretch task's marking without a browser.
+// Checks every stretch task's marking without a browser, Key Stage 3 and Key Stage 4.
 //
 // Written answers are marked in the browser by the keyword marker in
 // static/js/quiz.js, and checked at build time by its Python twin in

@@ -288,6 +288,11 @@ def mascot() -> str:
 </div>""" % (ico("i-cross"), mascot_svg())
 
 
+# Extra links for the footer's Practise list, added while the site is built:
+# the Key Stage 4 stretch tasks appear once a course of them is published.
+PRACTISE_LINKS: List[tuple] = []
+
+
 def footer(path: str = "") -> str:
     report = "/contact/?page=" + quote(path, safe="/") if path else "/contact/"
     return """<footer class="site-footer">
@@ -316,7 +321,7 @@ def footer(path: str = "") -> str:
         <ul>
           <li><a href="/exam-papers/">Practice exam papers</a></li>
           <li><a href="/ks3/stretch/">KS3 stretch tasks</a></li>
-          <li><a href="/computational-thinking/">Computational Thinking Adventure</a></li>
+%s          <li><a href="/computational-thinking/">Computational Thinking Adventure</a></li>
           <li><a href="/pixel-run/">Pixel Run, the Python game</a></li>
           <li><a href="/progress/">Your progress</a></li>
           <li><a href="/how-to-revise/">How to revise properly</a></li>
@@ -340,7 +345,8 @@ def footer(path: str = "") -> str:
       <span>No accounts and no subscription. Adverts are served by Google, as set out in the <a href="/privacy/">privacy policy</a>.</span>
     </div>
   </div>
-</footer>""" % (logo_svg(""), esc(report), CONTACT_EMAIL, CONTACT_EMAIL)
+</footer>""" % (logo_svg(""), "".join('          <li><a href="%s">%s</a></li>\n' % (h, esc(t)) for t, h in PRACTISE_LINKS),
+              esc(report), CONTACT_EMAIL, CONTACT_EMAIL)
 
 
 # ============================================================== components
@@ -729,16 +735,26 @@ def _unit_exams_aside(topic) -> str:
     return '<div class="aside-block"><h4>Unit exams</h4>%s</div>' % links
 
 
+STRETCH_SHAPES = ('<svg class="stretch-cta-art" viewBox="0 0 50 50" aria-hidden="true" focusable="false">'
+                  '<rect width="24" height="24" rx="6" fill="#D7263D"/><path d="M12 6.5 18.5 17.5h-13Z" fill="#fff"/>'
+                  '<rect x="26" width="24" height="24" rx="6" fill="#1F5FD1"/><path d="M38 5.5 44.5 12 38 18.5 31.5 12Z" fill="#fff"/>'
+                  '<rect y="26" width="24" height="24" rx="6" fill="#F2B705"/><circle cx="12" cy="38" r="6.3" fill="#1F1A05"/>'
+                  '<rect x="26" y="26" width="24" height="24" rx="6" fill="#1E7B34"/><rect x="32" y="32" width="12" height="12" rx="2" fill="#fff"/></svg>')
+
+
 def _stretch_cta(href: str, n: int) -> str:
     """The way from a Key Stage 3 lesson into its stretch task."""
-    shapes = ('<svg class="stretch-cta-art" viewBox="0 0 50 50" aria-hidden="true" focusable="false">'
-              '<rect width="24" height="24" rx="6" fill="#D7263D"/><path d="M12 6.5 18.5 17.5h-13Z" fill="#fff"/>'
-              '<rect x="26" width="24" height="24" rx="6" fill="#1F5FD1"/><path d="M38 5.5 44.5 12 38 18.5 31.5 12Z" fill="#fff"/>'
-              '<rect y="26" width="24" height="24" rx="6" fill="#F2B705"/><circle cx="12" cy="38" r="6.3" fill="#1F1A05"/>'
-              '<rect x="26" y="26" width="24" height="24" rx="6" fill="#1E7B34"/><rect x="32" y="32" width="12" height="12" rx="2" fill="#fff"/></svg>')
     return ('<a class="stretch-cta" href="%s">%s<span class="stretch-cta-txt"><b>Stretch tasks: lesson %d</b>'
             '<span>Quiz Challenge, This or That with Pixel the cat, and Memory Match</span></span>'
-            '<span class="stretch-cta-go">Play %s</span></a>' % (href, shapes, n, ico("i-arrow-right")))
+            '<span class="stretch-cta-go">Play %s</span></a>' % (href, STRETCH_SHAPES, n, ico("i-arrow-right")))
+
+
+def _topic_stretch(href: str) -> str:
+    """At Key Stage 4 a whole topic is one lesson, so its stretch tasks close the page."""
+    return ('<h2 id="stretch-tasks">Stretch tasks</h2>'
+            '<a class="stretch-cta" href="%s">%s<span class="stretch-cta-txt"><b>Four games on this topic</b>'
+            '<span>Quiz Challenge, This or That with Pixel the cat, Memory Match and Sort It</span></span>'
+            '<span class="stretch-cta-go">Play %s</span></a>' % (href, STRETCH_SHAPES, ico("i-arrow-right")))
 
 
 def _unit_exams_note(topic) -> str:
@@ -804,6 +820,9 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
         toc.append(("quiz", "Knowledge check"))
     if topic.exam:
         toc.append(("exam", topic.exam_title))
+    stretch_all = getattr(topic, "stretch_all", None)
+    if stretch_all:
+        toc.append(("stretch-tasks", "Stretch tasks"))
 
     toc_html = '<div class="toc"><h4>On this page</h4><ol>%s</ol></div>' % "".join(
         '<li><a href="#%s">%s</a></li>' % (i, esc(t)) for i, t in toc)
@@ -871,10 +890,12 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
 </div>""" % (crumbs(trail), banner_for(course.slug, topic.slug), "".join(badges), esc(topic.title),
              "\n".join(sec_html), fact,
              render_quiz(tid, topic.quiz),
-             render_exam(tid, topic.exam, topic.exam_title),
+             render_exam(tid, topic.exam, topic.exam_title) + (_topic_stretch(stretch_all) if stretch_all else ""),
              _unit_exams_note(topic),
              nav_html, toc_html,
-             ('<div class="aside-block">%s</div>' % worksheet_link) if worksheet_link else "",
+             ('<div class="aside-block">%s%s</div>' % (worksheet_link, (
+                 '<a class="btn btn-primary" style="width:100%%;justify-content:center;margin-top:.5rem" href="%s">%s Stretch tasks</a>'
+                 % (stretch_all, ico("i-target"))) if stretch_all else "")) if (worksheet_link or stretch_all) else "",
              _unit_exams_aside(topic))
 
     desc = topic.blurb if len(topic.blurb) > 70 else topic.blurb + " Full explanation, a ten question check and five auto marked exam-style questions."

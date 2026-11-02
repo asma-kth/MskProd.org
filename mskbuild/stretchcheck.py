@@ -1,4 +1,4 @@
-"""Prove every Key Stage 3 stretch task before it is published.
+"""Prove every stretch task before it is published.
 
 A stretch task is played, not read, so a fault in one is a fault a student
 meets with the clock running: a question with two right answers, a puzzle
@@ -141,6 +141,11 @@ PAIRS = 6            # Memory Match pairs: twelve cards, four by three or three 
 # The right answer may be the clearly longer one in at most this many of a
 # lesson's This or That questions, so length never gives the answer away.
 LONGER_RIGHT_MAX = 3
+SORT_PROMPT_MAX = 160  # characters in the Sort It instruction
+SORT_BINS = (2, 4)     # boxes in Sort It
+SORT_BIN_MAX = 26      # characters on a box's label
+SORT_ITEMS = (8, 12)   # cards in Sort It
+SORT_CARD_MAX = 100    # characters on a Sort It card
 
 
 class StretchError(Exception):
@@ -260,8 +265,86 @@ def _pair_problems(where, pairs):
     return out
 
 
+def lesson_problems(where, st):
+    """Everything wrong with one lesson's tasks, as a list of messages."""
+    problems = []
+    if not 10 <= len(st.blitz) <= 14:
+        problems.append("%s: %d game questions, expected 10 to 14" % (where, len(st.blitz)))
+    if not 3 <= len(st.short) <= 5:
+        problems.append("%s: %d short answers, expected 3 to 5" % (where, len(st.short)))
+    if not 2 <= len(st.long) <= 3:
+        problems.append("%s: %d long answers, expected 2 or 3" % (where, len(st.long)))
+    seen = set()
+    for n, b in enumerate(st.blitz):
+        problems += _blitz_problems("%s game question %d" % (where, n + 1), b)
+        key = (b.q.strip().lower(), b.code.strip())
+        if key in seen:
+            problems.append("%s: game question %d repeats an earlier one" % (where, n + 1))
+        seen.add(key)
+    for n, w in enumerate(st.short):
+        problems += _written_problems("%s short answer %d" % (where, n + 1), w, False)
+    for n, w in enumerate(st.long):
+        problems += _written_problems("%s long answer %d" % (where, n + 1), w, True)
+        if w.marks < 3:
+            problems.append("%s long answer %d: a long answer is worth at least 3 marks" % (where, n + 1))
+    if not PICKS[0] <= len(st.picks) <= PICKS[1]:
+        problems.append("%s: %d This or That questions, expected %d to %d" % (where, len(st.picks), PICKS[0], PICKS[1]))
+    asked = {b.q.strip().lower() for b in st.blitz}
+    seen = set()
+    for n, p in enumerate(st.picks):
+        problems += _pick_problems("%s This or That %d" % (where, n + 1), p)
+        key = (p.q.strip().lower(), p.code.strip())
+        if key in seen:
+            problems.append("%s: This or That %d repeats an earlier one" % (where, n + 1))
+        if p.q.strip().lower() in asked and not p.code:
+            problems.append("%s: This or That %d is also a quiz game question" % (where, n + 1))
+        seen.add(key)
+    longer = sum(1 for p in st.picks if len(_plain(p.right)) > len(_plain(p.wrong)) + 15)
+    if longer > LONGER_RIGHT_MAX:
+        problems.append("%s: the right answer is the clearly longer one in %d This or That questions, at most %d"
+                        % (where, longer, LONGER_RIGHT_MAX))
+    problems += _pair_problems(where, st.pairs)
+    if len(st.pair_names) != 2 or not all(n.strip() for n in st.pair_names):
+        problems.append("%s: pair_names needs two labels" % where)
+    if st.sort is not None:
+        problems += _sort_problems(where, st.sort)
+    return problems
+
+
+def _sort_problems(where, sort):
+    out = []
+    where = "%s Sort It" % where
+    if not sort.prompt.strip() or len(_plain(sort.prompt)) > SORT_PROMPT_MAX:
+        out.append("%s: the prompt is empty or longer than %d characters" % (where, SORT_PROMPT_MAX))
+    bins = [_plain(b) for b in sort.bins]
+    if not SORT_BINS[0] <= len(bins) <= SORT_BINS[1]:
+        out.append("%s: %d boxes, expected %d to %d" % (where, len(bins), SORT_BINS[0], SORT_BINS[1]))
+    if len(set(b.lower() for b in bins)) != len(bins) or any(not b for b in bins):
+        out.append("%s: two boxes have the same label, or one is empty" % where)
+    for b in bins:
+        if len(b) > SORT_BIN_MAX:
+            out.append("%s: box label is %d characters, at most %d: %s" % (where, len(b), SORT_BIN_MAX, b))
+    if not SORT_ITEMS[0] <= len(sort.items) <= SORT_ITEMS[1]:
+        out.append("%s: %d cards, expected %d to %d" % (where, len(sort.items), SORT_ITEMS[0], SORT_ITEMS[1]))
+    texts = [_plain(i.text) for i in sort.items]
+    if len(set(t.lower() for t in texts)) != len(texts):
+        out.append("%s: two cards say the same thing" % where)
+    for i in sort.items:
+        t = _plain(i.text)
+        if not t or len(t) > SORT_CARD_MAX:
+            out.append("%s: card is empty or longer than %d characters: %s" % (where, SORT_CARD_MAX, t))
+        if not 0 <= i.bin < len(bins):
+            out.append("%s: card points at box %d, which does not exist: %s" % (where, i.bin, t))
+        if not i.why.strip() or len(_plain(i.why)) > WHY_MAX:
+            out.append("%s: card has no reason, or one longer than %d characters: %s" % (where, WHY_MAX, t))
+    for k, b in enumerate(bins):
+        if sum(1 for i in sort.items if i.bin == k) < 2:
+            out.append("%s: the box %r gets fewer than two cards" % (where, b))
+    return out
+
+
 def validate(units, topics):
-    """units: [(topic slug, [Stretch])]; topics: {slug: Topic}. Raises StretchError."""
+    """Key Stage 3. units: [(topic slug, [Stretch])]; topics: {slug: Topic}. Raises StretchError."""
     problems = []
     for slug, lessons in units:
         topic = topics.get(slug)
@@ -273,46 +356,29 @@ def validate(units, topics):
             where = "%s lesson %d (%s)" % (slug, i + 1, st.lesson)
             if st.lesson not in titles:
                 problems.append("%s: no section of %s is called that" % (where, slug))
-            if not 10 <= len(st.blitz) <= 14:
-                problems.append("%s: %d game questions, expected 10 to 14" % (where, len(st.blitz)))
-            if not 3 <= len(st.short) <= 5:
-                problems.append("%s: %d short answers, expected 3 to 5" % (where, len(st.short)))
-            if not 2 <= len(st.long) <= 3:
-                problems.append("%s: %d long answers, expected 2 or 3" % (where, len(st.long)))
-            seen = set()
-            for n, b in enumerate(st.blitz):
-                problems += _blitz_problems("%s game question %d" % (where, n + 1), b)
-                key = (b.q.strip().lower(), b.code.strip())
-                if key in seen:
-                    problems.append("%s: game question %d repeats an earlier one" % (where, n + 1))
-                seen.add(key)
-            for n, w in enumerate(st.short):
-                problems += _written_problems("%s short answer %d" % (where, n + 1), w, False)
-            for n, w in enumerate(st.long):
-                problems += _written_problems("%s long answer %d" % (where, n + 1), w, True)
-                if w.marks < 3:
-                    problems.append("%s long answer %d: a long answer is worth at least 3 marks" % (where, n + 1))
-            if not PICKS[0] <= len(st.picks) <= PICKS[1]:
-                problems.append("%s: %d This or That questions, expected %d to %d" % (where, len(st.picks), PICKS[0], PICKS[1]))
-            asked = {b.q.strip().lower() for b in st.blitz}
-            seen = set()
-            for n, p in enumerate(st.picks):
-                problems += _pick_problems("%s This or That %d" % (where, n + 1), p)
-                key = (p.q.strip().lower(), p.code.strip())
-                if key in seen:
-                    problems.append("%s: This or That %d repeats an earlier one" % (where, n + 1))
-                if p.q.strip().lower() in asked and not p.code:
-                    problems.append("%s: This or That %d is also a quiz game question" % (where, n + 1))
-                seen.add(key)
-            longer = sum(1 for p in st.picks if len(_plain(p.right)) > len(_plain(p.wrong)) + 15)
-            if longer > LONGER_RIGHT_MAX:
-                problems.append("%s: the right answer is the clearly longer one in %d This or That questions, at most %d"
-                                % (where, longer, LONGER_RIGHT_MAX))
-            problems += _pair_problems(where, st.pairs)
-            if len(st.pair_names) != 2 or not all(n.strip() for n in st.pair_names):
-                problems.append("%s: pair_names needs two labels" % where)
+            problems += lesson_problems(where, st)
         order = [titles.index(s.lesson) for s in lessons if s.lesson in titles]
         if order != sorted(order):
             problems.append("%s: lessons are not in the order the topic teaches them" % slug)
+    if problems:
+        raise StretchError("Stretch tasks failed their checks:\n  " + "\n  ".join(problems))
+
+
+def validate_ks4(lessons, topics):
+    """Key Stage 4, where a lesson is a whole topic and Sort It is required.
+
+    lessons: [(course slug, Stretch)]; topics: {(course slug, topic slug): Topic}."""
+    problems = []
+    seen = set()
+    for course, st in lessons:
+        where = "%s %s" % (course, st.lesson)
+        if (course, st.lesson) in seen:
+            problems.append("%s: this topic has two sets of stretch tasks" % where)
+        seen.add((course, st.lesson))
+        if (course, st.lesson) not in topics:
+            problems.append("%s: no topic of %s has that slug" % (where, course))
+        if st.sort is None:
+            problems.append("%s: a Key Stage 4 lesson needs a Sort It task" % where)
+        problems += lesson_problems(where, st)
     if problems:
         raise StretchError("Stretch tasks failed their checks:\n  " + "\n  ".join(problems))

@@ -185,13 +185,33 @@ class Pair:
 
 
 @dataclass
+class SortItem:
+    """One card in Sort It: a statement, the box it belongs in (an index into
+    the boxes), and why, which is shown when it is put in the wrong one."""
+    text: str
+    bin: int
+    why: str
+
+
+@dataclass
+class Sort:
+    """Sort It: statements to drop into the right box, like the questions on
+    GCSE papers that ask for a tick in the right column of a table."""
+    prompt: str
+    bins: List[str]
+    items: List[SortItem]
+
+
+@dataclass
 class Stretch:
     """The stretch tasks for one lesson.
 
     The quiz challenge is three rounds: a quiz game, short answers and long
     answers. This or That is Pixel's two-choice questions, and Memory Match is
-    a card game of pairs; `pair_names` labels the two kinds of card.
-    `lesson` is the title of the topic section it belongs to, exactly.
+    a card game of pairs; `pair_names` labels the two kinds of card. Key
+    Stage 4 lessons add a fourth task, Sort It.
+    `lesson` is, at Key Stage 3, the title of the topic section it belongs to,
+    exactly; at Key Stage 4, where a lesson is a whole topic, the topic's slug.
     """
     lesson: str
     blitz: List[Blitz]
@@ -200,6 +220,7 @@ class Stretch:
     picks: List[Pick] = field(default_factory=list)
     pairs: List[Pair] = field(default_factory=list)
     pair_names: Tuple[str, str] = ("Word", "Meaning")
+    sort: Optional[Sort] = None
 
 
 @dataclass
