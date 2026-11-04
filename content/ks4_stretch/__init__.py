@@ -15,7 +15,7 @@ import os
 # key in URLs and saved results, course slug, name on the pages, modules, complete
 COURSES = [
     ("ocr", "ks4/computer-science", "OCR J277 GCSE Computer Science", ["ocr_systems_architecture", "ocr_memory_storage", "ocr_data_representation", "ocr_networks", "ocr_software_impacts", "ocr_algorithms", "ocr_programming", "ocr_robust_logic_languages"], True),
-    ("aqa", "ks4/aqa-computer-science", "AQA 8525 GCSE Computer Science", ["aqa_algorithms", "aqa_programming"], False),
+    ("aqa", "ks4/aqa-computer-science", "AQA 8525 GCSE Computer Science", ["aqa_algorithms", "aqa_programming", "aqa_data"], False),
     ("edexcel", "ks4/edexcel-computer-science", "Pearson Edexcel 1CP2 GCSE Computer Science", [], False),
     ("imedia", "ks4/imedia", "OCR J834 Creative iMedia", [], False),
 ]
