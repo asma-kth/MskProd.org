@@ -17,7 +17,7 @@ COURSES = [
     ("ocr", "ks4/computer-science", "OCR J277 GCSE Computer Science", ["ocr_systems_architecture", "ocr_memory_storage", "ocr_data_representation", "ocr_networks", "ocr_software_impacts", "ocr_algorithms", "ocr_programming", "ocr_robust_logic_languages"], True),
     ("aqa", "ks4/aqa-computer-science", "AQA 8525 GCSE Computer Science", ["aqa_algorithms", "aqa_programming", "aqa_data", "aqa_systems", "aqa_networks_security", "aqa_databases_impacts"], True),
     ("edexcel", "ks4/edexcel-computer-science", "Pearson Edexcel 1CP2 GCSE Computer Science", ["edexcel_thinking", "edexcel_data", "edexcel_computers", "edexcel_issues", "edexcel_programming"], True),
-    ("imedia", "ks4/imedia", "OCR J834 Creative iMedia", ["imedia_r093a", "imedia_r093b", "imedia_r093c"], False),
+    ("imedia", "ks4/imedia", "OCR J834 Creative iMedia", ["imedia_r093a", "imedia_r093b", "imedia_r093c", "imedia_r094"], False),
 ]
 
 # Topics that are not lessons: the guides to Creative iMedia's assessed
