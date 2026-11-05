@@ -933,7 +933,7 @@ if age >= 13 and (has_consent or is_supervised):
     allow_access()
 ```
 
-That condition is `A AND (B OR C)`. Removing the brackets changes its meaning completely: `age >= 13 and has_consent or is_supervised` would let an unsupervised infant in, because `and` binds more tightly than `or`, so it reads as `(A AND B) OR C`.
+That condition is `A AND (B OR C)`. Removing the brackets changes its meaning completely: `age >= 13 and has_consent or is_supervised` would let in any supervised child, however young, because `and` binds more tightly than `or`, so it reads as `(A AND B) OR C`.
 
 ### Common patterns worth recognising
 
