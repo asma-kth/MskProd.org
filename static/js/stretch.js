@@ -9,8 +9,11 @@
  * In This or That, Pixel the cat asks questions with two answers and reacts
  * to each choice. Memory Match is a card game: flip two cards at a time to
  * pair each word with its meaning. Key Stage 4 lessons add Sort It: drag each
- * statement into the right box, tap a box, or press its number. Best scores
- * are kept on this device only.
+ * statement into the right box, tap a box, or press its number. Key Stage 3
+ * lessons add three games. Code Word: guess a secret word from its clue, and
+ * every guess shows which letters are right. Link Up: twelve tiles hide three
+ * groups of four. Bug Hunt: two statements are true and one has a mistake to
+ * catch. Best scores are kept on this device only.
  *
  * The hub page uses only the star painting near the top of this file.
  */
@@ -205,8 +208,9 @@
   }
 
   /* ================================================================ HUB */
-  var TASKS = ["quiz", "cat", "match", "sort"];
-  var TASK_NAMES = { quiz: "Quiz Challenge", cat: "This or That", match: "Memory Match", sort: "Sort It" };
+  var TASKS = ["quiz", "cat", "match", "sort", "word", "link", "bug"];
+  var TASK_NAMES = { quiz: "Quiz Challenge", cat: "This or That", match: "Memory Match", sort: "Sort It",
+                     word: "Code Word", link: "Link Up", bug: "Bug Hunt" };
   /* The Quiz Challenge keeps the lesson's own key, so results saved before
      the other tasks existed still count. */
   function recKey(base, task) { return task === "quiz" ? base : base + "/" + task; }
@@ -222,9 +226,9 @@
     });
   });
 
-  /* Hooks for tools/check_stretch.mjs and the browser tests. typedRight is
-     hoisted, so it is ready here even on a page with no game. */
-  var hooks = window.MskStretch = { typedRight: typedRight };
+  /* Hooks for tools/check_stretch.mjs and the browser tests. typedRight and
+     wordMarks are hoisted, so they are ready here even on a page with no game. */
+  var hooks = window.MskStretch = { typedRight: typedRight, wordMarks: wordMarks };
 
   /* =============================================================== GAME */
   var app = document.getElementById("st");
@@ -371,6 +375,22 @@
       ui.fishN = el("span", { text: "0" });
       ui.fishChip = el("span", { class: "st-chip st-chip-fish" }, [el("span", { class: "st-fish", html: FISH }), el("small", { text: "Treats" }), ui.fishN]);
       chips = [ui.fishChip, ui.streak];
+    } else if (task === "word") {
+      ui.wordN = el("span", { text: "0 / " + D.words.length });
+      ui.ptsN = el("span", { text: "0" });
+      ui.wordChip = el("span", { class: "st-chip" }, [el("small", { text: "Unlocked" }), ui.wordN]);
+      ui.ptsChip = el("span", { class: "st-chip st-chip-score" }, [el("small", { text: "Points" }), ui.ptsN]);
+      chips = [ui.wordChip, ui.ptsChip];
+    } else if (task === "link") {
+      ui.groupsN = el("span", { text: "0 / " + D.link.length });
+      ui.timeN = el("span", { text: "0:00" });
+      ui.groupsChip = el("span", { class: "st-chip" }, [el("small", { text: "Groups" }), ui.groupsN]);
+      ui.timeChip = el("span", { class: "st-chip st-chip-time", hidden: !opts.timer }, [el("span", { html: ico("i-timer") }).firstChild, ui.timeN]);
+      chips = [ui.groupsChip, ui.timeChip];
+    } else if (task === "bug") {
+      ui.caughtN = el("span", { text: "0 / " + D.bugs.length });
+      ui.caughtChip = el("span", { class: "st-chip" }, [el("small", { text: "Caught" }), ui.caughtN]);
+      chips = [ui.caughtChip, ui.streak];
     } else if (task === "sort") {
       ui.sortN = el("span", { text: "0 / " + D.sort.i.length });
       ui.missN = el("span", { text: "0" });
@@ -438,8 +458,14 @@
   }
 
   function lockScroll(on) { document.documentElement.classList.toggle("st-locked", on); }
+  /* Whether this lesson has a task: Sort It is a Key Stage 4 task, and Code
+     Word, Link Up and Bug Hunt are Key Stage 3 games. */
+  function has(task) {
+    return task === "sort" ? !!D.sort : task === "word" ? !!D.words : task === "link" ? !!D.link :
+      task === "bug" ? !!D.bugs : !!TASK_NAMES[task];
+  }
   function begin(task) {
-    task = TASK_NAMES[task] && (task !== "sort" || D.sort) ? task : "quiz";
+    task = has(task) ? task : "quiz";
     if (task === "quiz") {
       G = { round: "blitz", qi: 0, streak: 0, bestStreak: 0, right: 0, blitzPts: 0, writtenPts: 0, times: [], marks: [],
             rivals: RIVALS.map(function (r) { return { id: r.id, name: r.name, av: r.av, face: r.face, skill: r.skill, pace: r.pace, pts: 0, streak: 0 }; }),
@@ -455,6 +481,9 @@
     if (task === "quiz") splash("blitz");
     else if (task === "cat") catSplash();
     else if (task === "sort") sortSplash();
+    else if (task === "word") wordSplash();
+    else if (task === "link") linkSplash();
+    else if (task === "bug") bugSplash();
     else matchSplash();
   }
   function leave(ask) {
@@ -493,6 +522,15 @@
     }
     var tag = (e.target.tagName || "").toLowerCase();
     if (tag === "input" || tag === "textarea" || tag === "select" || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (G.task === "word" && G.word && !G.locked && !G.done) {
+      /* Code Word is typed straight onto its tiles. Enter sends the guess
+         from anywhere except a button that has a job of its own; a letter key
+         of the drawn keyboard does not count as one. */
+      var letterKey = tag === "button" && e.target.classList.contains("st-kb") && (e.target.getAttribute("data-k") || "").length === 1;
+      if (/^[a-zA-Z]$/.test(e.key)) { e.preventDefault(); wordType(e.key.toUpperCase()); return; }
+      if (e.key === "Backspace") { e.preventDefault(); wordDelete(); return; }
+      if (e.key === "Enter" && ((tag !== "button" && tag !== "a") || letterKey)) { e.preventDefault(); wordSubmit(); return; }
+    }
     if (/^[1-6]$/.test(e.key) && ui.tiles && !G.locked) {
       var t = ui.tiles[parseInt(e.key, 10) - 1];
       if (t && !t.disabled) { e.preventDefault(); t.click(); }
@@ -1212,12 +1250,15 @@
   }
 
   /* ------------------------------------------------- shared result screen */
-  var NEXT_TASK = { quiz: "cat", cat: "match", match: "sort", sort: null };
+  /* The task after this one, of the tasks this lesson has. */
+  function nextTask(task) {
+    var mine = TASKS.filter(has), i = mine.indexOf(task);
+    return i > -1 && i < mine.length - 1 ? mine[i + 1] : null;
+  }
   function resultButtons(task) {
     var go = el("div", { class: "st-res-go" });
     go.appendChild(el("button", { class: "st-go", type: "button", html: ico("i-repeat") + " Play again", onclick: function () { leave(false); begin(task); } }));
-    var nt = NEXT_TASK[task];
-    if (nt === "sort" && !D.sort) nt = null;
+    var nt = nextTask(task);
     if (nt) go.appendChild(el("button", { class: "st-ghost", type: "button", html: "Next task: " + TASK_NAMES[nt] + " " + ico("i-arrow-right"), onclick: function () { leave(false); begin(nt); } }));
     else if (D.next) go.appendChild(el("a", { class: "st-ghost", href: D.next.u, html: "Next lesson: " + escHtml(D.next.t) + " " + ico("i-arrow-right") }));
     go.appendChild(el("a", { class: "st-ghost", href: D.back, html: ico("i-book") + " Back to the lesson" }));
@@ -1983,6 +2024,706 @@
       mood: stars === 3 ? "proud" : stars === 2 ? "cheer" : "happy", wear: stars === 3 ? ["crown"] : null,
       rows: rows, medals: medals, extra: extra,
       summary: G.right + " of " + n + " cards right first time."
+    });
+  }
+
+  /* ------------------------------------------- shared by the three games */
+  /* Later, unless the game has been left or replaced in the meantime. */
+  function after(ms, fn) {
+    var game = G;
+    return setTimeout(function () { if (G === game && !stage.hidden) fn(); }, ms);
+  }
+  /* The panel under a round once it is over: what happened, why, and the way on. */
+  function roundPanel(ok, head, gain, extra, html, nextText, onNext) {
+    var next = el("button", { class: "st-go", type: "button", html: nextText + " " + ico("i-arrow-right") });
+    next.addEventListener("click", function () { if (!next.disabled) { next.disabled = true; onNext(); } });
+    var fb = el("div", { class: "st-catfb is-plain " + (ok ? "is-ok" : "is-bad"), role: "status" }, [
+      el("div", { class: "st-catfb-head" }, [
+        el("span", { class: "st-catfb-badge", "aria-hidden": "true", html: ico(ok ? "i-check" : "i-cross") }),
+        el("b", { text: head }),
+        gain ? el("span", { class: "st-catfb-pts", text: "+" + gain }) : null]),
+      extra ? el("p", { class: "st-catfb-streak", html: FLAME + "<span>" + extra + "</span>" }) : null,
+      el("p", { class: "st-catfb-x", html: html }),
+      el("div", { class: "st-fb-go" }, [next])
+    ]);
+    ui.fb.appendChild(fb);
+    setTimeout(function () {
+      try { fb.scrollIntoView({ behavior: calm() ? "auto" : "smooth", block: "nearest" }); } catch (e) { fb.scrollIntoView(false); }
+      next.focus({ preventScroll: true });
+    }, calm() ? 0 : 350);
+    return fb;
+  }
+  function bump(chip) { chip.classList.remove("is-bump"); void chip.offsetWidth; chip.classList.add("is-bump"); }
+  function gridKeys(e, grid, sel) {
+    if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].indexOf(e.key) < 0) return;
+    var cells = Array.prototype.slice.call(grid.querySelectorAll(sel));
+    var i = cells.indexOf(document.activeElement);
+    if (i < 0) return;
+    var cols = getComputedStyle(grid).gridTemplateColumns.split(" ").length || 1;
+    var j = e.key === "ArrowLeft" ? i - 1 : e.key === "ArrowRight" ? i + 1 : e.key === "ArrowUp" ? i - cols :
+      e.key === "ArrowDown" ? i + cols : e.key === "Home" ? 0 : cells.length - 1;
+    if (j < 0 || j >= cells.length) return;
+    e.preventDefault();
+    cells[j].focus();
+  }
+
+  /* ============================================================ CODE WORD */
+  /* A clue, a row of empty tiles and five guesses. After each guess every
+     letter is marked: right place, in the word but somewhere else, or not in
+     the word. Each mark is a shape as well as a colour. */
+  var WORD_TRIES = 5;
+  var KEY_ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
+  var MARK_CLS = ["is-no", "is-near", "is-yes"];
+  var MARK_SAY = ["not in the word", "in the word but in the wrong place", "in the right place"];
+  var MARK_ART = ["",
+    '<svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="3.7" fill="none" stroke="currentColor" stroke-width="2.3"/></svg>',
+    '<svg viewBox="0 0 12 12"><path d="M1.8 6.5l2.7 2.7L10.2 3.3" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'];
+  var BACKSPACE = '<svg viewBox="0 0 30 20" aria-hidden="true" focusable="false"><path d="M10 2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H10L2 10Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>' +
+    '<path d="M14 6.5l7 7M21 6.5l-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
+
+  /* One guess marked against the word, a mark for each letter: 2 in the right
+     place, 1 in the word but somewhere else, 0 not in the word. A letter is
+     only marked as many times as the word has it. word_marks in
+     mskbuild/stretchcheck.py is the same marking in Python. */
+  function wordMarks(guess, answer) {
+    guess = String(guess).toUpperCase();
+    answer = String(answer).toUpperCase();
+    var marks = [], spare = {}, i, ch;
+    for (i = 0; i < guess.length; i++) marks.push(0);
+    for (i = 0; i < answer.length; i++) {
+      ch = answer.charAt(i);
+      if (i < guess.length && guess.charAt(i) === ch) marks[i] = 2;
+      else spare[ch] = (spare[ch] || 0) + 1;
+    }
+    for (i = 0; i < guess.length; i++) {
+      ch = guess.charAt(i);
+      if (marks[i] === 0 && spare[ch] > 0) { marks[i] = 1; spare[ch] -= 1; }
+    }
+    return marks;
+  }
+  function guesses(n) { return n === 1 ? "1 guess" : n + " guesses"; }
+  /* A padlock: shut, open or lost. `dark` draws its shackle for a pale background. */
+  function lockArt(state, dark) {
+    var open = state === "open", lost = state === "lost";
+    return '<svg viewBox="0 0 40 46" aria-hidden="true" focusable="false">' +
+      '<path d="' + (open ? "M12.5 21v-8a7.5 7.5 0 0 1 15 0v1.5" : "M12.5 22v-7.5a7.5 7.5 0 0 1 15 0V22") + '" fill="none" stroke="' + (dark ? "#64748B" : "#E2E8F0") + '" stroke-width="4.6" stroke-linecap="round"/>' +
+      '<rect x="5.5" y="20.5" width="29" height="23" rx="6" fill="' + (open ? "#4ADE80" : lost ? "#FCA5A5" : "#FBBF24") + '" stroke="#1E293B" stroke-width="2.4"/>' +
+      (open ? '<path d="M13.5 32l4.4 4.4 8.6-9.2" fill="none" stroke="#14532D" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>' :
+       lost ? '<path d="M15 27l10 10M25 27 15 37" stroke="#7F1D1D" stroke-width="3.2" stroke-linecap="round"/>' :
+       '<circle cx="20" cy="29.5" r="3.2" fill="#1E293B"/><path d="M20 31v6" stroke="#1E293B" stroke-width="3.2" stroke-linecap="round"/>') + "</svg>";
+  }
+  function wordTile(letter, mark) {
+    return el("span", { class: "st-wt" + (mark === undefined ? "" : " is-filled " + MARK_CLS[mark]) }, [
+      el("b", { text: letter || "" }),
+      el("i", { "aria-hidden": "true", html: mark === undefined ? "" : MARK_ART[mark] })]);
+  }
+  function wordDots() { return D.words.map(function (w, i) { return i < G.answers.length ? (G.answers[i] ? 1 : 0) : -1; }); }
+  function wordChips(up) {
+    ui.wordN.textContent = G.right + " / " + D.words.length;
+    ui.wordChip.setAttribute("aria-label", G.right + " of " + D.words.length + " code words found");
+    ui.ptsN.textContent = fmt(G.pts);
+    if (up) bump(ui.ptsChip);
+  }
+  function locksLabel() {
+    var open = G.answers.filter(Boolean).length;
+    return "Locks: " + open + " of " + D.words.length + " open";
+  }
+
+  function wordSplash() {
+    var n = D.words.length;
+    G.tries = []; G.firsts = 0;
+    label("Code Word", plural(n, "word"));
+    ui.dots.innerHTML = "";
+    var s = screen("st-splash st-word-splash");
+    s.appendChild(el("span", { class: "st-splash-tag", text: "Code Word" }));
+    s.appendChild(el("div", { class: "st-splash-ico", "aria-hidden": "true", html: art("word") }));
+    s.appendChild(el("h2", { tabindex: "-1", text: "Code Word" }));
+    var sub = plural(n, "code word") + " lock Pixel's treat tin. Read each clue and guess the word. You get " +
+      WORD_TRIES + " guesses, and after each one the tiles show how close you are.";
+    s.appendChild(el("p", { text: sub }));
+    var key = el("ul", { class: "st-word-key" });
+    [[2, "G", "Right letter, right place"], [1, "A", "In the word, wrong place"], [0, "X", "Not in the word"]].forEach(function (k) {
+      key.appendChild(el("li", {}, [wordTile(k[1], k[0]), el("span", { text: k[2] })]));
+    });
+    s.appendChild(key);
+    var go = el("button", { class: "st-go", type: "button", html: ico("i-play") + " Start" });
+    go.addEventListener("click", function () { wordRound(0); });
+    s.appendChild(go);
+    sfx("board");
+    say("Code Word. " + sub + " A tick means the right letter in the right place. A ring means the letter is in the word but in the wrong place.");
+    focusFirst(go);
+  }
+
+  function keyBtn(html, name, cls, fn) {
+    var b = el("button", { class: "st-kb" + (cls ? " " + cls : ""), type: "button", "aria-label": name, "data-k": name, html: html });
+    /* A click or tap presses the key without moving the focus onto it. */
+    b.addEventListener("mousedown", function (e) { e.preventDefault(); });
+    b.addEventListener("click", fn);
+    return b;
+  }
+
+  function wordRound(i) {
+    if (!G) return;
+    G.qi = i; G.locked = false;
+    var w = D.words[i], n = w.w.length;
+    var W = G.word = { answer: w.w, n: n, row: 0, cur: "", rows: [], best: {} };
+    label("Code Word", "Word " + (i + 1) + " of " + D.words.length);
+    paintDots(wordDots(), i);
+    wordChips(false);
+    var s = screen("st-word");
+    ui.locks = el("div", { class: "st-locks", role: "img", "aria-label": locksLabel() });
+    D.words.forEach(function (x, k) {
+      var state = k < G.answers.length ? (G.answers[k] ? "open" : "lost") : "shut";
+      ui.locks.appendChild(el("span", { class: "st-lock is-" + state + (k === i ? " is-now" : ""), html: lockArt(state) }));
+    });
+    G.cat = pixel("think");
+    var h = el("h2", { class: "st-word-q", tabindex: "-1", html: w.c });
+    s.appendChild(el("div", { class: "st-word-top" }, [
+      G.cat ? el("div", { class: "st-word-host", "aria-hidden": "true" }, [G.cat]) : null,
+      el("div", { class: "st-word-clue" }, [
+        el("p", { class: "st-qmeta" }, [el("span", { text: "Clue " + (i + 1) + " of " + D.words.length }), el("span", { class: "st-kind", text: n + " letters" })]),
+        h]),
+      ui.locks]));
+    var board = el("div", { class: "st-word-board", style: "--n:" + n });
+    for (var r = 0; r < WORD_TRIES; r++) {
+      var row = el("div", { class: "st-word-row", role: "img", "aria-label": "Guess " + (r + 1) + ": not used yet" });
+      for (var c = 0; c < n; c++) row.appendChild(wordTile("", undefined));
+      board.appendChild(row);
+      W.rows.push(row);
+    }
+    s.appendChild(board);
+    ui.wordMsg = el("p", { class: "st-word-msg", "aria-hidden": "true" });
+    s.appendChild(ui.wordMsg);
+    ui.keys = el("div", { class: "st-kbd", role: "group", "aria-label": "Letter keys" });
+    KEY_ROWS.forEach(function (letters, k) {
+      var line = el("div", { class: "st-kbd-row" });
+      if (k === 2) line.appendChild(keyBtn("Enter", "Enter", "is-wide", wordSubmit));
+      letters.split("").forEach(function (ch) { line.appendChild(keyBtn(ch, ch, "", function () { wordType(ch); })); });
+      if (k === 2) line.appendChild(keyBtn(BACKSPACE, "Delete", "is-wide", wordDelete));
+      ui.keys.appendChild(line);
+    });
+    s.appendChild(ui.keys);
+    ui.fb = el("div", { class: "st-fbslot" });
+    s.appendChild(ui.fb);
+    wordPaintRow(false);
+    say("Word " + (i + 1) + " of " + D.words.length + ": " + n + " letters. Clue: " + stripTags(w.c) + " Type your guess, then press Enter.");
+    focusFirst(h);
+  }
+
+  function wordPaintRow(pop) {
+    var W = G.word, row = W.rows[W.row];
+    if (!row) return;
+    row.classList.add("is-now");
+    Array.prototype.forEach.call(row.children, function (t, i) {
+      var ch = W.cur.charAt(i);
+      t.firstChild.textContent = ch;
+      t.classList.toggle("is-filled", !!ch);
+      t.classList.toggle("is-next", i === W.cur.length);
+      if (pop && i === W.cur.length - 1) { t.classList.remove("is-pop"); void t.offsetWidth; t.classList.add("is-pop"); }
+    });
+  }
+  function wordNudge(msg) {
+    var W = G.word, row = W.rows[W.row];
+    if (row) { row.classList.remove("is-shake"); void row.offsetWidth; row.classList.add("is-shake"); }
+    ui.wordMsg.textContent = msg;
+    ui.wordMsg.classList.remove("is-on"); void ui.wordMsg.offsetWidth; ui.wordMsg.classList.add("is-on");
+    say(msg);
+  }
+  function wordType(ch) {
+    var W = G && G.word;
+    if (!W || G.locked || G.done) return;
+    if (W.cur.length >= W.n) { say("That is all " + W.n + " letters. Press Enter to guess."); return; }
+    W.cur += ch;
+    ui.wordMsg.classList.remove("is-on");
+    sfx("pop");
+    wordPaintRow(true);
+    say(ch);
+  }
+  function wordDelete() {
+    var W = G && G.word;
+    if (!W || G.locked || G.done || !W.cur) return;
+    var gone = W.cur.slice(-1);
+    W.cur = W.cur.slice(0, -1);
+    wordPaintRow(false);
+    say(gone + " deleted");
+  }
+  function wordSubmit() {
+    var W = G && G.word;
+    if (!W || G.locked || G.done) return;
+    if (W.cur.length < W.n) { wordNudge("Not enough letters: this word has " + W.n + "."); return; }
+    G.locked = true;
+    var guess = W.cur, marks = wordMarks(guess, W.answer), row = W.rows[W.row], step = calm() ? 0 : 170;
+    var spoken = guess.split("").map(function (ch, i) { return ch + " " + MARK_SAY[marks[i]]; }).join(", ");
+    row.classList.remove("is-now");
+    row.setAttribute("aria-label", "Guess " + (W.row + 1) + ": " + spoken);
+    Array.prototype.forEach.call(row.children, function (t, i) {
+      t.classList.remove("is-next");
+      var show = function () { t.classList.add(MARK_CLS[marks[i]]); t.lastChild.innerHTML = MARK_ART[marks[i]]; };
+      if (!step) { show(); return; }
+      setTimeout(function () { t.classList.add("is-flip"); }, i * step);
+      setTimeout(show, i * step + 160);
+    });
+    after(step ? W.n * step + 380 : 0, function () {
+      if (G.word !== W) return;
+      guess.split("").forEach(function (ch, i) { if (W.best[ch] === undefined || marks[i] > W.best[ch]) W.best[ch] = marks[i]; });
+      Array.prototype.forEach.call(ui.keys.querySelectorAll(".st-kb"), function (b) {
+        var k = b.getAttribute("data-k"), m = W.best[k];
+        if (k.length !== 1 || m === undefined) return;
+        b.classList.remove("is-no", "is-near", "is-yes");
+        b.classList.add(MARK_CLS[m]);
+        b.setAttribute("aria-label", k + ", " + MARK_SAY[m]);
+      });
+      var solved = marks.every(function (m) { return m === 2; });
+      W.row += 1; W.cur = "";
+      if (solved) wordEnd(true);
+      else if (W.row >= WORD_TRIES) wordEnd(false);
+      else {
+        G.locked = false;
+        wordPaintRow(false);
+        sfx("tick");
+        say("Guess " + W.row + ": " + spoken + ". " + guesses(WORD_TRIES - W.row) + " left.");
+      }
+    });
+  }
+  function wordEnd(solved) {
+    var W = G.word, i = G.qi, tries = W.row, last = i === D.words.length - 1;
+    G.answers.push(solved);
+    G.tries.push(tries);
+    var gain = solved ? 100 * (WORD_TRIES + 1 - tries) : 0;
+    if (solved) { G.right += 1; G.pts += gain; if (tries === 1) G.firsts += 1; }
+    paintDots(wordDots(), -1);
+    wordChips(solved);
+    var lock = ui.locks.children[i];
+    lock.className = "st-lock is-" + (solved ? "open" : "lost") + " is-pop";
+    lock.innerHTML = lockArt(solved ? "open" : "lost");
+    ui.locks.setAttribute("aria-label", locksLabel());
+    ui.keys.hidden = true;
+    ui.wordMsg.hidden = true;
+    if (solved) W.rows[tries - 1].classList.add("is-win");
+    setMood(G.cat, solved ? (tries <= 2 ? "cheer" : "happy") : "oops");
+    sfx(solved ? "good" : "bad");
+    var head = solved ? (tries === 1 ? "First guess!" : pick(["Unlocked!", "Cracked it!", "Code word found!"])) : "Locked out";
+    roundPanel(solved, head, gain, "",
+      '<span class="st-fb-ans"><b>' + (solved ? "The code word:" : "The code word was:") + "</b> " + W.answer + "</span>" + D.words[i].c,
+      last ? "See my result" : "Next word",
+      function () { if (last) wordResults(); else wordRound(i + 1); });
+    say((solved ? head + " " + W.answer + ", in " + guesses(tries) + "." : "Out of guesses. The code word was " + W.answer + ".") + " " + stripTags(D.words[i].c));
+  }
+  function wordResults() {
+    var n = D.words.length, used = 0;
+    G.tries.forEach(function (t) { used += t; });
+    var stars = G.right === n && used <= n + 4 ? 3 : G.right >= n - 1 ? 2 : 1;
+    var medals = [];
+    if (G.right === n) medals.push(["sweep", "#16A34A", "Tin unlocked", "Every code word found"]);
+    if (G.firsts === n) medals.push(["crown", "#D97706", "Word wizard", "Every word at the first guess"]);
+    else if (G.firsts) medals.push(["bolt", "#7C3AED", "Mind reader", plural(G.firsts, "word") + " at the first guess"]);
+    taskResults({
+      stars: stars, pts: G.pts, pct: G.pts / (n * 100 * WORD_TRIES),
+      title: stars === 3 ? "Word wizard: the tin is open" : stars === 2 ? "Sharp guessing" : "A good start: play again to open every lock",
+      mood: stars === 3 ? "proud" : stars === 2 ? "cheer" : "happy", wear: stars === 3 ? ["crown"] : null,
+      rows: [[art("word"), "Code words found", G.right + " of " + n, fmt(G.pts)],
+             [lockArt("open", true), "Guesses used", guesses(used) + " in all", ""]],
+      medals: medals,
+      extra: reviewList("The code words", D.words.map(function (w) { return '<span class="st-res-a">' + w.w + "</span> " + w.c; })),
+      summary: G.right + " of " + n + " code words found."
+    });
+  }
+
+  /* ============================================================== LINK UP */
+  /* Twelve tiles hide three groups of four. Pick four tiles and submit them:
+     either they are a group, which is banked with its name, or it is a slip.
+     Four slips end the round. The last group banks itself. */
+  var LINK_SLIPS = 4;
+  function linkSize() { return D.link[0].t.length; }
+  function linkPicked() { return G.pool.filter(function (t) { return t.on; }); }
+  function slips(n) { return n === 0 ? "no slips" : n === 1 ? "1 slip" : n + " slips"; }
+  function linkChips(up) {
+    ui.groupsN.textContent = G.found.length + " / " + D.link.length;
+    ui.groupsChip.setAttribute("aria-label", G.found.length + " of " + D.link.length + " groups found");
+    if (up) bump(ui.groupsChip);
+  }
+  function linkLives(pop) {
+    var left = LINK_SLIPS - G.slips;
+    ui.lives.innerHTML = "";
+    for (var i = 0; i < LINK_SLIPS; i++) {
+      ui.lives.appendChild(el("i", { class: i < left ? "" : "is-gone" + (pop && i === left ? " is-pop" : ""), html: HEART }));
+    }
+    ui.lives.setAttribute("aria-label", left === 1 ? "1 slip left" : left + " slips left");
+  }
+  function linkSay(text, flash) {
+    ui.linkMsg.textContent = text;
+    ui.linkMsg.classList.toggle("is-flash", !!flash);
+    if (flash) { void ui.linkMsg.offsetWidth; say(text); }
+  }
+  function linkCount() {
+    var n = linkPicked().length, size = linkSize();
+    ui.linkGo.disabled = n !== size;
+    if (G.over || !G.pool.length) return;
+    linkSay(n === 0 ? "Pick " + size + " tiles that belong together." : n === size ? "That is " + size + ". Press Submit." : n + " of " + size + " picked.", false);
+  }
+
+  function linkSplash() {
+    var n = D.link.length, size = linkSize();
+    label("Link Up", plural(n, "group"));
+    ui.dots.innerHTML = "";
+    var s = screen("st-splash");
+    s.appendChild(el("span", { class: "st-splash-tag", text: "Link Up" }));
+    s.appendChild(el("div", { class: "st-splash-ico", "aria-hidden": "true", html: art("link") }));
+    s.appendChild(el("h2", { tabindex: "-1", text: "Link Up" }));
+    var sub = n * size + " tiles hide " + n + " groups of " + size + ". Pick " + size + " tiles that belong together, then press Submit. " +
+      "You can slip up " + LINK_SLIPS + " times.";
+    s.appendChild(el("p", { text: sub }));
+    var go = el("button", { class: "st-go", type: "button", html: ico("i-play") + " Deal the tiles" });
+    go.addEventListener("click", linkDeal);
+    s.appendChild(go);
+    sfx("board");
+    say("Link Up. " + sub);
+    focusFirst(go);
+  }
+
+  function linkDeal() {
+    if (!G) return;
+    var id = 0, size = linkSize();
+    G.pool = [];
+    D.link.forEach(function (g, k) {
+      g.t.forEach(function (h) { G.pool.push({ id: id++, g: k, html: h, text: stripTags(h), on: false }); });
+    });
+    G.pool = shuffle(G.pool);
+    G.found = []; G.mine = 0; G.slips = 0; G.tried = {}; G.pts = 0; G.t0 = 0; G.tEnd = 0; G.locked = false; G.over = false;
+    label("Link Up", "Find the " + D.link.length + " groups");
+    var s = screen("st-linkup");
+    ui.lives = el("span", { class: "st-link-lives", role: "img" });
+    var h = el("h2", { class: "st-link-q", tabindex: "-1", text: "Find " + D.link.length + " groups of " + size });
+    s.appendChild(el("div", { class: "st-link-head" }, [h, el("span", { class: "st-link-slips" }, [el("small", { text: "Slips left" }), ui.lives])]));
+    ui.bands = el("div", { class: "st-bands" });
+    s.appendChild(ui.bands);
+    ui.linkGrid = el("div", { class: "st-link-grid", role: "group", "aria-label": "Tiles" });
+    ui.linkGrid.addEventListener("keydown", function (e) { gridKeys(e, ui.linkGrid, ".st-lt"); });
+    s.appendChild(ui.linkGrid);
+    ui.linkMsg = el("p", { class: "st-link-msg" });
+    s.appendChild(ui.linkMsg);
+    ui.linkGo = el("button", { class: "st-go", type: "button", disabled: true, html: ico("i-check") + " Submit" });
+    ui.linkGo.addEventListener("click", linkSubmit);
+    var mix = el("button", { class: "st-ghost", type: "button", html: ico("i-repeat") + " Shuffle" });
+    mix.addEventListener("click", function () {
+      if (!G || G.locked || G.done) return;
+      G.pool = shuffle(G.pool);
+      linkPaint(true);
+      say("The tiles have been shuffled.");
+    });
+    var clear = el("button", { class: "st-ghost", type: "button", text: "Clear" });
+    clear.addEventListener("click", function () {
+      if (!G || G.locked || G.done) return;
+      G.pool.forEach(function (t) { t.on = false; });
+      linkPaint(false);
+    });
+    ui.linkActions = el("div", { class: "st-actions" }, [mix, clear, ui.linkGo]);
+    s.appendChild(ui.linkActions);
+    linkPaint(true);
+    linkLives(false);
+    linkChips(false);
+    sfx("board");
+    say("The tiles are dealt: " + G.pool.length + " tiles. Pick " + size + " that belong together, then press Submit. Move with Tab or the arrow keys.");
+    focusFirst(h);
+  }
+
+  /* Draws the tiles still in play. The tile that had the focus keeps it. */
+  function linkPaint(deal) {
+    var at = document.activeElement && document.activeElement._tile ? document.activeElement._tile.id : -1;
+    ui.linkGrid.innerHTML = "";
+    ui.linkGrid.setAttribute("data-left", String(G.pool.length));
+    G.pool.forEach(function (t, i) {
+      var b = el("button", { class: "st-lt" + (t.on ? " is-on" : "") + (deal ? " is-deal" : ""), type: "button", style: "--i:" + i, "aria-pressed": String(t.on) }, [
+        el("span", { class: "st-lt-t", html: t.html }),
+        el("span", { class: "st-lt-m", "aria-hidden": "true", html: ico("i-check") })]);
+      b._tile = t;
+      t.el = b;
+      b.addEventListener("click", function () { linkTap(t); });
+      ui.linkGrid.appendChild(b);
+      if (t.id === at) b.focus();
+    });
+    linkCount();
+  }
+  function linkTap(t) {
+    if (!G || G.locked || G.done) return;
+    var size = linkSize();
+    if (!t.on && linkPicked().length >= size) { linkSay("You have " + size + " already. Press Submit, or tap a tile to drop it.", true); return; }
+    startWatch();
+    t.on = !t.on;
+    t.el.classList.toggle("is-on", t.on);
+    t.el.setAttribute("aria-pressed", String(t.on));
+    sfx("pop");
+    linkCount();
+  }
+  function linkShake(tiles) {
+    tiles.forEach(function (t) { t.el.classList.remove("is-no"); void t.el.offsetWidth; t.el.classList.add("is-no"); });
+  }
+  function linkSubmit() {
+    if (!G || G.locked || G.done) return;
+    var picked = linkPicked(), size = linkSize();
+    if (picked.length !== size) return;
+    startWatch();
+    var count = {}, best = 0;
+    picked.forEach(function (t) { count[t.g] = (count[t.g] || 0) + 1; best = Math.max(best, count[t.g]); });
+    if (best === size) { linkBank(picked[0].g, true); return; }
+    var key = picked.map(function (t) { return t.id; }).sort(function (a, b) { return a - b; }).join(",");
+    linkShake(picked);
+    if (G.tried[key]) { linkSay("You have already tried those " + size + ". Change at least one tile.", true); return; }
+    G.tried[key] = true;
+    G.slips += 1;
+    linkLives(true);
+    sfx("bad");
+    var left = LINK_SLIPS - G.slips;
+    if (left <= 0) { linkSay("Out of slips. Here are the groups.", true); linkOver(); return; }
+    linkSay((best === size - 1 ? "One away! " : "Not a group. ") + (left === 1 ? "1 slip left." : left + " slips left."), true);
+  }
+  function linkBand(g, order, cls) {
+    var grp = D.link[g];
+    return el("div", { class: "st-band st-band-" + (order % 4) + (cls ? " " + cls : "") }, [
+      el("b", { html: grp.n }), el("span", { html: grp.t.join(", ") })]);
+  }
+  /* A whole group leaves the grid and becomes a named band above it. `mine`
+     is false when the round is over and the group is only being shown. */
+  function linkBank(g, mine) {
+    G.locked = true;
+    var tiles = G.pool.filter(function (t) { return t.g === g; });
+    if (mine) { G.mine += 1; G.pts += 300; sfx("good"); }
+    tiles.forEach(function (t, k) { t.el.disabled = true; t.el.style.setProperty("--k", k); t.el.classList.add(mine ? "is-win" : "is-shown"); });
+    after(calm() ? 0 : 720, function () {
+      var order = G.found.length;
+      G.pool = G.pool.filter(function (t) { return t.g !== g; });
+      G.found.push(g);
+      ui.bands.appendChild(linkBand(g, order, mine ? "" : "is-missed"));
+      linkPaint(false);
+      linkChips(mine);
+      var name = stripTags(D.link[g].n), list = D.link[g].t.map(stripTags).join(", ");
+      var left = D.link.length - G.found.length;
+      if (!mine) {
+        say("A group you did not find: " + name + ": " + list + ".");
+        if (left > 0) after(calm() ? 200 : 700, function () { linkBank(G.pool[0].g, false); }); else linkEnd();
+        return;
+      }
+      if (left === 1) {
+        say("Group found: " + name + ": " + list + ". That leaves the last group.");
+        linkSay("That leaves the last group.", false);
+        after(calm() ? 200 : 900, function () { linkBank(G.pool[0].g, true); });
+      } else if (left === 0) {
+        say("Group found: " + name + ": " + list + ". Every group found.");
+        linkEnd();
+      } else {
+        G.locked = false;
+        say("Group found: " + name + ": " + list + ". " + plural(left, "group") + " to go.");
+        if (!stage.contains(document.activeElement) || document.activeElement === document.body) focusFirst(G.pool[0].el);
+      }
+    });
+  }
+  function linkStop() {
+    G.tEnd = performance.now();
+    clearInterval(G.tick); G.tick = 0;
+    if (ui.timeN) ui.timeN.textContent = mmss(watch());
+  }
+  function linkOver() {
+    G.locked = true; G.over = true;
+    linkStop();
+    ui.linkActions.hidden = true;
+    after(calm() ? 200 : 900, function () { linkBank(G.pool[0].g, false); });
+  }
+  function linkEnd() {
+    if (!G.tEnd) linkStop();
+    ui.linkActions.hidden = true;
+    ui.linkGrid.hidden = true;
+    linkSay(G.over ? "Out of slips: these are the groups." : "Every group found!", false);
+    after(calm() ? 500 : 1500, linkResults);
+  }
+  function linkResults() {
+    if (!G || G.done) return;
+    var n = D.link.length, done = !G.over, secs = Math.floor(watch() / 1000);
+    var found = done ? n : G.mine;
+    var keep = done ? 100 * (LINK_SLIPS - G.slips) : 0;
+    var bonus = done && opts.timer ? Math.max(0, 300 - 4 * secs) : 0;
+    var base = G.pts;
+    G.pts += keep + bonus;
+    var stars = done ? (G.slips <= 1 ? 3 : 2) : 1;
+    var medals = [];
+    if (done && G.slips === 0) medals.push(["sweep", "#16A34A", "No slips", "Every group at the first try"]);
+    if (done && opts.timer && secs <= 45) medals.push(["bolt", "#7C3AED", "Quick links", "Done in " + mmss(secs * 1000)]);
+    var rows = [[art("link"), "Groups found", found + " of " + n + ", with " + slips(G.slips), fmt(base)]];
+    if (done) rows.push([HEART, "Slips left", (LINK_SLIPS - G.slips) + " of " + LINK_SLIPS, "+" + fmt(keep)]);
+    if (done && opts.timer) rows.push([ico("i-timer"), "Time", mmss(secs * 1000) + (bonus ? ", with a time bonus" : ""), "+" + fmt(bonus)]);
+    taskResults({
+      stars: stars, pts: G.pts, pct: done ? 1 - G.slips / (2 * LINK_SLIPS) : 0.5 * G.mine / n,
+      title: stars === 3 ? "Link master" : stars === 2 ? "Well linked" : "Out of slips: play again to find every group",
+      mood: stars === 3 ? "proud" : stars === 2 ? "cheer" : "happy", wear: stars === 3 ? ["crown"] : null,
+      rows: rows, medals: medals,
+      extra: reviewList("The groups", D.link.map(function (g) { return '<span class="st-res-a">' + g.n + "</span> " + g.t.join(", "); })),
+      summary: found + " of " + n + " groups found, with " + slips(G.slips) + "."
+    });
+  }
+
+  /* ============================================================= BUG HUNT */
+  /* Each round shows three statements: two are true and one has a mistake in
+     it, the bug. The student catches the bug by choosing that statement. With
+     the timer on, a bug crawls toward the way out, and the round is lost if it
+     gets there first. */
+  var BUG_MS = 40000;
+  var BUG_RIGHT = ["Caught it!", "Bug squashed!", "Got it!", "Nice catch!"];
+  var BUG_WRONG = ["Not that one", "That one is true", "The bug got away"];
+  function bugDots() { return D.bugs.map(function (q, i) { return i < G.answers.length ? (G.answers[i] ? 1 : 0) : -1; }); }
+  function bugChips(up) {
+    ui.caughtN.textContent = G.right + " / " + D.bugs.length;
+    ui.caughtChip.setAttribute("aria-label", G.right + " of " + D.bugs.length + " bugs caught");
+    if (up) bump(ui.caughtChip);
+    ui.streak.hidden = G.streak < 2;
+    ui.streakN.textContent = String(G.streak);
+    ui.streak.classList.toggle("is-hot", G.streak >= 3);
+    ui.streak.setAttribute("aria-label", "Catching streak " + G.streak);
+  }
+  function bugSplash() {
+    var n = D.bugs.length;
+    label("Bug Hunt", plural(n, "round"));
+    ui.dots.innerHTML = "";
+    var s = screen("st-splash st-bug-splash");
+    s.appendChild(el("span", { class: "st-splash-tag", text: "Bug Hunt" }));
+    s.appendChild(el("div", { class: "st-splash-ico", "aria-hidden": "true", html: art("bug") }));
+    s.appendChild(el("h2", { tabindex: "-1", text: "Bug Hunt" }));
+    var sub = "A bug is a mistake. In each of the " + plural(n, "round") + ", two statements are true and one has a bug. Pick the one with the bug to catch it." +
+      (opts.timer ? " Be quick: the bug is crawling to the way out." : "");
+    s.appendChild(el("p", { text: sub }));
+    var go = el("button", { class: "st-go", type: "button", html: ico("i-play") + " Start the hunt" });
+    go.addEventListener("click", function () { bugRound(0); });
+    s.appendChild(go);
+    sfx("board");
+    say("Bug Hunt. " + sub);
+    focusFirst(go);
+  }
+  /* The round's clock is a bug crawling along a lane. In calm mode it stays
+     still and only the seconds count down. */
+  function bugClock(limit, onEnd) {
+    var t0 = performance.now(), raf = 0, stopped = false, lastWhole = -1, track = ui.bugTrack, secs = ui.bugSecs;
+    var api = {
+      elapsed: function () { return performance.now() - t0; },
+      stop: function () { stopped = true; cancelAnimationFrame(raf); }
+    };
+    if (!opts.timer) { secs.textContent = "No clock"; return api; }
+    (function frame(now) {
+      if (stopped) return;
+      var left = Math.max(0, limit - (now - t0));
+      if (!calm()) track.style.setProperty("--p", (1 - left / limit).toFixed(4));
+      var whole = Math.ceil(left / 1000);
+      if (whole !== lastWhole) {
+        lastWhole = whole;
+        secs.textContent = whole + "s";
+        track.classList.toggle("is-low", left <= 10000);
+        if (left <= 5000 && left > 0) sfx("tick");
+        if (whole === 10) say("10 seconds left");
+      }
+      if (left <= 0) { stopped = true; onEnd(); return; }
+      raf = requestAnimationFrame(frame);
+    })(t0);
+    return api;
+  }
+  function bugRound(i) {
+    if (!G) return;
+    G.qi = i; G.locked = false;
+    var q = D.bugs[i];
+    label("Bug Hunt", "Round " + (i + 1) + " of " + D.bugs.length);
+    paintDots(bugDots(), i);
+    bugChips(false);
+    var s = screen("st-bug");
+    G.cat = pixel("think");
+    var h = el("h2", { class: "st-bug-q", tabindex: "-1", text: "Two are true. Which one has the bug?" });
+    s.appendChild(el("div", { class: "st-bug-head" }, [
+      G.cat ? el("div", { class: "st-bug-host", "aria-hidden": "true" }, [G.cat]) : null,
+      el("div", { class: "st-bug-ask" }, [el("p", { class: "st-bug-round", text: "Round " + (i + 1) + " of " + D.bugs.length }), h])]));
+    ui.bugSecs = el("span", { class: "st-bug-secs" });
+    ui.bugTrack = el("div", { class: "st-bug-track" + (opts.timer ? "" : " is-off"), role: "timer",
+                              "aria-label": opts.timer ? (BUG_MS / 1000) + " seconds to catch the bug" : "No clock" }, [
+      el("span", { class: "st-bug-lane", "aria-hidden": "true" }, [
+        el("span", { class: "st-bug-crawler", html: art("bug") }), el("span", { class: "st-bug-exit" })]),
+      ui.bugSecs]);
+    s.appendChild(ui.bugTrack);
+    var three = shuffle(q.t.map(function (t) { return { h: t, bug: false }; }).concat([{ h: q.b, bug: true }]));
+    var list = el("div", { class: "st-bug-list" });
+    var cards = [];
+    three.forEach(function (o, k) {
+      var b = el("button", { class: "st-bug-card", type: "button", style: "--i:" + k, "aria-label": "Statement " + (k + 1) + ": " + stripTags(o.h) }, [
+        el("span", { class: "st-bug-k", "aria-hidden": "true", text: String(k + 1) }),
+        el("span", { class: "st-bug-t", html: o.h }),
+        el("span", { class: "st-bug-tag", "aria-hidden": "true" }),
+        el("span", { class: "st-mark", "aria-hidden": "true" })]);
+      b._bug = o.bug;
+      b._text = stripTags(o.h);
+      b.addEventListener("click", function () { bugAnswer(b); });
+      cards.push(b);
+      list.appendChild(b);
+    });
+    ui.tiles = cards;
+    s.appendChild(list);
+    ui.fb = el("div", { class: "st-fbslot" });
+    s.appendChild(ui.fb);
+    say("Round " + (i + 1) + " of " + D.bugs.length + ". Three statements: two are true and one has a bug. Choose the one with the bug, or press 1, 2 or 3.");
+    focusFirst(h);
+    T = bugClock(BUG_MS, function () { bugAnswer(null); });
+  }
+  function bugAnswer(btn) {
+    if (!G || G.locked || G.done) return;
+    G.locked = true;
+    var q = D.bugs[G.qi], late = !btn, ok = !!btn && btn._bug;
+    var ms = T ? T.elapsed() : 0;
+    stopClock();
+    ui.tiles.forEach(function (t, k) {
+      t.disabled = true;
+      var tag = t.querySelector(".st-bug-tag");
+      if (t._bug) {
+        t.classList.add("is-bug");
+        tag.textContent = "Bug";
+        if (ok) markTile(t, true);
+      } else {
+        t.classList.add("is-true");
+        tag.textContent = "True";
+        if (t === btn) markTile(t, false);
+      }
+      t.setAttribute("aria-label", "Statement " + (k + 1) + ": " + t._text + " " + (t._bug ? "This one has the bug." : "True."));
+    });
+    G.answers.push(ok);
+    var gain = 0;
+    if (ok) {
+      G.right += 1; G.streak += 1;
+      G.bestStreak = Math.max(G.bestStreak, G.streak);
+      gain = 100 + 25 * Math.min(G.streak - 1, 5) + (opts.timer ? Math.round(50 * Math.max(0, 1 - ms / BUG_MS)) : 0);
+      G.pts += gain;
+    } else G.streak = 0;
+    ui.bugTrack.classList.add(ok ? "is-caught" : "is-escaped");
+    setMood(G.cat, ok ? (G.streak >= 3 ? "cheer" : "happy") : "oops");
+    paintDots(bugDots(), -1);
+    bugChips(ok);
+    sfx(ok ? "good" : "bad");
+    var last = G.qi === D.bugs.length - 1;
+    var head = ok ? pick(BUG_RIGHT) : late ? "Too slow: it got away!" : pick(BUG_WRONG);
+    roundPanel(ok, head, gain, ok && G.streak >= 3 ? G.streak + " bugs in a row!" : "",
+      (ok ? "" : '<span class="st-fb-ans"><b>The bug:</b> ' + q.b + "</span>") + "<b>The fix:</b> " + q.x,
+      last ? "See my result" : "Next round",
+      function () { if (last) bugResults(); else bugRound(G.qi + 1); });
+    say((ok ? "Caught it! " : late ? "Time is up. The bug was: " + stripTags(q.b) + " " : "Not that one: it is true. The bug was: " + stripTags(q.b) + " ") +
+        "The fix: " + stripTags(q.x));
+  }
+  function bugResults() {
+    var n = D.bugs.length, pct = G.right / n;
+    var stars = G.right === n ? 3 : pct >= 0.75 ? 2 : 1;
+    var medals = [];
+    if (G.right === n) medals.push(["sweep", "#16A34A", "Bug free", "Every bug caught"]);
+    if (G.bestStreak >= 4) medals.push(["fire", "#EA580C", "Hot streak", plural(G.bestStreak, "bug") + " in a row"]);
+    var missed = [];
+    D.bugs.forEach(function (q, i) { if (!G.answers[i]) missed.push(q.b + ' <span class="st-res-ans">' + q.x + "</span>"); });
+    taskResults({
+      stars: stars, pts: G.pts, pct: pct,
+      title: stars === 3 ? "Bug free: every bug caught" : stars === 2 ? "Sharp eyes" : "A good start: play again to catch them all",
+      mood: stars === 3 ? "proud" : stars === 2 ? "cheer" : "happy", wear: stars === 3 ? ["crown"] : null,
+      rows: [[art("bug"), "Bugs caught", G.right + " of " + n, fmt(G.pts)],
+             [FLAME, "Best streak", plural(G.bestStreak, "bug") + " in a row", ""]],
+      medals: medals,
+      extra: missed.length ? reviewList("The bugs that got away", missed) : null,
+      summary: G.right + " of " + n + " bugs caught."
     });
   }
 

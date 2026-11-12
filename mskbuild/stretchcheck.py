@@ -22,6 +22,14 @@ right and one different wrong answer that fit Pixel's speech bubble and the
 buttons, and across a lesson the right answer is not usually the longer one,
 so length never gives it away. Memory Match has six pairs whose cards fit a
 phone, no two cards alike, and no word that appears in its own meaning.
+
+Key Stage 3 lessons have three more games. Code Word has three words, each a
+term the lesson itself uses, with a clue that never contains it. Link Up has
+three groups of four tiles, no tile repeated and none that carries a word of
+its own group's name. Bug Hunt has five rounds of two true statements and one
+with a mistake; the mistake is not usually the longest or the shortest of the
+three, so length never gives it away. `word_marks()` is Code Word's letter
+marking in Python, kept in step with wordMarks in static/js/stretch.js.
 """
 import html
 import re
@@ -146,6 +154,21 @@ SORT_BINS = (2, 4)     # boxes in Sort It
 SORT_BIN_MAX = 26      # characters on a box's label
 SORT_ITEMS = (8, 12)   # cards in Sort It
 SORT_CARD_MAX = 100    # characters on a Sort It card
+WORDS = 3              # words in Code Word
+WORD_LEN = (4, 9)      # letters in a Code Word word, so its tiles fit across a phone
+CLUE_MAX = 110         # characters in a Code Word clue
+GROUPS = 3             # hidden groups in Link Up
+GROUP_TILES = 4        # tiles in each group
+GROUP_NAME_MAX = 40    # characters in a group's name
+TILE_MAX = 26          # characters on a Link Up tile
+TILE_WORD_MAX = 13     # letters in one word on a tile, which cannot wrap
+BUGS = 5               # rounds of Bug Hunt
+BUG_TRUTHS = 2         # true statements beside each bug
+BUG_MAX = 110          # characters in a Bug Hunt statement
+FIX_MAX = 200          # characters in a Bug Hunt fix
+BUG_EXTREME_MAX = 3    # rounds in which the bug may be the longest, or the shortest, statement
+# No hyphen or dash of any kind appears in the three games' text.
+_DASH = re.compile("[-\u2010-\u2015\u2212]")
 
 
 class StretchError(Exception):
@@ -343,6 +366,173 @@ def _sort_problems(where, sort):
     return out
 
 
+def word_marks(guess, answer):
+    """Code Word's marking of one guess, a mark for each letter: 2 for the
+    right letter in the right place, 1 for a letter that is in the word but
+    somewhere else, 0 for one that is not. A letter is only marked as many
+    times as the word has it: guess LLAMA against ALLOW and the second L is
+    in place, the first L is elsewhere, and only the first A is marked."""
+    guess, answer = str(guess).upper(), str(answer).upper()
+    marks = [0] * len(guess)
+    spare = {}
+    for i, a in enumerate(answer):
+        if i < len(guess) and guess[i] == a:
+            marks[i] = 2
+        else:
+            spare[a] = spare.get(a, 0) + 1
+    for i, g in enumerate(guess):
+        if marks[i] == 0 and spare.get(g, 0) > 0:
+            marks[i] = 1
+            spare[g] -= 1
+    return marks
+
+
+def _forms(word):
+    """The spellings that count as a word being used: itself, its plural and its singular."""
+    w = word.lower()
+    out = {w, w + "s", w + "es"}
+    if w.endswith("s"):
+        out.add(w[:-1])
+    return out
+
+
+def _sentence_problems(where, what, text, limit):
+    """A sentence a game shows: within its length, tidy, and ending in a full stop."""
+    out = []
+    t = _plain(text)
+    if not t:
+        return ["%s: %s is empty" % (where, what)]
+    if len(t) > limit:
+        out.append("%s: %s is %d characters, at most %d: %s" % (where, what, len(t), limit, t))
+    if text != text.strip() or "  " in text:
+        out.append("%s: %s has stray spaces: %r" % (where, what, text))
+    if not t.endswith(".") or t.endswith(".."):
+        out.append("%s: %s must end with one full stop: %s" % (where, what, t))
+    if not (t[0].isupper() or t[0].isdigit()):
+        out.append("%s: %s must start with a capital letter or a number: %s" % (where, what, t))
+    if _DASH.search(text):
+        out.append("%s: %s has a hyphen or dash in it: %s" % (where, what, t))
+    return out
+
+
+def _stemmed(word):
+    w = word.lower()
+    return w[:-1] if len(w) > 4 and w.endswith("s") else w
+
+
+def _games_problems(where, st, lesson_words):
+    """Code Word, Link Up and Bug Hunt for one lesson. `lesson_words` is every
+    word the lesson and its other tasks use, or None to skip that check."""
+    out = []
+    if not (st.words and st.groups and st.bugs):
+        return ["%s: Code Word, Link Up and Bug Hunt come together, and one of them is missing" % where]
+
+    # ----- Code Word
+    cw = "%s Code Word" % where
+    if len(st.words) != WORDS:
+        out.append("%s: %d words, expected %d" % (cw, len(st.words), WORDS))
+    seen = set()
+    for w in st.words:
+        word = w.word
+        if not re.match(r"^[A-Z]+$", word) or not WORD_LEN[0] <= len(word) <= WORD_LEN[1]:
+            out.append("%s: %r must be %d to %d capital letters" % (cw, word, WORD_LEN[0], WORD_LEN[1]))
+            continue
+        if word in seen:
+            out.append("%s: %s appears twice" % (cw, word))
+        seen.add(word)
+        out += _sentence_problems(cw, "the clue for %s" % word, w.clue, CLUE_MAX)
+        if word.lower() in _plain(w.clue).lower():
+            out.append("%s: the clue for %s contains the word itself: %s" % (cw, word, w.clue))
+        if lesson_words is not None and not (_forms(word) & lesson_words):
+            out.append("%s: %s is not a word this lesson or its other tasks use" % (cw, word))
+
+    # ----- Link Up
+    lu = "%s Link Up" % where
+    if len(st.groups) != GROUPS:
+        out.append("%s: %d groups, expected %d" % (lu, len(st.groups), GROUPS))
+    names = [_plain(g.name) for g in st.groups]
+    if len(set(n.lower() for n in names)) != len(names):
+        out.append("%s: two groups have the same name" % lu)
+    tiles = []
+    for g in st.groups:
+        name = _plain(g.name)
+        if not name or len(name) > GROUP_NAME_MAX:
+            out.append("%s: a group's name is empty or longer than %d characters: %s" % (lu, GROUP_NAME_MAX, name))
+        if g.name != g.name.strip() or "  " in g.name or name.endswith(".") or _DASH.search(g.name):
+            out.append("%s: a group's name has stray spaces, a full stop or a dash: %r" % (lu, g.name))
+        if len(g.tiles) != GROUP_TILES:
+            out.append("%s: the group %r has %d tiles, expected %d" % (lu, name, len(g.tiles), GROUP_TILES))
+        name_words = {_stemmed(x) for x in re.findall(r"[A-Za-z]{4,}", name)}
+        for t in g.tiles:
+            tile = _plain(t)
+            tiles.append(tile.lower())
+            if not tile or len(tile) > TILE_MAX:
+                out.append("%s: a tile is empty or longer than %d characters: %s" % (lu, TILE_MAX, tile))
+            if t != t.strip() or "  " in t or tile.endswith(".") or _DASH.search(t):
+                out.append("%s: a tile has stray spaces, a full stop or a dash: %r" % (lu, t))
+            if any(len(x) > TILE_WORD_MAX for x in tile.split()):
+                out.append("%s: a tile has a word longer than %d letters, which cannot wrap: %s" % (lu, TILE_WORD_MAX, tile))
+            shared = name_words & {_stemmed(x) for x in re.findall(r"[A-Za-z]{4,}", tile)}
+            if shared:
+                out.append("%s: the tile %r gives away its group %r by sharing the word %s"
+                           % (lu, tile, name, ", ".join(sorted(shared))))
+    if len(set(tiles)) != len(tiles):
+        dup = sorted(t for t in set(tiles) if tiles.count(t) > 1)
+        out.append("%s: a tile appears twice: %s" % (lu, ", ".join(dup)))
+    if set(tiles) & {n.lower() for n in names}:
+        out.append("%s: a tile is the same as a group's name" % lu)
+
+    # ----- Bug Hunt
+    bh = "%s Bug Hunt" % where
+    if len(st.bugs) != BUGS:
+        out.append("%s: %d rounds, expected %d" % (bh, len(st.bugs), BUGS))
+    said = []
+    longest = shortest = 0
+    asked = {_plain(b.q).lower() for b in st.blitz if b.kind == "tf"}
+    for n, b in enumerate(st.bugs, 1):
+        r = "%s round %d" % (bh, n)
+        if len(b.truths) != BUG_TRUTHS:
+            out.append("%s: %d true statements, expected %d" % (r, len(b.truths), BUG_TRUTHS))
+        for t in b.truths:
+            out += _sentence_problems(r, "a true statement", t, BUG_MAX)
+        out += _sentence_problems(r, "the bug", b.bug, BUG_MAX)
+        out += _sentence_problems(r, "the fix", b.fix, FIX_MAX)
+        three = [_plain(t) for t in b.truths] + [_plain(b.bug)]
+        for t in three:
+            if _POINTING.search(t) or re.search(r"\b(above|below|other (two|statements?))\b", t, re.I):
+                out.append("%s: a statement points at the others, which shuffling breaks: %s" % (r, t))
+            if t.lower() in asked:
+                out.append("%s: a statement is also a true or false question in the quiz: %s" % (r, t))
+        said += [t.lower() for t in three]
+        lengths = [len(t) for t in three]
+        if lengths[-1] == max(lengths) and lengths.count(lengths[-1]) == 1:
+            longest += 1
+        if lengths[-1] == min(lengths) and lengths.count(lengths[-1]) == 1:
+            shortest += 1
+    if len(set(said)) != len(said):
+        out.append("%s: a statement appears twice" % bh)
+    if longest > BUG_EXTREME_MAX:
+        out.append("%s: the bug is the longest statement in %d rounds, at most %d" % (bh, longest, BUG_EXTREME_MAX))
+    if shortest > BUG_EXTREME_MAX:
+        out.append("%s: the bug is the shortest statement in %d rounds, at most %d" % (bh, shortest, BUG_EXTREME_MAX))
+    return out
+
+
+def lesson_words(section, st):
+    """Every word a Key Stage 3 lesson uses: its section of the topic page and
+    the questions, answers and cards of its other stretch tasks."""
+    parts = [section.title, section.body]
+    for b in st.blitz:
+        parts += [b.q, b.explain] + list(b.options) + list(b.accept)
+    for w in st.short + st.long:
+        parts += [w.q, w.model]
+    for p in st.picks:
+        parts += [p.q, p.right, p.wrong, p.why]
+    for p in st.pairs:
+        parts += [p.a, p.b]
+    return set(re.findall(r"[a-z]+", " ".join(parts).lower()))
+
+
 def validate(units, topics):
     """Key Stage 3. units: [(topic slug, [Stretch])]; topics: {slug: Topic}. Raises StretchError."""
     problems = []
@@ -357,6 +547,9 @@ def validate(units, topics):
             if st.lesson not in titles:
                 problems.append("%s: no section of %s is called that" % (where, slug))
             problems += lesson_problems(where, st)
+            if st.words or st.groups or st.bugs:
+                used = lesson_words(topic.sections[titles.index(st.lesson)], st) if st.lesson in titles else None
+                problems += _games_problems(where, st, used)
         order = [titles.index(s.lesson) for s in lessons if s.lesson in titles]
         if order != sorted(order):
             problems.append("%s: lessons are not in the order the topic teaches them" % slug)
@@ -380,5 +573,7 @@ def validate_ks4(lessons, topics):
         if st.sort is None:
             problems.append("%s: a Key Stage 4 lesson needs a Sort It task" % where)
         problems += lesson_problems(where, st)
+        if st.words or st.groups or st.bugs:
+            problems += _games_problems(where, st, None)
     if problems:
         raise StretchError("Stretch tasks failed their checks:\n  " + "\n  ".join(problems))

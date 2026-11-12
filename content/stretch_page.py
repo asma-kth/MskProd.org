@@ -7,8 +7,12 @@ answers, and long written answers marked against a mark scheme. In This or
 That, Pixel the cat asks questions with two answers to choose from. Memory
 Match is a card game: find each word's meaning. Key Stage 4 lessons add Sort
 It: drag each statement into the right box, like the tick-box tables on GCSE
-papers. The games themselves are static/js/stretch.js; this module writes the
-pages, a hub for each key stage, and the links from the lessons to them.
+papers. Key Stage 3 lessons add three games: Code Word, where each guess at a
+secret word shows which letters are right; Link Up, where twelve tiles hide
+three groups of four; and Bug Hunt, where two statements are true and one has
+a mistake to catch. The games themselves are static/js/stretch.js; this module
+writes the pages, a hub for each key stage, and the links from the lessons to
+them.
 
 Every page also carries the whole task as plain HTML: it is what a browser
 without JavaScript shows, and what prints when a teacher wants it on paper.
@@ -26,8 +30,10 @@ from content import ks4_stretch
 
 HUB = "/ks3/stretch/"
 HUB_TITLE = "Stretch tasks"
-HUB_LEAD = ("Three tasks for every Year 7, 8 and 9 lesson: a quiz challenge, This or That with "
-            "Pixel the cat, and Memory Match.")
+HUB_LEAD3 = ("Three tasks for every Year 7, 8 and 9 lesson: a quiz challenge, This or That with "
+             "Pixel the cat, and Memory Match.")
+HUB_LEAD = ("Six tasks for every Year 7, 8 and 9 lesson: a quiz challenge, This or That with Pixel the cat, "
+            "Memory Match, Code Word, Link Up and Bug Hunt.")
 
 HUB4 = "/ks4/stretch/"
 HUB4_TITLE = "Key Stage 4 stretch tasks"
@@ -36,8 +42,11 @@ ROUNDS = [("Quiz Blitz", "blitz"), ("Quick Fire", "short"), ("Big Think", "long"
 
 # The tasks on a lesson's page, in the order they are offered. The key is also
 # what the game and the saved results call each one. Sort It is the fourth
-# task, at Key Stage 4 only.
-TASKS = [("quiz", "Quiz Challenge"), ("cat", "This or That"), ("match", "Memory Match"), ("sort", "Sort It")]
+# task at Key Stage 4; Code Word, Link Up and Bug Hunt are the fourth, fifth
+# and sixth at Key Stage 3.
+TASKS = [("quiz", "Quiz Challenge"), ("cat", "This or That"), ("match", "Memory Match"), ("sort", "Sort It"),
+         ("word", "Code Word"), ("link", "Link Up"), ("bug", "Bug Hunt")]
+GAMES = ("word", "link", "bug")
 
 # The module that defines each Key Stage 4 course.
 KS4_SOURCES = {"ks4/computer-science": "ks4_cs", "ks4/aqa-computer-science": "aqa_gcse",
@@ -45,7 +54,15 @@ KS4_SOURCES = {"ks4/computer-science": "ks4_cs", "ks4/aqa-computer-science": "aq
 
 
 def _tasks(st):
-    return TASKS if st.sort else TASKS[:3]
+    """The tasks one lesson has, in the order its page offers them."""
+    has = {"sort": bool(st.sort), "word": bool(st.words), "link": bool(st.groups), "bug": bool(st.bugs)}
+    return [t for t in TASKS if has.get(t[0], True)]
+
+
+def _tasks_of(recs):
+    """The tasks any of these lessons has: what a hub's cards make room for."""
+    keys = {k for r in recs for k, _ in _tasks(r["stretch"])}
+    return [t for t in TASKS if t[0] in keys]
 
 
 def _ks4_course(slug):
@@ -65,6 +82,20 @@ SHAPES = {
 
 # The drifting shapes behind the lobby and the game.
 BG = "".join('<i class="st-s-%s"></i>' % k for k in ("tri", "cir", "sq", "dia", "cir", "tri", "dia", "sq"))
+
+
+# The bug of Bug Hunt, drawn in a 50 by 50 box: a green beetle seen from above.
+BUG_ART = ('<path d="M14 20 6.5 15.5M12.5 28H4.5M14.5 36l-7 5.5M36 20l7.5-4.5M37.5 28h8M35.5 36l7 5.5" fill="none" '
+           'stroke="#1E293B" stroke-width="2.6" stroke-linecap="round"/>'
+           '<path d="M21 9.5C20 6 18 4.5 15.5 4M29 9.5C30 6 32 4.5 34.5 4" fill="none" stroke="#1E293B" stroke-width="2.2" '
+           'stroke-linecap="round"/>'
+           '<circle cx="25" cy="13.5" r="7" fill="#1E293B"/>'
+           '<circle cx="22" cy="12" r="1.9" fill="#fff"/><circle cx="28" cy="12" r="1.9" fill="#fff"/>'
+           '<ellipse cx="25" cy="30" rx="13" ry="15.5" fill="#84CC16" stroke="#1E293B" stroke-width="2.4"/>'
+           '<path d="M25 15v30" stroke="#1E293B" stroke-width="2.2"/>'
+           '<circle cx="19" cy="25" r="2.6" fill="#1E293B"/><circle cx="31" cy="25" r="2.6" fill="#1E293B"/>'
+           '<circle cx="18.5" cy="35" r="2.2" fill="#1E293B"/><circle cx="31.5" cy="35" r="2.2" fill="#1E293B"/>'
+           '<path d="M17.5 19.5c1.5-2 3.5-3 6-3.2" fill="none" stroke="#ECFCCB" stroke-width="2" stroke-linecap="round"/>')
 
 
 def _round_icon(kind):
@@ -94,12 +125,36 @@ def _round_icon(kind):
 
 def _task_icon(task):
     """The drawn picture on each task's card: the quiz's four shapes, Pixel's
-    head for This or That, and two playing cards for Memory Match."""
+    head for This or That, two playing cards for Memory Match, two boxes for
+    Sort It, a board of letter tiles for Code Word, four joined tiles for Link
+    Up and a beetle for Bug Hunt."""
     if task == "quiz":
         return _round_icon("blitz")
     if task == "cat":
         head = cat.flat(head_only=True, cls="st-cat-head")
         return head.replace(' role="img" aria-label="Pixel the robot cat"', ' aria-hidden="true" focusable="false"')
+    if task == "word":
+        # A board of letter tiles: two guesses closing in, then the word found.
+        rows = [("#64748B", "#F59E0B", "#64748B"), ("#F59E0B", "#16A34A", "#64748B"), ("#16A34A", "#16A34A", "#16A34A")]
+        tiles = "".join('<rect x="%d" y="%d" width="13" height="13" rx="3.2" fill="%s" stroke="#1E293B" stroke-width="1.8"/>'
+                        % (3.5 + 15 * c, 3.5 + 15 * r, colour) for r, row in enumerate(rows) for c, colour in enumerate(row))
+        return ('<svg viewBox="0 0 50 50" aria-hidden="true" focusable="false">%s'
+                '<path d="M7.2 40.2l2.3 2.3 4-4.4M22.2 40.2l2.3 2.3 4-4.4M37.2 40.2l2.3 2.3 4-4.4" fill="none" stroke="#fff" '
+                'stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' % tiles)
+    if task == "link":
+        # Four tiles that belong together, joined by a ring, with a tick where they meet.
+        return ('<svg viewBox="0 0 50 50" aria-hidden="true" focusable="false">'
+                '<path d="M14 14h22v22H14Z" fill="none" stroke="#F59E0B" stroke-width="4" stroke-linejoin="round"/>'
+                '<rect x="5" y="5" width="18" height="18" rx="4.5" fill="#DC2626" stroke="#1E293B" stroke-width="2.2"/>'
+                '<rect x="27" y="5" width="18" height="18" rx="4.5" fill="#DC2626" stroke="#1E293B" stroke-width="2.2"/>'
+                '<rect x="5" y="27" width="18" height="18" rx="4.5" fill="#DC2626" stroke="#1E293B" stroke-width="2.2"/>'
+                '<rect x="27" y="27" width="18" height="18" rx="4.5" fill="#DC2626" stroke="#1E293B" stroke-width="2.2"/>'
+                '<path d="M10 14h8M32 14h8M10 36h8M32 36h8" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>'
+                '<circle cx="25" cy="25" r="6.5" fill="#FDE047" stroke="#1E293B" stroke-width="2.2"/>'
+                '<path d="M22 25.2l2.2 2.2 3.9-4.2" fill="none" stroke="#1E293B" stroke-width="2.2" stroke-linecap="round" '
+                'stroke-linejoin="round"/></svg>')
+    if task == "bug":
+        return ('<svg viewBox="0 0 50 50" aria-hidden="true" focusable="false">%s</svg>' % BUG_ART)
     if task == "sort":
         return ('<svg viewBox="0 0 50 50" aria-hidden="true" focusable="false">'
                 '<path d="M2.5 30h19.5l-2.3 16.5H4.8Z" fill="#F97316" stroke="#1E293B" stroke-width="2.2" stroke-linejoin="round"/>'
@@ -145,8 +200,10 @@ def ks3_records():
                           (topic.title, "%s#%s" % (HUB, slug)), ("Lesson %d" % n, None)],
                 "hub": HUB, "active": "/ks3/", "level": "Key Stage 3, %s" % unit.title,
                 "course_name": ks3.COURSE.title, "course_url": "/ks3/",
-                "desc": "%s, %s lesson %d: a quiz challenge, This or That with Pixel the cat, and Memory Match, "
-                        "to stretch Key Stage 3 students." % (st.lesson, topic.title, n),
+                "desc": ("%s, %s lesson %d: a quiz challenge, This or That with Pixel the cat, Memory Match, Code Word, "
+                         "Link Up and Bug Hunt, to stretch Key Stage 3 students." if st.words else
+                         "%s, %s lesson %d: a quiz challenge, This or That with Pixel the cat, and Memory Match, "
+                         "to stretch Key Stage 3 students.") % (st.lesson, topic.title, n),
             })
     return out
 
@@ -219,6 +276,9 @@ def check():
             for s in t.sections:
                 if (t.slug, s.title) not in have and (t.slug, s.title) not in ks3_stretch.NOT_LESSONS:
                     missing.append("%s: %s" % (t.slug, s.title))
+    if ks3_stretch.GAMES_COMPLETE:
+        missing += ["%s: %s has no Code Word, Link Up and Bug Hunt" % (slug, st.lesson)
+                    for slug, lessons in units for st in lessons if not st.words]
     lessons4, topics4 = [], {}
     for key, slug, name, lessons in ks4_stretch.courses():
         course = _ks4_course(slug)
@@ -301,6 +361,13 @@ def payload(r, nxt):
     if st.sort:
         d["sort"] = {"p": markup.inline(st.sort.prompt), "b": [markup.inline(b) for b in st.sort.bins],
                      "i": [{"t": markup.inline(i.text), "b": i.bin, "x": markup.inline(i.why)} for i in st.sort.items]}
+    if st.words:
+        d["words"] = [{"w": w.word, "c": markup.inline(w.clue)} for w in st.words]
+    if st.groups:
+        d["link"] = [{"n": markup.inline(g.name), "t": [markup.inline(t) for t in g.tiles]} for g in st.groups]
+    if st.bugs:
+        d["bugs"] = [{"t": [markup.inline(t) for t in b.truths], "b": markup.inline(b.bug), "x": markup.inline(b.fix)}
+                     for b in st.bugs]
     return d
 
 
@@ -377,6 +444,9 @@ def _sheet(r):
                         for k, p in enumerate(st.pairs))
     word, meaning = (_in_sentence(n) for n in st.pair_names)
     sort_q, sort_k = _sheet_sort(st.sort) if st.sort else ("", "")
+    if st.words:
+        games_q, games_k = _sheet_games(st)
+        sort_q, sort_k = sort_q + games_q, sort_k + games_k
     return """<section class="st-sheet" id="st-sheet" aria-labelledby="st-sheet-title">
   <h2 id="st-sheet-title">%s: the questions</h2>
   <h3>Quiz Challenge, round 1: Quiz Blitz</h3><ol class="st-sheet-list">%s</ol>
@@ -412,6 +482,46 @@ def _sheet_sort(so):
     key = ('<h3>Sort It</h3><ol class="st-sheet-list">%s</ol>'
            % "".join("<li><b>%s</b> %s %s</li>" % (markup.inline(so.bins[so.items[i].bin]), markup.inline(so.items[i].text),
                                                   markup.inline(so.items[i].why)) for i in order))
+    return q, key
+
+
+def _sheet_games(st):
+    """Code Word, Link Up and Bug Hunt on paper: a clue and a box for each
+    letter, twelve tiles to copy into three groups, and a box to tick beside
+    the statement that is wrong."""
+    words = "".join('<li class="st-sheet-q"><p>%s <span class="st-sheet-marks">(%d letters)</span></p>'
+                    '<p class="st-letters" aria-hidden="true">%s</p></li>'
+                    % (markup.inline(w.clue), len(w.word), "<span></span>" * len(w.word)) for w in st.words)
+    word_key = "".join("<li><b>%s</b> %s</li>" % (esc(w.word), markup.inline(w.clue)) for w in st.words)
+
+    tiles = sorted((t for g in st.groups for t in g.tiles), key=_seed)
+    n, each = len(st.groups), len(st.groups[0].tiles)
+    rows = "".join('<tr><th scope="row">Group %d</th><td></td><td></td></tr>' % (k + 1) for k in range(n))
+    link = ('<p class="st-sheet-hint">These %d tiles make %d groups of %d. Write each group in the table, and what '
+            'links its tiles.</p><ul class="st-sheet-tiles">%s</ul>'
+            '<table class="st-sheet-link"><thead><tr><th scope="col">Group</th><th scope="col">The %d tiles</th>'
+            '<th scope="col">What links them</th></tr></thead><tbody>%s</tbody></table>'
+            % (len(tiles), n, each, "".join("<li>%s</li>" % markup.inline(t) for t in tiles), each, rows))
+    link_key = "".join("<li><b>%s</b> %s</li>" % (markup.inline(g.name), "; ".join(markup.inline(t) for t in g.tiles))
+                       for g in st.groups)
+
+    bugs, bug_key = [], []
+    for b in st.bugs:
+        three = sorted(list(b.truths) + [b.bug], key=_seed)
+        bugs.append('<li class="st-sheet-q"><ul class="st-sheet-opts">%s</ul></li>'
+                    % "".join('<li><span class="st-box"></span>%s</li>' % markup.inline(t) for t in three))
+        bug_key.append("<li><b>%s</b> %s</li>" % (markup.inline(b.bug), markup.inline(b.fix)))
+
+    q = ('<h3>Code Word: write the word that fits each clue</h3><ol class="st-sheet-list">%s</ol>'
+         '<h3>Link Up: find the three groups</h3>%s'
+         '<h3>Bug Hunt: tick the statement that is wrong</h3>'
+         '<p class="st-sheet-hint">In each set, two statements are true and one has a mistake in it.</p>'
+         '<ol class="st-sheet-list">%s</ol>'
+         % (words, link, "".join(bugs)))
+    key = ('<h3>Code Word</h3><ol class="st-sheet-list">%s</ol>'
+           '<h3>Link Up</h3><ul class="st-sheet-list st-sheet-pairs">%s</ul>'
+           '<h3>Bug Hunt: the wrong statement, and why</h3><ol class="st-sheet-list">%s</ol>'
+           % (word_key, link_key, "".join(bug_key)))
     return q, key
 
 
@@ -457,6 +567,13 @@ def _lobby(r):
                   "%d pairs, about 4 minutes" % len(st.pairs)),
         "sort": ("Sort each statement into the right box, like the tick-box tables in the exam.",
                  "%d cards, about 4 minutes" % n_sort),
+        "word": ("Guess the lesson's secret words. Every guess shows which letters are right.",
+                 "%d words, about 4 minutes" % len(st.words)),
+        "link": ("%d tiles hide %d groups of %d. Work out what links them."
+                 % (sum(len(g.tiles) for g in st.groups), len(st.groups), len(st.groups[0].tiles) if st.groups else 0),
+                 "%d groups, about 3 minutes" % len(st.groups)),
+        "bug": ("Two statements are true and one has a bug. Catch the bug before it gets away.",
+                "%d rounds, about 4 minutes" % len(st.bugs)),
     }
     points = {
         "cat": ["Two answers to every question", "A fish treat for every right answer",
@@ -465,6 +582,12 @@ def _lobby(r):
                   "Combo points for pairs found in a row"],
         "sort": ["%d cards to sort into %d boxes" % (n_sort, len(st.sort.bins) if st.sort else 0),
                  "Drag a card, tap a box or press its number", "Combo points for cards sorted in a row"],
+        "word": ["A clue for every word", "Tiles turn green, amber or grey after each guess",
+                 "Fewer guesses win more points"],
+        "link": ["Pick four tiles that belong together", "Four slips and the round is over",
+                 "Fewer slips win more points"],
+        "bug": ["Three statements in every round", "Tap the one with the mistake",
+                "Streaks win bonus points"],
     }
     tasks = _tasks(st)
     cards = []
@@ -561,7 +684,18 @@ GLYPHS = ('<svg class="st-glyphs" width="0" height="0" aria-hidden="true" focusa
           'stroke-width="1.6" stroke-linecap="round" transform="rotate(8 16.5 11)"/></symbol>'
           '<symbol id="st-g-sort" viewBox="0 0 24 24"><path d="M1.5 14h9l-1 8.5h-7Z" fill="#F97316"/>'
           '<path d="M13.5 14h9l-1 8.5h-7Z" fill="#1F5FD1"/><rect x="7" y="2" width="10" height="8" rx="1.8" fill="#fff" '
-          'stroke="#1E293B" stroke-width="1.5" transform="rotate(-10 12 6)"/></symbol></svg>')
+          'stroke="#1E293B" stroke-width="1.5" transform="rotate(-10 12 6)"/></symbol>'
+          '<symbol id="st-g-word" viewBox="0 0 24 24"><rect x="1.5" y="8" width="6.4" height="8" rx="1.6" fill="#64748B"/>'
+          '<rect x="8.8" y="8" width="6.4" height="8" rx="1.6" fill="#F59E0B"/><rect x="16.1" y="8" width="6.4" height="8" '
+          'rx="1.6" fill="#16A34A"/></symbol>'
+          '<symbol id="st-g-link" viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="2.4" fill="#DC2626"/>'
+          '<rect x="13" y="2" width="9" height="9" rx="2.4" fill="#DC2626"/><rect x="2" y="13" width="9" height="9" rx="2.4" '
+          'fill="#DC2626"/><rect x="13" y="13" width="9" height="9" rx="2.4" fill="#DC2626"/>'
+          '<circle cx="12" cy="12" r="3.6" fill="#FDE047" stroke="#1E293B" stroke-width="1.4"/></symbol>'
+          '<symbol id="st-g-bug" viewBox="0 0 24 24"><path d="M6.5 9.5 2.5 7.5M5.5 14H1.5M6.5 18l-4 2.5M17.5 9.5l4-2M18.5 14h4'
+          'M17.5 18l4 2.5" fill="none" stroke="#1E293B" stroke-width="1.6" stroke-linecap="round"/>'
+          '<circle cx="12" cy="6.5" r="3.4" fill="#1E293B"/><ellipse cx="12" cy="14.5" rx="6.4" ry="7.4" fill="#65A30D" '
+          'stroke="#1E293B" stroke-width="1.4"/><path d="M12 7.5v14.2" stroke="#1E293B" stroke-width="1.3"/></symbol></svg>')
 
 
 def _hub_tasks(tasks):
@@ -572,7 +706,8 @@ def _hub_tasks(tasks):
                    '<use href="#st-g-%s"></use></svg><span class="st-stars" data-st-stars aria-hidden="true">%s</span>'
                    '<span class="sr-only" data-st-sr>%s: not played yet.</span></span>'
                    % (task, task, ico("i-star", "icon st-star") * 3, name))
-    return '<span class="st-hub-tasks%s">%s</span>' % (" is-four" if len(tasks) == 4 else "", "".join(out))
+    cls = " is-four" if len(tasks) == 4 else " is-six" if len(tasks) > 4 else ""
+    return '<span class="st-hub-tasks%s">%s</span>' % (cls, "".join(out))
 
 
 def _hub_card(r, label):
@@ -595,10 +730,10 @@ def _hub_page(*, path, title, h1, lead, trail, sections, tasks, course_name, cou
       <h1>%s</h1>
       <p class="lead">%s</p>%s
     </div>
-    <div class="st-hub-art" aria-hidden="true">%s</div>
+    <div class="st-hub-art" data-n="%d" aria-hidden="true">%s</div>
   </div>
 </div></section>
-<div class="wrap st-hub">%s%s</div>""" % (crumbs(trail), esc(h1), esc(lead), jump,
+<div class="wrap st-hub">%s%s</div>""" % (crumbs(trail), esc(h1), esc(lead), jump, len(tasks),
                                           "".join(_task_icon(t) for t, _ in tasks), GLYPHS, sections)
     ld = [crumbs_ld(trail), {
         "@context": "https://schema.org", "@type": "CollectionPage", "name": h1,
@@ -626,9 +761,11 @@ def _hub(recs):
         if units:
             years.append('<section class="section st-hub-year" id="%s"><h2>%s</h2>%s</section>'
                          % (slugify(year), year, "".join(units)))
-    return _hub_page(path=HUB, title="KS3 Computing stretch tasks", h1=HUB_TITLE, lead=HUB_LEAD,
+    tasks = _tasks_of(recs)
+    return _hub_page(path=HUB, title="KS3 Computing stretch tasks", h1=HUB_TITLE,
+                     lead=HUB_LEAD if len(tasks) > 3 else HUB_LEAD3,
                      trail=[("Home", "/"), ("Key Stage 3", "/ks3/"), (HUB_TITLE, None)],
-                     sections="".join(years), tasks=TASKS[:3], course_name=ks3.COURSE.title, course_url="/ks3/",
+                     sections="".join(years), tasks=tasks, course_name=ks3.COURSE.title, course_url="/ks3/",
                      active="/ks3/")
 
 
@@ -663,7 +800,7 @@ def _hub4(recs):
     title = "GCSE Computer Science%s stretch tasks" % (" and Creative iMedia" if "imedia" in [k for k, _ in courses] else "")
     return _hub_page(path=HUB4, title=title, h1=HUB4_TITLE,
                      lead=_hub4_lead(n for _, n in courses), trail=[("Home", "/"), (HUB4_TITLE, None)],
-                     sections="".join(sections), tasks=TASKS, jump=jump,
+                     sections="".join(sections), tasks=_tasks_of(recs), jump=jump,
                      course_name=first["course_name"], course_url=first["course_url"], active=first["active"])
 
 
@@ -676,8 +813,8 @@ def _publish(recs, register, add_search):
         if r["stage"] == "ks3":
             add_search("Stretch tasks: %s" % r["title"], r["url"],
                        "%s %s, lesson %d" % (r["topic"].spec, r["topic"].title, r["n"]),
-                       ("stretch task challenge quiz game this or that pixel cat memory match pairs ks3 %s %s %s"
-                        % (r["year"], r["topic"].title, r["title"])).lower())
+                       ("stretch task challenge quiz game this or that pixel cat memory match pairs code word "
+                        "link up bug hunt word puzzle ks3 %s %s %s" % (r["year"], r["topic"].title, r["title"])).lower())
         else:
             add_search("Stretch tasks: %s" % r["title"], r["url"], "%s %s" % (r["cname"], r["topic"].spec),
                        ("stretch task challenge quiz game this or that pixel cat memory match sort it ks4 gcse %s %s %s"
@@ -694,9 +831,10 @@ def build(register, add_search):
     _publish(ks3r, register, add_search)
     write(HUB, _hub(ks3r))
     register(HUB, 0.8, "weekly")
-    add_search(HUB_TITLE, HUB, "Years 7, 8 and 9: three tasks for every lesson",
+    add_search(HUB_TITLE, HUB, "Years 7, 8 and 9: %s tasks for every lesson"
+               % ("six" if len(_tasks_of(ks3r)) > 3 else "three"),
                "stretch tasks challenge extension fast finishers quiz game kahoot this or that pixel cat "
-               "memory match pairs ks3 year 7 year 8 year 9 lessons")
+               "memory match pairs code word link up bug hunt word puzzle games ks3 year 7 year 8 year 9 lessons")
     if ks4r:
         for key in dict.fromkeys(r["ckey"] for r in ks4r):
             _publish([r for r in ks4r if r["ckey"] == key], register, add_search)
@@ -709,5 +847,9 @@ def build(register, add_search):
     n_p = sum(len(r["stretch"].picks) for r in recs)
     n_m = sum(len(r["stretch"].pairs) for r in recs)
     n_s = sum(len(r["stretch"].sort.items) for r in recs if r["stretch"].sort)
+    n_w = sum(len(r["stretch"].words) for r in recs)
+    n_g = sum(len(r["stretch"].groups) for r in recs)
+    n_b = sum(len(r["stretch"].bugs) for r in recs)
     print("Stretch tasks: %d lessons (%d at Key Stage 4), %d quiz questions, %d This or That questions, "
-          "%d Memory Match pairs and %d Sort It cards checked" % (len(recs), len(ks4r), n_q, n_p, n_m, n_s))
+          "%d Memory Match pairs, %d Sort It cards, %d Code Word words, %d Link Up groups and %d Bug Hunt rounds checked"
+          % (len(recs), len(ks4r), n_q, n_p, n_m, n_s, n_w, n_g, n_b))

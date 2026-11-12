@@ -203,13 +203,49 @@ class Sort:
 
 
 @dataclass
+class Word:
+    """One secret word in Code Word: a key term from the lesson, in capital
+    letters, and the clue shown above the letter tiles."""
+    word: str
+    clue: str
+
+
+@dataclass
+class Group:
+    """One hidden group in Link Up: what links its four tiles, and the tiles."""
+    name: str
+    tiles: List[str]
+
+
+@dataclass
+class Bug:
+    """One round of Bug Hunt: two true statements, one statement with a
+    mistake in it, and the fix shown once the student has chosen."""
+    truths: List[str]
+    bug: str
+    fix: str
+
+
+@dataclass
+class Games:
+    """Three more games for one Key Stage 3 lesson: Code Word, Link Up and Bug
+    Hunt. They are written in a module beside the unit's stretch tasks and
+    joined to the lesson of the same name when the tasks are read."""
+    lesson: str
+    words: List[Word]
+    groups: List[Group]
+    bugs: List[Bug]
+
+
+@dataclass
 class Stretch:
     """The stretch tasks for one lesson.
 
     The quiz challenge is three rounds: a quiz game, short answers and long
     answers. This or That is Pixel's two-choice questions, and Memory Match is
     a card game of pairs; `pair_names` labels the two kinds of card. Key
-    Stage 4 lessons add a fourth task, Sort It.
+    Stage 4 lessons add a fourth task, Sort It. Key Stage 3 lessons add three
+    games: Code Word (`words`), Link Up (`groups`) and Bug Hunt (`bugs`).
     `lesson` is, at Key Stage 3, the title of the topic section it belongs to,
     exactly; at Key Stage 4, where a lesson is a whole topic, the topic's slug.
     """
@@ -221,6 +257,9 @@ class Stretch:
     pairs: List[Pair] = field(default_factory=list)
     pair_names: Tuple[str, str] = ("Word", "Meaning")
     sort: Optional[Sort] = None
+    words: List[Word] = field(default_factory=list)
+    groups: List[Group] = field(default_factory=list)
+    bugs: List[Bug] = field(default_factory=list)
 
 
 @dataclass
