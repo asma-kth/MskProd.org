@@ -533,6 +533,28 @@ def lesson_words(section, st):
     return set(re.findall(r"[a-z]+", " ".join(parts).lower()))
 
 
+def topic_words(topic, st):
+    """Every word a Key Stage 4 lesson uses: its whole topic page and the
+    questions, answers and cards of its other stretch tasks."""
+    parts = [topic.title, topic.blurb, topic.grade]
+    for sec in topic.sections:
+        parts += [sec.title, sec.body]
+    for term, meaning in topic.keyterms:
+        parts += [term, meaning]
+    parts += list(topic.mistakes)
+    for b in st.blitz:
+        parts += [b.q, b.explain] + list(b.options) + list(b.accept)
+    for w in st.short + st.long:
+        parts += [w.q, w.model]
+    for p in st.picks:
+        parts += [p.q, p.right, p.wrong, p.why]
+    for p in st.pairs:
+        parts += [p.a, p.b]
+    if st.sort:
+        parts += [st.sort.prompt] + list(st.sort.bins) + [i.text for i in st.sort.items] + [i.why for i in st.sort.items]
+    return set(re.findall(r"[a-z]+", " ".join(x or "" for x in parts).lower()))
+
+
 def validate(units, topics):
     """Key Stage 3. units: [(topic slug, [Stretch])]; topics: {slug: Topic}. Raises StretchError."""
     problems = []
@@ -574,6 +596,7 @@ def validate_ks4(lessons, topics):
             problems.append("%s: a Key Stage 4 lesson needs a Sort It task" % where)
         problems += lesson_problems(where, st)
         if st.words or st.groups or st.bugs:
-            problems += _games_problems(where, st, None)
+            topic = topics.get((course, st.lesson))
+            problems += _games_problems(where, st, topic_words(topic, st) if topic else None)
     if problems:
         raise StretchError("Stretch tasks failed their checks:\n  " + "\n  ".join(problems))

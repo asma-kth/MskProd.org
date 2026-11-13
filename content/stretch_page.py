@@ -6,8 +6,8 @@ Challenge has three rounds: a quiz game against the clock, short written
 answers, and long written answers marked against a mark scheme. In This or
 That, Pixel the cat asks questions with two answers to choose from. Memory
 Match is a card game: find each word's meaning. Key Stage 4 lessons add Sort
-It: drag each statement into the right box, like the tick-box tables on GCSE
-papers. Key Stage 3 lessons add three games: Code Word, where each guess at a
+It: drag each statement into the right box, like the tick box tables on GCSE
+papers. Then every lesson adds three games: Code Word, where each guess at a
 secret word shows which letters are right; Link Up, where twelve tiles hide
 three groups of four; and Bug Hunt, where two statements are true and one has
 a mistake to catch. The games themselves are static/js/stretch.js; this module
@@ -42,8 +42,8 @@ ROUNDS = [("Quiz Blitz", "blitz"), ("Quick Fire", "short"), ("Big Think", "long"
 
 # The tasks on a lesson's page, in the order they are offered. The key is also
 # what the game and the saved results call each one. Sort It is the fourth
-# task at Key Stage 4; Code Word, Link Up and Bug Hunt are the fourth, fifth
-# and sixth at Key Stage 3.
+# task at Key Stage 4. Code Word, Link Up and Bug Hunt follow: the fourth,
+# fifth and sixth at Key Stage 3, the fifth, sixth and seventh at Key Stage 4.
 TASKS = [("quiz", "Quiz Challenge"), ("cat", "This or That"), ("match", "Memory Match"), ("sort", "Sort It"),
          ("word", "Code Word"), ("link", "Link Up"), ("bug", "Bug Hunt")]
 GAMES = ("word", "link", "bug")
@@ -232,8 +232,10 @@ def ks4_records():
                           (topic.title, None)],
                 "hub": HUB4, "active": "/%s/" % slug, "level": "Key Stage 4, %s" % name,
                 "course_name": course.title, "course_url": "/%s/" % slug,
-                "desc": "%s (%s %s): a quiz challenge, This or That with Pixel the cat, Memory Match and Sort It, "
-                        "to stretch %s students." % (topic.title, course.board, topic.spec, audience),
+                "desc": ("%s (%s %s): a quiz challenge, This or That with Pixel the cat, Memory Match, Sort It, "
+                         "Code Word, Link Up and Bug Hunt, to stretch %s students." if st.words else
+                         "%s (%s %s): a quiz challenge, This or That with Pixel the cat, Memory Match and Sort It, "
+                         "to stretch %s students.") % (topic.title, course.board, topic.spec, audience),
             })
     return out
 
@@ -288,6 +290,9 @@ def check():
         if ks4_stretch.complete(slug):
             done = {st.lesson for st in lessons}
             missing += ["%s: %s" % (slug, t) for t in mine if t not in done and (slug, t) not in ks4_stretch.NOT_LESSONS]
+        if ks4_stretch.games_complete(slug):
+            missing += ["%s: %s has no Code Word, Link Up and Bug Hunt" % (slug, st.lesson)
+                        for st in lessons if not st.words]
     stretchcheck.validate_ks4(lessons4, topics4)
     return missing
 
@@ -565,7 +570,7 @@ def _lobby(r):
                 "About 4 minutes"),
         "match": ("Flip the cards two at a time to match each %s card to its %s card." % (word, meaning),
                   "%d pairs, about 4 minutes" % len(st.pairs)),
-        "sort": ("Sort each statement into the right box, like the tick-box tables in the exam.",
+        "sort": ("Sort each statement into the right box, like the tick box tables in the exam.",
                  "%d cards, about 4 minutes" % n_sort),
         "word": ("Guess the lesson's secret words. Every guess shows which letters are right.",
                  "%d words, about 4 minutes" % len(st.words)),
@@ -706,7 +711,7 @@ def _hub_tasks(tasks):
                    '<use href="#st-g-%s"></use></svg><span class="st-stars" data-st-stars aria-hidden="true">%s</span>'
                    '<span class="sr-only" data-st-sr>%s: not played yet.</span></span>'
                    % (task, task, ico("i-star", "icon st-star") * 3, name))
-    cls = " is-four" if len(tasks) == 4 else " is-six" if len(tasks) > 4 else ""
+    cls = {4: " is-four", 6: " is-six", 7: " is-seven"}.get(len(tasks), "")
     return '<span class="st-hub-tasks%s">%s</span>' % (cls, "".join(out))
 
 
@@ -769,11 +774,23 @@ def _hub(recs):
                      active="/ks3/")
 
 
-def _hub4_lead(names):
+def _and(names):
     names = list(names)
-    which = names[0] if len(names) == 1 else ", ".join(names[:-1]) + " and " + names[-1]
-    return ("Four tasks for every lesson of %s: a quiz challenge, This or That with Pixel the cat, "
-            "Memory Match and Sort It." % which)
+    return names[0] if len(names) == 1 else ", ".join(names[:-1]) + " and " + names[-1]
+
+
+def _hub4_lead(courses):
+    """courses: [(name, every lesson has the games)]"""
+    names = [n for n, _ in courses]
+    played = [n for n, g in courses if g]
+    if played and len(played) == len(names):
+        return ("Seven tasks for every lesson of %s: a quiz challenge, This or That with Pixel the cat, "
+                "Memory Match, Sort It, Code Word, Link Up and Bug Hunt." % _and(names))
+    lead = ("Four tasks for every lesson of %s: a quiz challenge, This or That with Pixel the cat, "
+            "Memory Match and Sort It." % _and(names))
+    if played:
+        lead += " Lessons of %s add Code Word, Link Up and Bug Hunt." % _and(played)
+    return lead
 
 
 def _hub4(recs):
@@ -799,7 +816,8 @@ def _hub4(recs):
     first = recs[0]
     title = "GCSE Computer Science%s stretch tasks" % (" and Creative iMedia" if "imedia" in [k for k, _ in courses] else "")
     return _hub_page(path=HUB4, title=title, h1=HUB4_TITLE,
-                     lead=_hub4_lead(n for _, n in courses), trail=[("Home", "/"), (HUB4_TITLE, None)],
+                     lead=_hub4_lead((n, all(r["stretch"].words for r in recs if r["ckey"] == k)) for k, n in courses),
+                     trail=[("Home", "/"), (HUB4_TITLE, None)],
                      sections="".join(sections), tasks=_tasks_of(recs), jump=jump,
                      course_name=first["course_name"], course_url=first["course_url"], active=first["active"])
 
@@ -840,9 +858,11 @@ def build(register, add_search):
             _publish([r for r in ks4r if r["ckey"] == key], register, add_search)
         write(HUB4, _hub4(ks4r))
         register(HUB4, 0.8, "weekly")
-        add_search(HUB4_TITLE, HUB4, "GCSE: four tasks for every topic",
+        games4 = all(r["stretch"].words for r in ks4r)
+        add_search(HUB4_TITLE, HUB4, "GCSE: %s tasks for every topic" % ("seven" if games4 else "four"),
                    "stretch tasks challenge extension fast finishers quiz game kahoot this or that pixel cat "
-                   "memory match sort it ks4 gcse computer science revision games")
+                   "memory match sort it ks4 gcse computer science revision games"
+                   + (" code word link up bug hunt word puzzle connections" if games4 else ""))
     n_q = sum(len(r["stretch"].blitz) + len(r["stretch"].short) + len(r["stretch"].long) for r in recs)
     n_p = sum(len(r["stretch"].picks) for r in recs)
     n_m = sum(len(r["stretch"].pairs) for r in recs)

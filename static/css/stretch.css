@@ -146,6 +146,11 @@
 .st-task:nth-child(6) { animation-delay: .5s; }
 /* Four tasks sit two by two. Six sit three by two, as three do in one row. */
 .st-tasks[data-n="4"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+/* Seven sit four then three: the three games share the second row. */
+.st-tasks[data-n="7"] { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+.st-tasks[data-n="7"] > .st-task { grid-column: span 3; }
+.st-tasks[data-n="7"] > .st-task:nth-child(n+5) { grid-column: span 4; }
+.st-task:nth-child(7) { animation-delay: .6s; }
 .st-task-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
 .st-task-art {
   width: 66px; height: 66px; display: grid; place-items: center; border-radius: 20px; background: #fff;
@@ -156,6 +161,7 @@
 .st-task:nth-child(4) .st-task-art { animation-delay: -3.2s; }
 .st-task:nth-child(5) .st-task-art { animation-delay: -.6s; }
 .st-task:nth-child(6) .st-task-art { animation-delay: -1.8s; }
+.st-task:nth-child(7) .st-task-art { animation-delay: -2.8s; }
 .st-task-art svg { width: 50px; height: 50px; }
 .st-task-n {
   padding: .22rem .65rem; border-radius: var(--r-pill); font: 800 .74rem var(--font-body); letter-spacing: .12em;
@@ -188,6 +194,13 @@
   .st-tasks[data-n="4"], .st-tasks[data-n="6"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 700px) { .st-tasks[data-n="4"] { grid-template-columns: 1fr; } }
+/* Below four across, seven sit two by two under a full width Quiz Challenge. */
+@media (max-width: 1100px) {
+  .st-tasks[data-n="7"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .st-tasks[data-n="7"] > .st-task, .st-tasks[data-n="7"] > .st-task:nth-child(n+5) { grid-column: auto; }
+  .st-tasks[data-n="7"] > .st-task:first-child { grid-column: 1 / -1; }
+}
+@media (max-width: 700px) { .st-tasks[data-n="7"] { grid-template-columns: 1fr; } }
 .st-back { margin: var(--sp-4) 0 0; font-weight: 650; }
 .st-back a { display: inline-flex; align-items: center; gap: .45rem; }
 .st-back .icon { width: 1.1em; height: 1.1em; }
@@ -1150,6 +1163,9 @@ html.st-locked, html.st-locked body { overflow: hidden; }
 /* Six pictures sit three by two. */
 .st-hub-art[data-n="6"] { display: grid; grid-template-columns: repeat(3, auto); }
 .st-hub-art[data-n="6"] svg { width: 66px; height: 66px; padding: 9px; border-radius: 19px; }
+.st-hub-art[data-n="7"] { display: grid; grid-template-columns: repeat(4, auto); }
+.st-hub-art[data-n="7"] svg { width: 60px; height: 60px; padding: 8px; border-radius: 18px; }
+.st-hub-art svg:nth-child(7) { animation-delay: -2.8s; }
 .st-hub-jump { display: flex; flex-wrap: wrap; gap: .5rem; margin: var(--sp-4) 0 0; }
 @keyframes st-bob { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-10px) rotate(3deg); } }
 .st-hub-year { padding-top: 0; }
@@ -1177,10 +1193,16 @@ html.st-locked, html.st-locked body { overflow: hidden; }
 .st-hub-task:not(.is-played) .st-g { opacity: .55; }
 .st-hub-tasks.is-four { display: grid; grid-template-columns: repeat(2, max-content); }
 .st-hub-tasks.is-six { display: grid; grid-template-columns: repeat(3, max-content); }
+/* Seven badges sit four then three, a little smaller so four fit the narrowest card. */
+.st-hub-tasks.is-seven { display: grid; grid-template-columns: repeat(4, max-content); gap: .3rem .3rem; }
+.st-hub-tasks.is-seven .st-hub-task { gap: .15rem; }
+.st-hub-tasks.is-seven .st-g { width: 15px; height: 15px; }
+.st-hub-tasks.is-seven .st-stars { gap: 0; }
+.st-hub-tasks.is-seven .st-stars .icon { width: .62rem; height: .62rem; }
 @media (max-width: 700px) {
   .st-hub-head { grid-template-columns: 1fr; }
-  .st-hub-art svg, .st-hub-art[data-n="6"] svg { width: 58px; height: 58px; }
-  .st-hub-art[data-n="6"] { justify-content: start; }
+  .st-hub-art svg, .st-hub-art[data-n="6"] svg, .st-hub-art[data-n="7"] svg { width: 58px; height: 58px; }
+  .st-hub-art[data-n="6"], .st-hub-art[data-n="7"] { justify-content: start; }
 }
 
 /* ------------------------------------------------------------- the sheet */

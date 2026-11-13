@@ -8,6 +8,12 @@ Stretch per topic, whose `lesson` is the topic's slug.
 A course is published once every one of its lessons is written, which is
 what `complete` records. While a course is being written, setting
 STRETCH_DRAFT=1 builds its finished lessons too, to try them out.
+
+Beside a module may sit one whose name ends in _games. It defines GAMES, one
+Games per lesson, named by the topic's slug: the words for Code Word, the
+groups for Link Up and the rounds of Bug Hunt. They make the fifth, sixth and
+seventh tasks. GAMES_COMPLETE says which courses have them for every lesson;
+the build then insists on it.
 """
 import importlib
 import os
@@ -31,6 +37,38 @@ NOT_LESSONS = {
 }
 
 
+# course key: every lesson of the course has its Code Word, Link Up and Bug Hunt
+GAMES_COMPLETE = {"ocr": False, "aqa": False, "edexcel": False, "imedia": False}
+
+
+def _games(name):
+    """The _games module beside a module of this package, or None if it has not been written."""
+    full = "content.ks4_stretch.%s_games" % name
+    try:
+        return importlib.import_module(full)
+    except ModuleNotFoundError as e:
+        if e.name != full:
+            raise
+        return None
+
+
+def _join_games(name, lessons):
+    """Give each lesson of a module the games written for it."""
+    games = _games(name)
+    if games is None:
+        return
+    by_slug = {st.lesson: st for st in lessons}
+    seen = set()
+    for g in games.GAMES:
+        st = by_slug.get(g.lesson)
+        if st is None:
+            raise SystemExit("content/ks4_stretch/%s_games.py: %s has no lesson %r" % (name, name, g.lesson))
+        if g.lesson in seen:
+            raise SystemExit("content/ks4_stretch/%s_games.py: two sets of games for %r" % (name, g.lesson))
+        seen.add(g.lesson)
+        st.words, st.groups, st.bugs = g.words, g.groups, g.bugs
+
+
 def draft():
     return bool(os.environ.get("STRETCH_DRAFT"))
 
@@ -47,6 +85,7 @@ def courses():
             mod = importlib.import_module("content.ks4_stretch." + m)
             if mod.COURSE != slug:
                 raise SystemExit("content/ks4_stretch/%s.py says it belongs to %s, not %s" % (m, mod.COURSE, slug))
+            _join_games(m, mod.LESSONS)
             lessons += mod.LESSONS
         out.append((key, slug, name, lessons))
     return out
@@ -54,3 +93,7 @@ def courses():
 
 def complete(slug):
     return any(c[1] == slug and c[4] for c in COURSES)
+
+
+def games_complete(slug):
+    return any(c[1] == slug and GAMES_COMPLETE.get(c[0]) for c in COURSES)
