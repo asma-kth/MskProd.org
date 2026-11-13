@@ -10,7 +10,9 @@
  *
  * BUILD_ID is substituted at build time from a hash of the built assets, so a
  * deploy that changes the CSS or JS lands in fresh caches and the old ones are
- * deleted on activate.
+ * deleted on activate. Pages link each script and stylesheet with ?v= and a
+ * hash of the file (build.py adds it, here too), so a new release's pages never
+ * run with the last release's code, even before this worker is replaced.
  */
 var BUILD = "__BUILD_ID__";
 var SHELL = "shell-" + BUILD;

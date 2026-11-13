@@ -268,6 +268,48 @@ def _cat_offline():
     return cat.stack("asleep", 230, zzz=True)
 
 
+# A script or stylesheet is linked under an address that carries a fingerprint
+# of the file. The service worker answers an address it has seen from its cache
+# before asking the network, so under a plain name a returning visitor's first
+# page after a release would run the last release's code. Under a new address
+# even a worker left over from the last release has to fetch the new file.
+ASSET_REF = re.compile(r'((?:src|href)=")(/assets/(?:js|css)/[^"?#]+\.(?:js|css))(")')
+ASSET_LIT = re.compile(r'"(/assets/(?:js|css)/[^"?#]+\.(?:js|css))"')
+
+
+def fingerprint_assets():
+    """Add ?v=<hash of the file> to every script and stylesheet address in the
+    built pages, and return the function that fingerprints one address."""
+    known = {}
+
+    def stamp(url):
+        if url not in known:
+            f = os.path.join(DIST, url.lstrip("/"))
+            if os.path.exists(f):
+                with open(f, "rb") as fh:
+                    known[url] = url + "?v=" + hashlib.sha256(fh.read()).hexdigest()[:10]
+            else:
+                print("Warning: a page links %s, which is not in dist/" % url)
+                known[url] = url
+        return known[url]
+
+    pages = 0
+    for folder, _, files in os.walk(DIST):
+        for name in files:
+            if not name.endswith(".html"):
+                continue
+            path = os.path.join(folder, name)
+            with open(path, encoding="utf-8") as fh:
+                text = fh.read()
+            new = ASSET_REF.sub(lambda m: m.group(1) + stamp(m.group(2)) + m.group(3), text)
+            if new != text:
+                with open(path, "w", encoding="utf-8") as fh:
+                    fh.write(new)
+                pages += 1
+    print("Fingerprinted %d script and stylesheet addresses in %d pages" % (len(known), pages))
+    return stamp
+
+
 def build_pwa():
     """Write the service worker, the offline fallback page and assetlinks.
 
@@ -300,8 +342,12 @@ def build_pwa():
                 shell.append(fh.read())
     build_id = hashlib.sha256(b"".join(shell)).hexdigest()[:12]
 
+    # Every page is written by now, the offline page included.
+    stamp = fingerprint_assets()
     with open(os.path.join(ROOT, "sw.js"), encoding="utf-8") as fh:
         sw = fh.read().replace("__BUILD_ID__", build_id)
+    # The shell is cached under the same addresses the pages ask for.
+    sw = ASSET_LIT.sub(lambda m: '"%s"' % stamp(m.group(1)), sw)
     with open(os.path.join(DIST, "sw.js"), "w", encoding="utf-8") as fh:
         fh.write(sw)
 
