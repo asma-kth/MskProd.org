@@ -38,7 +38,7 @@ NOT_LESSONS = {
 
 
 # course key: every lesson of the course has its Code Word, Link Up and Bug Hunt
-GAMES_COMPLETE = {"ocr": True, "aqa": True, "edexcel": True, "imedia": False}
+GAMES_COMPLETE = {"ocr": True, "aqa": True, "edexcel": True, "imedia": True}
 
 
 def _games(name):
