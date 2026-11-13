@@ -29,6 +29,13 @@ from content import ks3_stretch
 from content import ks4_stretch
 
 HUB = "/ks3/stretch/"
+DESC_LIMIT = 160   # characters a search result shows; a longer description is cut mid phrase
+
+
+def _desc(name, games, short):
+    """A lesson's description, naming every game when it fits in a search result."""
+    full = "%s. %s%s" % (name, games[0].upper(), games[1:])
+    return full if len(full) <= DESC_LIMIT else "%s. %s%s" % (name, short[0].upper(), short[1:])
 HUB_TITLE = "Stretch tasks"
 HUB_LEAD3 = ("Three tasks for every Year 7, 8 and 9 lesson: a quiz challenge, This or That with "
              "Pixel the cat, and Memory Match.")
@@ -200,10 +207,10 @@ def ks3_records():
                           (topic.title, "%s#%s" % (HUB, slug)), ("Lesson %d" % n, None)],
                 "hub": HUB, "active": "/ks3/", "level": "Key Stage 3, %s" % unit.title,
                 "course_name": ks3.COURSE.title, "course_url": "/ks3/",
-                "desc": ("%s, %s lesson %d: a quiz challenge, This or That with Pixel the cat, Memory Match, Code Word, "
-                         "Link Up and Bug Hunt, to stretch Key Stage 3 students." if st.words else
-                         "%s, %s lesson %d: a quiz challenge, This or That with Pixel the cat, and Memory Match, "
-                         "to stretch Key Stage 3 students.") % (st.lesson, topic.title, n),
+                "desc": _desc("%s (%s, lesson %d)" % (st.lesson, topic.title, n),
+                              "six stretch games: a quiz, This or That, Memory Match, Code Word, Link Up and Bug Hunt."
+                              if st.words else "a quiz challenge, This or That with Pixel the cat, and Memory Match.",
+                              "six stretch games, from a quiz to Bug Hunt." if st.words else "three stretch games."),
             })
     return out
 
@@ -218,7 +225,6 @@ def ks4_records():
         unknown = [st.lesson for st in lessons if st.lesson not in topics]
         if unknown:
             raise SystemExit("content/ks4_stretch: %s has no topic called %s" % (slug, ", ".join(unknown)))
-        audience = "Creative iMedia" if slug == "ks4/imedia" else "GCSE Computer Science"
         for n, st in enumerate(sorted(lessons, key=lambda st: order.index(st.lesson)), 1):
             unit, topic = topics[st.lesson]
             out.append({
@@ -232,10 +238,12 @@ def ks4_records():
                           (topic.title, None)],
                 "hub": HUB4, "active": "/%s/" % slug, "level": "Key Stage 4, %s" % name,
                 "course_name": course.title, "course_url": "/%s/" % slug,
-                "desc": ("%s (%s %s): a quiz challenge, This or That with Pixel the cat, Memory Match, Sort It, "
-                         "Code Word, Link Up and Bug Hunt, to stretch %s students." if st.words else
-                         "%s (%s %s): a quiz challenge, This or That with Pixel the cat, Memory Match and Sort It, "
-                         "to stretch %s students.") % (topic.title, course.board, topic.spec, audience),
+                "desc": _desc(topic.title if topic.title.startswith(topic.spec)
+                              else "%s (%s %s)" % (topic.title, course.board, topic.spec),
+                              "seven stretch games: a quiz, This or That, Memory Match, Sort It, Code Word, Link Up "
+                              "and Bug Hunt." if st.words else
+                              "a quiz challenge, This or That with Pixel the cat, Memory Match and Sort It.",
+                              "seven stretch games, from a quiz to Bug Hunt." if st.words else "four stretch games."),
             })
     return out
 
@@ -727,7 +735,7 @@ def _card_title(r):
     return t[len(spec) + 2:] if r["stage"] == "ks4" and spec and t.startswith(spec + ": ") else t
 
 
-def _hub_page(*, path, title, h1, lead, trail, sections, tasks, course_name, course_url, active, jump=""):
+def _hub_page(*, path, title, h1, lead, trail, sections, tasks, course_name, course_url, active, jump="", summary=""):
     body = """<div class="wrap">%s</div>
 <section class="hero st-hub-hero"><div class="wrap">
   <div class="st-hub-head">
@@ -745,7 +753,7 @@ def _hub_page(*, path, title, h1, lead, trail, sections, tasks, course_name, cou
         "description": lead, "url": SITE_URL + path, "inLanguage": "en-GB",
         "isPartOf": {"@type": "Course", "name": course_name, "url": SITE_URL + course_url},
     }]
-    return layout(title=title, description=lead + " Free, no account needed.", path=path, body=body, active=active,
+    return layout(title=title, description=(summary or lead) + " Free, no account needed.", path=path, body=body, active=active,
                   extra_head='<link rel="stylesheet" href="/assets/css/stretch.css">',
                   scripts=["/assets/js/stretch.js"], jsonld=ld)
 
@@ -781,6 +789,7 @@ def _and(names):
 
 def _hub4_lead(courses):
     """courses: [(name, every lesson has the games)]"""
+    courses = list(courses)
     names = [n for n, _ in courses]
     played = [n for n, g in courses if g]
     if played and len(played) == len(names):
@@ -815,10 +824,14 @@ def _hub4(recs):
                 % "".join('<a class="btn btn-secondary" href="#%s">%s</a>' % (k, esc(n)) for k, n in courses))
     first = recs[0]
     title = "GCSE Computer Science%s stretch tasks" % (" and Creative iMedia" if "imedia" in [k for k, _ in courses] else "")
+    # The lead names every course, too long for a search snippet once all four carry the games
+    summary = ("Seven stretch tasks for every %s lesson: a quiz, This or That, Memory Match, Sort It, "
+               "Code Word, Link Up and Bug Hunt." % title[:-len(" stretch tasks")]
+               if all(r["stretch"].words for r in recs) else "")
     return _hub_page(path=HUB4, title=title, h1=HUB4_TITLE,
                      lead=_hub4_lead((n, all(r["stretch"].words for r in recs if r["ckey"] == k)) for k, n in courses),
                      trail=[("Home", "/"), (HUB4_TITLE, None)],
-                     sections="".join(sections), tasks=_tasks_of(recs), jump=jump,
+                     sections="".join(sections), tasks=_tasks_of(recs), jump=jump, summary=summary,
                      course_name=first["course_name"], course_url=first["course_url"], active=first["active"])
 
 

@@ -1620,6 +1620,7 @@
     s.appendChild(el("div", { class: "st-match-bar" }, [
       el("p", { class: "st-match-hint", text: "Match each " + pn(0) + " card to its " + pn(1) + " card." }), ui.peek]));
     s.appendChild(grid);
+    fitSoon();
     sfx("board");
     say("The cards are dealt: " + deck.length + " cards, face down. Move with Tab or the arrow keys and press Enter to flip a card.");
     focusFirst(deck[0].el);
@@ -1637,6 +1638,48 @@
     e.preventDefault();
     cards[j].focus();
   }
+
+  // A long word shrinks until it fits on its card whole, instead of breaking
+  // in the middle. Code still too wide at 62% of the size breaks where it must.
+  function brokenWord(t) {
+    var walk = document.createTreeWalker(t, NodeFilter.SHOW_TEXT), r = document.createRange(), node, m, i;
+    while ((node = walk.nextNode())) {
+      var re = /\S+/g;
+      while ((m = re.exec(node.data))) {
+        r.setStart(node, m.index);
+        r.setEnd(node, m.index + m[0].length);
+        var rects = r.getClientRects(), top = null;
+        for (i = 0; i < rects.length; i++) {
+          if (rects[i].width < 0.5) continue;
+          if (top === null) top = rects[i].top;
+          else if (Math.abs(rects[i].top - top) > 2) return true;
+        }
+      }
+    }
+    return false;
+  }
+  function fitWords(root, sel, least) {
+    Array.prototype.forEach.call(root.querySelectorAll(sel), function (t) {
+      t.style.fontSize = "";
+      var size = parseFloat(getComputedStyle(t).fontSize), min = size * least;
+      for (var n = 0; n < 12 && size > min && brokenWord(t); n++) {
+        size = Math.max(min, size * 0.93);
+        t.style.fontSize = size + "px";
+      }
+    });
+  }
+  // Memory Match cards, Link Up tiles and Bug Hunt statements, with how far each may shrink.
+  var FIT = [[".st-card-t", 0.62], [".st-lt-t", 0.7], [".st-bug-t", 0.85]];
+  function fitScreen() {
+    if (!ui.screen) return;
+    FIT.forEach(function (f) { fitWords(ui.screen, f[0], f[1]); });
+  }
+  function fitSoon() {
+    fitScreen();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitScreen);
+  }
+  var fitTimer = 0;
+  window.addEventListener("resize", function () { clearTimeout(fitTimer); fitTimer = setTimeout(fitScreen, 120); });
 
   function turnBack() {
     G.open.forEach(function (c) { c.el.classList.remove("is-miss"); setUp(c, false); });
@@ -2442,6 +2485,7 @@
       ui.linkGrid.appendChild(b);
       if (t.id === at) b.focus();
     });
+    fitSoon();
     linkCount();
   }
   function linkTap(t) {
@@ -2659,6 +2703,7 @@
     });
     ui.tiles = cards;
     s.appendChild(list);
+    fitSoon();
     ui.fb = el("div", { class: "st-fbslot" });
     s.appendChild(ui.fb);
     say("Round " + (i + 1) + " of " + D.bugs.length + ". Three statements: two are true and one has a bug. Choose the one with the bug, or press 1, 2 or 3.");
