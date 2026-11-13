@@ -826,6 +826,8 @@ pre code { background: none; border: 0; padding: 0; color: inherit; white-space:
 }
 .stretch-cta:hover { color: #fff; transform: translateY(-2px); box-shadow: 0 14px 32px rgba(38, 16, 90, .34); }
 .stretch-cta-art { flex: none; width: 50px; height: 50px; }
+.quest-cta { background: linear-gradient(120deg, #1E1B4B 0%, #3B0764 55%, #134E4A 100%); }
+.quest-cta .stretch-cta-txt span { color: #DDD6FE; }
 .stretch-cta:hover .stretch-cta-art { animation: cta-wiggle .6s ease; }
 .stretch-cta-txt { flex: 1; min-width: 0; display: grid; gap: .1rem; line-height: 1.35; }
 .stretch-cta-txt b { font-family: var(--font-display); font-size: 1.04rem; color: #fff; }

@@ -335,7 +335,7 @@ def build_pwa():
     for rel in ("css/site.css", "js/app.js", "js/mascot.js", "js/tools.js",
                 "css/game.css", "js/game.js", "js/game-art.js",
                 "css/certificate.css", "js/certificate.js", "css/ct.css", "js/ct.js", "css/ct-pages.css", "js/ct-pages.js",
-                "css/stretch.css", "js/stretch.js", "js/quiz.js"):
+                "css/stretch.css", "js/stretch.js", "js/quiz.js", "css/quest.css", "js/quest.js"):
         f = os.path.join(DIST, "assets", rel)
         if os.path.exists(f):
             with open(f, "rb") as fh:
@@ -506,6 +506,12 @@ def copy_static():
         rest = fh.read()
     with open(stretch_css, "w", encoding="utf-8") as fh:
         fh.write(pixel_css + "\n" + rest)
+    # The Media Realms is guided by the same Pixel.
+    quest_css = os.path.join(dst, "css", "quest.css")
+    with open(quest_css, encoding="utf-8") as fh:
+        rest = fh.read()
+    with open(quest_css, "w", encoding="utf-8") as fh:
+        fh.write(pixel_css + "\n" + rest)
     # The parts are in the bundles now, so they are not published one by one.
     shutil.rmtree(os.path.join(dst, "js", "ct"))
     shutil.rmtree(os.path.join(dst, "css", "ct"))
@@ -587,6 +593,8 @@ def main():
     # course, links to its stretch tasks.
     from content import stretch_page
     stretch_page.attach_links()
+    from content import quest_page
+    quest_page.attach_links()
 
     for mod in modules:
         build_course(mod.COURSE)
@@ -616,6 +624,7 @@ def main():
     ct_page.build(register, add_search)
 
     stretch_page.build(register, add_search)
+    quest_page.build(register, add_search)
 
     from content import worksheets
     worksheets.build(register, add_search, COURSES)

@@ -117,8 +117,9 @@ def build(register, add_search):
     <a class="tile" href="/computational-thinking/#/lab/pseudocode"><span class="tile-icon">%s</span><h3>Pseudocode Playground</h3></a>
     <a class="tile" href="/computational-thinking/#/lab/flowchart"><span class="tile-icon">%s</span><h3>Flowchart Lab</h3></a>
     <a class="tile" href="/pixel-run/"><span class="tile-icon">%s</span><h3>Pixel Run</h3></a>
+    <a class="tile" href="/ks4/imedia/quest/"><span class="tile-icon">%s</span><h3>The Media Realms: an R093 adventure</h3></a>
   </div>
-</div>""" % (crumbs(trail), "".join(cards), tiles(AI_ORDER), ico("i-map", "icon"), ico("i-code", "icon"), ico("i-flow", "icon"), ico("i-flag", "icon"))
+</div>""" % (crumbs(trail), "".join(cards), tiles(AI_ORDER), ico("i-map", "icon"), ico("i-code", "icon"), ico("i-flow", "icon"), ico("i-flag", "icon"), ico("i-palette", "icon"))
     path = "/tools/"
     write(path, layout(title="Interactive Computing Tools",
                        description=INTRO, path=path, body=body, active="/tools/",

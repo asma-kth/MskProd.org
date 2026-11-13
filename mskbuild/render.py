@@ -757,6 +757,22 @@ def _topic_stretch(href: str) -> str:
             '<span class="stretch-cta-go">Play %s</span></a>' % (href, STRETCH_SHAPES, ico("i-arrow-right")))
 
 
+# A wizard's hat with a star, for links into The Media Realms.
+QUEST_HAT = ('<svg class="stretch-cta-art" viewBox="0 0 50 50" aria-hidden="true" focusable="false">'
+             '<circle cx="25" cy="25" r="25" fill="#312E81"/>'
+             '<path d="M25 6 C29 14 33 24 37 35 H13 C17 24 21 14 25 6Z" fill="#7C3AED"/>'
+             '<path d="M25 6 C27 10 26 13 31 14" stroke="#7C3AED" stroke-width="3" fill="none" stroke-linecap="round"/>'
+             '<rect x="9" y="34" width="32" height="6" rx="3" fill="#5B21B6"/>'
+             '<path d="M24.5 19.5 26 23 29.6 23.3 26.8 25.6 27.7 29.2 24.5 27.2 21.3 29.2 22.2 25.6 19.4 23.3 23 23Z" fill="#FDE047"/></svg>')
+
+
+def _topic_quest(href: str) -> str:
+    """An R093 topic's place in The Media Realms, the adventure game."""
+    return ('<a class="stretch-cta quest-cta" href="%s">%s<span class="stretch-cta-txt"><b>Battle this topic in The Media Realms</b>'
+            '<span>The R093 adventure: answer to cast spells and clear the muddles with your pet</span></span>'
+            '<span class="stretch-cta-go">Play %s</span></a>' % (href, QUEST_HAT, ico("i-arrow-right")))
+
+
 def _unit_exams_note(topic) -> str:
     exams = getattr(topic, "exams", None)
     if not exams:
@@ -890,7 +906,8 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
 </div>""" % (crumbs(trail), banner_for(course.slug, topic.slug), "".join(badges), esc(topic.title),
              "\n".join(sec_html), fact,
              render_quiz(tid, topic.quiz),
-             render_exam(tid, topic.exam, topic.exam_title) + (_topic_stretch(stretch_all) if stretch_all else ""),
+             render_exam(tid, topic.exam, topic.exam_title) + (_topic_stretch(stretch_all) if stretch_all else "")
+             + (_topic_quest(getattr(topic, "quest")) if getattr(topic, "quest", None) else ""),
              _unit_exams_note(topic),
              nav_html, toc_html,
              ('<div class="aside-block">%s%s</div>' % (worksheet_link, (
@@ -1022,8 +1039,10 @@ def course_page(course: Course) -> tuple:
          esc(" %s %s" % (course.board, course.code)).strip() or " Revision course"),
         esc(course.title),
         buttons,
-        ('\n        <a class="btn btn-secondary" href="%s">%s %s</a>'
-         % (course.extra_cta[1], ico(course.extra_cta[2]), esc(course.extra_cta[0]))) if course.extra_cta else "",
+        (('\n        <a class="btn btn-secondary" href="%s">%s %s</a>'
+          % (course.extra_cta[1], ico(course.extra_cta[2]), esc(course.extra_cta[0]))) if course.extra_cta else "")
+        + (('\n        <a class="btn btn-secondary" href="%s">%s %s</a>'
+            % (course.quest_cta[1], ico(course.quest_cta[2]), esc(course.quest_cta[0]))) if getattr(course, "quest_cta", None) else ""),
         stats,
         course_banner(course.slug), units_html)
 
