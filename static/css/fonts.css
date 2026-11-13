@@ -12,6 +12,15 @@
  *
  * Poppins, Inter and JetBrains Mono are all licensed under the SIL Open Font
  * License 1.1, which permits self hosting. See assets/fonts/OFL.txt.
+ *
+ * The JetBrains Mono latin file is built without the font's "calt" feature.
+ * That feature joins == != >= <= and the like into single symbols, and a
+ * student has to see exactly the characters they must type. The file has its
+ * own name because the service worker keeps a font for good under its URL:
+ * a browser that saved the old file would never ask for this one. If the file
+ * is ever replaced, rebuild it the same way and give it a new name:
+ *   python3 -m fontTools.subset FILE --unicodes='*' --layout-features-=calt
+ *     --flavor=woff2 --name-IDs='*' --name-languages='*' --notdef-outline
  */
 @font-face {
   font-family: "Inter";
@@ -82,7 +91,7 @@
   font-style: normal;
   font-weight: 400 600;
   font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-400-600-latin.woff2") format("woff2");
+  src: url("/assets/fonts/jetbrains-mono-400-600-latin-plain.woff2") format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {

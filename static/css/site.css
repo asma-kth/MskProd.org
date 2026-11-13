@@ -160,6 +160,8 @@ hr { border: 0; border-top: 1px solid var(--border); margin: var(--sp-6) 0; }
 ::selection { background: var(--aqua); color: #04302F; }
 
 code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
+/* Code shows exactly the characters to type: never join == or != into one symbol. */
+code, kbd, samp, pre, textarea { font-variant-ligatures: none; }
 :not(pre) > code {
   background: var(--surface-sunk); border: 1px solid var(--border);
   padding: .12em .42em; border-radius: 6px; color: var(--accent); white-space: nowrap;

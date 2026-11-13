@@ -24,7 +24,7 @@ NOT_LESSONS = {("computational-thinking", "Practise it as a game")}
 
 # Every Key Stage 3 lesson must have its three extra games before the site
 # is built. Set to False only while they are still being written.
-GAMES_COMPLETE = False
+GAMES_COMPLETE = True
 
 
 def _module(name):

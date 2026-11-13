@@ -11,7 +11,11 @@
 //      question earns nothing on a short answer and at most one mark on a
 //      long one, and "I don't know" earns nothing;
 //   3. every typed game answer is accepted as written, in capitals and with
-//      stray spaces, and a wrong answer is not.
+//      stray spaces, and a wrong answer is not;
+//   4. Code Word marks the letters of a guess the same way in the browser and
+//      in the build, for every code word against thousands of guesses, and the
+//      marks obey the rules: a letter in place is always marked in place, and
+//      no letter is marked more times than the word has it.
 // Run from the repository root: node tools/check_stretch.mjs
 import fs from "fs";
 import path from "path";
@@ -45,13 +49,15 @@ for r in stretch_page.records():
                 "written": [{"kind": kind, "n": i + 1, "q": w.q, "model": w.model, "marks": w.marks,
                              "points": [p.any for p in w.points]}
                             for kind, items in (("short", st.short), ("long", st.long)) for i, w in enumerate(items)],
-                "typed": [{"q": b.q, "accept": b.accept} for b in st.blitz if b.kind == "type"]})
+                "typed": [{"q": b.q, "accept": b.accept} for b in st.blitz if b.kind == "type"],
+                "words": [w.word for w in st.words]})
 print(json.dumps(out))
 `);
 
 const marker = load("static/js/quiz.js").MskMarker;
-const typedRight = load("static/js/stretch.js").MskStretch.typedRight;
-if (!marker || !typedRight) { console.error("quiz.js or stretch.js did not expose its checker"); process.exit(1); }
+const stretch = load("static/js/stretch.js").MskStretch;
+const typedRight = stretch && stretch.typedRight, wordMarks = stretch && stretch.wordMarks;
+if (!marker || !typedRight || !wordMarks) { console.error("quiz.js or stretch.js did not expose its checker"); process.exit(1); }
 
 const problems = [];
 const cases = [];
@@ -102,6 +108,46 @@ cases.forEach((c, i) => {
   }
 });
 
+// Code Word: every code word, against itself, every other code word of its
+// length, rearrangements of itself, repeated letters and random letters.
+const WORDS = [...new Set(LESSONS.flatMap((l) => l.words))];
+const ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const count = (text, ch) => text.split(ch).length - 1;
+const wordCases = [];
+for (const w of WORDS) {
+  const guesses = new Set([w, w.split("").reverse().join(""), w.slice(1) + w[0], w[0].repeat(w.length), w[w.length - 1].repeat(w.length)]);
+  for (const o of WORDS) if (o.length === w.length) guesses.add(o);
+  for (let k = 0; k < 24; k++) {
+    let g = "";
+    for (let i = 0; i < w.length; i++) g += rand(3) ? ABC[rand(26)] : w[rand(w.length)];
+    guesses.add(g);
+  }
+  for (const g of guesses) {
+    const m = wordMarks(g, w);
+    wordCases.push({ g, w, js: m });
+    const where = `Code Word ${w}, guess ${g}`;
+    if (m.length !== w.length) problems.push(`${where}: ${m.length} marks for ${w.length} letters`);
+    if ((g === w) !== m.every((x) => x === 2)) problems.push(`${where}: solved is wrong`);
+    for (let i = 0; i < g.length; i++) {
+      if ((m[i] === 2) !== (g[i] === w[i])) problems.push(`${where}: letter ${i + 1} in place is marked ${m[i]}`);
+      if (m[i] === 1 && !w.includes(g[i])) problems.push(`${where}: letter ${i + 1} is not in the word but is marked`);
+    }
+    for (const ch of new Set(g)) {
+      const marked = [...g].filter((c, i) => c === ch && m[i] > 0).length;
+      if (marked !== Math.min(count(g, ch), count(w, ch))) problems.push(`${where}: ${ch} is marked ${marked} times`);
+    }
+  }
+}
+const pyWords = python(`
+import json, sys
+sys.path.insert(0, ".")
+from mskbuild.stretchcheck import word_marks
+print(json.dumps([word_marks(c["g"], c["w"]) for c in json.load(sys.stdin)]))
+`, JSON.stringify(wordCases.map((c) => ({ g: c.g, w: c.w }))));
+wordCases.forEach((c, i) => {
+  if (JSON.stringify(c.js) !== JSON.stringify(pyWords[i])) problems.push(`Code Word ${c.w}, guess ${c.g}: browser ${JSON.stringify(c.js)}, build ${JSON.stringify(pyWords[i])}`);
+});
+
 const nWritten = LESSONS.reduce((n, l) => n + l.written.length, 0);
 const nTyped = LESSONS.reduce((n, l) => n + l.typed.length, 0);
 if (problems.length) {
@@ -109,4 +155,5 @@ if (problems.length) {
   process.exit(1);
 }
 console.log(`Stretch tasks: ${LESSONS.length} lessons, ${nWritten} written answers and ${nTyped} typed answers checked; ` +
-            `both markers agree on all ${cases.length} test answers.`);
+            `both markers agree on all ${cases.length} test answers. ` +
+            `Code Word: ${WORDS.length} words, ${wordCases.length} guesses marked the same in the browser and the build.`);

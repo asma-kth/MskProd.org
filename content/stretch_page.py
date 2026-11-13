@@ -385,14 +385,14 @@ def _sheet(r):
         body = ""
         if b.kind in ("choice", "multi"):
             body = '<ul class="st-sheet-opts">%s</ul>' % "".join(
-                "<li><span class=\"st-box\"></span>%s</li>" % markup.inline(o) for o in _sheet_order(b))
+                "<li><span class=\"st-box\"></span><span>%s</span></li>" % markup.inline(o) for o in _sheet_order(b))
             if b.kind == "multi":
                 body = '<p class="st-sheet-hint">Tick %d.</p>' % b.n + body
         elif b.kind == "tf":
             body = '<ul class="st-sheet-opts st-sheet-tf"><li><span class="st-box"></span>True</li><li><span class="st-box"></span>False</li></ul>'
         elif b.kind == "order":
             body = ('<p class="st-sheet-hint">Number these 1 to %d.</p><ul class="st-sheet-opts">%s</ul>'
-                    % (len(b.options), "".join("<li><span class=\"st-box\"></span>%s</li>" % markup.inline(o)
+                    % (len(b.options), "".join("<li><span class=\"st-box\"></span><span>%s</span></li>" % markup.inline(o)
                                                for o in _sheet_order(b))))
         else:
             body = '<p class="st-line"></p>'
@@ -427,7 +427,7 @@ def _sheet(r):
         two = [p.right, p.wrong] if _seed(p.q) % 2 else [p.wrong, p.right]
         picks.append('<li class="st-sheet-q"><p>%s</p>%s<ul class="st-sheet-opts st-sheet-tf">%s</ul></li>'
                      % (markup.inline(p.q), _sheet_code(p.code, p.lang),
-                        "".join('<li><span class="st-box"></span>%s</li>' % markup.inline(o) for o in two)))
+                        "".join('<li><span class="st-box"></span><span>%s</span></li>' % markup.inline(o) for o in two)))
         pick_keys.append("<li><b>%s</b> %s</li>" % (markup.inline(p.right), markup.inline(p.why)))
 
     # Meanings in a fixed order in which none sits beside its own word.
@@ -509,7 +509,7 @@ def _sheet_games(st):
     for b in st.bugs:
         three = sorted(list(b.truths) + [b.bug], key=_seed)
         bugs.append('<li class="st-sheet-q"><ul class="st-sheet-opts">%s</ul></li>'
-                    % "".join('<li><span class="st-box"></span>%s</li>' % markup.inline(t) for t in three))
+                    % "".join('<li><span class="st-box"></span><span>%s</span></li>' % markup.inline(t) for t in three))
         bug_key.append("<li><b>%s</b> %s</li>" % (markup.inline(b.bug), markup.inline(b.fix)))
 
     q = ('<h3>Code Word: write the word that fits each clue</h3><ol class="st-sheet-list">%s</ol>'
