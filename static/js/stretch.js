@@ -187,7 +187,8 @@
     if (calm() || !ms) { node.textContent = prefix + fmt(to); return; }
     var t0 = performance.now();
     (function step(t) {
-      var k = Math.min(1, (t - t0) / ms), e = 1 - Math.pow(1 - k, 3);
+      // a frame can be stamped a moment before t0, so k is kept at zero or more
+      var k = Math.max(0, Math.min(1, (t - t0) / ms)), e = 1 - Math.pow(1 - k, 3);
       node.textContent = prefix + fmt(from + (to - from) * e);
       if (k < 1) requestAnimationFrame(step); else node.textContent = prefix + fmt(to);
     })(t0);
