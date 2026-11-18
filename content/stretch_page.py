@@ -10,7 +10,10 @@ It: drag each statement into the right box, like the tick box tables on GCSE
 papers. Then every lesson adds three games: Code Word, where each guess at a
 secret word shows which letters are right; Link Up, where twelve tiles hide
 three groups of four; and Bug Hunt, where two statements are true and one has
-a mistake to catch. The games themselves are static/js/stretch.js; this module
+a mistake to catch. Last come three brain games, which replay the lesson as
+brain training: Odd One Out (logic), Memory Flash (memory) and Fact or Fib
+(speed); content/brain_games.py builds and checks them. Results are rated out
+of three diamonds. The games themselves are static/js/stretch.js; this module
 writes the pages, a hub for each key stage, and the links from the lessons to
 them.
 
@@ -27,6 +30,7 @@ from mskbuild import stretchcheck
 from content import ks3
 from content import ks3_stretch
 from content import ks4_stretch
+from content import brain_games
 
 HUB = "/ks3/stretch/"
 DESC_LIMIT = 160   # characters a search result shows; a longer description is cut mid phrase
@@ -39,8 +43,9 @@ def _desc(name, games, short):
 HUB_TITLE = "Stretch tasks"
 HUB_LEAD3 = ("Three tasks for every Year 7, 8 and 9 lesson: a quiz challenge, This or That with "
              "Pixel the cat, and Memory Match.")
-HUB_LEAD = ("Six tasks for every Year 7, 8 and 9 lesson: a quiz challenge, This or That with Pixel the cat, "
-            "Memory Match, Code Word, Link Up and Bug Hunt.")
+HUB_LEAD = ("Nine tasks for every Year 7, 8 and 9 lesson: a quiz challenge, This or That with Pixel the cat, "
+            "Memory Match, Code Word, Link Up and Bug Hunt, then three brain games: Odd One Out, Memory Flash "
+            "and Fact or Fib. Every result is rated out of three diamonds.")
 
 HUB4 = "/ks4/stretch/"
 HUB4_TITLE = "Key Stage 4 stretch tasks"
@@ -51,9 +56,13 @@ ROUNDS = [("Quiz Blitz", "blitz"), ("Quick Fire", "short"), ("Big Think", "long"
 # what the game and the saved results call each one. Sort It is the fourth
 # task at Key Stage 4. Code Word, Link Up and Bug Hunt follow: the fourth,
 # fifth and sixth at Key Stage 3, the fifth, sixth and seventh at Key Stage 4.
+# The three brain games come last, in a band of their own.
 TASKS = [("quiz", "Quiz Challenge"), ("cat", "This or That"), ("match", "Memory Match"), ("sort", "Sort It"),
-         ("word", "Code Word"), ("link", "Link Up"), ("bug", "Bug Hunt")]
+         ("word", "Code Word"), ("link", "Link Up"), ("bug", "Bug Hunt"),
+         ("odd", "Odd One Out"), ("flash", "Memory Flash"), ("fib", "Fact or Fib")]
 GAMES = ("word", "link", "bug")
+BRAIN = ("odd", "flash", "fib")
+SKILL = {"odd": "Logic", "flash": "Memory", "fib": "Speed"}
 
 # The module that defines each Key Stage 4 course.
 KS4_SOURCES = {"ks4/computer-science": "ks4_cs", "ks4/aqa-computer-science": "aqa_gcse",
@@ -62,7 +71,9 @@ KS4_SOURCES = {"ks4/computer-science": "ks4_cs", "ks4/aqa-computer-science": "aq
 
 def _tasks(st):
     """The tasks one lesson has, in the order its page offers them."""
-    has = {"sort": bool(st.sort), "word": bool(st.words), "link": bool(st.groups), "bug": bool(st.bugs)}
+    brain = bool(st.groups and st.bugs and len(st.pairs) >= max(brain_games.FLASH_LEVELS))
+    has = {"sort": bool(st.sort), "word": bool(st.words), "link": bool(st.groups), "bug": bool(st.bugs),
+           "odd": brain, "flash": brain, "fib": brain}
     return [t for t in TASKS if has.get(t[0], True)]
 
 
@@ -103,6 +114,35 @@ BUG_ART = ('<path d="M14 20 6.5 15.5M12.5 28H4.5M14.5 36l-7 5.5M36 20l7.5-4.5M37
            '<circle cx="19" cy="25" r="2.6" fill="#1E293B"/><circle cx="31" cy="25" r="2.6" fill="#1E293B"/>'
            '<circle cx="18.5" cy="35" r="2.2" fill="#1E293B"/><circle cx="31.5" cy="35" r="2.2" fill="#1E293B"/>'
            '<path d="M17.5 19.5c1.5-2 3.5-3 6-3.2" fill="none" stroke="#ECFCCB" stroke-width="2" stroke-linecap="round"/>')
+
+
+# The brain of the brain games band: two halves and a bolt of lightning.
+BRAIN_ART = ('<svg viewBox="0 0 64 56" aria-hidden="true" focusable="false">'
+             '<path d="M30 6c-4-3-11-2-13 3-5-1-10 3-9 8-5 2-6 9-2 12-2 5 2 10 7 10 1 5 7 8 12 5 2 3 5 4 5 4V6Z" '
+             'fill="#F9A8D4" stroke="#1E293B" stroke-width="2.4" stroke-linejoin="round"/>'
+             '<path d="M34 6c4-3 11-2 13 3 5-1 10 3 9 8 5 2 6 9 2 12 2 5-2 10-7 10-1 5-7 8-12 5-2 3-5 4-5 4V6Z" '
+             'fill="#F472B6" stroke="#1E293B" stroke-width="2.4" stroke-linejoin="round"/>'
+             '<path d="M17 18c3 0 5 2 5 5M13 30c3-2 7-1 8 2M23 41c0-3 2-5 5-5M47 18c-3 0-5 2-5 5M51 30c-3-2-7-1-8 2'
+             'M41 41c0-3-2-5-5-5" fill="none" stroke="#1E293B" stroke-width="2" stroke-linecap="round"/>'
+             '<path d="M35.5 13 27 29.5h6.5l-3.2 12.5L41 25h-6.5l3.2-12Z" fill="#FDE047" stroke="#1E293B" '
+             'stroke-width="2" stroke-linejoin="round"/></svg>')
+
+# A cut diamond, for ratings out of three. Its facets are coloured by custom
+# properties, so one drawing serves lit and unlit diamonds everywhere.
+GEM_FACETS = ('<path d="M2 7.5 6.5 2h3L8 7.5Z" style="fill:var(--g2,#7DD3FC)"/>'
+              '<path d="M9.5 2h5L16 7.5H8Z" style="fill:var(--g1,#E0F2FE)"/>'
+              '<path d="M14.5 2h3L22 7.5h-6Z" style="fill:var(--g3,#38BDF8)"/>'
+              '<path d="M2 7.5h6l4 13Z" style="fill:var(--g3,#38BDF8)"/>'
+              '<path d="M8 7.5h8l-4 13Z" style="fill:var(--g2,#7DD3FC)"/>'
+              '<path d="M16 7.5h6l-10 13Z" style="fill:var(--g4,#0284C7)"/>'
+              '<path d="M6.5 2h11L22 7.5 12 20.5 2 7.5Z" fill="none" style="stroke:var(--g5,#075985)" stroke-width="1.3" '
+              'stroke-linejoin="round"/>')
+GEM_DEFS = ('<svg class="st-glyphs" width="0" height="0" aria-hidden="true" focusable="false">'
+            '<symbol id="st-gem" viewBox="0 0 24 22">%s</symbol></svg>' % GEM_FACETS)
+
+
+def _gem(cls="st-gem"):
+    return '<svg class="%s" viewBox="0 0 24 22" aria-hidden="true" focusable="false"><use href="#st-gem"></use></svg>' % cls
 
 
 def _round_icon(kind):
@@ -162,6 +202,37 @@ def _task_icon(task):
                 'stroke-linejoin="round"/></svg>')
     if task == "bug":
         return ('<svg viewBox="0 0 50 50" aria-hidden="true" focusable="false">%s</svg>' % BUG_ART)
+    if task == "odd":
+        # Three violet tiles that match, and one amber tile that does not, tipped out of line.
+        same = "".join('<rect x="%d" y="%d" width="19" height="19" rx="5" fill="#7C3AED" stroke="#1E293B" stroke-width="2.2"/>'
+                       '<circle cx="%.1f" cy="%.1f" r="4.6" fill="#fff"/>' % (x, y, x + 9.5, y + 9.5)
+                       for x, y in ((4, 4), (4, 27), (27, 27)))
+        return ('<svg viewBox="0 0 50 50" aria-hidden="true" focusable="false">%s'
+                '<g transform="rotate(14 36.5 13)"><rect x="27" y="3.5" width="19" height="19" rx="5" fill="#F59E0B" '
+                'stroke="#1E293B" stroke-width="2.2"/><path d="M36.5 8.2l5 8.6h-10Z" fill="#fff"/></g>'
+                '<path d="M25 22.5l1 2.2 2.2 1-2.2 1-1 2.2-1-2.2-2.2-1 2.2-1Z" fill="#FDE047" stroke="#1E293B" '
+                'stroke-width=".9"/></svg>' % same)
+    if task == "flash":
+        # A card face down, and one turned over in a flash.
+        return ('<svg viewBox="0 0 50 50" aria-hidden="true" focusable="false">'
+                '<g transform="rotate(-10 17 26)"><rect x="5" y="10" width="23" height="31" rx="5" fill="#0891B2" '
+                'stroke="#1E293B" stroke-width="2.2"/><rect x="9" y="14" width="15" height="23" rx="3" fill="none" '
+                'stroke="#fff" stroke-opacity=".55" stroke-width="1.6" stroke-dasharray="3 2"/></g>'
+                '<g transform="rotate(9 33 25)"><rect x="21" y="9" width="23" height="31" rx="5" fill="#fff" '
+                'stroke="#1E293B" stroke-width="2.2"/><path d="M34.5 13.5 27 26h5.2l-2.6 9.5 8.4-13.6h-5.7Z" '
+                'fill="#FDE047" stroke="#1E293B" stroke-width="1.7" stroke-linejoin="round"/></g>'
+                '<path d="M44.5 7.5l3-3M46 13.5h3.5M40.5 3.5 41.5.8" stroke="#F59E0B" stroke-width="2.4" '
+                'stroke-linecap="round"/></svg>')
+    if task == "fib":
+        # A statement card with a red fib stamp and a green fact stamp.
+        return ('<svg viewBox="0 0 50 50" aria-hidden="true" focusable="false">'
+                '<rect x="5" y="3.5" width="40" height="27" rx="6" fill="#fff" stroke="#1E293B" stroke-width="2.2"/>'
+                '<path d="M11.5 11.5h27M11.5 17.5h21M11.5 23.5h14" stroke="#1E293B" stroke-width="2.6" stroke-linecap="round"/>'
+                '<circle cx="14" cy="38.5" r="9" fill="#DC2626" stroke="#1E293B" stroke-width="2.2"/>'
+                '<path d="M10.6 35.1l6.8 6.8M17.4 35.1l-6.8 6.8" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/>'
+                '<circle cx="36" cy="38.5" r="9" fill="#16A34A" stroke="#1E293B" stroke-width="2.2"/>'
+                '<path d="M31.8 38.7l3 3 5.4-5.8" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" '
+                'stroke-linejoin="round"/></svg>')
     if task == "sort":
         return ('<svg viewBox="0 0 50 50" aria-hidden="true" focusable="false">'
                 '<path d="M2.5 30h19.5l-2.3 16.5H4.8Z" fill="#F97316" stroke="#1E293B" stroke-width="2.2" stroke-linejoin="round"/>'
@@ -208,9 +279,10 @@ def ks3_records():
                 "hub": HUB, "active": "/ks3/", "level": "Key Stage 3, %s" % unit.title,
                 "course_name": ks3.COURSE.title, "course_url": "/ks3/",
                 "desc": _desc("%s (%s, lesson %d)" % (st.lesson, topic.title, n),
-                              "six stretch games: a quiz, This or That, Memory Match, Code Word, Link Up and Bug Hunt."
-                              if st.words else "a quiz challenge, This or That with Pixel the cat, and Memory Match.",
-                              "six stretch games, from a quiz to Bug Hunt." if st.words else "three stretch games."),
+                              "nine stretch games: a quiz, This or That, Memory Match, Code Word, Link Up, Bug Hunt "
+                              "and three brain games." if st.words else
+                              "a quiz challenge, This or That with Pixel the cat, and Memory Match.",
+                              "nine stretch games, from a quiz to three brain games." if st.words else "three stretch games."),
             })
     return out
 
@@ -240,10 +312,10 @@ def ks4_records():
                 "course_name": course.title, "course_url": "/%s/" % slug,
                 "desc": _desc(topic.title if topic.title.startswith(topic.spec)
                               else "%s (%s %s)" % (topic.title, course.board, topic.spec),
-                              "seven stretch games: a quiz, This or That, Memory Match, Sort It, Code Word, Link Up "
-                              "and Bug Hunt." if st.words else
+                              "ten stretch games: a quiz, This or That, Memory Match, Sort It, Code Word, Link Up, "
+                              "Bug Hunt and three brain games." if st.words else
                               "a quiz challenge, This or That with Pixel the cat, Memory Match and Sort It.",
-                              "seven stretch games, from a quiz to Bug Hunt." if st.words else "four stretch games."),
+                              "ten stretch games, from a quiz to three brain games." if st.words else "four stretch games."),
             })
     return out
 
@@ -302,6 +374,9 @@ def check():
             missing += ["%s: %s has no Code Word, Link Up and Bug Hunt" % (slug, st.lesson)
                         for st in lessons if not st.words]
     stretchcheck.validate_ks4(lessons4, topics4)
+    brain = brain_games.check(records())
+    if brain:
+        raise SystemExit("The brain games failed their checks:\n  " + "\n  ".join(brain))
     return missing
 
 
@@ -381,6 +456,16 @@ def payload(r, nxt):
     if st.bugs:
         d["bugs"] = [{"t": [markup.inline(t) for t in b.truths], "b": markup.inline(b.bug), "x": markup.inline(b.fix)}
                      for b in st.bugs]
+    if any(t == "odd" for t, _ in _tasks(st)):
+        # Odd One Out: for each group, the tiles of other groups that may be the odd one out among three of its tiles
+        d["odd"] = [[[g, t] for g, t in ok] for ok in brain_games.odd_intruders(r["key"], st)]
+        # Fact or Fib: every statement it may deal, whether it is true, and the fix or explanation
+        d["fib"] = [{"s": markup.inline(t), "t": 1 if ok else 0, "x": markup.inline(why)}
+                    for t, ok, why in brain_games.fib_deck(st)]
+        # Memory Flash: its question, the cards at each level, and the pairs it plays
+        fp = brain_games.flash_pairs(r["key"], st)
+        d["flash"] = {"q": brain_games.flash_ask(st), "l": brain_games.flash_levels(len(fp)),
+                      "p": [{"a": markup.inline(a), "b": markup.inline(b)} for a, b in fp]}
     return d
 
 
@@ -460,6 +545,9 @@ def _sheet(r):
     if st.words:
         games_q, games_k = _sheet_games(st)
         sort_q, sort_k = sort_q + games_q, sort_k + games_k
+    if any(t == "odd" for t, _ in _tasks(st)):
+        brain_q, brain_k = _sheet_brain(r)
+        sort_q, sort_k = sort_q + brain_q, sort_k + brain_k
     return """<section class="st-sheet" id="st-sheet" aria-labelledby="st-sheet-title">
   <h2 id="st-sheet-title">%s: the questions</h2>
   <h3>Quiz Challenge, round 1: Quiz Blitz</h3><ol class="st-sheet-list">%s</ol>
@@ -538,6 +626,62 @@ def _sheet_games(st):
     return q, key
 
 
+def _sheet_brain(r):
+    """The brain games on paper: six odd ones out to circle, a word to write
+    for each meaning from memory, and twelve statements to mark fact or fib.
+    The choices are fixed by the lesson, so a printout always matches its key."""
+    st = r["stretch"]
+    intruders = brain_games.odd_intruders(r["key"], st)
+    usable = [b for b, ok in enumerate(intruders) if ok]
+    rounds, seen = [], set()
+    k = 0
+    while len(rounds) < 6 and k < 60:
+        b = usable[k % len(usable)]
+        seed = _seed("%s odd %d" % (r["key"], k))
+        k += 1
+        keep = [i for i in range(len(st.groups[b].tiles)) if i != seed % len(st.groups[b].tiles)]
+        g, t = intruders[b][(seed // 7) % len(intruders[b])]
+        key = (b, tuple(keep), g, t)
+        if key in seen:
+            continue
+        seen.add(key)
+        four = [st.groups[b].tiles[i] for i in keep] + [st.groups[g].tiles[t]]
+        rounds.append((b, g, st.groups[g].tiles[t], sorted(four, key=_seed)))
+    odd_q = "".join('<li class="st-sheet-q"><ul class="st-sheet-opts st-sheet-four">%s</ul>'
+                    '<p class="st-sheet-hint">What links the other three?</p><p class="st-line"></p></li>'
+                    % "".join('<li><span class="st-box"></span><span>%s</span></li>' % markup.inline(x) for x in four)
+                    for _, _, _, four in rounds)
+    odd_k = "".join("<li><b>%s</b> is the odd one out: it goes with %s. The other three: %s.</li>"
+                    % (markup.inline(t), markup.inline(st.groups[g].name), markup.inline(st.groups[b].name))
+                    for b, g, t, _ in rounds)
+
+    word, meaning = (_in_sentence(n) for n in st.pair_names)
+    fp = sorted(brain_games.flash_pairs(r["key"], st), key=lambda p: _seed(p[1]))
+    flash_q = "".join('<li class="st-sheet-q"><p>%s</p><p class="st-line"></p></li>' % markup.inline(b) for _, b in fp)
+    flash_k = "".join("<li><b>%s</b> %s</li>" % (markup.inline(a), markup.inline(b)) for a, b in fp)
+
+    deck = brain_games.fib_deck(st)
+    fibs = sorted((x for x in deck if not x[1]), key=lambda x: _seed(x[0]))[:brain_games.FIB_MAX_FIBS]
+    facts = sorted((x for x in deck if x[1]), key=lambda x: _seed(x[0]))[:brain_games.FIB_DEAL - len(fibs)]
+    dealt = sorted(fibs + facts, key=lambda x: _seed("fib " + x[0]))
+    fib_q = "".join('<li class="st-sheet-q"><p>%s</p><ul class="st-sheet-opts st-sheet-tf"><li><span class="st-box">'
+                    '</span>Fact</li><li><span class="st-box"></span>Fib</li></ul></li>' % markup.inline(t)
+                    for t, _, _ in dealt)
+    fib_k = "".join("<li><b>%s</b> %s%s</li>" % ("Fact" if ok else "Fib", markup.inline(t),
+                                                 (" <i>The fix:</i> %s" % markup.inline(why)) if not ok else "")
+                    for t, ok, why in dealt)
+    q = ('<h3>Brain game: Odd One Out</h3><p class="st-sheet-hint">Three tiles in each set share a link. Tick the '
+         'odd one out, then write what links the other three.</p><ol class="st-sheet-list">%s</ol>'
+         '<h3>Brain game: Memory Flash, on paper</h3><p class="st-sheet-hint">%s Write your answer from memory.</p>'
+         '<ol class="st-sheet-list">%s</ol>'
+         '<h3>Brain game: Fact or Fib</h3><p class="st-sheet-hint">Tick Fact if the statement is true and Fib if it '
+         'is not.</p><ol class="st-sheet-list">%s</ol>' % (odd_q, esc(brain_games.flash_ask(st)), flash_q, fib_q))
+    key = ('<h3>Odd One Out</h3><ol class="st-sheet-list">%s</ol>'
+           '<h3>Memory Flash</h3><ol class="st-sheet-list">%s</ol>'
+           '<h3>Fact or Fib</h3><ol class="st-sheet-list">%s</ol>' % (odd_k, flash_k, fib_k))
+    return q, key
+
+
 def _in_sentence(name):
     """A card label inside a sentence: Tag reads as tag, but CSS stays CSS."""
     return name if name.isupper() else name.lower()
@@ -571,6 +715,7 @@ def _lobby(r):
         % (kind, _round_icon(kind), name, counts[kind]) for name, kind in ROUNDS)
     word, meaning = (_in_sentence(n) for n in st.pair_names)
     n_sort = len(st.sort.items) if st.sort else 0
+    flash_levels = brain_games.flash_levels(len(brain_games.flash_pairs(r["key"], st)))
     about = {
         "quiz": ("A quiz game against four computer players, then short and long written answers.",
                  "About 20 minutes"),
@@ -587,6 +732,12 @@ def _lobby(r):
                  "%d groups, about 3 minutes" % len(st.groups)),
         "bug": ("Two statements are true and one has a bug. Catch the bug before it gets away.",
                 "%d rounds, about 4 minutes" % len(st.bugs)),
+        "odd": ("Four tiles: three share a link and one does not. Spot the odd one out, then see what links the rest.",
+                "%d rounds, about 3 minutes" % brain_games.ODD_ROUNDS),
+        "flash": ("Study the %s cards, then they flip over. Find the card that goes with each clue, from memory." % word,
+                  "%d levels, about 4 minutes" % len(flash_levels)),
+        "fib": ("Statements fly in one at a time. Is each one a fact or a fib? Decide fast.",
+                "%d statements, about 3 minutes" % brain_games.FIB_DEAL),
     }
     points = {
         "cat": ["Two answers to every question", "A fish treat for every right answer",
@@ -601,22 +752,44 @@ def _lobby(r):
                  "Fewer slips win more points"],
         "bug": ["Three statements in every round", "Tap the one with the mistake",
                 "Streaks win bonus points"],
+        "odd": ["Three belong together, one does not", "A hint shows the link, for fewer points",
+                "Quick answers and streaks win more"],
+        "flash": ["Three levels: %s cards" % _and(str(n) for n in flash_levels),
+                  "Two tries to find each card", "Streaks win bonus points"],
+        "fib": ["Swipe, tap or use the arrow keys", "Every fib comes with its fix", "Streaks multiply your points"],
     }
     tasks = _tasks(st)
-    cards = []
-    for n, (task, name) in enumerate(tasks, 1):
-        cards.append("""<div class="st-task st-task-%(t)s" role="group" aria-labelledby="st-t-%(t)s">
-        <div class="st-task-head"><span class="st-task-art" data-st-art="%(t)s" aria-hidden="true">%(art)s</span><span class="st-task-n">Task %(n)d</span></div>
-        <h2 id="st-t-%(t)s">%(name)s</h2>
+
+    def card(task, name, tag, h):
+        return """<div class="st-task st-task-%(t)s" role="group" aria-labelledby="st-t-%(t)s">
+        <div class="st-task-head"><span class="st-task-art" data-st-art="%(t)s" aria-hidden="true">%(art)s</span><span class="st-task-n">%(tag)s</span></div>
+        <%(h)s id="st-t-%(t)s">%(name)s</%(h)s>
         <p class="st-task-sum">%(sum)s</p>
         %(rounds)s<p class="st-task-time">%(clock)s %(time)s</p>
         <p class="st-best" data-st-best="%(t)s" hidden></p>
         <button class="st-start" type="button" data-st-start="%(t)s">%(play)s Play<span class="sr-only"> %(name)s</span></button>
-      </div>""" % dict(t=task, n=n, name=name, art=_task_icon(task), sum=esc(about[task][0]), time=about[task][1],
+      </div>""" % dict(t=task, tag=tag, h=h, name=name, art=_task_icon(task), sum=esc(about[task][0]), time=about[task][1],
                        rounds=('<ol class="st-rounds">%s</ol>' % rounds if task == "quiz" else
                                '<ul class="st-points">%s</ul>' % "".join("<li>%s%s</li>" % (ico("i-check"), esc(t))
                                                                          for t in points[task])),
-                       clock=ico("i-clock"), play=ico("i-play")))
+                       clock=ico("i-clock"), play=ico("i-play"))
+    main = [t for t in tasks if t[0] not in BRAIN]
+    cards = [card(task, name, "Task %d" % n, "h2") for n, (task, name) in enumerate(main, 1)]
+    brain = [t for t in tasks if t[0] in BRAIN]
+    band = ""
+    if brain:
+        band = """<section class="st-brain" aria-labelledby="st-brain-h">
+    <div class="st-brain-head">
+      <span class="st-brain-ico" aria-hidden="true">%s</span>
+      <div><p class="st-brain-tag">Brain games</p><h2 id="st-brain-h">Train your brain on this lesson</h2>
+      <p>Logic, memory and speed, built from this lesson's own key ideas. Win up to three diamonds in each game.</p></div>
+      <span class="st-brain-gems" aria-hidden="true">%s</span>
+    </div>
+    <div class="st-tasks st-brain-tasks" data-n="%d">
+      %s
+    </div>
+  </section>""" % (BRAIN_ART, _gem("st-gem is-on") * 3, len(brain),
+                   "\n      ".join(card(task, name, SKILL[task], "h3") for task, name in brain))
     return """<section class="st-lobby" id="st-lobby" aria-labelledby="st-title">
   <div class="st-bg" aria-hidden="true">%s</div>
   <div class="st-lobby-host" aria-hidden="true">%s</div>
@@ -634,13 +807,14 @@ def _lobby(r):
   <div class="st-tasks" data-n="%d">
       %s
   </div>
+  %s
   <div class="st-lobby-go">
     <button class="st-link" type="button" data-st-print="sheet">%s Print the questions</button>
     <button class="st-link" type="button" data-st-print="answers">%s Print with answers</button>
   </div>
   <p class="st-nojs">The games need JavaScript. Every question is below, with the answers at the end.</p>
 </section>""" % (BG, cat.rig(cls="px st-px"), " &middot; ".join(esc(k) for k in r["kicker"]),
-                 esc(r["title"]), ico("i-timer"), ico("i-sound"), len(tasks), "\n      ".join(cards),
+                 esc(r["title"]), ico("i-timer"), ico("i-sound"), len(main), "\n      ".join(cards), band,
                  ico("i-paper"), ico("i-check"))
 
 
@@ -666,9 +840,10 @@ def _lesson_page(r, nxt, prev):
   <nav class="topic-nav" aria-label="Stretch tasks">%s</nav>
 </div>
 <template id="st-pixel">%s</template>
+%s
 <script type="application/json" id="st-data">%s</script>""" % (
         crumbs(trail), _lobby(r), r["lesson_url"], ico("i-book"), esc(r["title"]), _sheet(r), "".join(nav),
-        cat.rig(), data)
+        cat.rig(), GEM_DEFS, data)
     title = "Stretch tasks: %s" % r["title"]
     ld = [crumbs_ld(trail), {
         "@context": "https://schema.org", "@type": "LearningResource",
@@ -708,19 +883,35 @@ GLYPHS = ('<svg class="st-glyphs" width="0" height="0" aria-hidden="true" focusa
           '<symbol id="st-g-bug" viewBox="0 0 24 24"><path d="M6.5 9.5 2.5 7.5M5.5 14H1.5M6.5 18l-4 2.5M17.5 9.5l4-2M18.5 14h4'
           'M17.5 18l4 2.5" fill="none" stroke="#1E293B" stroke-width="1.6" stroke-linecap="round"/>'
           '<circle cx="12" cy="6.5" r="3.4" fill="#1E293B"/><ellipse cx="12" cy="14.5" rx="6.4" ry="7.4" fill="#65A30D" '
-          'stroke="#1E293B" stroke-width="1.4"/><path d="M12 7.5v14.2" stroke="#1E293B" stroke-width="1.3"/></symbol></svg>')
+          'stroke="#1E293B" stroke-width="1.4"/><path d="M12 7.5v14.2" stroke="#1E293B" stroke-width="1.3"/></symbol>'
+          '<symbol id="st-g-odd" viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="2.4" fill="#7C3AED"/>'
+          '<rect x="2" y="13" width="9" height="9" rx="2.4" fill="#7C3AED"/><rect x="13" y="13" width="9" height="9" rx="2.4" '
+          'fill="#7C3AED"/><rect x="13" y="2" width="9" height="9" rx="2.4" fill="#F59E0B" transform="rotate(14 17.5 6.5)"/>'
+          '</symbol>'
+          '<symbol id="st-g-flash" viewBox="0 0 24 24"><rect x="4" y="1.5" width="16" height="21" rx="3" fill="#0891B2"/>'
+          '<path d="M13.5 4.5 8 13h3.6l-1.8 6.5 6.2-9.4h-3.9Z" fill="#FDE047" stroke="#1E293B" stroke-width="1.1" '
+          'stroke-linejoin="round"/></symbol>'
+          '<symbol id="st-g-fib" viewBox="0 0 24 24"><circle cx="7" cy="12" r="6" fill="#DC2626"/>'
+          '<path d="M4.8 9.8l4.4 4.4M9.2 9.8l-4.4 4.4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>'
+          '<circle cx="17" cy="12" r="6" fill="#16A34A"/><path d="M14.3 12.2l2 2 3.6-3.8" fill="none" stroke="#fff" '
+          'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>'
+          '<symbol id="st-gem" viewBox="0 0 24 22">' + GEM_FACETS + '</symbol></svg>')
 
 
 def _hub_tasks(tasks):
-    """Each task's best stars on a hub card, filled in from this device's results."""
-    out = []
-    for task, name in tasks:
-        out.append('<span class="st-hub-task" data-st-task="%s"><svg class="st-g" aria-hidden="true" focusable="false">'
-                   '<use href="#st-g-%s"></use></svg><span class="st-stars" data-st-stars aria-hidden="true">%s</span>'
-                   '<span class="sr-only" data-st-sr>%s: not played yet.</span></span>'
-                   % (task, task, ico("i-star", "icon st-star") * 3, name))
-    cls = {4: " is-four", 6: " is-six", 7: " is-seven"}.get(len(tasks), "")
-    return '<span class="st-hub-tasks%s">%s</span>' % (cls, "".join(out))
+    """Each task's best diamonds on a hub card, filled in from this device's
+    results. The brain games take a row of their own."""
+    def badge(task, name):
+        return ('<span class="st-hub-task" data-st-task="%s"><svg class="st-g" aria-hidden="true" focusable="false">'
+                '<use href="#st-g-%s"></use></svg><span class="st-gems" data-st-gems aria-hidden="true">%s</span>'
+                '<span class="sr-only" data-st-sr>%s: not played yet.</span></span>' % (task, task, _gem() * 3, name))
+    main = [t for t in tasks if t[0] not in BRAIN]
+    brain = [t for t in tasks if t[0] in BRAIN]
+    cls = {4: " is-four", 6: " is-six", 7: " is-seven"}.get(len(main), "")
+    out = '<span class="st-hub-tasks%s">%s</span>' % (cls, "".join(badge(*t) for t in main))
+    if brain:
+        out += '<span class="st-hub-tasks is-brain">%s</span>' % "".join(badge(*t) for t in brain)
+    return out
 
 
 def _hub_card(r, label):
@@ -793,8 +984,9 @@ def _hub4_lead(courses):
     names = [n for n, _ in courses]
     played = [n for n, g in courses if g]
     if played and len(played) == len(names):
-        return ("Seven tasks for every lesson of %s: a quiz challenge, This or That with Pixel the cat, "
-                "Memory Match, Sort It, Code Word, Link Up and Bug Hunt." % _and(names))
+        return ("Ten tasks for every lesson of %s: a quiz challenge, This or That with Pixel the cat, "
+                "Memory Match, Sort It, Code Word, Link Up and Bug Hunt, then three brain games: Odd One Out, "
+                "Memory Flash and Fact or Fib. Every result is rated out of three diamonds." % _and(names))
     lead = ("Four tasks for every lesson of %s: a quiz challenge, This or That with Pixel the cat, "
             "Memory Match and Sort It." % _and(names))
     if played:
@@ -825,9 +1017,8 @@ def _hub4(recs):
     first = recs[0]
     title = "GCSE Computer Science%s stretch tasks" % (" and Creative iMedia" if "imedia" in [k for k, _ in courses] else "")
     # The lead names every course, too long for a search snippet once all four carry the games
-    summary = ("Seven stretch tasks for every %s lesson: a quiz, This or That, Memory Match, Sort It, "
-               "Code Word, Link Up and Bug Hunt." % title[:-len(" stretch tasks")]
-               if all(r["stretch"].words for r in recs) else "")
+    summary = ("Ten stretch tasks for every %s lesson, from a quiz to three brain games with diamonds to win."
+               % title[:-len(" stretch tasks")] if all(r["stretch"].words for r in recs) else "")
     return _hub_page(path=HUB4, title=title, h1=HUB4_TITLE,
                      lead=_hub4_lead((n, all(r["stretch"].words for r in recs if r["ckey"] == k)) for k, n in courses),
                      trail=[("Home", "/"), (HUB4_TITLE, None)],
@@ -845,10 +1036,12 @@ def _publish(recs, register, add_search):
             add_search("Stretch tasks: %s" % r["title"], r["url"],
                        "%s %s, lesson %d" % (r["topic"].spec, r["topic"].title, r["n"]),
                        ("stretch task challenge quiz game this or that pixel cat memory match pairs code word "
-                        "link up bug hunt word puzzle ks3 %s %s %s" % (r["year"], r["topic"].title, r["title"])).lower())
+                        "link up bug hunt word puzzle brain games odd one out memory flash fact or fib diamonds "
+                        "ks3 %s %s %s" % (r["year"], r["topic"].title, r["title"])).lower())
         else:
             add_search("Stretch tasks: %s" % r["title"], r["url"], "%s %s" % (r["cname"], r["topic"].spec),
-                       ("stretch task challenge quiz game this or that pixel cat memory match sort it ks4 gcse %s %s %s"
+                       ("stretch task challenge quiz game this or that pixel cat memory match sort it code word link up "
+                        "bug hunt brain games odd one out memory flash fact or fib diamonds ks4 gcse %s %s %s"
                         % (r["cname"], r["topic"].spec, r["title"])).lower())
 
 
@@ -863,19 +1056,21 @@ def build(register, add_search):
     write(HUB, _hub(ks3r))
     register(HUB, 0.8, "weekly")
     add_search(HUB_TITLE, HUB, "Years 7, 8 and 9: %s tasks for every lesson"
-               % ("six" if len(_tasks_of(ks3r)) > 3 else "three"),
+               % ("nine" if len(_tasks_of(ks3r)) > 3 else "three"),
                "stretch tasks challenge extension fast finishers quiz game kahoot this or that pixel cat "
-               "memory match pairs code word link up bug hunt word puzzle games ks3 year 7 year 8 year 9 lessons")
+               "memory match pairs code word link up bug hunt word puzzle games brain games odd one out "
+               "memory flash fact or fib diamonds ks3 year 7 year 8 year 9 lessons")
     if ks4r:
         for key in dict.fromkeys(r["ckey"] for r in ks4r):
             _publish([r for r in ks4r if r["ckey"] == key], register, add_search)
         write(HUB4, _hub4(ks4r))
         register(HUB4, 0.8, "weekly")
         games4 = all(r["stretch"].words for r in ks4r)
-        add_search(HUB4_TITLE, HUB4, "GCSE: %s tasks for every topic" % ("seven" if games4 else "four"),
+        add_search(HUB4_TITLE, HUB4, "GCSE: %s tasks for every topic" % ("ten" if games4 else "four"),
                    "stretch tasks challenge extension fast finishers quiz game kahoot this or that pixel cat "
                    "memory match sort it ks4 gcse computer science revision games"
-                   + (" code word link up bug hunt word puzzle connections" if games4 else ""))
+                   + (" code word link up bug hunt word puzzle connections brain games odd one out memory flash "
+                      "fact or fib diamonds" if games4 else ""))
     n_q = sum(len(r["stretch"].blitz) + len(r["stretch"].short) + len(r["stretch"].long) for r in recs)
     n_p = sum(len(r["stretch"].picks) for r in recs)
     n_m = sum(len(r["stretch"].pairs) for r in recs)
@@ -883,6 +1078,10 @@ def build(register, add_search):
     n_w = sum(len(r["stretch"].words) for r in recs)
     n_g = sum(len(r["stretch"].groups) for r in recs)
     n_b = sum(len(r["stretch"].bugs) for r in recs)
+    n_odd = sum(brain_games.odd_puzzles(brain_games.odd_intruders(r["key"], r["stretch"]), r["stretch"].groups)
+                for r in recs if r["stretch"].groups)
+    n_fib = sum(len(brain_games.fib_deck(r["stretch"])) for r in recs if r["stretch"].bugs)
     print("Stretch tasks: %d lessons (%d at Key Stage 4), %d quiz questions, %d This or That questions, "
           "%d Memory Match pairs, %d Sort It cards, %d Code Word words, %d Link Up groups and %d Bug Hunt rounds checked"
           % (len(recs), len(ks4r), n_q, n_p, n_m, n_s, n_w, n_g, n_b))
+    print("Brain games: %d possible Odd One Out rounds and %d Fact or Fib statements checked" % (n_odd, n_fib))

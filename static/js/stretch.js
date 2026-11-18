@@ -13,9 +13,11 @@
  * lessons add three games. Code Word: guess a secret word from its clue, and
  * every guess shows which letters are right. Link Up: twelve tiles hide three
  * groups of four. Bug Hunt: two statements are true and one has a mistake to
- * catch. Best scores are kept on this device only.
+ * catch. Then three brain games replay the lesson as brain training: Odd One
+ * Out (logic), Memory Flash (memory) and Fact or Fib (speed). Every result
+ * is rated out of three diamonds. Best scores are kept on this device only.
  *
- * The hub page uses only the star painting near the top of this file.
+ * The hub page uses only the diamond painting near the top of this file.
  */
 (function () {
   "use strict";
@@ -76,10 +78,24 @@
     if (p.you) return el("span", { class: "st-av st-av-you", "aria-hidden": "true", text: (p.name.charAt(0) || "Y").toUpperCase() });
     return el("span", { class: "st-av", style: "--av:" + p.av, "aria-hidden": "true", html: '<svg viewBox="0 0 32 32">' + FACES[p.face] + "</svg>" });
   }
-  function bigStar(on) {
-    return '<svg class="st-bigstar' + (on ? "" : " is-off") + '" viewBox="0 0 64 62" aria-hidden="true"><path d="M32 3l8.6 17.6 19.4 2.8-14 13.7 3.3 19.3L32 47.3 14.7 56.4 18 37.1 4 23.4l19.4-2.8Z" fill="' +
-      (on ? "#FBBF24" : "#C4B5FD") + '" stroke="' + (on ? "#B45309" : "#7C3AED") + '" stroke-width="3" stroke-linejoin="round"/>' +
-      (on ? '<path d="M24 22l5-1.5" stroke="#FEF3C7" stroke-width="3" stroke-linecap="round"/>' : "") + "</svg>";
+  /* A cut diamond: the rating on every result, out of three. Its facets take
+     their colours from custom properties, so the stylesheet lights it. */
+  var GEM_FACETS = '<path d="M2 7.5 6.5 2h3L8 7.5Z" style="fill:var(--g2,#7DD3FC)"/><path d="M9.5 2h5L16 7.5H8Z" style="fill:var(--g1,#E0F2FE)"/>' +
+    '<path d="M14.5 2h3L22 7.5h-6Z" style="fill:var(--g3,#38BDF8)"/><path d="M2 7.5h6l4 13Z" style="fill:var(--g3,#38BDF8)"/>' +
+    '<path d="M8 7.5h8l-4 13Z" style="fill:var(--g2,#7DD3FC)"/><path d="M16 7.5h6l-10 13Z" style="fill:var(--g4,#0284C7)"/>' +
+    '<path d="M6.5 2h11L22 7.5 12 20.5 2 7.5Z" fill="none" style="stroke:var(--g5,#075985)" stroke-width="1.3" stroke-linejoin="round"/>';
+  var GEM = '<svg class="st-gem is-on" viewBox="0 0 24 22" aria-hidden="true" focusable="false">' + GEM_FACETS + "</svg>";
+  function gemIcon(on) {
+    return '<svg class="st-gem' + (on ? " is-on" : "") + '" viewBox="0 0 24 22" aria-hidden="true" focusable="false"><use href="#st-gem"></use></svg>';
+  }
+  function bigGem(on) {
+    return '<svg class="st-biggem' + (on ? " is-on" : " is-off") + '" viewBox="0 0 64 56" aria-hidden="true" focusable="false">' +
+      '<path d="M4 19 17 5h8l-4 14Z" style="fill:var(--g2)"/><path d="M25 5h14l4 14H21Z" style="fill:var(--g1)"/>' +
+      '<path d="M39 5h8l13 14H43Z" style="fill:var(--g3)"/><path d="M4 19h17l11 34Z" style="fill:var(--g3)"/>' +
+      '<path d="M21 19h22L32 53Z" style="fill:var(--g2)"/><path d="M43 19h17L32 53Z" style="fill:var(--g4)"/>' +
+      '<path d="M17 5h30l13 14-28 34L4 19Z" fill="none" style="stroke:var(--g5)" stroke-width="3" stroke-linejoin="round"/>' +
+      (on ? '<path d="M27 8.5h6l-3.5 7Z" fill="#fff" opacity=".85"/><path class="st-gem-spark" d="M53 1.5l1.6 3.4 3.4 1.6-3.4 1.6-1.6 3.4-1.6-3.4-3.4-1.6 3.4-1.6Z" fill="#fff"/>' : "") +
+      "</svg>";
   }
   var MEDAL_ART = {
     crown: '<path d="M18 36 20 22l7 7 5-10 5 10 7-7 2 14Z" fill="#FDE047" stroke="#92400E" stroke-width="2" stroke-linejoin="round"/>',
@@ -122,7 +138,11 @@
     bad: function () { tone(233, 0, 0.2, "sine", 0.1); tone(196, 0.14, 0.26, "sine", 0.09); },
     pop: function () { tone(880, 0, 0.06, "triangle", 0.05); },
     board: function () { [392, 494, 587].forEach(function (f, i) { tone(f, i * 0.09, 0.18, "triangle", 0.08); }); },
-    win: function () { [523, 659, 784, 1046, 784, 1046, 1318].forEach(function (f, i) { tone(f, i * 0.11, 0.26, "triangle", 0.1); }); }
+    win: function () { [523, 659, 784, 1046, 784, 1046, 1318].forEach(function (f, i) { tone(f, i * 0.11, 0.26, "triangle", 0.1); }); },
+    gem: function () { tone(1568, 0, 0.09, "triangle", 0.06); tone(2093, 0.06, 0.12, "triangle", 0.05); tone(2637, 0.12, 0.2, "sine", 0.045); },
+    flip: function () { tone(740, 0, 0.05, "square", 0.025); tone(980, 0.04, 0.05, "square", 0.02); },
+    level: function () { [659, 784, 988, 1318, 1568].forEach(function (f, i) { tone(f, i * 0.08, 0.22, "triangle", 0.08); }); },
+    stamp: function () { tone(160, 0, 0.14, "square", 0.05); tone(90, 0.03, 0.16, "sine", 0.08); }
   };
   var opts = store.get(OPTS, null) || {};
   if (typeof opts.timer !== "boolean") opts.timer = true;
@@ -130,10 +150,11 @@
   function sfx(name) { if (opts.sound && SOUNDS[name]) { try { SOUNDS[name](); } catch (e) { /* sound is a nicety */ } } }
 
   /* ------------------------------------------------------------ confetti */
-  function confetti(canvas, ms) {
+  function confetti(canvas, ms, gems) {
     if (calm() || !canvas || !canvas.getContext) return;
     var ctx = canvas.getContext("2d"), W, H, t0 = performance.now(), parts = [];
-    var colours = ["#D7263D", "#1F5FD1", "#F2B705", "#1E7B34", "#FDE047", "#F472B6", "#FFFFFF"];
+    var colours = gems ? ["#E0F2FE", "#7DD3FC", "#38BDF8", "#0EA5E9", "#A5F3FC", "#F0ABFC", "#FFFFFF"] :
+      ["#D7263D", "#1F5FD1", "#F2B705", "#1E7B34", "#FDE047", "#F472B6", "#FFFFFF"];
     var dpr = Math.min(2, window.devicePixelRatio || 1);
     W = canvas.clientWidth; H = canvas.clientHeight;
     canvas.width = W * dpr; canvas.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -141,7 +162,7 @@
       var left = i % 2 === 0;
       parts.push({ x: left ? -10 : W + 10, y: H * (0.25 + Math.random() * 0.35), vx: (left ? 1 : -1) * (Math.random() * 9 + 4),
                    vy: -Math.random() * 12 - 3, r: Math.random() * 7 + 5, a: Math.random() * 6, va: (Math.random() - 0.5) * 0.3,
-                   c: colours[i % colours.length], s: i % 4 });
+                   c: colours[i % colours.length], s: gems ? (i % 3 ? 3 : 1) : i % 4 });
     }
     function frame(t) {
       var age = t - t0;
@@ -208,9 +229,11 @@
   }
 
   /* ================================================================ HUB */
-  var TASKS = ["quiz", "cat", "match", "sort", "word", "link", "bug"];
+  var TASKS = ["quiz", "cat", "match", "sort", "word", "link", "bug", "odd", "flash", "fib"];
   var TASK_NAMES = { quiz: "Quiz Challenge", cat: "This or That", match: "Memory Match", sort: "Sort It",
-                     word: "Code Word", link: "Link Up", bug: "Bug Hunt" };
+                     word: "Code Word", link: "Link Up", bug: "Bug Hunt",
+                     odd: "Odd One Out", flash: "Memory Flash", fib: "Fact or Fib" };
+  var BRAIN = { odd: "Logic", flash: "Memory", fib: "Speed" };
   /* The Quiz Challenge keeps the lesson's own key, so results saved before
      the other tasks existed still count. */
   function recKey(base, task) { return task === "quiz" ? base : base + "/" + task; }
@@ -219,9 +242,9 @@
     var base = card.getAttribute("data-st-key");
     Array.prototype.forEach.call(card.querySelectorAll("[data-st-task]"), function (b) {
       var task = b.getAttribute("data-st-task"), r = records[recKey(base, task)], n = r ? r.s : 0;
-      Array.prototype.forEach.call(b.querySelectorAll("[data-st-stars] .icon"), function (s, i) { s.classList.toggle("is-on", i < n); });
+      Array.prototype.forEach.call(b.querySelectorAll("[data-st-gems] .st-gem"), function (s, i) { s.classList.toggle("is-on", i < n); });
       var sr = b.querySelector("[data-st-sr]");
-      if (sr) sr.textContent = TASK_NAMES[task] + ": " + (r ? n + " of 3 stars." : "not played yet.");
+      if (sr) sr.textContent = TASK_NAMES[task] + ": " + (r ? n + " of 3 diamonds." : "not played yet.");
       b.classList.toggle("is-played", !!r);
     });
   });
@@ -278,10 +301,8 @@
       if (!best) return;
       if (!r) { best.hidden = true; return; }
       best.hidden = false;
-      best.innerHTML = '<span class="st-stars" aria-hidden="true">' + [0, 1, 2].map(function (i) {
-        return '<svg class="icon' + (i < r.s ? " is-on" : "") + '" aria-hidden="true" focusable="false"><use href="#i-star"></use></svg>';
-      }).join("") + "</span>";
-      best.appendChild(document.createTextNode("Your best: " + plural(r.s, "star") + ", " + fmt(r.b) + " points"));
+      best.innerHTML = '<span class="st-gems" aria-hidden="true">' + [0, 1, 2].map(function (i) { return gemIcon(i < r.s); }).join("") + "</span>";
+      best.appendChild(document.createTextNode("Your best: " + plural(r.s, "diamond") + ", " + fmt(r.b) + " points"));
     });
   }
   paintBest();
@@ -387,6 +408,14 @@
       ui.groupsChip = el("span", { class: "st-chip" }, [el("small", { text: "Groups" }), ui.groupsN]);
       ui.timeChip = el("span", { class: "st-chip st-chip-time", hidden: !opts.timer }, [el("span", { html: ico("i-timer") }).firstChild, ui.timeN]);
       chips = [ui.groupsChip, ui.timeChip];
+    } else if (BRAIN[task]) {
+      ui.progN = el("span", { text: "" });
+      ui.progChip = el("span", { class: "st-chip" }, [el("small", { text: task === "flash" ? "Level" : task === "fib" ? "Card" : "Round" }), ui.progN]);
+      ui.ptsN = el("span", { text: "0" });
+      ui.ptsChip = el("span", { class: "st-chip st-chip-gem" }, [el("span", { class: "st-chip-gemico", html: GEM }), el("small", { text: "Points" }), ui.ptsN]);
+      ui.multi = el("b", { class: "st-multi", hidden: true });
+      ui.streak.appendChild(ui.multi);
+      chips = [ui.progChip, ui.ptsChip, ui.streak];
     } else if (task === "bug") {
       ui.caughtN = el("span", { text: "0 / " + D.bugs.length });
       ui.caughtChip = el("span", { class: "st-chip" }, [el("small", { text: "Caught" }), ui.caughtN]);
@@ -462,7 +491,7 @@
      Word, Link Up and Bug Hunt are Key Stage 3 games. */
   function has(task) {
     return task === "sort" ? !!D.sort : task === "word" ? !!D.words : task === "link" ? !!D.link :
-      task === "bug" ? !!D.bugs : !!TASK_NAMES[task];
+      task === "bug" ? !!D.bugs : BRAIN[task] ? !!(D.odd && D.fib && D.flash && D.link) : !!TASK_NAMES[task];
   }
   function begin(task) {
     task = has(task) ? task : "quiz";
@@ -471,7 +500,8 @@
             rivals: RIVALS.map(function (r) { return { id: r.id, name: r.name, av: r.av, face: r.face, skill: r.skill, pace: r.pace, pts: 0, streak: 0 }; }),
             order: ["you", "ada", "alan", "grace", "tim"], written: { short: [], long: [] }, done: false };
     } else {
-      G = { round: task, qi: 0, streak: 0, bestStreak: 0, right: 0, pts: 0, answers: [], done: false, locked: false };
+      G = { round: task, qi: 0, streak: 0, bestStreak: 0, right: 0, pts: 0, answers: [], done: false, locked: false,
+            shown: 0, hints: 0, fast: 0, misses: 0, firsts: 0, caught: 0 };
     }
     G.task = task;
     buildStage(task);
@@ -484,6 +514,9 @@
     else if (task === "word") wordSplash();
     else if (task === "link") linkSplash();
     else if (task === "bug") bugSplash();
+    else if (task === "odd") oddSplash();
+    else if (task === "flash") flashSplash();
+    else if (task === "fib") fibSplash();
     else matchSplash();
   }
   function leave(ask) {
@@ -530,6 +563,9 @@
       if (/^[a-zA-Z]$/.test(e.key)) { e.preventDefault(); wordType(e.key.toUpperCase()); return; }
       if (e.key === "Backspace") { e.preventDefault(); wordDelete(); return; }
       if (e.key === "Enter" && ((tag !== "button" && tag !== "a") || letterKey)) { e.preventDefault(); wordSubmit(); return; }
+    }
+    if (G.task === "fib" && G.deck && !G.locked && !G.done && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
+      e.preventDefault(); fibAnswer(e.key === "ArrowRight", false); return;
     }
     if (/^[1-6]$/.test(e.key) && ui.tiles && !G.locked) {
       var t = ui.tiles[parseInt(e.key, 10) - 1];
@@ -1213,7 +1249,7 @@
     var title = stars === 3 ? "Stretch champion" : stars === 2 ? "Strong stretch" : "Stretch started: play again to go further";
     s.appendChild(el("div", { class: "st-res-top" }, [cat, el("p", { class: "st-res-title", text: title })]));
     s.appendChild(el("h2", { tabindex: "-1", text: D.lesson }));
-    s.appendChild(el("div", { class: "st-res-stars", role: "img", "aria-label": stars + " of 3 stars", html: bigStar(stars >= 1) + bigStar(stars >= 2) + bigStar(stars >= 3) }));
+    s.appendChild(el("div", { class: "st-res-stars", role: "img", "aria-label": stars + " of 3 diamonds", html: bigGem(stars >= 1) + bigGem(stars >= 2) + bigGem(stars >= 3) }));
     var totalN = el("span", { text: "0" });
     s.appendChild(el("div", { class: "st-res-total" }, [totalN, el("small", { text: "points" })]));
     if (newBest) s.appendChild(el("span", { class: "st-res-best", text: "New personal best!" }));
@@ -1245,7 +1281,7 @@
     countUp(totalN, 0, total, 1600);
     if (stars >= 2) setTimeout(function () { confetti(ui.confetti, 4200); }, calm() ? 0 : 900);
     sfx("win");
-    say("Finished. " + stars + " of 3 stars and " + fmt(total) + " points." + (newBest ? " New personal best." : ""));
+    say("Finished. " + stars + " of 3 diamonds and " + fmt(total) + " points." + (newBest ? " New personal best." : ""));
     focusFirst(s.querySelector("h2"));
   }
 
@@ -1299,7 +1335,7 @@
     if (o.wear) wear(cat, o.wear);
     s.appendChild(el("div", { class: "st-res-top" }, [cat, el("p", { class: "st-res-title", text: o.title })]));
     s.appendChild(el("h2", { tabindex: "-1", text: D.lesson }));
-    s.appendChild(el("div", { class: "st-res-stars", role: "img", "aria-label": o.stars + " of 3 stars", html: bigStar(o.stars >= 1) + bigStar(o.stars >= 2) + bigStar(o.stars >= 3) }));
+    s.appendChild(el("div", { class: "st-res-stars", role: "img", "aria-label": o.stars + " of 3 diamonds", html: bigGem(o.stars >= 1) + bigGem(o.stars >= 2) + bigGem(o.stars >= 3) }));
     var totalN = el("span", { text: "0" });
     s.appendChild(el("div", { class: "st-res-total" }, [totalN, el("small", { text: "points" })]));
     if (newBest) s.appendChild(el("span", { class: "st-res-best", text: "New personal best!" }));
@@ -1326,9 +1362,9 @@
     }
     s.appendChild(resultButtons(G.task));
     countUp(totalN, 0, o.pts, 1400);
-    if (o.stars >= 2) setTimeout(function () { confetti(ui.confetti, 4200); }, calm() ? 0 : 900);
+    if (o.stars >= 2) setTimeout(function () { confetti(ui.confetti, 4200, true); }, calm() ? 0 : 900);
     sfx("win");
-    say("Finished. " + o.summary + " " + o.stars + " of 3 stars and " + fmt(o.pts) + " points." + (newBest ? " New personal best." : ""));
+    say("Finished. " + o.summary + " " + o.stars + " of 3 diamonds and " + fmt(o.pts) + " points." + (newBest ? " New personal best." : ""));
     focusFirst(s.querySelector("h2"));
   }
   function reviewList(head, items) {
@@ -1669,7 +1705,7 @@
     });
   }
   // Memory Match cards, Link Up tiles and Bug Hunt statements, with how far each may shrink.
-  var FIT = [[".st-card-t", 0.62], [".st-lt-t", 0.7], [".st-bug-t", 0.85]];
+  var FIT = [[".st-card-t", 0.62], [".st-lt-t", 0.7], [".st-bug-t", 0.85], [".st-odd-t", 0.7], [".st-fcard-t", 0.62], [".st-fib-t", 0.8]];
   function fitScreen() {
     if (!ui.screen) return;
     FIT.forEach(function (f) { fitWords(ui.screen, f[0], f[1]); });
@@ -1766,7 +1802,7 @@
     if (G.misses === 0) medals.push(["sweep", "#16A34A", "Photographic memory", "No misses at all"]);
     if (G.bestCombo >= 3) medals.push(["fire", "#EA580C", "Combo master", plural(G.bestCombo, "pair") + " in a row"]);
     if (opts.timer && secs <= 60) medals.push(["bolt", "#7C3AED", "Speed run", "Done in " + mmss(secs * 1000)]);
-    if (G.peeks === 1 && stars === 3) medals.push(["cards", "#0F766E", "No peeking", "Three stars without a peek"]);
+    if (G.peeks === 1 && stars === 3) medals.push(["cards", "#0F766E", "No peeking", "Three diamonds without a peek"]);
     var rows = [[art("match"), "Pairs found", D.pairs.length + " pairs, " + misses(G.misses), fmt(matchPts)]];
     if (opts.timer) rows.push([ico("i-timer"), "Time", mmss(secs * 1000) + (bonus ? ", with a time bonus" : ""), "+" + fmt(bonus)]);
     rows.push([FLAME, "Best combo", plural(G.bestCombo, "pair") + " in a row", ""]);
@@ -2771,6 +2807,671 @@
       summary: G.right + " of " + n + " bugs caught."
     });
   }
+
+  /* ========================================================== BRAIN GAMES */
+  /* Three quick games that replay the lesson as brain training. Odd One Out
+     (logic) mixes three tiles of one Link Up group with one tile of another;
+     the build has checked every mix it may make. Memory Flash (memory) shows
+     the Memory Match words, turns them over, then asks for the word that goes
+     with each meaning. Fact or Fib (speed) deals Bug Hunt's statements and the
+     quiz's true or false questions one at a time. Right answers throw
+     diamonds into the points chip, and a streak multiplies the points. */
+  var BULB = '<svg viewBox="0 0 20 24" aria-hidden="true" focusable="false"><path d="M10 1.8a7 7 0 0 0-4 12.8c.9.7 1.4 1.5 1.4 2.5v1h5.2v-1c0-1 .5-1.8 1.4-2.5A7 7 0 0 0 10 1.8Z" fill="#FDE047" stroke="currentColor" stroke-width="1.6"/>' +
+    '<path d="M7.6 21h4.8M8.4 23h3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+  var LINKED = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3.2-3.2a4.5 4.5 0 0 0-6.4-6.4L11.6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>' +
+    '<path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3.2 3.2a4.5 4.5 0 0 0 6.4 6.4l1.6-1.6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>';
+  var BOLT = '<svg viewBox="0 0 80 56" aria-hidden="true" focusable="false"><rect x="5" y="5" width="70" height="46" rx="8" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="2" stroke-dasharray="4 3"/>' +
+    '<circle cx="40" cy="28" r="15" fill="#fff" fill-opacity=".16"/><path d="M43.5 13.5 32 30h8l-3.6 13 12-17.5h-8Z" fill="#FDE047" stroke="#0B3B4A" stroke-width="2" stroke-linejoin="round"/>' +
+    '<circle cx="15" cy="16" r="2.4" fill="#A5F3FC"/><circle cx="66" cy="41" r="2.4" fill="#A5F3FC"/><path d="M63 13l2.5 2.5M17 41l-2.5 2.5" stroke="#A5F3FC" stroke-width="2.2" stroke-linecap="round"/></svg>';
+  var CROSS = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/></svg>';
+  var TICK = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4.5 12.5l5 5 10-11" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  /* The multiplier a streak earns: three in a row doubles the points, six trebles them. */
+  function multi() { return G.streak >= 6 ? 3 : G.streak >= 3 ? 2 : 1; }
+  /* The chips. Points count up when the diamonds land, not before. */
+  function brainChips(landed) {
+    if (landed) {
+      countUp(ui.ptsN, G.shown, G.pts, calm() ? 0 : 500);
+      G.shown = G.pts;
+      bump(ui.ptsChip);
+    } else ui.ptsN.textContent = fmt(G.shown);
+    ui.ptsChip.setAttribute("aria-label", fmt(G.pts) + " points");
+    var m = multi();
+    ui.streak.hidden = G.streak < 2;
+    ui.streakN.textContent = String(G.streak);
+    ui.streak.classList.toggle("is-hot", G.streak >= 3);
+    ui.multi.hidden = m < 2;
+    ui.multi.textContent = "x" + m;
+    ui.streak.setAttribute("aria-label", "Streak " + G.streak + (m > 1 ? ", points times " + m : ""));
+  }
+  /* Diamonds burst out of a tile and fly into the points chip. */
+  function gemFly(from, n, done) {
+    var to = ui.ptsChip;
+    if (!from || !to || calm() || !from.getBoundingClientRect || !Element.prototype.animate) { done(); return; }
+    var a = from.getBoundingClientRect(), b = to.getBoundingClientRect();
+    var x0 = a.left + a.width / 2, y0 = a.top + a.height / 2, x1 = b.left + 20, y1 = b.top + b.height / 2;
+    var landed = false, game = G;
+    for (var i = 0; i < n; i++) {
+      (function (i) {
+        var g = el("span", { class: "st-gem-fly", "aria-hidden": "true", html: GEM });
+        g.style.left = x0 + "px";
+        g.style.top = y0 + "px";
+        stage.appendChild(g);
+        var ang = (Math.PI * 2 * i) / n + Math.random() * 0.7, r = 46 + Math.random() * 54;
+        var bx = Math.cos(ang) * r, by = Math.sin(ang) * r - 26, spin = (Math.random() < 0.5 ? -1 : 1) * (180 + Math.random() * 260);
+        var anim = g.animate([
+          { transform: "translate(0px, 0px) scale(.2) rotate(0deg)", opacity: 0 },
+          { transform: "translate(" + bx + "px, " + by + "px) scale(1.2) rotate(" + (spin / 3) + "deg)", opacity: 1, offset: 0.32 },
+          { transform: "translate(" + (bx * 0.6) + "px, " + (by * 0.6 - 10) + "px) scale(1) rotate(" + (spin / 2) + "deg)", opacity: 1, offset: 0.48 },
+          { transform: "translate(" + (x1 - x0) + "px, " + (y1 - y0) + "px) scale(.45) rotate(" + spin + "deg)", opacity: 0.85 }
+        ], { duration: 760 + i * 70, easing: "cubic-bezier(.35, .05, .35, 1)", fill: "forwards" });
+        anim.onfinish = function () {
+          if (g.parentNode) g.parentNode.removeChild(g);
+          if (!landed && G === game) { landed = true; done(); }
+        };
+      })(i);
+    }
+  }
+  function floatText(node, text, cls) {
+    if (!node || calm()) return;
+    var r = node.getBoundingClientRect();
+    var p = el("span", { class: "st-float" + (cls ? " " + cls : ""), "aria-hidden": "true", text: text });
+    p.style.left = (r.left + r.width / 2) + "px";
+    p.style.top = (r.top + Math.min(40, r.height / 3)) + "px";
+    stage.appendChild(p);
+    setTimeout(function () { if (p.parentNode) p.parentNode.removeChild(p); }, 1300);
+  }
+  function quake() {
+    if (calm()) return;
+    ui.screen.classList.remove("is-quake");
+    void ui.screen.offsetWidth;
+    ui.screen.classList.add("is-quake");
+  }
+  /* A right answer: the points, the diamonds and the chips. */
+  function brainWin(from, gain, gems) {
+    G.pts += gain;
+    floatText(from, "+" + fmt(gain), multi() > 1 ? "is-multi" : "");
+    gemFly(from, gems, function () { brainChips(true); sfx("gem"); });
+    brainChips(false);
+  }
+  function endStop(t) { return /[.?!]$/.test(stripTags(t)) ? "" : "."; }
+
+  /* The splash every brain game opens with, then a three, two, one. */
+  function brainSplash(task, sub, onGo) {
+    label(TASK_NAMES[task], "Brain game: " + BRAIN[task]);
+    ui.dots.innerHTML = "";
+    ui.progChip.hidden = true;
+    brainChips(false);
+    var s = screen("st-splash st-brain-splash");
+    s.appendChild(el("span", { class: "st-splash-tag st-brain-badge", text: "Brain game: " + BRAIN[task] }));
+    s.appendChild(el("div", { class: "st-splash-ico", "aria-hidden": "true", html: art(task) }));
+    s.appendChild(el("h2", { tabindex: "-1", text: TASK_NAMES[task] }));
+    s.appendChild(el("p", { text: sub }));
+    s.appendChild(el("p", { class: "st-brain-prize", html: '<span class="st-brain-prize-g" aria-hidden="true">' + GEM + GEM + GEM + "</span>Win up to three diamonds" }));
+    var go = el("button", { class: "st-go", type: "button", html: ico("i-play") + " Start" });
+    go.addEventListener("click", function () { brainCount(s, go, onGo); });
+    s.appendChild(go);
+    sfx("board");
+    say(TASK_NAMES[task] + ", a brain game for " + BRAIN[task].toLowerCase() + ". " + sub);
+    focusFirst(go);
+  }
+  function brainCount(s, go, then) {
+    go.remove();
+    if (calm()) { then(); return; }
+    var c = el("div", { class: "st-count st-brain-count", "aria-hidden": "true" });
+    s.appendChild(c);
+    var n = 3, game = G;
+    (function tick() {
+      if (G !== game) return;
+      if (n === 0) { sfx("go"); then(); return; }
+      c.textContent = String(n);
+      c.classList.remove("is-pop"); void c.offsetWidth; c.classList.add("is-pop");
+      sfx("count");
+      n -= 1;
+      setTimeout(tick, 700);
+    })();
+  }
+  /* The fuse: a bar that burns down while a round is on. */
+  function fuseBar(limit, what) {
+    ui.fuseSecs = el("span", { class: "st-fuse-secs" });
+    ui.fuse = el("div", { class: "st-fuse" + (opts.timer ? "" : " is-off"), role: "timer",
+                          "aria-label": opts.timer ? Math.round(limit / 1000) + " seconds " + what : "No clock" }, [
+      el("span", { class: "st-fuse-track", "aria-hidden": "true" }, [el("span", { class: "st-fuse-fill" }, [el("i", { class: "st-fuse-spark" })])]),
+      ui.fuseSecs]);
+    return ui.fuse;
+  }
+  function fuseClock(limit, onEnd) {
+    var t0 = performance.now(), raf = 0, stopped = false, lastWhole = -1, fuse = ui.fuse, secs = ui.fuseSecs;
+    var api = {
+      elapsed: function () { return performance.now() - t0; },
+      stop: function () { stopped = true; cancelAnimationFrame(raf); }
+    };
+    if (!opts.timer) { secs.textContent = "No clock"; return api; }
+    (function frame(now) {
+      if (stopped) return;
+      var left = Math.max(0, limit - (now - t0)), whole = Math.ceil(left / 1000);
+      if (!calm() || whole !== lastWhole) fuse.style.setProperty("--p", (left / limit).toFixed(4));
+      if (whole !== lastWhole) {
+        lastWhole = whole;
+        secs.textContent = whole + "s";
+        fuse.classList.toggle("is-low", left <= 5000);
+        if (left <= 5000 && left > 0) sfx("tick");
+        if (whole === 5) say("5 seconds left");
+      }
+      if (left <= 0) { stopped = true; onEnd(); return; }
+      raf = requestAnimationFrame(frame);
+    })(t0);
+    return api;
+  }
+  function brainResults(o) {
+    o.rows.push([FLAME, "Best streak", plural(G.bestStreak, "right answer") + " in a row", ""]);
+    taskResults(o);
+  }
+
+  /* ========================================================= ODD ONE OUT */
+  var ODD_N = 8, ODD_MS = 25000;
+  var ODD_RIGHT = ["Spotted it!", "Sharp thinking!", "Odd one found!", "Big brain move!", "Nailed it!"];
+  var ODD_WRONG = ["Not that one", "That one belongs", "So close"];
+  /* Eight rounds: the groups take turns to supply the three, and each odd one
+     out comes from the mixes the build allows, new ones first. */
+  function oddDeal() {
+    var usable = [];
+    D.odd.forEach(function (ok, b) { if (ok.length) usable.push(b); });
+    var order = [];
+    while (order.length < ODD_N) order = order.concat(shuffle(usable));
+    order = order.slice(0, ODD_N);
+    for (var i = 1; i < order.length; i++) {
+      if (order[i] !== order[i - 1]) continue;
+      for (var j = i + 1; j < order.length; j++) if (order[j] !== order[i - 1]) { var t = order[i]; order[i] = order[j]; order[j] = t; break; }
+    }
+    var used = {}, seen = {}, out = [];
+    order.forEach(function (b) {
+      var n = D.link[b].t.length, pickd = null;
+      for (var k = 0; k < 40 && !pickd; k++) {
+        var trio = shuffle(D.link[b].t.map(function (x, i) { return i; })).slice(0, 3);
+        var fresh = D.odd[b].filter(function (x) { return !used[x[0] + "," + x[1]]; });
+        var x = pick(fresh.length ? fresh : D.odd[b]);
+        var key = b + "|" + trio.slice().sort().join("") + "|" + x[0] + "," + x[1];
+        if (seen[key] && k < 39) continue;
+        pickd = { trio: trio, x: x, key: key };
+      }
+      seen[pickd.key] = 1;
+      used[pickd.x[0] + "," + pickd.x[1]] = 1;
+      var tiles = pickd.trio.map(function (i) { return { h: D.link[b].t[i], odd: false }; });
+      tiles.push({ h: D.link[pickd.x[0]].t[pickd.x[1]], odd: true });
+      out.push({ b: b, g: pickd.x[0], tiles: shuffle(tiles), n: n });
+    });
+    return out;
+  }
+  function oddSplash() {
+    brainSplash("odd", "Four tiles, and three of them share a link. Tap the odd one out. " + ODD_N + " rounds" +
+      (opts.timer ? ", each against a burning fuse." : ".") + " Stuck? A hint shows the link, for half the points.",
+      function () { G.rounds = oddDeal(); oddRound(0); });
+  }
+  function oddDots() { return G.rounds.map(function (q, i) { return i < G.answers.length ? (G.answers[i] ? 1 : 0) : -1; }); }
+  function oddRound(i) {
+    if (!G) return;
+    G.qi = i; G.locked = false; G.hinted = false;
+    var q = G.rounds[i], n = G.rounds.length;
+    label("Odd One Out", "Round " + (i + 1) + " of " + n);
+    ui.progN.textContent = (i + 1) + " / " + n;
+    ui.progChip.hidden = false;
+    paintDots(oddDots(), i);
+    brainChips(false);
+    var s = screen("st-odd");
+    var h = el("h2", { class: "st-brain-q", tabindex: "-1", text: "Three belong together. Which is the odd one out?" });
+    s.appendChild(el("div", { class: "st-brain-ask" }, [el("p", { class: "st-brain-round", text: "Round " + (i + 1) + " of " + n }), h]));
+    s.appendChild(fuseBar(ODD_MS, "to spot the odd one out"));
+    ui.link = el("p", { class: "st-odd-link", hidden: true });
+    s.appendChild(ui.link);
+    var grid = el("div", { class: "st-odd-grid", role: "group", "aria-label": "Four tiles" });
+    ui.tiles = [];
+    q.tiles.forEach(function (o, k) {
+      var b = el("button", { class: "st-odd-tile", type: "button", style: "--i:" + k, "aria-label": "Tile " + (k + 1) + ": " + stripTags(o.h) }, [
+        el("span", { class: "st-odd-k", "aria-hidden": "true", text: String(k + 1) }),
+        el("span", { class: "st-odd-t", html: o.h }),
+        el("span", { class: "st-odd-tag", "aria-hidden": "true" }),
+        el("span", { class: "st-mark", "aria-hidden": "true" })]);
+      b._odd = o.odd;
+      b._text = stripTags(o.h);
+      b.addEventListener("click", function () { oddAnswer(b); });
+      ui.tiles.push(b);
+      grid.appendChild(b);
+    });
+    grid.addEventListener("keydown", function (e) { gridKeys(e, grid, ".st-odd-tile"); });
+    s.appendChild(grid);
+    ui.hint = el("button", { class: "st-ghost st-hint", type: "button", html: BULB + " Show the link <small>half points</small>" });
+    ui.hint.addEventListener("click", oddHint);
+    s.appendChild(el("div", { class: "st-brain-tools" }, [ui.hint]));
+    ui.fb = el("div", { class: "st-fbslot" });
+    s.appendChild(ui.fb);
+    fitSoon();
+    say("Round " + (i + 1) + " of " + n + ". Three tiles belong together and one does not: " +
+        ui.tiles.map(function (t, k) { return (k + 1) + ", " + t._text; }).join("; ") + ". Choose the odd one out, or press its number.");
+    focusFirst(h);
+    T = fuseClock(ODD_MS, function () { oddAnswer(null); });
+  }
+  function oddHint() {
+    if (!G || G.locked || G.hinted || G.done) return;
+    G.hinted = true; G.hints += 1;
+    ui.hint.disabled = true;
+    var q = G.rounds[G.qi];
+    ui.link.hidden = false;
+    ui.link.className = "st-odd-link is-hint";
+    ui.link.innerHTML = BULB + '<span>Three of them: <b>' + D.link[q.b].n + "</b></span>";
+    sfx("pop");
+    say("Hint: three of them are " + stripTags(D.link[q.b].n) + ".");
+  }
+  function oddAnswer(btn) {
+    if (!G || G.locked || G.done) return;
+    G.locked = true;
+    var q = G.rounds[G.qi], ok = !!btn && btn._odd, late = !btn;
+    var ms = T ? T.elapsed() : 0;
+    stopClock();
+    var oddEl = null;
+    ui.tiles.forEach(function (t, k) {
+      t.disabled = true;
+      if (t._odd) {
+        oddEl = t;
+        t.classList.add("is-odd");
+        t.querySelector(".st-odd-tag").textContent = "Odd one out";
+      } else t.classList.add("is-link");
+      t.setAttribute("aria-label", "Tile " + (k + 1) + ": " + t._text + (t._odd ? ". The odd one out." : "."));
+    });
+    if (btn) markTile(btn, ok);
+    if (ui.hint) ui.hint.disabled = true;
+    ui.link.hidden = false;
+    ui.link.className = "st-odd-link is-shown";
+    ui.link.innerHTML = LINKED + '<span>What links the three: <b>' + D.link[q.b].n + "</b></span>";
+    G.answers.push(ok);
+    var gain = 0;
+    if (ok) {
+      G.right += 1; G.streak += 1;
+      G.bestStreak = Math.max(G.bestStreak, G.streak);
+      var quick = opts.timer && !G.hinted && ms <= ODD_MS / 3;
+      if (quick) G.fast += 1;
+      gain = ((G.hinted ? 50 : 100) + (opts.timer && !G.hinted ? Math.round(50 * Math.max(0, 1 - ms / ODD_MS)) : 0)) * multi();
+      brainWin(oddEl, gain, G.hinted ? 3 : quick ? 8 : 6);
+    } else {
+      G.streak = 0;
+      quake();
+      brainChips(false);
+    }
+    paintDots(oddDots(), -1);
+    sfx(ok ? "good" : "bad");
+    var last = G.qi === G.rounds.length - 1;
+    var odd = oddEl.querySelector(".st-odd-t").innerHTML, A = D.link[q.b].n, B = D.link[q.g].n;
+    var head = ok ? pick(ODD_RIGHT) : late ? "Out of time!" : pick(ODD_WRONG);
+    roundPanel(ok, head, gain, ok && G.streak >= 3 ? G.streak + " in a row! Points x" + multi() + "." : "",
+      '<span class="st-fb-ans"><b>What links the other three:</b> ' + A + "</span><b>" + odd + "</b> goes with a different group: " + B + endStop(B),
+      last ? "See my result" : "Next round",
+      function () { if (last) oddResults(); else oddRound(G.qi + 1); });
+    say((ok ? "Right! " : late ? "Time is up. " : "Not that one. ") + stripTags(odd) + " is the odd one out. The other three: " +
+        stripTags(A) + ". " + stripTags(odd) + " goes with: " + stripTags(B) + ".");
+  }
+  function oddResults() {
+    var n = G.rounds.length, pct = G.right / n;
+    var stars = G.right === n && G.hints <= 1 ? 3 : G.right >= n - 2 ? 2 : 1;
+    var medals = [];
+    if (G.right === n && !G.hints) medals.push(["sweep", "#16A34A", "Logic legend", "Every odd one out, no hints"]);
+    if (G.bestStreak >= 5) medals.push(["fire", "#EA580C", "Hot streak", plural(G.bestStreak, "round") + " in a row"]);
+    if (G.fast >= 4) medals.push(["bolt", "#7C3AED", "Quick thinker", plural(G.fast, "fast answer")]);
+    var missed = [];
+    G.rounds.forEach(function (q, i) {
+      if (G.answers[i]) return;
+      var t = q.tiles.filter(function (x) { return x.odd; })[0];
+      missed.push(t.h + ' <span class="st-res-ans">goes with ' + D.link[q.g].n + ", not " + D.link[q.b].n + "</span>");
+    });
+    brainResults({
+      stars: stars, pts: G.pts, pct: pct,
+      title: stars === 3 ? "Logic legend" : stars === 2 ? "Sharp thinking" : "A good start: play again to spot them all",
+      mood: stars === 3 ? "proud" : stars === 2 ? "cheer" : "happy", wear: stars === 3 ? ["crown"] : null,
+      rows: [[art("odd"), "Odd ones out found", G.right + " of " + n + (G.hints ? ", " + plural(G.hints, "hint") : ""), fmt(G.pts)]],
+      medals: medals,
+      extra: missed.length ? reviewList("The odd ones that got past you", missed) : null,
+      summary: G.right + " of " + n + " odd ones out found."
+    });
+  }
+
+  /* ======================================================== MEMORY FLASH */
+  var FLASH_LEVELS = D.flash ? D.flash.l : [3, 4, 6];
+  function flashStudy(n) { return 3000 + n * 1200; }
+  function flashTotal() { return FLASH_LEVELS.reduce(function (a, b) { return a + b; }, 0); }
+  function flashSplash() {
+    brainSplash("flash", "Study the " + pn(0) + " cards. When they flip over, find the card that goes with each clue, from memory. " +
+      "Three levels: " + FLASH_LEVELS.join(", then ") + " cards. " +
+      (opts.timer ? "The cards turn over when the fuse burns out." : "Take as long as you need to study them."),
+      function () { flashLevel(0); });
+  }
+  function flashDots(now) {
+    var list = [];
+    for (var i = 0; i < flashTotal(); i++) list.push(i < G.answers.length ? (G.answers[i] ? 1 : 0) : -1);
+    paintDots(list, now);
+  }
+  function fcardLabel(c) {
+    var n = "Card " + (c.i + 1);
+    if (c.done) return n + ": " + c.text + ", found";
+    return c.up ? n + ": " + c.text : n + ", face down";
+  }
+  function fcardUp(c, up) {
+    c.up = up;
+    c.el.classList.toggle("is-up", up);
+    c.el.setAttribute("aria-label", fcardLabel(c));
+  }
+  function flashLevel(L) {
+    if (!G) return;
+    G.level = L; G.locked = true; G.phase = "study";
+    var n = FLASH_LEVELS[L], ms = flashStudy(n);
+    var FP = D.flash.p, ks = shuffle(FP.map(function (p, k) { return k; })).slice(0, n);
+    label("Memory Flash", "Level " + (L + 1) + " of " + FLASH_LEVELS.length);
+    ui.progN.textContent = (L + 1) + " / " + FLASH_LEVELS.length;
+    ui.progChip.hidden = false;
+    flashDots(G.answers.length);
+    brainChips(false);
+    var s = screen("st-flash");
+    s.appendChild(el("div", { class: "st-flash-banner", "aria-hidden": "true" }, [
+      el("span", { class: "st-flash-lv", text: "Level " + (L + 1) }), el("b", { text: n + " cards" })]));
+    ui.ask = el("div", { class: "st-flash-ask" }, [
+      el("h2", { class: "st-brain-q", tabindex: "-1", text: "Remember where each card is" }),
+      el("p", { class: "st-flash-sub", text: opts.timer ? "They turn over when the fuse burns out." : "Press Hide the cards when you are ready." })]);
+    s.appendChild(ui.ask);
+    s.appendChild(fuseBar(ms, "to study the cards"));
+    var grid = el("div", { class: "st-flash-grid", "data-n": String(n), role: "group", "aria-label": "Cards" });
+    G.cards = ks.map(function (k, i) {
+      var c = { k: k, i: i, up: true, done: false, text: stripTags(FP[k].a) };
+      c.el = el("button", { class: "st-fcard is-up", type: "button", style: "--i:" + i, "aria-label": fcardLabel(c) }, [
+        el("span", { class: "st-fcard-in" }, [
+          el("span", { class: "st-fcard-back", "aria-hidden": "true", html: BOLT }),
+          el("span", { class: "st-fcard-front", "aria-hidden": "true" }, [el("span", { class: "st-fcard-t", html: FP[k].a })])]),
+        el("span", { class: "st-fcard-k", "aria-hidden": "true", text: String(i + 1) }),
+        el("span", { class: "st-mark", "aria-hidden": "true" })]);
+      c.el.addEventListener("click", function () { flashTap(c); });
+      grid.appendChild(c.el);
+      return c;
+    });
+    grid.addEventListener("keydown", function (e) { gridKeys(e, grid, ".st-fcard"); });
+    s.appendChild(grid);
+    ui.ready = el("button", { class: "st-go st-flash-ready", type: "button", html: ico("i-eye") + (opts.timer ? " I'm ready" : " Hide the cards") });
+    ui.ready.addEventListener("click", flashHide);
+    s.appendChild(el("div", { class: "st-brain-tools" }, [ui.ready]));
+    ui.fb = el("div", { class: "st-fbslot" });
+    s.appendChild(ui.fb);
+    fitSoon();
+    sfx("board");
+    say("Level " + (L + 1) + " of " + FLASH_LEVELS.length + ". Remember these " + n + " cards: " +
+        G.cards.map(function (c) { return (c.i + 1) + ", " + c.text; }).join("; ") + ".");
+    focusFirst(ui.ask.querySelector("h2"));
+    T = fuseClock(ms, flashHide);
+  }
+  function flashHide() {
+    if (!G || G.phase !== "study") return;
+    stopClock();
+    G.phase = "turning";
+    if (ui.ready && ui.ready.parentNode) ui.ready.parentNode.removeChild(ui.ready);
+    if (ui.fuse) ui.fuse.hidden = true;
+    if (!calm()) {
+      var veil = el("span", { class: "st-flash-veil", "aria-hidden": "true" });
+      ui.screen.appendChild(veil);
+      setTimeout(function () { if (veil.parentNode) veil.parentNode.removeChild(veil); }, 700);
+    }
+    sfx("flip");
+    G.cards.forEach(function (c, i) {
+      after(calm() ? 0 : i * 90, function () { fcardUp(c, false); });
+    });
+    ui.tiles = G.cards.map(function (c) { return c.el; });
+    after(calm() ? 50 : 520 + G.cards.length * 90, function () { G.phase = "recall"; G.ai = 0; G.ask = shuffle(G.cards.map(function (c) { return c.k; })); flashAsk(); });
+  }
+  function flashAsk() {
+    if (!G) return;
+    var k = G.ask[G.ai];
+    G.tries = 0; G.locked = false;
+    ui.ask.className = "st-flash-ask is-asking";
+    ui.ask.innerHTML = "";
+    var clue = D.flash.p[k].b;
+    var h = el("h2", { class: "st-brain-q", tabindex: "-1", text: D.flash.q });
+    ui.ask.appendChild(el("p", { class: "st-flash-count", text: "Clue " + (G.ai + 1) + " of " + G.ask.length }));
+    ui.ask.appendChild(h);
+    ui.ask.appendChild(el("p", { class: "st-flash-meaning" }, [el("span", { class: "st-flash-tag", text: D.pn[1] }), el("span", { html: clue })]));
+    flashDots(G.answers.length);
+    say(D.flash.q + " " + D.pn[1] + ": " + stripTags(clue) + ". Choose a card, or press its number.");
+    focusFirst(h);
+  }
+  function flashTap(c) {
+    if (!G || G.phase !== "recall" || G.locked || c.done || G.done) return;
+    var k = G.ask[G.ai];
+    G.locked = true;
+    if (c.k === k) {
+      var first = G.tries === 0;
+      c.done = true;
+      c.el.disabled = true;
+      fcardUp(c, true);
+      c.el.classList.add("is-found");
+      markTile(c.el, true);
+      G.answers.push(first);
+      var gain;
+      if (first) {
+        G.right += 1; G.firsts += 1; G.streak += 1;
+        G.bestStreak = Math.max(G.bestStreak, G.streak);
+        gain = 100 * multi();
+      } else gain = 50;
+      brainWin(c.el, gain, first ? 6 : 2);
+      sfx("good");
+      say("Right! Card " + (c.i + 1) + " is " + c.text + ". Plus " + gain + " points.");
+      after(calm() ? 700 : 1000, flashNext);
+      return;
+    }
+    G.misses += 1; G.tries += 1; G.streak = 0;
+    brainChips(false);
+    fcardUp(c, true);
+    c.el.classList.add("is-miss");
+    sfx("bad");
+    quake();
+    if (G.tries < 2) {
+      say("Not that one: card " + (c.i + 1) + " is " + c.text + ". Try once more.");
+      after(1100, function () { c.el.classList.remove("is-miss"); fcardUp(c, false); G.locked = false; });
+      return;
+    }
+    G.answers.push(false);
+    var right = G.cards.filter(function (x) { return x.k === k; })[0];
+    say("Not that one: card " + (c.i + 1) + " is " + c.text + ". The answer was card " + (right.i + 1) + ": " + right.text + ".");
+    after(900, function () {
+      c.el.classList.remove("is-miss");
+      fcardUp(c, false);
+      right.done = true;
+      right.el.disabled = true;
+      fcardUp(right, true);
+      right.el.classList.add("is-shown");
+      after(calm() ? 900 : 1500, flashNext);
+    });
+  }
+  function flashNext() {
+    if (!G) return;
+    G.ai += 1;
+    if (G.ai < G.ask.length) { flashAsk(); return; }
+    G.locked = true; G.phase = "done";
+    flashDots(-1);
+    var last = G.level === FLASH_LEVELS.length - 1;
+    var got = G.answers.slice(G.answers.length - G.ask.length).filter(Boolean).length;
+    var bonus = got === G.ask.length ? 50 * G.ask.length : 0;
+    sfx("level");
+    if (bonus) brainWin(ui.ask, bonus, 8);
+    ui.ask.className = "st-flash-ask is-clear";
+    ui.ask.innerHTML = "";
+    ui.ask.appendChild(el("h2", { class: "st-brain-q", tabindex: "-1", text: "Level " + (G.level + 1) + " cleared!" }));
+    ui.ask.appendChild(el("p", { class: "st-flash-sub", text: got + " of " + G.ask.length + " found first time" + (bonus ? ": a perfect level, plus " + bonus + " points." : ".") }));
+    var next = el("button", { class: "st-go", type: "button", html: (last ? "See my result" : "Level " + (G.level + 2) + ": " + FLASH_LEVELS[G.level + 1] + " cards") + " " + ico("i-arrow-right") });
+    next.addEventListener("click", function () { if (!next.disabled) { next.disabled = true; if (last) flashResults(); else flashLevel(G.level + 1); } });
+    ui.ask.appendChild(next);
+    say("Level " + (G.level + 1) + " cleared. " + got + " of " + G.ask.length + " found first time.");
+    setTimeout(function () { next.focus({ preventScroll: false }); }, calm() ? 0 : 350);
+  }
+  function flashResults() {
+    var n = flashTotal(), pct = G.firsts / n;
+    var stars = G.misses <= 1 ? 3 : G.misses <= 4 ? 2 : 1;
+    var medals = [];
+    if (!G.misses) medals.push(["cards", "#0891B2", "Photographic memory", "Every card first time"]);
+    if (G.bestStreak >= 6) medals.push(["fire", "#EA580C", "Hot streak", plural(G.bestStreak, "card") + " in a row"]);
+    brainResults({
+      stars: stars, pts: G.pts, pct: pct,
+      title: stars === 3 ? "Memory master" : stars === 2 ? "Sharp memory" : "A good start: play again to remember more",
+      mood: stars === 3 ? "proud" : stars === 2 ? "cheer" : "happy", wear: stars === 3 ? ["crown"] : null,
+      rows: [[art("flash"), "Found first time", G.firsts + " of " + n + ", " + misses(G.misses), fmt(G.pts)]],
+      medals: medals,
+      extra: reviewList("The cards and their clues", D.flash.p.map(function (p) { return '<span class="st-res-a">' + p.a + "</span> " + p.b; })),
+      summary: G.firsts + " of " + n + " cards found first time, with " + misses(G.misses) + "."
+    });
+  }
+
+  /* ========================================================= FACT OR FIB */
+  var FIB_N = 12, FIB_MAX = 6, FIB_MS = 15000;
+  var FIB_RIGHT = ["Fib spotted!", "Busted!", "Not fooled!", "Lie detector!"];
+  function fibRuns(deck) {
+    var most = 1, run = 1;
+    for (var i = 1; i < deck.length; i++) { run = deck[i].t === deck[i - 1].t ? run + 1 : 1; most = Math.max(most, run); }
+    return most;
+  }
+  function fibDeal() {
+    var fibs = shuffle(D.fib.filter(function (f) { return !f.t; })).slice(0, FIB_MAX);
+    var facts = shuffle(D.fib.filter(function (f) { return f.t; })).slice(0, FIB_N - fibs.length);
+    var deck = shuffle(fibs.concat(facts));
+    for (var k = 0; k < 60 && fibRuns(deck) > 3; k++) deck = shuffle(deck);
+    return deck;
+  }
+  function fibSplash() {
+    brainSplash("fib", "Statements fly in one at a time. Is each one a fact or a fib? Swipe right for fact and left for fib, tap the buttons, or use the arrow keys. " +
+      FIB_N + " statements" + (opts.timer ? ", each with a fuse." : "."),
+      function () { G.deck = fibDeal(); fibCard(0); });
+  }
+  function fibDots(now) { paintDots(G.deck.map(function (f, i) { return i < G.answers.length ? (G.answers[i] ? 1 : 0) : -1; }), now); }
+  function fibCard(i) {
+    if (!G) return;
+    G.qi = i; G.locked = false;
+    var f = G.deck[i], n = G.deck.length;
+    label("Fact or Fib", "Statement " + (i + 1) + " of " + n);
+    ui.progN.textContent = (i + 1) + " / " + n;
+    ui.progChip.hidden = false;
+    fibDots(i);
+    brainChips(false);
+    var s = screen("st-fib");
+    s.appendChild(el("p", { class: "st-brain-round", text: "Statement " + (i + 1) + " of " + n }));
+    s.appendChild(fuseBar(FIB_MS, "to decide"));
+    var card = el("div", { class: "st-fib-card", tabindex: "-1", role: "group", "aria-label": "Statement " + (i + 1) + " of " + n }, [
+      el("span", { class: "st-fib-stamp is-fact", "aria-hidden": "true", text: "Fact" }),
+      el("span", { class: "st-fib-stamp is-fib", "aria-hidden": "true", text: "Fib" }),
+      el("p", { class: "st-fib-t", html: f.s })]);
+    ui.card = card;
+    s.appendChild(el("div", { class: "st-fib-deck" }, [el("span", { class: "st-fib-under", "aria-hidden": "true" }), card]));
+    ui.fibNo = el("button", { class: "st-fib-btn is-fib", type: "button", "aria-label": "Fib: it is not true. Left arrow key" }, [
+      el("span", { class: "st-fib-ico", html: CROSS }), el("b", { text: "Fib" }), el("span", { class: "st-mark", "aria-hidden": "true" })]);
+    ui.fibYes = el("button", { class: "st-fib-btn is-fact", type: "button", "aria-label": "Fact: it is true. Right arrow key" }, [
+      el("b", { text: "Fact" }), el("span", { class: "st-fib-ico", html: TICK }), el("span", { class: "st-mark", "aria-hidden": "true" })]);
+    ui.fibNo.addEventListener("click", function () { fibAnswer(false, false); });
+    ui.fibYes.addEventListener("click", function () { fibAnswer(true, false); });
+    s.appendChild(el("div", { class: "st-fib-btns" }, [ui.fibNo, el("span", { class: "st-fib-keys", "aria-hidden": "true", text: "or swipe the card" }), ui.fibYes]));
+    ui.fb = el("div", { class: "st-fbslot" });
+    s.appendChild(ui.fb);
+    fibDrag(card);
+    fitSoon();
+    say("Statement " + (i + 1) + " of " + n + ": " + stripTags(f.s) + " Fact or fib?");
+    focusFirst(card);
+    T = fuseClock(FIB_MS, function () { fibAnswer(null, false); });
+  }
+  /* Drag the card: right for fact, left for fib. Short drags spring back. */
+  function fibDrag(card) {
+    var id = null, x0 = 0, dx = 0, w = 1;
+    card.addEventListener("pointerdown", function (e) {
+      if (!G || G.locked || (e.pointerType === "mouse" && e.button !== 0)) return;
+      id = e.pointerId; x0 = e.clientX; dx = 0; w = card.offsetWidth || 1;
+      try { card.setPointerCapture(id); } catch (err) { /* not every pointer can be captured */ }
+      card.classList.add("is-drag");
+    });
+    card.addEventListener("pointermove", function (e) {
+      if (e.pointerId !== id) return;
+      dx = e.clientX - x0;
+      card.style.setProperty("--dx", dx + "px");
+      card.style.setProperty("--r", Math.max(-1, Math.min(1, dx / (w * 0.4))).toFixed(3));
+    });
+    function end(e) {
+      if (e.pointerId !== id) return;
+      id = null;
+      card.classList.remove("is-drag");
+      card.style.setProperty("--dx", "0px");
+      card.style.setProperty("--r", "0");
+      if (Math.abs(dx) > Math.min(110, w * 0.28) && G && !G.locked) fibAnswer(dx > 0, true);
+    }
+    card.addEventListener("pointerup", end);
+    card.addEventListener("pointercancel", end);
+  }
+  function fibAnswer(says, swiped) {
+    if (!G || G.locked || G.done || !G.deck) return;
+    G.locked = true;
+    var f = G.deck[G.qi], late = says === null, truth = !!f.t, ok = !late && says === truth;
+    var ms = T ? T.elapsed() : 0;
+    stopClock();
+    ui.fibNo.disabled = true; ui.fibYes.disabled = true;
+    ui.card.classList.add(truth ? "show-fact" : "show-fib", ok ? "is-ok" : "is-bad");
+    if (!late && !swiped) markTile(says ? ui.fibYes : ui.fibNo, ok);
+    sfx("stamp");
+    G.answers.push(ok);
+    var gain = 0;
+    if (ok) {
+      G.right += 1; G.streak += 1;
+      G.bestStreak = Math.max(G.bestStreak, G.streak);
+      if (!truth) G.caught += 1;
+      var quick = opts.timer && ms <= FIB_MS / 3;
+      if (quick) G.fast += 1;
+      gain = (100 + (opts.timer ? Math.round(50 * Math.max(0, 1 - ms / FIB_MS)) : 0)) * multi();
+      brainWin(ui.card, gain, quick ? 7 : 5);
+    } else {
+      G.streak = 0;
+      quake();
+      brainChips(false);
+    }
+    fibDots(-1);
+    setTimeout(function () { sfx(ok ? "good" : "bad"); }, 120);
+    var last = G.qi === G.deck.length - 1;
+    var go = function () { if (last) fibResults(); else fibCard(G.qi + 1); };
+    if (ok && truth) {
+      say("Right, it is a fact. Plus " + gain + " points.");
+      after(calm() ? 900 : 1150, function () {
+        if (!calm()) ui.card.classList.add("is-gone");
+        after(calm() ? 0 : 260, go);
+      });
+      return;
+    }
+    var head = ok ? pick(FIB_RIGHT) : late ? "Out of time!" : truth ? "That one is a fact" : "That one is a fib";
+    var html = truth ? "<b>It is true:</b> " + f.s :
+      '<span class="st-fb-ans"><b>The fib:</b> ' + f.s + "</span>" + (f.x ? "<b>The truth:</b> " + f.x : "");
+    roundPanel(ok, head, gain, ok && G.streak >= 3 ? G.streak + " in a row! Points x" + multi() + "." : "", html,
+      last ? "See my result" : "Next statement", go);
+    say((ok ? "Right, it is a fib. " : late ? "Time is up. " : "Not quite. ") + (truth ? "It is a fact: " + stripTags(f.s) :
+        "It is a fib. " + (f.x ? "The truth: " + stripTags(f.x) : "")));
+  }
+  function fibResults() {
+    var n = G.deck.length, pct = G.right / n;
+    var fibs = G.deck.filter(function (f) { return !f.t; }).length;
+    var stars = G.right === n ? 3 : G.right >= n - 3 ? 2 : 1;
+    var medals = [];
+    if (G.caught === fibs) medals.push(["sweep", "#16A34A", "Lie detector", "Every fib caught"]);
+    if (G.bestStreak >= 6) medals.push(["fire", "#EA580C", "Hot streak", plural(G.bestStreak, "answer") + " in a row"]);
+    if (G.fast >= 6) medals.push(["bolt", "#7C3AED", "Speed reader", plural(G.fast, "fast answer")]);
+    var missed = [];
+    G.deck.forEach(function (f, i) {
+      if (G.answers[i]) return;
+      missed.push(f.s + ' <span class="st-res-ans">' + (f.t ? "This is a fact." : "A fib. " + (f.x ? "The truth: " + f.x : "")) + "</span>");
+    });
+    brainResults({
+      stars: stars, pts: G.pts, pct: pct,
+      title: stars === 3 ? "Fact checker supreme" : stars === 2 ? "Sharp judge" : "A good start: play again to catch every fib",
+      mood: stars === 3 ? "proud" : stars === 2 ? "cheer" : "happy", wear: stars === 3 ? ["crown"] : null,
+      rows: [[art("fib"), "Right calls", G.right + " of " + n + ", " + G.caught + " of " + fibs + " fibs caught", fmt(G.pts)]],
+      medals: medals,
+      extra: missed.length ? reviewList("The ones to look at again", missed) : null,
+      summary: G.right + " of " + n + " right, with " + G.caught + " of " + fibs + " fibs caught."
+    });
+  }
+  hooks.oddDeal = function () { return oddDeal(); };
+  hooks.fibDeal = function () { return fibDeal(); };
 
   hooks.data = D;
   hooks.state = function () { return G; };
