@@ -14,8 +14,10 @@
  * every guess shows which letters are right. Link Up: twelve tiles hide three
  * groups of four. Bug Hunt: two statements are true and one has a mistake to
  * catch. Then three brain games replay the lesson as brain training: Odd One
- * Out (logic), Memory Flash (memory) and Fact or Fib (speed). Every result
- * is rated out of three diamonds. Best scores are kept on this device only.
+ * Out (logic), Memory Flash (memory) and Fact or Fib (speed). Key Stage 3
+ * lessons end with City Run: a robot cat races across London and every lane
+ * is an answer; static/js/cityrun.js draws the street. Every result is rated
+ * out of three diamonds. Best scores are kept on this device only.
  *
  * The hub page uses only the diamond painting near the top of this file.
  */
@@ -98,6 +100,9 @@
       "</svg>";
   }
   var MEDAL_ART = {
+    gem: '<path d="M24 22h16l7 8-15 17-15-17Z" fill="#BAE6FD" stroke="#075985" stroke-width="2" stroke-linejoin="round"/><path d="M17 30h30M27 22l5 25 5-25" fill="none" stroke="#0284C7" stroke-width="1.6"/>',
+    shield: '<path d="M32 17l12 4v9c0 8-5 13-12 16-7-3-12-8-12-16v-9Z" fill="#fff" stroke="#1E293B" stroke-width="2" stroke-linejoin="round"/><path d="M26.5 31l4 4 7-8" fill="none" stroke="#16A34A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>',
+    paw: '<ellipse cx="32" cy="36" rx="7.5" ry="6.5" fill="#fff" stroke="#1E293B" stroke-width="2"/><circle cx="23.5" cy="27" r="3.4" fill="#fff" stroke="#1E293B" stroke-width="2"/><circle cx="29" cy="22.5" r="3.4" fill="#fff" stroke="#1E293B" stroke-width="2"/><circle cx="35" cy="22.5" r="3.4" fill="#fff" stroke="#1E293B" stroke-width="2"/><circle cx="40.5" cy="27" r="3.4" fill="#fff" stroke="#1E293B" stroke-width="2"/>',
     crown: '<path d="M18 36 20 22l7 7 5-10 5 10 7-7 2 14Z" fill="#FDE047" stroke="#92400E" stroke-width="2" stroke-linejoin="round"/>',
     podium: '<path d="M20 40V31h8v-7h8v11h8v5Z" fill="#fff" stroke="#1E293B" stroke-width="2" stroke-linejoin="round"/>',
     sweep: '<path d="M21 31l7 7 15-15" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>',
@@ -142,7 +147,11 @@
     gem: function () { tone(1568, 0, 0.09, "triangle", 0.06); tone(2093, 0.06, 0.12, "triangle", 0.05); tone(2637, 0.12, 0.2, "sine", 0.045); },
     flip: function () { tone(740, 0, 0.05, "square", 0.025); tone(980, 0.04, 0.05, "square", 0.02); },
     level: function () { [659, 784, 988, 1318, 1568].forEach(function (f, i) { tone(f, i * 0.08, 0.22, "triangle", 0.08); }); },
-    stamp: function () { tone(160, 0, 0.14, "square", 0.05); tone(90, 0.03, 0.16, "sine", 0.08); }
+    stamp: function () { tone(160, 0, 0.14, "square", 0.05); tone(90, 0.03, 0.16, "sine", 0.08); },
+    coin: function () { tone(1760, 0, 0.05, "triangle", 0.035); tone(2350, 0.04, 0.07, "triangle", 0.03); },
+    jump: function () { tone(440, 0, 0.1, "triangle", 0.05); tone(660, 0.05, 0.12, "triangle", 0.045); },
+    hit: function () { tone(150, 0, 0.18, "square", 0.05); tone(95, 0.05, 0.22, "sine", 0.08); },
+    splash: function () { tone(1200, 0, 0.05, "sine", 0.03); tone(800, 0.04, 0.08, "sine", 0.03); }
   };
   var opts = store.get(OPTS, null) || {};
   if (typeof opts.timer !== "boolean") opts.timer = true;
@@ -230,10 +239,10 @@
   }
 
   /* ================================================================ HUB */
-  var TASKS = ["quiz", "cat", "match", "sort", "word", "link", "bug", "odd", "flash", "fib"];
+  var TASKS = ["quiz", "cat", "match", "sort", "word", "link", "bug", "odd", "flash", "fib", "run"];
   var TASK_NAMES = { quiz: "Quiz Challenge", cat: "This or That", match: "Memory Match", sort: "Sort It",
                      word: "Code Word", link: "Link Up", bug: "Bug Hunt",
-                     odd: "Odd One Out", flash: "Memory Flash", fib: "Fact or Fib" };
+                     odd: "Odd One Out", flash: "Memory Flash", fib: "Fact or Fib", run: "City Run" };
   var BRAIN = { odd: "Logic", flash: "Memory", fib: "Speed" };
   /* The Quiz Challenge keeps the lesson's own key, so results saved before
      the other tasks existed still count. */
@@ -329,7 +338,7 @@
       if (!res) return;
       copy = el("div", { class: "st-printout" });
       copy.appendChild(res.cloneNode(true));
-      Array.prototype.forEach.call(copy.querySelectorAll(".st-res-go, .px, canvas"), function (n) { n.remove(); });
+      Array.prototype.forEach.call(copy.querySelectorAll(".st-res-go, .px, .rc, canvas"), function (n) { n.remove(); });
       Array.prototype.forEach.call(copy.querySelectorAll("[id]"), function (n) { n.removeAttribute("id"); });
       document.body.appendChild(copy);
     }
@@ -409,9 +418,9 @@
       ui.groupsChip = el("span", { class: "st-chip" }, [el("small", { text: "Groups" }), ui.groupsN]);
       ui.timeChip = el("span", { class: "st-chip st-chip-time", hidden: !opts.timer }, [el("span", { html: ico("i-timer") }).firstChild, ui.timeN]);
       chips = [ui.groupsChip, ui.timeChip];
-    } else if (BRAIN[task]) {
+    } else if (BRAIN[task] || task === "run") {
       ui.progN = el("span", { text: "" });
-      ui.progChip = el("span", { class: "st-chip" }, [el("small", { text: task === "flash" ? "Level" : task === "fib" ? "Card" : "Round" }), ui.progN]);
+      ui.progChip = el("span", { class: "st-chip" }, [el("small", { text: task === "flash" ? "Level" : task === "fib" ? "Card" : task === "run" ? "Question" : "Round" }), ui.progN]);
       ui.ptsN = el("span", { text: "0" });
       ui.ptsChip = el("span", { class: "st-chip st-chip-gem" }, [el("span", { class: "st-chip-gemico", html: GEM }), el("small", { text: "Points" }), ui.ptsN]);
       ui.multi = el("b", { class: "st-multi", hidden: true });
@@ -487,12 +496,29 @@
     });
   }
 
-  function lockScroll(on) { document.documentElement.classList.toggle("st-locked", on); }
+  /* While a game is open it is the whole screen, so the page behind it is
+     hidden from screen readers and from the keyboard, as behind any modal. */
+  var behind = [];
+  function lockScroll(on) {
+    document.documentElement.classList.toggle("st-locked", on);
+    behind.forEach(function (n) { n.removeAttribute("aria-hidden"); n.inert = false; });
+    behind = [];
+    if (!on) return;
+    for (var n = stage; n && n.parentElement && n !== document.body; n = n.parentElement) {
+      Array.prototype.forEach.call(n.parentElement.children, function (sib) {
+        if (sib === n || /^(SCRIPT|TEMPLATE|STYLE|LINK)$/.test(sib.tagName) || sib.getAttribute("aria-hidden") === "true") return;
+        sib.setAttribute("aria-hidden", "true");
+        sib.inert = true;
+        behind.push(sib);
+      });
+    }
+  }
   /* Whether this lesson has a task: Sort It is a Key Stage 4 task, and Code
      Word, Link Up and Bug Hunt are Key Stage 3 games. */
   function has(task) {
     return task === "sort" ? !!D.sort : task === "word" ? !!D.words : task === "link" ? !!D.link :
-      task === "bug" ? !!D.bugs : BRAIN[task] ? !!(D.odd && D.fib && D.flash && D.link) : !!TASK_NAMES[task];
+      task === "bug" ? !!D.bugs : BRAIN[task] ? !!(D.odd && D.fib && D.flash && D.link) :
+      task === "run" ? !!(D.run && D.fib && D.flash && window.MskCityRun) : !!TASK_NAMES[task];
   }
   function begin(task) {
     task = has(task) ? task : "quiz";
@@ -518,6 +544,7 @@
     else if (task === "odd") oddSplash();
     else if (task === "flash") flashSplash();
     else if (task === "fib") fibSplash();
+    else if (task === "run") runSplash();
     else matchSplash();
   }
   function leave(ask) {
@@ -526,6 +553,7 @@
     stopClock();
     if (G && G.tick) clearInterval(G.tick);
     if (G && G.busy) clearTimeout(G.busy);
+    if (G && G.world) { G.world.destroy(); G.world = null; }
     stage.hidden = true;
     stage.innerHTML = "";
     lockScroll(false);
@@ -568,6 +596,7 @@
     if (G.task === "fib" && G.deck && !G.locked && !G.done && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
       e.preventDefault(); fibAnswer(e.key === "ArrowRight", false); return;
     }
+    if (G.task === "run" && G.world && !G.done && runKey(e, tag)) { e.preventDefault(); return; }
     if (/^[1-6]$/.test(e.key) && ui.tiles && !G.locked) {
       var t = ui.tiles[parseInt(e.key, 10) - 1];
       if (t && !t.disabled) { e.preventDefault(); t.click(); }
@@ -1332,8 +1361,8 @@
     store.set(RECORDS, all);
 
     var s = screen("st-results");
-    var cat = pixel(o.mood);
-    if (o.wear) wear(cat, o.wear);
+    var cat = o.hero || pixel(o.mood);
+    if (o.wear && !o.hero) wear(cat, o.wear);
     s.appendChild(el("div", { class: "st-res-top" }, [cat, el("p", { class: "st-res-title", text: o.title })]));
     s.appendChild(el("h2", { tabindex: "-1", text: D.lesson }));
     s.appendChild(el("div", { class: "st-res-stars", role: "img", "aria-label": o.stars + " of 3 diamonds", html: bigGem(o.stars >= 1) + bigGem(o.stars >= 2) + bigGem(o.stars >= 3) }));
@@ -3473,6 +3502,551 @@
       summary: G.right + " of " + n + " right, with " + G.caught + " of " + fibs + " fibs caught."
     });
   }
+  /* ============================================================ CITY RUN */
+  /* A robot cat races across London: Westminster, the South Bank, the City
+     and Tower Bridge, five questions in each. Each question is a row of
+     gates across the road with an answer over each lane: steer into the
+     right one, or tap an answer to sprint to it for bonus points. Between
+     questions the cat dodges buses, cabs and cones and picks up diamonds.
+     static/js/cityrun.js draws the street; what is right is decided here. */
+  var RUN_HIT = { puddle: 10, cone: 30, barrier: 30, cab: 30, bus: 30, works: 0 };
+  var RUN_COL = [["#2563EB", "#1D4ED8"], ["#D97706", "#92400E"], ["#DB2777", "#9D174D"]];
+  var RUN_RIGHT = ["Correct!", "Spot on!", "Brilliant!", "Nailed it!", "Top speed!", "Yes!"];
+  var RUN_WRONG = ["Not quite", "Wrong lane", "Not this time"];
+  var RUN_TIPS = ["Swipe up, or press the up arrow or space, to jump cones, barriers and puddles.",
+                  "Buses and cabs are too tall to jump. Change lanes!",
+                  "Tap an answer to sprint to its gate and win bonus points.",
+                  "Every diamond you pick up is worth 10 points.",
+                  "Three right in a row doubles your points. Six in a row trebles them.",
+                  "Bumping into traffic costs you 30 points. Watch the road!"];
+  var RUN_ARROW = [
+    '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.5 5.5 8 12l6.5 6.5" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.5 14.5 12 8l6.5 6.5" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9.5 5.5 16 12l-6.5 6.5" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'];
+  var RUN_PAUSE = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="6" y="5" width="4" height="14" rx="1.4" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1.4" fill="currentColor"/></svg>';
+  var RUN_PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.5v13l11-6.5Z" fill="currentColor"/></svg>';
+
+  /* The robot cat, from the page's template, with ids of its own. */
+  function robocat(mood) {
+    var tpl = document.getElementById("st-robocat");
+    if (!tpl) return null;
+    var svg = (tpl.content ? tpl.content.firstElementChild : tpl.firstElementChild).cloneNode(true);
+    pxSeq += 1;
+    var map = {};
+    Array.prototype.forEach.call(svg.querySelectorAll("[id]"), function (n) { map[n.id] = n.id + "-k" + pxSeq; n.id = map[n.id]; });
+    Array.prototype.forEach.call(svg.querySelectorAll("[fill^='url(#']"), function (n) {
+      var m = /^url\(#([^)]+)\)$/.exec(n.getAttribute("fill"));
+      if (m && map[m[1]]) n.setAttribute("fill", "url(#" + map[m[1]] + ")");
+    });
+    svg.setAttribute("class", "rc is-" + (mood || "idle"));
+    svg.setAttribute("aria-hidden", "true");
+    return svg;
+  }
+
+  /* Twenty questions from the lesson: the quiz's, This or That's, Memory
+     Flash's pairs and Fact or Fib's statements, with no three of a kind in
+     a row. Each gets its lanes: three answers fill the road; with two, the
+     middle lane is closed for road works. Fib is always on the left and
+     fact on the right, as in Fact or Fib. */
+  function runDeal() {
+    var R = D.run, most = {}, out = [];
+    R.mix.forEach(function (m) { most[m[0]] = m[1]; });
+    shuffle(R.c.slice()).slice(0, most.c).forEach(function (q) {
+      out.push({ k: "c", q: q.q, code: q.c, x: q.x, o: [q.o[0]].concat(shuffle(q.o.slice(1)).slice(0, 2)) });
+    });
+    shuffle(R.p.slice()).slice(0, most.p).forEach(function (q) {
+      out.push({ k: "p", q: q.q, code: q.c, x: q.x, o: [q.o[0], q.o[1]] });
+    });
+    var pairs = D.flash.p, idx = pairs.map(function (p, i) { return i; });
+    shuffle(idx.slice()).slice(0, Math.min(most.m, pairs.length)).forEach(function (i) {
+      var other = shuffle(idx.filter(function (j) { return j !== i; })).slice(0, 2);
+      out.push({ k: "m", q: pairs[i].b, o: [pairs[i].a, pairs[other[0]].a, pairs[other[1]].a] });
+    });
+    var need = R.n - out.length;
+    var fibs = shuffle(D.fib.filter(function (f) { return !f.t; })), facts = shuffle(D.fib.filter(function (f) { return f.t; }));
+    var nf = Math.min(fibs.length, Math.ceil(need / 2)), nt = Math.min(facts.length, need - nf);
+    nf = Math.min(fibs.length, need - nt);
+    fibs.slice(0, nf).concat(facts.slice(0, nt)).forEach(function (f) { out.push({ k: "f", q: f.s, truth: !!f.t, x: f.x }); });
+    for (var k = 0; k < 120; k++) {
+      out = shuffle(out);
+      var three = false;
+      for (var i = 2; i < out.length; i++) if (out[i].k === out[i - 1].k && out[i].k === out[i - 2].k) three = true;
+      if (!three && !(out[0].code)) break;
+    }
+    out.forEach(function (q) {
+      if (q.k === "f") { q.lanes = [{ i: "fib" }, null, { i: "fact" }]; q.right = q.truth ? 2 : 0; return; }
+      var order = shuffle(q.o.map(function (o, j) { return j; }));
+      if (order.length === 2) { q.lanes = [{ i: order[0] }, null, { i: order[1] }]; q.right = order[0] === 0 ? 0 : 2; }
+      else { q.lanes = order.map(function (j) { return { i: j }; }); q.right = order.indexOf(0); }
+    });
+    return out;
+  }
+  function runLetter(q, l) { return q.k === "f" ? (l === 0 ? "Fib" : "Fact") : !q.lanes[1] ? (l === 0 ? "A" : "B") : "ABC".charAt(l); }
+  function runColour(q, l) {
+    if (q.k === "f") return l === 0 ? ["#DC2626", "#B91C1C"] : ["#16A34A", "#15803D"];
+    return RUN_COL[q.lanes[1] ? l : l === 0 ? 0 : 2];
+  }
+  /* What the gates' banners say, for cityrun.js. */
+  function runLanes(q) {
+    return [0, 1, 2].map(function (l) {
+      if (!q.lanes[l]) return null;
+      var c = runColour(q, l);
+      if (q.k === "f") return { t: "", icon: l === 0 ? "cross" : "tick", s: l === 0 ? "Fib" : "Fact", c: c[0], ink: c[1] };
+      return { t: runLetter(q, l), s: stripTags(q.o[q.lanes[l].i]), c: c[0], ink: c[1] };
+    });
+  }
+  /* Seconds to read a question before its gate: more for longer text and for code. */
+  function runRead(q) {
+    var chars = stripTags(q.q).length + (q.k === "f" ? 12 : q.o.reduce(function (n, o) { return n + stripTags(o).length; }, 0));
+    var lines = q.code ? q.code.split("\n").length : 0;
+    return Math.max(8, Math.min(20, 5.5 + 0.055 * chars + 1.5 * lines));
+  }
+
+  function runSplash() {
+    label("City Run", "A race across London");
+    ui.dots.innerHTML = "";
+    ui.progChip.hidden = true;
+    runChips();
+    var s = screen("st-splash st-run-splash");
+    s.appendChild(el("span", { class: "st-splash-tag st-run-badge", text: "Run London" }));
+    var hero = el("div", { class: "st-run-hero", "aria-hidden": "true" }, [el("div", { class: "st-run-sky", html: art("run-sky") })]);
+    var cat = robocat("idle");
+    if (cat) hero.appendChild(cat);
+    s.appendChild(hero);
+    s.appendChild(el("h2", { tabindex: "-1", text: "City Run" }));
+    var sub = "Race a robot cat across London, from Westminster to Tower Bridge. " + D.run.n + " questions from this lesson stand across the road as gates: run through the lane with the right answer." +
+      (opts.timer ? "" : " The clock is off, so the cat waits at each gate for you.");
+    s.appendChild(el("p", { text: sub }));
+    var how = el("ul", { class: "st-run-how" });
+    [[RUN_ARROW[0] + RUN_ARROW[2], "Steer", "swipe, or the left and right arrow keys"],
+     [RUN_ARROW[1], "Jump", "swipe up, or the up arrow or space"],
+     ['<b class="st-run-k">1</b><b class="st-run-k">2</b><b class="st-run-k">3</b>', "Answer", "tap an answer, or press its number, to sprint to its gate"]].forEach(function (r) {
+      how.appendChild(el("li", {}, [el("span", { class: "st-run-how-ico", "aria-hidden": "true", html: r[0] }), el("b", { text: r[1] + ": " }), document.createTextNode(r[2])]));
+    });
+    s.appendChild(how);
+    if (calm()) s.appendChild(el("p", { class: "st-run-calm", text: "Your device asks for less motion, so the cat runs more gently and nothing shakes." }));
+    s.appendChild(el("p", { class: "st-brain-prize", html: '<span class="st-brain-prize-g" aria-hidden="true">' + GEM + GEM + GEM + "</span>Win up to three diamonds" }));
+    var go = el("button", { class: "st-go", type: "button", html: ico("i-play") + " Start running" });
+    go.addEventListener("click", runStart);
+    s.appendChild(go);
+    sfx("board");
+    say("City Run. " + sub);
+    focusFirst(go);
+  }
+
+  function runStart() {
+    if (!window.MskCityRun) return;
+    G.qs = runDeal();
+    G.qi = -1; G.cur = null; G.lost = 0; G.hits = 0; G.picked = 0; G.pts = 0; G.lastCoin = 0;
+    var s = screen("st-run");
+    stage.classList.add("is-running");
+    ui.runKick = el("p", { class: "st-run-kick" });
+    ui.runSecs = el("span", { class: "st-run-secs", "aria-hidden": "true" });
+    ui.runQ = el("div", { class: "st-run-q" });
+    ui.runFuse = el("div", { class: "st-run-fuse", "aria-hidden": "true" }, [el("span", { class: "st-run-fuse-fill" })]);
+    ui.runCard = el("div", { class: "st-run-card" }, [el("div", { class: "st-run-cardtop" }, [ui.runKick, ui.runSecs]), ui.runQ, ui.runFuse]);
+    ui.runCanvas = el("canvas", { class: "st-run-canvas", "aria-hidden": "true" });
+    ui.runRoute = runRoute();
+    ui.runPause = el("button", { class: "st-run-pause", type: "button", "aria-label": "Pause the run. Key P", html: RUN_PAUSE });
+    ui.runPause.addEventListener("click", function () { runPause(!G.world.paused()); });
+    ui.runLayer = el("div", { class: "st-run-layer", "aria-hidden": "true" });
+    ui.runFb = el("div", { class: "st-run-fb" });
+    ui.runView = el("div", { class: "st-run-view" }, [ui.runCanvas, ui.runRoute, ui.runPause, ui.runLayer, ui.runFb]);
+    ui.runOpts = el("div", { class: "st-run-opts" });
+    s.appendChild(ui.runCard);
+    s.appendChild(ui.runView);
+    s.appendChild(ui.runOpts);
+    runSwipe(ui.runView);
+    G.world = window.MskCityRun.world(ui.runCanvas, {
+      gates: G.qs.map(function (q) { return { lanes: runLanes(q), read: runRead(q) }; }),
+      timer: opts.timer, calm: calm(),
+      onRead: function (i) { if (G && G.world) runQuestion(i); },
+      onGate: function (i, lane) { return runGate(i, lane); },
+      onHit: function (kind) { return runHit(kind); },
+      onGem: function () { runGem(); },
+      onDistrict: function (k) { runDistrict(k); },
+      onFinish: function () { runFinish(); },
+      onAutoPause: function () { if (G && G.world && !G.done) runPause(true); },
+      sound: function (name) { sfx(name); }
+    });
+    runIdle(0, true);
+    runTick(G);
+    // three, two, one, go
+    var c = el("div", { class: "st-count st-run-count" });
+    ui.runLayer.appendChild(c);
+    var n = 3, game = G;
+    (function tick() {
+      if (G !== game) return;
+      if (n === 0) {
+        c.textContent = "Go!";
+        c.classList.remove("is-pop"); void c.offsetWidth; c.classList.add("is-pop");
+        sfx("go");
+        G.world.start();
+        setTimeout(function () { if (c.parentNode) c.parentNode.removeChild(c); }, 600);
+        return;
+      }
+      c.textContent = String(n);
+      c.classList.remove("is-pop"); void c.offsetWidth; c.classList.add("is-pop");
+      sfx("count");
+      n -= 1;
+      setTimeout(tick, 700);
+    })();
+    say("Get ready. 3, 2, 1, go!");
+    focusFirst(ui.runView);
+    ui.runView.setAttribute("tabindex", "-1");
+  }
+
+  /* The four districts along a line, with the cat's progress. */
+  function runRoute() {
+    var box = el("div", { class: "st-run-route", "aria-hidden": "true" });
+    ui.runFill = el("b", { class: "st-run-route-fill" });
+    box.appendChild(el("i", { class: "st-run-route-line" }, [ui.runFill]));
+    D.run.d.forEach(function (name, k) { box.appendChild(el("span", { class: "st-run-stop", style: "left:" + (k * 25 + 12.5) + "%", text: name })); });
+    ui.runMark = el("span", { class: "st-run-mark", html: GEM });
+    box.appendChild(ui.runMark);
+    return box;
+  }
+  function runRoutePaint() {
+    var p = Math.min(1, G.answers.length / G.qs.length);
+    ui.runFill.style.width = (p * 100) + "%";
+    ui.runMark.style.left = (p * 100) + "%";
+  }
+
+  /* The chips: points straight away, since diamonds land all the time. */
+  function runChips() {
+    ui.ptsN.textContent = fmt(G.pts);
+    ui.ptsChip.setAttribute("aria-label", fmt(G.pts) + " points");
+    var m = multi();
+    ui.streak.hidden = G.streak < 2;
+    ui.streakN.textContent = String(G.streak);
+    ui.streak.classList.toggle("is-hot", G.streak >= 3);
+    ui.multi.hidden = m < 2;
+    ui.multi.textContent = "x" + m;
+    ui.streak.setAttribute("aria-label", "Streak " + G.streak + (m > 1 ? ", points times " + m : ""));
+  }
+
+  /* Between questions: what is coming, a tip, and the steering buttons. */
+  function runIdle(next, first) {
+    if (!G || G.done) return;
+    G.cur = null;
+    var n = G.qs.length, k = Math.min(3, Math.floor(next / 5));
+    ui.runCard.classList.remove("is-q");
+    ui.runKick.textContent = first ? "Get ready" : next < n ? D.run.d[k] : "Tower Bridge";
+    ui.runSecs.textContent = "";
+    ui.runQ.innerHTML = "";
+    ui.runQ.appendChild(el("p", { class: "st-run-idle", text: next < n ? "Question " + (next + 1) + " of " + n + " is coming up." : "Last stretch: race to the finish line!" }));
+    ui.runQ.appendChild(el("p", { class: "st-run-tip", text: RUN_TIPS[next % RUN_TIPS.length] }));
+    ui.runFuse.style.setProperty("--p", "0");
+    ui.runFuse.classList.remove("is-low");
+    runControls();
+  }
+  function runControls() {
+    ui.runBtns = null;
+    ui.runOpts.innerHTML = "";
+    ui.runOpts.className = "st-run-opts is-pad";
+    [[RUN_ARROW[0], "Left", "Move left. Left arrow key", -1], [RUN_ARROW[1], "Jump", "Jump. Up arrow or space", 0], [RUN_ARROW[2], "Right", "Move right. Right arrow key", 1]].forEach(function (c) {
+      var b = el("button", { class: "st-run-padbtn", type: "button", "aria-label": c[2] }, [el("span", { html: c[0] }), el("b", { text: c[1] })]);
+      b.addEventListener("click", function () { if (!G || !G.world) return; if (c[3]) G.world.steer(c[3]); else G.world.jump(); });
+      ui.runOpts.appendChild(b);
+    });
+  }
+
+  /* A question: its text in the card and its answers in the lanes' colours. */
+  function runQuestion(i) {
+    if (!G || G.done) return;
+    var q = G.qs[i], n = G.qs.length;
+    G.qi = i; G.cur = q; G.locked = false; G.quick = false; G.here = -1; G.lastSecs = -1;
+    label("City Run", D.run.d[Math.min(3, Math.floor(i / 5))] + ": question " + (i + 1) + " of " + n);
+    ui.progN.textContent = (i + 1) + " / " + n;
+    ui.progChip.hidden = false;
+    ui.runCard.classList.add("is-q");
+    var kind = q.k === "f" ? "Fact or fib?" : q.k === "m" ? stripTags(D.flash.q) : q.k === "p" ? "This or That" : "Pick a lane";
+    ui.runKick.textContent = "Question " + (i + 1) + " · " + kind;
+    ui.runQ.innerHTML = "";
+    if (q.k === "m") ui.runQ.appendChild(el("span", { class: "st-run-cluetag", text: D.pn[1] }));
+    ui.runQ.appendChild(el("p", { class: "st-run-qt", html: q.q }));
+    if (q.code) ui.runQ.appendChild(codeBox(q.code));
+    runOptions(q);
+    fitWords(ui.runQ, ".st-run-qt", 0.8);
+    var spoken = [0, 1, 2].filter(function (l) { return q.lanes[l]; }).map(function (l) {
+      return (q.k === "f" ? runLetter(q, l) : "Answer " + runLetter(q, l)) + ", " + (l === 0 ? "left" : l === 1 ? "middle" : "right") + " lane" +
+        (q.k === "f" ? "" : ": " + stripTags(q.o[q.lanes[l].i]));
+    }).join(". ");
+    say("Question " + (i + 1) + " of " + n + ". " + (q.k === "m" ? stripTags(D.flash.q) + " " : "") + stripTags(q.q) + (q.k === "f" ? " Fact or fib?" : "") + " " + spoken + ".");
+  }
+  function runOptions(q) {
+    ui.runOpts.innerHTML = "";
+    ui.runOpts.className = "st-run-opts is-" + (q.lanes[1] ? "three" : "two") + (q.k === "f" ? " is-fib" : "");
+    ui.runBtns = [null, null, null];
+    var key = 0;
+    [0, 1, 2].forEach(function (l) {
+      if (!q.lanes[l]) return;
+      key += 1;
+      var c = runColour(q, l), where = l === 0 ? "left" : l === 1 ? "middle" : "right";
+      var text = q.k === "f" ? (l === 0 ? "Fib: it is not true" : "Fact: it is true") : q.o[q.lanes[l].i];
+      var b = el("button", { class: "st-run-opt", type: "button", "data-lane": String(l), style: "--oc:" + c[0] + ";--od:" + c[1],
+                             "aria-label": (q.k === "f" ? runLetter(q, l) : "Answer " + runLetter(q, l)) + ", " + where + " lane: " + stripTags(text) + ". Key " + key }, [
+        el("span", { class: "st-run-arrow", "aria-hidden": "true", html: RUN_ARROW[l] }),
+        el("span", { class: "st-run-letter", "aria-hidden": "true", html: q.k === "f" ? (l === 0 ? CROSS : TICK) : runLetter(q, l) }),
+        el("span", { class: "st-run-txt", html: q.k === "f" ? "<b>" + runLetter(q, l) + "</b>" : text }),
+        el("span", { class: "st-run-key", "aria-hidden": "true", text: String(key) })]);
+      b.addEventListener("click", function () { runCommit(l); });
+      ui.runBtns[l] = b;
+      ui.runOpts.appendChild(b);
+    });
+  }
+  /* Lock in an answer: the cat moves over and sprints to its gate. */
+  function runCommit(lane) {
+    if (!G || !G.cur || G.locked || !G.world || G.world.paused()) return;
+    var quick = opts.timer && G.world.progress(G.qi) < 0.5;
+    if (!G.world.commit(lane)) return;
+    G.locked = true;
+    G.quick = quick;
+    ui.runBtns.forEach(function (b, l) { if (b) { b.disabled = true; b.classList.toggle("is-picked", l === lane); } });
+    sfx("go");
+  }
+  /* Every frame: the fuse, the seconds left, and which answer the cat is under. */
+  function runTick(game) {
+    if (G !== game || !G.world) return;
+    var q = G.cur;
+    if (q) {
+      var p = G.world.progress(G.qi);
+      ui.runFuse.style.setProperty("--p", (1 - p).toFixed(4));
+      if (opts.timer) {
+        var secs = Math.ceil(G.world.secondsLeft(G.qi));
+        if (secs !== G.lastSecs) {
+          G.lastSecs = secs;
+          ui.runSecs.textContent = secs + "s";
+          ui.runFuse.classList.toggle("is-low", secs <= 3);
+          if (secs === 3) say("3 seconds");
+        }
+      } else ui.runSecs.textContent = G.world.waiting() ? "Your move" : "No clock";
+      var here = G.world.lane();
+      if (here !== G.here && ui.runBtns) {
+        G.here = here;
+        ui.runBtns.forEach(function (b, l) { if (b) b.classList.toggle("is-here", l === here); });
+      }
+    }
+    requestAnimationFrame(function () { runTick(game); });
+  }
+  /* Where a gate is on the page, for diamonds to fly from. */
+  function runPoint(lane) {
+    var r = ui.runCanvas.getBoundingClientRect(), p = G.world.point(lane);
+    return { getBoundingClientRect: function () { return { left: r.left + p.x - 30, top: r.top + p.y - 30, width: 60, height: 60 }; } };
+  }
+
+  /* The cat reaches a gate: is it the right lane? */
+  function runGate(i, lane) {
+    var q = G.qs[i];
+    var blocked = !q.lanes[lane], ok = !blocked && lane === q.right;
+    G.answers.push(ok);
+    G.cur = null;
+    G.locked = true;
+    if (ui.runBtns) ui.runBtns.forEach(function (b, l) {
+      if (!b) return;
+      b.disabled = true;
+      if (l === q.right) b.classList.add("is-right");
+      else if (l === lane) b.classList.add("is-wrong");
+    });
+    ui.runSecs.textContent = "";
+    runRoutePaint();
+    if (ok) {
+      G.right += 1; G.streak += 1;
+      G.bestStreak = Math.max(G.bestStreak, G.streak);
+      if (G.quick) G.fast += 1;
+      var gain = 100 * multi() + (G.quick ? 50 : 0);
+      G.pts += gain;
+      var from = runPoint(lane);
+      floatText(from, "+" + fmt(gain), multi() > 1 ? "is-multi" : "");
+      gemFly(from, G.quick ? 7 : 5, function () { bump(ui.ptsChip); sfx("gem"); });
+      runChips();
+      runToast(pick(RUN_RIGHT) + (G.streak >= 3 ? " " + G.streak + " in a row!" : ""), "is-ok");
+      setTimeout(function () { sfx("good"); }, 100);
+      say("Right! Plus " + gain + " points." + (G.streak >= 3 ? " " + G.streak + " in a row." : ""));
+      var game = G;
+      // unless the next question has already reached the card
+      setTimeout(function () { if (G === game && !G.done && G.qi === i && !G.cur) runIdle(i + 1); }, calm() ? 600 : 1000);
+    } else {
+      G.streak = 0;
+      runChips();
+      G.world.hold();
+      quake();
+      setTimeout(function () { sfx("bad"); }, 100);
+      runFeedback(q, lane, blocked, i);
+    }
+    return { ok: ok, right: q.right };
+  }
+  function runAnswerHtml(q) {
+    if (q.k === "f") {
+      return q.truth ? "<b>It is a fact:</b> " + q.q :
+        '<span class="st-fb-ans"><b>It is a fib:</b> ' + q.q + "</span>" + (q.x ? " <b>The truth:</b> " + q.x : "");
+    }
+    return "<b>The answer was " + runLetter(q, q.right) + ":</b> " + q.o[0] + endStop(q.o[0]) + (q.x ? " " + q.x : "");
+  }
+  /* After a wrong lane the cat stops, and the panel shows the right answer. */
+  function runFeedback(q, lane, blocked, i) {
+    var head = blocked ? "Road closed!" : pick(RUN_WRONG);
+    var html = (blocked ? "The middle lane was closed, so pick a side next time. " : "") + runAnswerHtml(q);
+    var next = el("button", { class: "st-go", type: "button", html: (i === G.qs.length - 1 ? "Run to the finish" : "Keep running") + " " + ico("i-arrow-right") });
+    var panel = el("div", { class: "st-catfb is-plain is-bad st-run-panel", role: "status" }, [
+      el("div", { class: "st-catfb-head" }, [el("span", { class: "st-catfb-badge", "aria-hidden": "true", html: ico("i-cross") }), el("b", { text: head })]),
+      el("p", { class: "st-catfb-x", html: html }),
+      el("div", { class: "st-fb-go" }, [next])]);
+    next.addEventListener("click", function () {
+      if (next.disabled) return;
+      next.disabled = true;
+      if (panel.parentNode) panel.parentNode.removeChild(panel);
+      G.world.resume();
+      runIdle(i + 1);
+      focusFirst(ui.runView);
+    });
+    ui.runFb.appendChild(panel);
+    say(head + ". " + stripTags(html));
+    try { next.focus({ preventScroll: true }); } catch (e) { next.focus(); }
+  }
+  function runToast(text, cls) {
+    if (!ui.runLayer) return;
+    var t = el("div", { class: "st-run-toast " + (cls || ""), text: text });
+    ui.runLayer.appendChild(t);
+    setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 1500);
+  }
+  function runHit(kind) {
+    if (!G || G.done) return 0;
+    var lose = Math.min(G.pts, RUN_HIT[kind] || 0);
+    G.pts -= lose;
+    G.lost += lose;
+    if (kind !== "puddle" && kind !== "works") G.hits += 1;
+    runChips();
+    if (kind === "works") return 0;
+    sfx(kind === "puddle" ? "splash" : "hit");
+    if (lose) {
+      runToast((kind === "puddle" ? "Splash! " : "Bump! ") + lose + " points lost", "is-bad");
+      bump(ui.ptsChip);
+    }
+    return Math.round(lose / 10);
+  }
+  function runGem() {
+    if (!G || G.done) return;
+    G.pts += 10;
+    G.picked += 1;
+    runChips();
+    var now = performance.now();
+    if (now - G.lastCoin > 90) { G.lastCoin = now; sfx("coin"); bump(ui.ptsChip); }
+  }
+  function runDistrict(k) {
+    if (!G || G.done || !ui.runLayer) return;
+    var b = el("div", { class: "st-run-banner" }, [el("small", { text: "Welcome to" }), el("b", { text: D.run.d[k] })]);
+    ui.runLayer.appendChild(b);
+    setTimeout(function () { if (b.parentNode) b.parentNode.removeChild(b); }, 2600);
+    sfx("level");
+    say("Welcome to " + D.run.d[k] + ".");
+  }
+  function runFinish() {
+    if (!G || G.done) return;
+    G.cur = null;
+    runToast("Finish!", "is-finish");
+    sfx("level");
+    var game = G;
+    setTimeout(function () { if (G === game && !G.done) runResults(); }, calm() ? 700 : 1700);
+  }
+  function runPause(on) {
+    if (!G || !G.world || G.done) return;
+    G.world.pause(on);
+    ui.runPause.innerHTML = on ? RUN_PLAY : RUN_PAUSE;
+    ui.runPause.setAttribute("aria-label", on ? "Carry on running. Key P" : "Pause the run. Key P");
+    var old = ui.runView.querySelector(".st-run-paused");
+    if (old) old.parentNode.removeChild(old);
+    if (on) {
+      var go = el("button", { class: "st-go", type: "button", html: RUN_PLAY + " Carry on" });
+      go.addEventListener("click", function () { runPause(false); focusFirst(ui.runView); });
+      ui.runView.appendChild(el("div", { class: "st-run-paused" }, [el("b", { text: "Paused" }), go]));
+      say("Paused.");
+      focusFirst(go);
+    }
+  }
+  /* Swipes on the street: left, right and up. A tap on either side of the
+     street steers that way. */
+  function runSwipe(view) {
+    var id = null, x0 = 0, y0 = 0;
+    view.addEventListener("pointerdown", function (e) {
+      if (e.target.closest("button") || !G || !G.world) return;
+      id = e.pointerId; x0 = e.clientX; y0 = e.clientY;
+    });
+    function end(e) {
+      if (e.pointerId !== id) return;
+      id = null;
+      if (!G || !G.world || G.world.paused()) return;
+      var dx = e.clientX - x0, dy = e.clientY - y0;
+      if (Math.abs(dx) < 24 && Math.abs(dy) < 24) {
+        var r = view.getBoundingClientRect(), fx = (e.clientX - r.left) / r.width;
+        if (fx < 0.33) G.world.steer(-1); else if (fx > 0.67) G.world.steer(1); else G.world.jump();
+      } else if (Math.abs(dx) > Math.abs(dy)) G.world.steer(dx > 0 ? 1 : -1);
+      else if (dy < 0) G.world.jump();
+    }
+    view.addEventListener("pointerup", end);
+    view.addEventListener("pointercancel", function () { id = null; });
+  }
+  /* Keys: arrows or A and D steer, up, W or space jump, 1 to 3 answer,
+     Enter runs on with the clock off, and P pauses. */
+  function runKey(e, tag) {
+    var w = G.world, k = e.key;
+    if (k === "p" || k === "P") { runPause(!w.paused()); return true; }
+    if (w.paused()) return false;
+    var onButton = tag === "button" || tag === "a";
+    var carryOn = ui.runFb && ui.runFb.querySelector(".st-go");
+    if (carryOn && (k === "Enter" || k === " ")) { if (!onButton) carryOn.click(); return !onButton; }
+    if (k === "ArrowLeft" || k === "a" || k === "A") { w.steer(-1); return true; }
+    if (k === "ArrowRight" || k === "d" || k === "D") { w.steer(1); return true; }
+    if (k === "ArrowUp" || k === "w" || k === "W" || (k === " " && !onButton)) { w.jump(); return true; }
+    if (/^[1-3]$/.test(k) && G.cur && ui.runBtns) {
+      var live = ui.runBtns.map(function (b, l) { return b ? l : -1; }).filter(function (l) { return l > -1; });
+      var lane = live[parseInt(k, 10) - 1];
+      if (lane !== undefined) { runCommit(lane); return true; }
+    }
+    if (k === "Enter" && !onButton && G.cur && !G.locked) {
+      if (ui.runBtns && ui.runBtns[w.lane()]) runCommit(w.lane());
+      return true;
+    }
+    return false;
+  }
+
+  function runResults() {
+    var n = G.qs.length, pct = G.right / n;
+    var stars = G.right >= n - 2 ? 3 : G.right >= n - 6 ? 2 : 1;
+    var medals = [];
+    if (G.right === n) medals.push(["sweep", "#16A34A", "Perfect run", "Every gate right"]);
+    if (G.hits === 0) medals.push(["shield", "#0284C7", "Untouchable", "Not one bump"]);
+    if (G.picked >= 50) medals.push(["gem", "#7C3AED", "Diamond magnet", plural(G.picked, "diamond") + " picked up"]);
+    if (G.bestStreak >= 8) medals.push(["fire", "#EA580C", "Hot streak", plural(G.bestStreak, "answer") + " in a row"]);
+    if (G.fast >= 8) medals.push(["paw", "#DB2777", "Quick paws", plural(G.fast, "fast answer")]);
+    var missed = [];
+    G.qs.forEach(function (q, i) {
+      if (G.answers[i]) return;
+      var ask = q.k === "m" ? stripTags(D.flash.q) + " " : "";
+      missed.push(ask + q.q + ' <span class="st-res-ans">' + (q.k === "f" ? (q.truth ? "A fact." : "A fib." + (q.x ? " The truth: " + q.x : "")) :
+        "Answer: " + q.o[0]) + "</span>");
+    });
+    var hero = robocat(stars === 3 ? "happy" : "idle");
+    G.world.destroy();
+    G.world = null;
+    ui.progChip.hidden = true;
+    ui.streak.hidden = true;
+    taskResults({
+      stars: stars, pts: G.pts, pct: pct, hero: hero,
+      title: stars === 3 ? "Champion of London" : stars === 2 ? "Speedy runner" : "A good first run: try again to win more diamonds",
+      rows: [[art("run"), "Right answers", G.right + " of " + n + " gates", ""],
+             [GEM, "Diamonds picked up", plural(G.picked, "diamond") + (G.lost ? ", " + fmt(G.lost) + " points lost to bumps" : ""), ""],
+             [FLAME, "Best streak", plural(G.bestStreak, "right answer") + " in a row", ""]],
+      medals: medals,
+      extra: missed.length ? reviewList("The ones to look at again", missed) : null,
+      summary: G.right + " of " + n + " gates right, with " + plural(G.picked, "diamond") + " picked up."
+    });
+    stage.classList.remove("is-running");
+  }
+  hooks.runDeal = function () { return runDeal(); };
+  hooks.runWorld = function () { return G && G.world; };
+  hooks.runRead = function (q) { return runRead(q); };
+
   hooks.oddDeal = function () { return oddDeal(); };
   hooks.fibDeal = function () { return fibDeal(); };
 

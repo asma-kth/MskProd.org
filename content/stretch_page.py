@@ -12,8 +12,10 @@ secret word shows which letters are right; Link Up, where twelve tiles hide
 three groups of four; and Bug Hunt, where two statements are true and one has
 a mistake to catch. Last come three brain games, which replay the lesson as
 brain training: Odd One Out (logic), Memory Flash (memory) and Fact or Fib
-(speed); content/brain_games.py builds and checks them. Results are rated out
-of three diamonds. The games themselves are static/js/stretch.js; this module
+(speed); content/brain_games.py builds and checks them. Key Stage 3 lessons
+end with City Run: a robot cat races across London and every lane is an
+answer, twenty questions from the lesson's own tasks; content/city_run.py
+builds and checks them. Results are rated out of three diamonds. The games themselves are static/js/stretch.js; this module
 writes the pages, a hub for each key stage, and the links from the lessons to
 them.
 
@@ -23,7 +25,7 @@ without JavaScript shows, and what prints when a teacher wants it on paper.
 import importlib
 import json
 
-from mskbuild import cat, markup, render
+from mskbuild import cat, markup, render, robocat
 from mskbuild.render import (SITE_NAME, SITE_URL, crumbs, crumbs_ld, esc, ico, layout, write)
 from mskbuild.util import slugify
 from mskbuild import stretchcheck
@@ -31,6 +33,7 @@ from content import ks3
 from content import ks3_stretch
 from content import ks4_stretch
 from content import brain_games
+from content import city_run
 
 HUB = "/ks3/stretch/"
 DESC_LIMIT = 160   # characters a search result shows; a longer description is cut mid phrase
@@ -43,9 +46,10 @@ def _desc(name, games, short):
 HUB_TITLE = "Stretch tasks"
 HUB_LEAD3 = ("Three tasks for every Year 7, 8 and 9 lesson: a quiz challenge, This or That with "
              "Pixel the cat, and Memory Match.")
-HUB_LEAD = ("Nine tasks for every Year 7, 8 and 9 lesson: a quiz challenge, This or That with Pixel the cat, "
-            "Memory Match, Code Word, Link Up and Bug Hunt, then three brain games: Odd One Out, Memory Flash "
-            "and Fact or Fib. Every result is rated out of three diamonds.")
+HUB_LEAD = ("Ten tasks for every Year 7, 8 and 9 lesson: a quiz challenge, This or That with Pixel the cat, "
+            "Memory Match, Code Word, Link Up and Bug Hunt, three brain games (Odd One Out, Memory Flash and "
+            "Fact or Fib), then City Run, a robot cat's race across London. Every result is rated out of three "
+            "diamonds.")
 
 HUB4 = "/ks4/stretch/"
 HUB4_TITLE = "Key Stage 4 stretch tasks"
@@ -56,10 +60,11 @@ ROUNDS = [("Quiz Blitz", "blitz"), ("Quick Fire", "short"), ("Big Think", "long"
 # what the game and the saved results call each one. Sort It is the fourth
 # task at Key Stage 4. Code Word, Link Up and Bug Hunt follow: the fourth,
 # fifth and sixth at Key Stage 3, the fifth, sixth and seventh at Key Stage 4.
-# The three brain games come last, in a band of their own.
+# The three brain games come next, in a band of their own, and City Run, at
+# Key Stage 3, last of all.
 TASKS = [("quiz", "Quiz Challenge"), ("cat", "This or That"), ("match", "Memory Match"), ("sort", "Sort It"),
          ("word", "Code Word"), ("link", "Link Up"), ("bug", "Bug Hunt"),
-         ("odd", "Odd One Out"), ("flash", "Memory Flash"), ("fib", "Fact or Fib")]
+         ("odd", "Odd One Out"), ("flash", "Memory Flash"), ("fib", "Fact or Fib"), ("run", "City Run")]
 GAMES = ("word", "link", "bug")
 BRAIN = ("odd", "flash", "fib")
 SKILL = {"odd": "Logic", "flash": "Memory", "fib": "Speed"}
@@ -69,17 +74,22 @@ KS4_SOURCES = {"ks4/computer-science": "ks4_cs", "ks4/aqa-computer-science": "aq
                "ks4/edexcel-computer-science": "edexcel_gcse", "ks4/imedia": "ks4_imedia"}
 
 
-def _tasks(st):
+def _tasks(r):
     """The tasks one lesson has, in the order its page offers them."""
+    st = r["stretch"]
     brain = bool(st.groups and st.bugs and len(st.pairs) >= max(brain_games.FLASH_LEVELS))
     has = {"sort": bool(st.sort), "word": bool(st.words), "link": bool(st.groups), "bug": bool(st.bugs),
-           "odd": brain, "flash": brain, "fib": brain}
+           "odd": brain, "flash": brain, "fib": brain, "run": city_run.available(r["stage"], brain)}
     return [t for t in TASKS if has.get(t[0], True)]
+
+
+def _has_run(r):
+    return any(t == "run" for t, _ in _tasks(r))
 
 
 def _tasks_of(recs):
     """The tasks any of these lessons has: what a hub's cards make room for."""
-    keys = {k for r in recs for k, _ in _tasks(r["stretch"])}
+    keys = {k for r in recs for k, _ in _tasks(r)}
     return [t for t in TASKS if t[0] in keys]
 
 
@@ -233,6 +243,28 @@ def _task_icon(task):
                 '<circle cx="36" cy="38.5" r="9" fill="#16A34A" stroke="#1E293B" stroke-width="2.2"/>'
                 '<path d="M31.8 38.7l3 3 5.4-5.8" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" '
                 'stroke-linejoin="round"/></svg>')
+    if task == "run":
+        # The robot cat's head at speed, with Big Ben behind it.
+        return ('<svg viewBox="0 0 50 50" aria-hidden="true" focusable="false">'
+                '<path d="M40.5 47V23h7v24Z" fill="#D8BF85" stroke="#1E293B" stroke-width="1.6"/>'
+                '<path d="M39.5 23h9v-6h-9Z" fill="#D8BF85" stroke="#1E293B" stroke-width="1.6"/>'
+                '<path d="M39.5 17 44 7.5l4.5 9.5Z" fill="#475569" stroke="#1E293B" stroke-width="1.6" stroke-linejoin="round"/>'
+                '<circle cx="44" cy="20" r="2" fill="#fff"/>'
+                '<path d="M2.5 21h7M1 28h8M3 35h6" stroke="#38BDF8" stroke-width="2.6" stroke-linecap="round"/>'
+                '<path d="M14.5 23 13 7.5l10.5 6.5Z" fill="#E2E8F0" stroke="#1E293B" stroke-width="2" stroke-linejoin="round"/>'
+                '<path d="M16.2 20 15.5 11.5l5.8 3.6Z" fill="#BE123C"/>'
+                '<path d="M37.5 23 39 7.5l-10.5 6.5Z" fill="#E2E8F0" stroke="#1E293B" stroke-width="2" stroke-linejoin="round"/>'
+                '<path d="M35.8 20l.7-8.5-5.8 3.6Z" fill="#BE123C"/>'
+                '<ellipse cx="26" cy="29" rx="14.5" ry="13" fill="#E2E8F0" stroke="#1E293B" stroke-width="2.2"/>'
+                '<path d="M15 25.5c3-6 8-8.5 11-8.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>'
+                '<ellipse cx="26" cy="18.5" rx="3.6" ry="2.1" fill="#1E293B"/>'
+                '<circle cx="20.2" cy="28.5" r="5" fill="#1E293B"/><circle cx="20.2" cy="28.8" r="3.9" fill="#3B82F6"/>'
+                '<circle cx="18.9" cy="27.2" r="1.4" fill="#fff"/>'
+                '<circle cx="31.8" cy="28.5" r="5" fill="#1E293B"/><circle cx="31.8" cy="28.8" r="3.9" fill="#3B82F6"/>'
+                '<circle cx="30.5" cy="27.2" r="1.4" fill="#fff"/>'
+                '<path d="M24.2 34.5h3.6L26 36.6Z" fill="#F472B6"/>'
+                '<path d="M15 35.5 6.5 34M15 38l-8 2M37 35.5l8.5-1.5M37 38l8 2" stroke="#64748B" stroke-width="1.4" '
+                'stroke-linecap="round"/></svg>')
     if task == "sort":
         return ('<svg viewBox="0 0 50 50" aria-hidden="true" focusable="false">'
                 '<path d="M2.5 30h19.5l-2.3 16.5H4.8Z" fill="#F97316" stroke="#1E293B" stroke-width="2.2" stroke-linejoin="round"/>'
@@ -258,6 +290,34 @@ def _task_icon(task):
             'stroke-linejoin="round"/></svg>')
 
 
+# London along the horizon, for City Run's band and the start of a run:
+# Parliament and Big Ben, the London Eye, St Paul's, the Gherkin, the Shard
+# and Tower Bridge. Solid colours only, so a copy needs no ids of its own.
+SKYLINE = ('<svg viewBox="0 0 480 150" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false">'
+           '<circle cx="418" cy="40" r="17" fill="#FDE68A" opacity=".9"/>'
+           '<g fill="#8B7FD6">'
+           '<path d="M0 150v-40h6l3-7 3 7h6l3-7 3 7h6l3-7 3 7h6l3-7 3 7h4v40Z"/>'
+           '<path d="M62 150V66h16v84Z"/><path d="M59 66V48h22v18Z"/><path d="M59 48l11-28 11 28Z"/>'
+           '<path d="M100 150V100h26v50Z"/>'
+           '<path d="M212 150v-36h56v36Z"/><path d="M220 114a20 24 0 0 1 40 0Z"/><path d="M236 92h8v-12h-8Z"/>'
+           '<path d="M285 150c-9-34-4-62 11-80 15 18 20 46 11 80Z"/>'
+           '<path d="M318 150l17-116 4 8 3-12 15 120Z"/>'
+           '<path d="M380 150V86h18v64ZM440 150V86h18v64Z"/><path d="M378 86l11-18 11 18ZM438 86l11-18 11 18Z"/>'
+           '<path d="M398 92h42v6h-42ZM398 132h42v5h-42Z"/>'
+           '<path d="M466 150v-30h14v30Z"/>'
+           '</g>'
+           '<g fill="none" stroke="#8B7FD6" stroke-width="3">'
+           '<circle cx="160" cy="86" r="44"/><path d="M160 86l-22 64M160 86l22 64"/>'
+           '<path d="M116 86h88M160 42v88M129 55l62 62M191 55l-62 62"/>'
+           '<path d="M380 98c-14 10-22 26-28 52M458 98c14 10 22 26 28 52"/></g>'
+           '<g fill="#FDE68A"><circle cx="70" cy="57" r="4"/><rect x="104" y="108" width="4" height="6"/>'
+           '<rect x="114" y="108" width="4" height="6"/><rect x="386" y="100" width="5" height="7"/>'
+           '<rect x="446" y="100" width="5" height="7"/></g>'
+           '<g fill="#C4B5FD">' + "".join('<circle cx="%.1f" cy="%.1f" r="3.4"/>' % (160 + 44 * __import__("math").cos(a / 8 * 3.14159),
+                                                                                       86 + 44 * __import__("math").sin(a / 8 * 3.14159))
+                                             for a in range(16)) + '</g></svg>')
+
+
 def ks3_records():
     """Every Key Stage 3 stretch task in teaching order, with what its pages need to know."""
     topics = {t.slug: (u, t) for u in ks3.COURSE.units for t in u.topics}
@@ -279,10 +339,11 @@ def ks3_records():
                 "hub": HUB, "active": "/ks3/", "level": "Key Stage 3, %s" % unit.title,
                 "course_name": ks3.COURSE.title, "course_url": "/ks3/",
                 "desc": _desc("%s (%s, lesson %d)" % (st.lesson, topic.title, n),
-                              "nine stretch games: a quiz, This or That, Memory Match, Code Word, Link Up, Bug Hunt "
-                              "and three brain games." if st.words else
+                              "ten stretch games: a quiz, This or That, Memory Match, Code Word, Link Up, Bug Hunt, "
+                              "three brain games and City Run." if st.words else
                               "a quiz challenge, This or That with Pixel the cat, and Memory Match.",
-                              "nine stretch games, from a quiz to three brain games." if st.words else "three stretch games."),
+                              "ten stretch games, from a quiz to City Run, a race across London." if st.words
+                              else "three stretch games."),
             })
     return out
 
@@ -377,6 +438,9 @@ def check():
     brain = brain_games.check(records())
     if brain:
         raise SystemExit("The brain games failed their checks:\n  " + "\n  ".join(brain))
+    run = city_run.check(records(), _has_run)
+    if run:
+        raise SystemExit("City Run failed its checks:\n  " + "\n  ".join(run))
     return missing
 
 
@@ -457,7 +521,7 @@ def payload(r, nxt):
     if st.bugs:
         d["bugs"] = [{"t": [markup.inline(t) for t in b.truths], "b": markup.inline(b.bug), "x": markup.inline(b.fix)}
                      for b in st.bugs]
-    if any(t == "odd" for t, _ in _tasks(st)):
+    if any(t == "odd" for t, _ in _tasks(r)):
         # Odd One Out: for each group, the tiles of other groups that may be the odd one out among three of its tiles
         d["odd"] = [[[g, t] for g, t in ok] for ok in brain_games.odd_intruders(r["key"], st)]
         # Fact or Fib: every statement it may deal, whether it is true, and the fix or explanation
@@ -467,6 +531,21 @@ def payload(r, nxt):
         fp = brain_games.flash_pairs(r["key"], st)
         d["flash"] = {"q": brain_games.flash_ask(st), "l": brain_games.flash_levels(len(fp)),
                       "p": [{"a": markup.inline(a), "b": markup.inline(b)} for a, b in fp]}
+    if _has_run(r):
+        # City Run: the quiz's and This or That's questions it may ask, the right
+        # answer first, and how many of each kind a run asks. Its statements and
+        # pairs are Fact or Fib's and Memory Flash's, above.
+        def opt(t):
+            return markup.inline(t)
+        d["run"] = {
+            "c": [dict({"q": opt(q), "o": [opt(right)] + [opt(w) for w in wrongs], "x": opt(why)},
+                       **({"c": _code(code, lang)} if code else {}))
+                  for q, right, wrongs, why, code, lang in city_run.choices(st)],
+            "p": [dict({"q": opt(q), "o": [opt(right), opt(wrong)], "x": opt(why)},
+                       **({"c": _code(code, lang)} if code else {}))
+                  for q, right, wrong, why, code, lang in city_run.picks(st)],
+            "n": city_run.QUESTIONS, "mix": [list(m) for m in city_run.MIX], "d": list(city_run.DISTRICTS),
+        }
     return d
 
 
@@ -546,9 +625,13 @@ def _sheet(r):
     if st.words:
         games_q, games_k = _sheet_games(st)
         sort_q, sort_k = sort_q + games_q, sort_k + games_k
-    if any(t == "odd" for t, _ in _tasks(st)):
+    if any(t == "odd" for t, _ in _tasks(r)):
         brain_q, brain_k = _sheet_brain(r)
         sort_q, sort_k = sort_q + brain_q, sort_k + brain_k
+    if _has_run(r):
+        sort_q += ('<h3>City Run</h3><p class="st-sheet-hint">City Run is a race across London, played on screen. '
+                   'It asks %d of the questions above, from the quiz, This or That, Memory Flash and Fact or Fib.</p>'
+                   % city_run.QUESTIONS)
     return """<section class="st-sheet" id="st-sheet" aria-labelledby="st-sheet-title">
   <h2 id="st-sheet-title">%s: the questions</h2>
   <h3>Quiz Challenge, round 1: Quiz Blitz</h3><ol class="st-sheet-list">%s</ol>
@@ -739,6 +822,9 @@ def _lobby(r):
                   "%d levels, about 4 minutes" % len(flash_levels)),
         "fib": ("Statements fly in one at a time. Is each one a fact or a fib? Decide fast.",
                 "%d statements, about 3 minutes" % brain_games.FIB_DEAL),
+        "run": ("Race a robot cat across London, from Big Ben to Tower Bridge. Every question is a row of gates "
+                "across the road: run through the lane with the right answer, dodge the traffic and grab diamonds.",
+                "%d questions, about 6 minutes" % city_run.QUESTIONS),
     }
     points = {
         "cat": ["Two answers to every question", "A fish treat for every right answer",
@@ -758,8 +844,10 @@ def _lobby(r):
         "flash": ["Three levels: %s cards" % _and(str(n) for n in flash_levels),
                   "Two tries to find each card", "Streaks win bonus points"],
         "fib": ["Swipe, tap or use the arrow keys", "Every fib comes with its fix", "Streaks multiply your points"],
+        "run": ["%d questions from this lesson, in four parts of London" % city_run.QUESTIONS,
+                "Swipe, tap or use the arrow keys", "Dodge buses, cabs and cones, and jump the puddles"],
     }
-    tasks = _tasks(st)
+    tasks = _tasks(r)
 
     def card(task, name, tag, h):
         return """<div class="st-task st-task-%(t)s" role="group" aria-labelledby="st-t-%(t)s">
@@ -774,7 +862,7 @@ def _lobby(r):
                                '<ul class="st-points">%s</ul>' % "".join("<li>%s%s</li>" % (ico("i-check"), esc(t))
                                                                          for t in points[task])),
                        clock=ico("i-clock"), play=ico("i-play"))
-    main = [t for t in tasks if t[0] not in BRAIN]
+    main = [t for t in tasks if t[0] not in BRAIN and t[0] != "run"]
     cards = [card(task, name, "Task %d" % n, "h2") for n, (task, name) in enumerate(main, 1)]
     brain = [t for t in tasks if t[0] in BRAIN]
     band = ""
@@ -791,6 +879,27 @@ def _lobby(r):
     </div>
   </section>""" % (BRAIN_ART, _gem("st-gem is-on") * 3, len(brain),
                    "\n      ".join(card(task, name, SKILL[task], "h3") for task, name in brain))
+    run = teaser = ""
+    if any(t == "run" for t, _ in tasks):
+        run = """<section class="st-run-band st-task-run" id="st-run" aria-labelledby="st-run-h">
+    <div class="st-run-art" aria-hidden="true">
+      <span class="st-run-sky" data-st-art="run-sky">%s</span>
+      %s
+    </div>
+    <div class="st-run-body">
+      <h2 class="st-run-tag" id="st-run-h"><span class="st-run-ico" data-st-art="run">%s</span>The final challenge</h2>
+      <h3 id="st-t-run">City Run</h3>
+      <p class="st-task-sum">%s</p>
+      <ul class="st-points">%s</ul>
+      <p class="st-task-time">%s %s</p>
+      <p class="st-best" data-st-best="run" hidden></p>
+      <button class="st-start" type="button" data-st-start="run">%s Play<span class="sr-only"> City Run</span></button>
+    </div>
+  </section>""" % (SKYLINE, robocat.svg("idle", cls="rc st-run-cat"), _task_icon("run"), esc(about["run"][0]),
+                   "".join("<li>%s%s</li>" % (ico("i-check"), esc(t)) for t in points["run"]),
+                   ico("i-clock"), about["run"][1], ico("i-play"))
+        teaser = ('\n    <a class="st-run-teaser" href="#st-run">%s<span><b>City Run</b> Race a robot cat across London</span></a>'
+                  % robocat.head(cls="rc rc-head-only st-run-teaser-cat"))
     return """<section class="st-lobby" id="st-lobby" aria-labelledby="st-title">
   <div class="st-bg" aria-hidden="true">%s</div>
   <div class="st-lobby-host" aria-hidden="true">%s</div>
@@ -803,11 +912,12 @@ def _lobby(r):
         <button type="button" class="st-toggle" data-st-opt="timer" aria-pressed="true">%s Timer</button>
         <button type="button" class="st-toggle" data-st-opt="sound" aria-pressed="false">%s Sound</button>
       </div>
-    </div>
+    </div>%s
   </div>
   <div class="st-tasks" data-n="%d">
       %s
   </div>
+  %s
   %s
   <div class="st-lobby-go">
     <button class="st-link" type="button" data-st-print="sheet">%s Print the questions</button>
@@ -815,7 +925,7 @@ def _lobby(r):
   </div>
   <p class="st-nojs">The games need JavaScript. Every question is below, with the answers at the end.</p>
 </section>""" % (BG, cat.rig(cls="px st-px"), " &middot; ".join(esc(k) for k in r["kicker"]),
-                 esc(r["title"]), ico("i-timer"), ico("i-sound"), len(main), "\n      ".join(cards), band,
+                 esc(r["title"]), ico("i-timer"), ico("i-sound"), teaser, len(main), "\n      ".join(cards), band, run,
                  ico("i-paper"), ico("i-check"))
 
 
@@ -840,11 +950,12 @@ def _lesson_page(r, nxt, prev):
   %s
   <nav class="topic-nav" aria-label="Stretch tasks">%s</nav>
 </div>
-<template id="st-pixel">%s</template>
+<template id="st-pixel">%s</template>%s
 %s
 <script type="application/json" id="st-data">%s</script>""" % (
         crumbs(trail), _lobby(r), r["lesson_url"], ico("i-book"), esc(r["title"]), _sheet(r), "".join(nav),
-        cat.rig(), GEM_DEFS, data)
+        cat.rig(), ('\n<template id="st-robocat">%s</template>' % robocat.svg("idle")) if _has_run(r) else "",
+        GEM_DEFS, data)
     title = "Stretch tasks: %s" % r["title"]
     ld = [crumbs_ld(trail), {
         "@context": "https://schema.org", "@type": "LearningResource",
@@ -856,7 +967,8 @@ def _lesson_page(r, nxt, prev):
     }]
     return layout(title=title, description=r["desc"], path=r["url"], body=body, active=r["active"],
                   extra_head='<link rel="stylesheet" href="/assets/css/stretch.css">',
-                  scripts=["/assets/js/quiz.js", "/assets/js/stretch.js"], jsonld=ld)
+                  scripts=["/assets/js/quiz.js"] + (["/assets/js/cityrun.js"] if _has_run(r) else []) + ["/assets/js/stretch.js"],
+                  jsonld=ld)
 
 
 # Small marks for the tasks on the hub's cards, drawn once and reused.
@@ -896,6 +1008,11 @@ GLYPHS = ('<svg class="st-glyphs" width="0" height="0" aria-hidden="true" focusa
           '<path d="M4.8 9.8l4.4 4.4M9.2 9.8l-4.4 4.4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>'
           '<circle cx="17" cy="12" r="6" fill="#16A34A"/><path d="M14.3 12.2l2 2 3.6-3.8" fill="none" stroke="#fff" '
           'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>'
+          '<symbol id="st-g-run" viewBox="0 0 24 24"><path d="M3.6 10.5 3.2 2.6l6.2 4Z" fill="#94A3B8"/>'
+          '<path d="M20.4 10.5l.4-7.9-6.2 4Z" fill="#94A3B8"/><ellipse cx="12" cy="13.4" rx="9.2" ry="8.2" fill="#94A3B8"/>'
+          '<circle cx="8.5" cy="12.8" r="2.6" fill="#1D4ED8"/><circle cx="15.5" cy="12.8" r="2.6" fill="#1D4ED8"/>'
+          '<circle cx="7.9" cy="12.1" r=".9" fill="#fff"/><circle cx="14.9" cy="12.1" r=".9" fill="#fff"/>'
+          '<path d="M10.8 16.6h2.4L12 18Z" fill="#DB2777"/></symbol>'
           '<symbol id="st-gem" viewBox="0 0 24 22">' + GEM_FACETS + '</symbol></svg>')
 
 
@@ -906,8 +1023,8 @@ def _hub_tasks(tasks):
         return ('<span class="st-hub-task" data-st-task="%s"><svg class="st-g" aria-hidden="true" focusable="false">'
                 '<use href="#st-g-%s"></use></svg><span class="st-gems" data-st-gems aria-hidden="true">%s</span>'
                 '<span class="sr-only" data-st-sr>%s: not played yet.</span></span>' % (task, task, _gem() * 3, name))
-    main = [t for t in tasks if t[0] not in BRAIN]
-    brain = [t for t in tasks if t[0] in BRAIN]
+    main = [t for t in tasks if t[0] not in BRAIN and t[0] != "run"]
+    brain = [t for t in tasks if t[0] in BRAIN or t[0] == "run"]
     cls = {4: " is-four", 6: " is-six", 7: " is-seven"}.get(len(main), "")
     out = '<span class="st-hub-tasks%s">%s</span>' % (cls, "".join(badge(*t) for t in main))
     if brain:
@@ -917,7 +1034,7 @@ def _hub_tasks(tasks):
 
 def _hub_card(r, label):
     return ('<a class="st-hub-card" href="%s" data-st-key="%s"><span class="st-hub-n">%s</span><b>%s</b>%s</a>'
-            % (r["url"], esc(r["key"]), esc(label), esc(_card_title(r)), _hub_tasks(_tasks(r["stretch"]))))
+            % (r["url"], esc(r["key"]), esc(label), esc(_card_title(r)), _hub_tasks(_tasks(r))))
 
 
 def _card_title(r):
@@ -968,8 +1085,8 @@ def _hub(recs):
                          % (slugify(year), year, "".join(units)))
     tasks = _tasks_of(recs)
     # The lead is too long for a search snippet, so the description says it shorter
-    summary = ("Nine stretch tasks for every Year 7, 8 and 9 lesson, from a quiz to three brain games with diamonds "
-               "to win." if len(tasks) > 3 else "")
+    summary = ("Ten stretch tasks for every Year 7, 8 and 9 lesson, from a quiz to City Run, a robot cat's race "
+               "across London, with diamonds to win." if len(tasks) > 3 else "")
     return _hub_page(path=HUB, title="KS3 Computing stretch tasks", h1=HUB_TITLE, summary=summary,
                      lead=HUB_LEAD if len(tasks) > 3 else HUB_LEAD3,
                      trail=[("Home", "/"), ("Key Stage 3", "/ks3/"), (HUB_TITLE, None)],
@@ -1041,7 +1158,7 @@ def _publish(recs, register, add_search):
                        "%s %s, lesson %d" % (r["topic"].spec, r["topic"].title, r["n"]),
                        ("stretch task challenge quiz game this or that pixel cat memory match pairs code word "
                         "link up bug hunt word puzzle brain games odd one out memory flash fact or fib diamonds "
-                        "ks3 %s %s %s" % (r["year"], r["topic"].title, r["title"])).lower())
+                        "city run london runner robot cat ks3 %s %s %s" % (r["year"], r["topic"].title, r["title"])).lower())
         else:
             add_search("Stretch tasks: %s" % r["title"], r["url"], "%s %s" % (r["cname"], r["topic"].spec),
                        ("stretch task challenge quiz game this or that pixel cat memory match sort it code word link up "
@@ -1060,10 +1177,10 @@ def build(register, add_search):
     write(HUB, _hub(ks3r))
     register(HUB, 0.8, "weekly")
     add_search(HUB_TITLE, HUB, "Years 7, 8 and 9: %s tasks for every lesson"
-               % ("nine" if len(_tasks_of(ks3r)) > 3 else "three"),
+               % ("ten" if len(_tasks_of(ks3r)) > 3 else "three"),
                "stretch tasks challenge extension fast finishers quiz game kahoot this or that pixel cat "
                "memory match pairs code word link up bug hunt word puzzle games brain games odd one out "
-               "memory flash fact or fib diamonds ks3 year 7 year 8 year 9 lessons")
+               "memory flash fact or fib diamonds city run london runner robot cat ks3 year 7 year 8 year 9 lessons")
     if ks4r:
         for key in dict.fromkeys(r["ckey"] for r in ks4r):
             _publish([r for r in ks4r if r["ckey"] == key], register, add_search)
@@ -1089,3 +1206,6 @@ def build(register, add_search):
           "%d Memory Match pairs, %d Sort It cards, %d Code Word words, %d Link Up groups and %d Bug Hunt rounds checked"
           % (len(recs), len(ks4r), n_q, n_p, n_m, n_s, n_w, n_g, n_b))
     print("Brain games: %d possible Odd One Out rounds and %d Fact or Fib statements checked" % (n_odd, n_fib))
+    runs = [r for r in recs if _has_run(r)]
+    n_run = sum(sum(city_run.counts(r["key"], r["stretch"]).values()) for r in runs)
+    print("City Run: %d lessons, %d questions to draw from checked" % (len(runs), n_run))

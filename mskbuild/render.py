@@ -745,7 +745,7 @@ STRETCH_SHAPES = ('<svg class="stretch-cta-art" viewBox="0 0 50 50" aria-hidden=
 def _stretch_cta(href: str, n: int) -> str:
     """The way from a Key Stage 3 lesson into its stretch task."""
     return ('<a class="stretch-cta" href="%s">%s<span class="stretch-cta-txt"><b>Stretch tasks: lesson %d</b>'
-            '<span>Quiz Challenge, This or That, Memory Match, Code Word, Link Up, Bug Hunt and three brain games</span></span>'
+            '<span>Quiz Challenge, This or That, Memory Match, Code Word, Link Up, Bug Hunt, three brain games and City Run</span></span>'
             '<span class="stretch-cta-go">Play %s</span></a>' % (href, STRETCH_SHAPES, n, ico("i-arrow-right")))
 
 

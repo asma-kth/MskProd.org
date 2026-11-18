@@ -335,7 +335,7 @@ def build_pwa():
     for rel in ("css/site.css", "js/app.js", "js/mascot.js", "js/tools.js",
                 "css/game.css", "js/game.js", "js/game-art.js",
                 "css/certificate.css", "js/certificate.js", "css/ct.css", "js/ct.js", "css/ct-pages.css", "js/ct-pages.js",
-                "css/stretch.css", "js/stretch.js", "js/quiz.js", "css/quest.css", "js/quest.js"):
+                "css/stretch.css", "js/stretch.js", "js/cityrun.js", "js/quiz.js", "css/quest.css", "js/quest.js"):
         f = os.path.join(DIST, "assets", rel)
         if os.path.exists(f):
             with open(f, "rb") as fh:
