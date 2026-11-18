@@ -745,15 +745,15 @@ STRETCH_SHAPES = ('<svg class="stretch-cta-art" viewBox="0 0 50 50" aria-hidden=
 def _stretch_cta(href: str, n: int) -> str:
     """The way from a Key Stage 3 lesson into its stretch task."""
     return ('<a class="stretch-cta" href="%s">%s<span class="stretch-cta-txt"><b>Stretch tasks: lesson %d</b>'
-            '<span>Quiz Challenge, This or That, Memory Match, Code Word, Link Up and Bug Hunt</span></span>'
+            '<span>Quiz Challenge, This or That, Memory Match, Code Word, Link Up, Bug Hunt and three brain games</span></span>'
             '<span class="stretch-cta-go">Play %s</span></a>' % (href, STRETCH_SHAPES, n, ico("i-arrow-right")))
 
 
 def _topic_stretch(href: str) -> str:
     """At Key Stage 4 a whole topic is one lesson, so its stretch tasks close the page."""
     return ('<h2 id="stretch-tasks">Stretch tasks</h2>'
-            '<a class="stretch-cta" href="%s">%s<span class="stretch-cta-txt"><b>Seven games on this topic</b>'
-            '<span>Quiz Challenge, This or That, Memory Match, Sort It, Code Word, Link Up and Bug Hunt</span></span>'
+            '<a class="stretch-cta" href="%s">%s<span class="stretch-cta-txt"><b>Ten games on this topic</b>'
+            '<span>Quiz Challenge, This or That, Memory Match, Sort It, Code Word, Link Up, Bug Hunt and three brain games</span></span>'
             '<span class="stretch-cta-go">Play %s</span></a>' % (href, STRETCH_SHAPES, ico("i-arrow-right")))
 
 

@@ -2965,6 +2965,8 @@
   }
   function brainResults(o) {
     o.rows.push([FLAME, "Best streak", plural(G.bestStreak, "right answer") + " in a row", ""]);
+    ui.progChip.hidden = true;
+    ui.streak.hidden = true;
     taskResults(o);
   }
 

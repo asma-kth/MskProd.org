@@ -436,9 +436,10 @@ def _pick(p):
 def payload(r, nxt):
     st = r["stretch"]
     d = {
-        "key": r["key"], "lesson": r["title"], "where": r["where"],
+        # Inside the games a title is written without dashes, as all game text is
+        "key": r["key"], "lesson": brain_games.tidy(r["title"]), "where": r["where"],
         "back": r["lesson_url"],
-        "next": {"t": nxt["title"], "u": nxt["url"]} if nxt else None,
+        "next": {"t": brain_games.tidy(nxt["title"]), "u": nxt["url"]} if nxt else None,
         "blitz": [_blitz(b) for b in st.blitz],
         "short": [_written(w) for w in st.short],
         "long": [_written(w) for w in st.long],
@@ -966,7 +967,10 @@ def _hub(recs):
             years.append('<section class="section st-hub-year" id="%s"><h2>%s</h2>%s</section>'
                          % (slugify(year), year, "".join(units)))
     tasks = _tasks_of(recs)
-    return _hub_page(path=HUB, title="KS3 Computing stretch tasks", h1=HUB_TITLE,
+    # The lead is too long for a search snippet, so the description says it shorter
+    summary = ("Nine stretch tasks for every Year 7, 8 and 9 lesson, from a quiz to three brain games with diamonds "
+               "to win." if len(tasks) > 3 else "")
+    return _hub_page(path=HUB, title="KS3 Computing stretch tasks", h1=HUB_TITLE, summary=summary,
                      lead=HUB_LEAD if len(tasks) > 3 else HUB_LEAD3,
                      trail=[("Home", "/"), ("Key Stage 3", "/ks3/"), (HUB_TITLE, None)],
                      sections="".join(years), tasks=tasks, course_name=ks3.COURSE.title, course_url="/ks3/",

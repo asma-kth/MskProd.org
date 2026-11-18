@@ -171,7 +171,8 @@ FIXES = [("E-waste", "Electronic waste"), ("e-waste", "electronic waste"), ("Sel
          ("count-controlled", "count controlled"), ("condition-controlled", "condition controlled"),
          ("High-level", "High level"), ("high-level", "high level"), ("24-bit", "24 bit"), ("f-string", "f string"),
          ("Multi-platform", "Multi platform"), ("sub-lists", "sub lists"), ("five-item", "five item"),
-         ("variable-width", "variable width"), ("Wi-Fi", "WiFi"), ("full-size", "full size"), ("LEN - 1", "LEN minus 1")]
+         ("variable-width", "variable width"), ("Wi-Fi", "WiFi"), ("full-size", "full size"), ("LEN - 1", "LEN minus 1"),
+         ("Pre-production", "Pre production"), ("pre-production", "pre production")]
 
 
 def tidy(text):
