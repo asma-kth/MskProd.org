@@ -296,9 +296,10 @@ def _task_icon(task):
             'stroke-linejoin="round"/></svg>')
 
 
-# City Run's picture: the silver robot cat standing, sprinting and skating
-# away on its inline skates, for its band in the lobby and the start of a run.
-RUN_ART = ('<img class="st-run-shot" src="/assets/img/city-run-cat.jpg" width="1144" height="560" alt="" '
+# City Run's picture: a robot cat dashing along the tracks of the neon city,
+# past a train and on towards the tunnel, for its band in the lobby and the
+# start of a run.
+RUN_ART = ('<img class="st-run-shot" src="/assets/img/city-run-scene.jpg" width="1440" height="772" alt="" '
            'loading="lazy" decoding="async">')
 
 
