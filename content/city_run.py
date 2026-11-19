@@ -16,14 +16,15 @@ its wording, right answer, explanation or code cannot be written without
 one, and so is any wrong answer that cannot. Code taller or wider than a
 phone can show beside the road is left out too.
 
-Key Stage 3 lessons have City Run. A key stage joins by adding it to STAGES.
+Key Stage 3 and Key Stage 4 lessons have City Run. A key stage joins by
+adding it to STAGES.
 """
 import re
 
 from content import brain_games
 from content.brain_games import DASH
 
-STAGES = ("ks3",)
+STAGES = ("ks3", "ks4")
 QUESTIONS = 20                               # asked in one run
 MIX = (("c", 6), ("p", 5), ("m", 4))         # the most of each kind a run asks; Fact or Fib fills the rest
 LEAST = {"c": 3, "p": 4, "m": 4, "f": 8}     # each lesson needs at least this many of each kind

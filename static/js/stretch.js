@@ -9,14 +9,14 @@
  * In This or That, Pixel the cat asks questions with two answers and reacts
  * to each choice. Memory Match is a card game: flip two cards at a time to
  * pair each word with its meaning. Key Stage 4 lessons add Sort It: drag each
- * statement into the right box, tap a box, or press its number. Key Stage 3
- * lessons add three games. Code Word: guess a secret word from its clue, and
+ * statement into the right box, tap a box, or press its number. Every lesson
+ * adds three games. Code Word: guess a secret word from its clue, and
  * every guess shows which letters are right. Link Up: twelve tiles hide three
  * groups of four. Bug Hunt: two statements are true and one has a mistake to
  * catch. Then three brain games replay the lesson as brain training: Odd One
- * Out (logic), Memory Flash (memory) and Fact or Fib (speed). Key Stage 3
- * lessons end with City Run: a robot cat races through a neon cyber city and every lane
- * is an answer; static/js/cityrun.js draws the street. Every result is rated
+ * Out (logic), Memory Flash (memory) and Fact or Fib (speed). Every lesson
+ * ends with City Run: a robot cat races through a neon cyber city and every
+ * lane is an answer; static/js/cityrun.js draws the street. Every result is rated
  * out of three diamonds. Best scores are kept on this device only.
  *
  * The hub page uses only the diamond painting near the top of this file.

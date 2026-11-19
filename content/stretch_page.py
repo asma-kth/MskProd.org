@@ -12,12 +12,12 @@ secret word shows which letters are right; Link Up, where twelve tiles hide
 three groups of four; and Bug Hunt, where two statements are true and one has
 a mistake to catch. Last come three brain games, which replay the lesson as
 brain training: Odd One Out (logic), Memory Flash (memory) and Fact or Fib
-(speed); content/brain_games.py builds and checks them. Key Stage 3 lessons
-end with City Run: a robot cat races through a neon cyber city and every
-lane is an answer, twenty questions from the lesson's own tasks; content/city_run.py
-builds and checks them. Results are rated out of three diamonds. The games themselves are static/js/stretch.js; this module
-writes the pages, a hub for each key stage, and the links from the lessons to
-them.
+(speed); content/brain_games.py builds and checks them. Every lesson ends
+with City Run: a robot cat races through a neon cyber city and every lane is
+an answer, twenty questions from the lesson's own tasks; content/city_run.py
+builds and checks them. Results are rated out of three diamonds. The games
+themselves are static/js/stretch.js; this module writes the pages, a hub for
+each key stage, and the links from the lessons to them.
 
 Every page also carries the whole task as plain HTML: it is what a browser
 without JavaScript shows, and what prints when a teacher wants it on paper.
@@ -60,8 +60,8 @@ ROUNDS = [("Quiz Blitz", "blitz"), ("Quick Fire", "short"), ("Big Think", "long"
 # what the game and the saved results call each one. Sort It is the fourth
 # task at Key Stage 4. Code Word, Link Up and Bug Hunt follow: the fourth,
 # fifth and sixth at Key Stage 3, the fifth, sixth and seventh at Key Stage 4.
-# The three brain games come next, in a band of their own, and City Run, at
-# Key Stage 3, last of all.
+# The three brain games come next, in a band of their own, and City Run last
+# of all.
 TASKS = [("quiz", "Quiz Challenge"), ("cat", "This or That"), ("match", "Memory Match"), ("sort", "Sort It"),
          ("word", "Code Word"), ("link", "Link Up"), ("bug", "Bug Hunt"),
          ("odd", "Odd One Out"), ("flash", "Memory Flash"), ("fib", "Fact or Fib"), ("run", "City Run")]
@@ -358,10 +358,11 @@ def ks4_records():
                 "course_name": course.title, "course_url": "/%s/" % slug,
                 "desc": _desc(topic.title if topic.title.startswith(topic.spec)
                               else "%s (%s %s)" % (topic.title, course.board, topic.spec),
-                              "ten stretch games: a quiz, This or That, Memory Match, Sort It, Code Word, Link Up, "
-                              "Bug Hunt and three brain games." if st.words else
+                              "eleven stretch games: a quiz, This or That, Memory Match, Sort It, Code Word, Link Up, "
+                              "Bug Hunt, three brain games and City Run." if st.words else
                               "a quiz challenge, This or That with Pixel the cat, Memory Match and Sort It.",
-                              "ten stretch games, from a quiz to three brain games." if st.words else "four stretch games."),
+                              "eleven stretch games, from a quiz to City Run, a neon city race." if st.words
+                              else "four stretch games."),
             })
     return out
 
@@ -1094,9 +1095,10 @@ def _hub4_lead(courses):
     names = [n for n, _ in courses]
     played = [n for n, g in courses if g]
     if played and len(played) == len(names):
-        return ("Ten tasks for every lesson of %s: a quiz challenge, This or That with Pixel the cat, "
-                "Memory Match, Sort It, Code Word, Link Up and Bug Hunt, then three brain games: Odd One Out, "
-                "Memory Flash and Fact or Fib. Every result is rated out of three diamonds." % _and(names))
+        return ("Eleven tasks for every lesson of %s: a quiz challenge, This or That with Pixel the cat, "
+                "Memory Match, Sort It, Code Word, Link Up and Bug Hunt, three brain games (Odd One Out, "
+                "Memory Flash and Fact or Fib), then City Run, a robot cat's race through a neon cyber city. "
+                "Every result is rated out of three diamonds." % _and(names))
     lead = ("Four tasks for every lesson of %s: a quiz challenge, This or That with Pixel the cat, "
             "Memory Match and Sort It." % _and(names))
     if played:
@@ -1127,7 +1129,7 @@ def _hub4(recs):
     first = recs[0]
     title = "GCSE Computer Science%s stretch tasks" % (" and Creative iMedia" if "imedia" in [k for k, _ in courses] else "")
     # The lead names every course, too long for a search snippet once all four carry the games
-    summary = ("Ten stretch tasks for every %s lesson, from a quiz to three brain games with diamonds to win."
+    summary = ("Eleven stretch tasks for every %s lesson, from a quiz to City Run, a neon city race."
                % title[:-len(" stretch tasks")] if all(r["stretch"].words for r in recs) else "")
     return _hub_page(path=HUB4, title=title, h1=HUB4_TITLE,
                      lead=_hub4_lead((n, all(r["stretch"].words for r in recs if r["ckey"] == k)) for k, n in courses),
@@ -1151,7 +1153,8 @@ def _publish(recs, register, add_search):
         else:
             add_search("Stretch tasks: %s" % r["title"], r["url"], "%s %s" % (r["cname"], r["topic"].spec),
                        ("stretch task challenge quiz game this or that pixel cat memory match sort it code word link up "
-                        "bug hunt brain games odd one out memory flash fact or fib diamonds ks4 gcse %s %s %s"
+                        "bug hunt brain games odd one out memory flash fact or fib diamonds city run cyber city neon "
+                        "runner robot cat inline skates ks4 gcse %s %s %s"
                         % (r["cname"], r["topic"].spec, r["title"])).lower())
 
 
@@ -1176,11 +1179,11 @@ def build(register, add_search):
         write(HUB4, _hub4(ks4r))
         register(HUB4, 0.8, "weekly")
         games4 = all(r["stretch"].words for r in ks4r)
-        add_search(HUB4_TITLE, HUB4, "GCSE: %s tasks for every topic" % ("ten" if games4 else "four"),
+        add_search(HUB4_TITLE, HUB4, "GCSE: %s tasks for every topic" % ("eleven" if games4 else "four"),
                    "stretch tasks challenge extension fast finishers quiz game kahoot this or that pixel cat "
                    "memory match sort it ks4 gcse computer science revision games"
                    + (" code word link up bug hunt word puzzle connections brain games odd one out memory flash "
-                      "fact or fib diamonds" if games4 else ""))
+                      "fact or fib diamonds city run cyber city neon runner robot cat inline skates" if games4 else ""))
     n_q = sum(len(r["stretch"].blitz) + len(r["stretch"].short) + len(r["stretch"].long) for r in recs)
     n_p = sum(len(r["stretch"].picks) for r in recs)
     n_m = sum(len(r["stretch"].pairs) for r in recs)
