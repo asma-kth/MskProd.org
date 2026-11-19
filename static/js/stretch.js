@@ -15,7 +15,7 @@
  * groups of four. Bug Hunt: two statements are true and one has a mistake to
  * catch. Then three brain games replay the lesson as brain training: Odd One
  * Out (logic), Memory Flash (memory) and Fact or Fib (speed). Key Stage 3
- * lessons end with City Run: a robot cat races across London and every lane
+ * lessons end with City Run: a robot cat races through a neon cyber city and every lane
  * is an answer; static/js/cityrun.js draws the street. Every result is rated
  * out of three diamonds. Best scores are kept on this device only.
  *
@@ -151,7 +151,8 @@
     coin: function () { tone(1760, 0, 0.05, "triangle", 0.035); tone(2350, 0.04, 0.07, "triangle", 0.03); },
     jump: function () { tone(440, 0, 0.1, "triangle", 0.05); tone(660, 0.05, 0.12, "triangle", 0.045); },
     hit: function () { tone(150, 0, 0.18, "square", 0.05); tone(95, 0.05, 0.22, "sine", 0.08); },
-    splash: function () { tone(1200, 0, 0.05, "sine", 0.03); tone(800, 0.04, 0.08, "sine", 0.03); }
+    splash: function () { tone(1200, 0, 0.05, "sine", 0.03); tone(800, 0.04, 0.08, "sine", 0.03); },
+    whoosh: function () { tone(320, 0, 0.3, "sawtooth", 0.018); tone(170, 0.1, 0.35, "sawtooth", 0.018); }
   };
   var opts = store.get(OPTS, null) || {};
   if (typeof opts.timer !== "boolean") opts.timer = true;
@@ -3503,22 +3504,24 @@
     });
   }
   /* ============================================================ CITY RUN */
-  /* A robot cat races across London: Westminster, the South Bank, the City
-     and Tower Bridge, five questions in each. Each question is a row of
-     gates across the road with an answer over each lane: steer into the
-     right one, or tap an answer to sprint to it for bonus points. Between
-     questions the cat dodges buses, cabs and cones and picks up diamonds.
-     static/js/cityrun.js draws the street; what is right is decided here. */
-  var RUN_HIT = { puddle: 10, cone: 30, barrier: 30, cab: 30, bus: 30, works: 0 };
-  var RUN_COL = [["#2563EB", "#1D4ED8"], ["#D97706", "#92400E"], ["#DB2777", "#9D174D"]];
+  /* A robot cat races along the tracks of a neon cyber city: Neon Station,
+     Ramen Row, Arcade Alley and the Hyper Tunnel, five questions in each.
+     Each question is a row of neon gates across the tracks with an answer
+     over each one: steer onto the right track, or tap an answer to sprint
+     to it for bonus points. Between questions the cat dodges metro cars,
+     holograms, crates and cones and picks up diamonds. static/js/cityrun.js
+     draws the city; what is right is decided here. */
+  var RUN_HIT = { puddle: 10, cone: 30, barrier: 30, crate: 30, holo: 30, metro: 30, works: 0 };
+  // each track's neon, and the dark ink that sits on it
+  var RUN_COL = [["#22D3EE", "#083344"], ["#FBBF24", "#422006"], ["#F472B6", "#500724"]];
   var RUN_RIGHT = ["Correct!", "Spot on!", "Brilliant!", "Nailed it!", "Top speed!", "Yes!"];
   var RUN_WRONG = ["Not quite", "Wrong lane", "Not this time"];
-  var RUN_TIPS = ["Swipe up, or press the up arrow or space, to jump cones, barriers and puddles.",
-                  "Buses and cabs are too tall to jump. Change lanes!",
+  var RUN_TIPS = ["Swipe up, or press the up arrow or space, to jump cones, crates and barriers.",
+                  "Metro cars and holograms are too tall to jump. Change tracks!",
                   "Tap an answer to sprint to its gate and win bonus points.",
                   "Every diamond you pick up is worth 10 points.",
                   "Three right in a row doubles your points. Six in a row trebles them.",
-                  "Bumping into traffic costs you 30 points. Watch the road!"];
+                  "Bumping into anything costs you 30 points. Watch the tracks!"];
   var RUN_ARROW = [
     '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.5 5.5 8 12l6.5 6.5" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.5 14.5 12 8l6.5 6.5" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -3583,7 +3586,7 @@
   }
   function runLetter(q, l) { return q.k === "f" ? (l === 0 ? "Fib" : "Fact") : !q.lanes[1] ? (l === 0 ? "A" : "B") : "ABC".charAt(l); }
   function runColour(q, l) {
-    if (q.k === "f") return l === 0 ? ["#DC2626", "#B91C1C"] : ["#16A34A", "#15803D"];
+    if (q.k === "f") return l === 0 ? ["#F87171", "#450A0A"] : ["#4ADE80", "#052E16"];
     return RUN_COL[q.lanes[1] ? l : l === 0 ? 0 : 2];
   }
   /* What the gates' banners say, for cityrun.js. */
@@ -3603,18 +3606,19 @@
   }
 
   function runSplash() {
-    label("City Run", "A race across London");
+    label("City Run", "Cyber City Dash");
     ui.dots.innerHTML = "";
     ui.progChip.hidden = true;
     runChips();
     var s = screen("st-splash st-run-splash");
-    s.appendChild(el("span", { class: "st-splash-tag st-run-badge", text: "Run London" }));
-    var hero = el("div", { class: "st-run-hero", "aria-hidden": "true" }, [el("div", { class: "st-run-sky", html: art("run-sky") })]);
-    var cat = robocat("idle");
-    if (cat) hero.appendChild(cat);
+    s.appendChild(el("span", { class: "st-splash-tag st-run-badge", text: "Cyber City Dash" }));
+    // the run's picture from the lobby, or the cat on its own
+    var shot = lobby.querySelector(".st-run-shot"), hero = el("div", { class: "st-run-hero", "aria-hidden": "true" });
+    if (shot) { var pic = shot.cloneNode(true); pic.setAttribute("loading", "eager"); hero.appendChild(pic); }
+    else { var cat = robocat("idle"); if (cat) hero.appendChild(cat); }
     s.appendChild(hero);
     s.appendChild(el("h2", { tabindex: "-1", text: "City Run" }));
-    var sub = "Race a robot cat across London, from Westminster to Tower Bridge. " + D.run.n + " questions from this lesson stand across the road as gates: run through the lane with the right answer." +
+    var sub = "Race a robot cat through a neon cyber city, from Neon Station to the Hyper Tunnel. " + D.run.n + " questions from this lesson stand across the tracks as gates: run through the one with the right answer." +
       (opts.timer ? "" : " The clock is off, so the cat waits at each gate for you.");
     s.appendChild(el("p", { text: sub }));
     var how = el("ul", { class: "st-run-how" });
@@ -3731,7 +3735,7 @@
     G.cur = null;
     var n = G.qs.length, k = Math.min(3, Math.floor(next / 5));
     ui.runCard.classList.remove("is-q");
-    ui.runKick.textContent = first ? "Get ready" : next < n ? D.run.d[k] : "Tower Bridge";
+    ui.runKick.textContent = first ? "Get ready" : next < n ? D.run.d[k] : D.run.d[3];
     ui.runSecs.textContent = "";
     ui.runQ.innerHTML = "";
     ui.runQ.appendChild(el("p", { class: "st-run-idle", text: next < n ? "Question " + (next + 1) + " of " + n + " is coming up." : "Last stretch: race to the finish line!" }));
@@ -3885,8 +3889,8 @@
   }
   /* After a wrong lane the cat stops, and the panel shows the right answer. */
   function runFeedback(q, lane, blocked, i) {
-    var head = blocked ? "Road closed!" : pick(RUN_WRONG);
-    var html = (blocked ? "The middle lane was closed, so pick a side next time. " : "") + runAnswerHtml(q);
+    var head = blocked ? "Track closed!" : pick(RUN_WRONG);
+    var html = (blocked ? "The middle track was closed, so pick a side next time. " : "") + runAnswerHtml(q);
     var next = el("button", { class: "st-go", type: "button", html: (i === G.qs.length - 1 ? "Run to the finish" : "Keep running") + " " + ico("i-arrow-right") });
     var panel = el("div", { class: "st-catfb is-plain is-bad st-run-panel", role: "status" }, [
       el("div", { class: "st-catfb-head" }, [el("span", { class: "st-catfb-badge", "aria-hidden": "true", html: ico("i-cross") }), el("b", { text: head })]),
@@ -4033,7 +4037,7 @@
     ui.streak.hidden = true;
     taskResults({
       stars: stars, pts: G.pts, pct: pct, hero: hero,
-      title: stars === 3 ? "Champion of London" : stars === 2 ? "Speedy runner" : "A good first run: try again to win more diamonds",
+      title: stars === 3 ? "Cyber City champion" : stars === 2 ? "Speedy runner" : "A good first run: try again to win more diamonds",
       rows: [[art("run"), "Right answers", G.right + " of " + n + " gates", ""],
              [GEM, "Diamonds picked up", plural(G.picked, "diamond") + (G.lost ? ", " + fmt(G.lost) + " points lost to bumps" : ""), ""],
              [FLAME, "Best streak", plural(G.bestStreak, "right answer") + " in a row", ""]],

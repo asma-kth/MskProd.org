@@ -13,8 +13,8 @@ three groups of four; and Bug Hunt, where two statements are true and one has
 a mistake to catch. Last come three brain games, which replay the lesson as
 brain training: Odd One Out (logic), Memory Flash (memory) and Fact or Fib
 (speed); content/brain_games.py builds and checks them. Key Stage 3 lessons
-end with City Run: a robot cat races across London and every lane is an
-answer, twenty questions from the lesson's own tasks; content/city_run.py
+end with City Run: a robot cat races through a neon cyber city and every
+lane is an answer, twenty questions from the lesson's own tasks; content/city_run.py
 builds and checks them. Results are rated out of three diamonds. The games themselves are static/js/stretch.js; this module
 writes the pages, a hub for each key stage, and the links from the lessons to
 them.
@@ -48,8 +48,8 @@ HUB_LEAD3 = ("Three tasks for every Year 7, 8 and 9 lesson: a quiz challenge, Th
              "Pixel the cat, and Memory Match.")
 HUB_LEAD = ("Ten tasks for every Year 7, 8 and 9 lesson: a quiz challenge, This or That with Pixel the cat, "
             "Memory Match, Code Word, Link Up and Bug Hunt, three brain games (Odd One Out, Memory Flash and "
-            "Fact or Fib), then City Run, a robot cat's race across London. Every result is rated out of three "
-            "diamonds.")
+            "Fact or Fib), then City Run, a robot cat's race through a neon cyber city. Every result is rated out of "
+            "three diamonds.")
 
 HUB4 = "/ks4/stretch/"
 HUB4_TITLE = "Key Stage 4 stretch tasks"
@@ -244,27 +244,28 @@ def _task_icon(task):
                 '<path d="M31.8 38.7l3 3 5.4-5.8" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" '
                 'stroke-linejoin="round"/></svg>')
     if task == "run":
-        # The robot cat's head at speed, with Big Ben behind it.
+        # The robot cat's head at speed, a neon arch behind it.
         return ('<svg viewBox="0 0 50 50" aria-hidden="true" focusable="false">'
-                '<path d="M40.5 47V23h7v24Z" fill="#D8BF85" stroke="#1E293B" stroke-width="1.6"/>'
-                '<path d="M39.5 23h9v-6h-9Z" fill="#D8BF85" stroke="#1E293B" stroke-width="1.6"/>'
-                '<path d="M39.5 17 44 7.5l4.5 9.5Z" fill="#475569" stroke="#1E293B" stroke-width="1.6" stroke-linejoin="round"/>'
-                '<circle cx="44" cy="20" r="2" fill="#fff"/>'
-                '<path d="M2.5 21h7M1 28h8M3 35h6" stroke="#38BDF8" stroke-width="2.6" stroke-linecap="round"/>'
-                '<path d="M14.5 23 13 7.5l10.5 6.5Z" fill="#E2E8F0" stroke="#1E293B" stroke-width="2" stroke-linejoin="round"/>'
-                '<path d="M16.2 20 15.5 11.5l5.8 3.6Z" fill="#BE123C"/>'
-                '<path d="M37.5 23 39 7.5l-10.5 6.5Z" fill="#E2E8F0" stroke="#1E293B" stroke-width="2" stroke-linejoin="round"/>'
-                '<path d="M35.8 20l.7-8.5-5.8 3.6Z" fill="#BE123C"/>'
-                '<ellipse cx="26" cy="29" rx="14.5" ry="13" fill="#E2E8F0" stroke="#1E293B" stroke-width="2.2"/>'
-                '<path d="M15 25.5c3-6 8-8.5 11-8.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>'
-                '<ellipse cx="26" cy="18.5" rx="3.6" ry="2.1" fill="#1E293B"/>'
-                '<circle cx="20.2" cy="28.5" r="5" fill="#1E293B"/><circle cx="20.2" cy="28.8" r="3.9" fill="#3B82F6"/>'
-                '<circle cx="18.9" cy="27.2" r="1.4" fill="#fff"/>'
-                '<circle cx="31.8" cy="28.5" r="5" fill="#1E293B"/><circle cx="31.8" cy="28.8" r="3.9" fill="#3B82F6"/>'
-                '<circle cx="30.5" cy="27.2" r="1.4" fill="#fff"/>'
-                '<path d="M24.2 34.5h3.6L26 36.6Z" fill="#F472B6"/>'
-                '<path d="M15 35.5 6.5 34M15 38l-8 2M37 35.5l8.5-1.5M37 38l8 2" stroke="#64748B" stroke-width="1.4" '
-                'stroke-linecap="round"/></svg>')
+                '<path d="M30 48V24a9 9 0 0 1 18 0v24" fill="none" stroke="#E879F9" stroke-width="3"/>'
+                '<path d="M33.5 48V25a5.5 5.5 0 0 1 11 0v23" fill="none" stroke="#22D3EE" stroke-width="2"/>'
+                '<path d="M2.5 22h6M1 29h7M3 36h5" stroke="#22D3EE" stroke-width="2.6" stroke-linecap="round"/>'
+                '<path d="M13.5 22 12.5 5.5 23 13Z" fill="#F8FAFC" stroke="#1E2B4F" stroke-width="2" stroke-linejoin="round"/>'
+                '<path d="M15.2 18.5 14.7 9.8 20.6 14Z" fill="#22D3EE"/>'
+                '<path d="M36.5 22 37.5 5.5 27 13Z" fill="#F8FAFC" stroke="#1E2B4F" stroke-width="2" stroke-linejoin="round"/>'
+                '<path d="M34.8 18.5l.5-8.7-5.9 4.2Z" fill="#22D3EE"/>'
+                '<ellipse cx="25" cy="28" rx="16" ry="14" fill="#F8FAFC" stroke="#1E2B4F" stroke-width="2.2"/>'
+                '<circle cx="9.5" cy="29" r="3.4" fill="#B9C9DE" stroke="#1E2B4F" stroke-width="1.5"/>'
+                '<circle cx="9.5" cy="29" r="1.6" fill="#22D3EE"/>'
+                '<circle cx="40.5" cy="29" r="3.4" fill="#B9C9DE" stroke="#1E2B4F" stroke-width="1.5"/>'
+                '<circle cx="40.5" cy="29" r="1.6" fill="#22D3EE"/>'
+                '<ellipse cx="25" cy="29.5" rx="11" ry="8.5" fill="#0B1533"/>'
+                '<circle cx="20.5" cy="29.5" r="3.6" fill="#22D3EE"/><circle cx="20.5" cy="29.5" r="2" fill="#0E7490"/>'
+                '<circle cx="19.6" cy="28.4" r="1" fill="#fff"/>'
+                '<circle cx="29.5" cy="29.5" r="3.6" fill="#22D3EE"/><circle cx="29.5" cy="29.5" r="2" fill="#0E7490"/>'
+                '<circle cx="28.6" cy="28.4" r="1" fill="#fff"/>'
+                '<path d="M22 17.5h6" stroke="#22D3EE" stroke-width="1.8" stroke-linecap="round"/>'
+                '<path d="M23 34q1 1.2 2 0q1 1.2 2 0" fill="none" stroke="#A5F3FC" stroke-width="1.1" stroke-linecap="round"/>'
+                '</svg>')
     if task == "sort":
         return ('<svg viewBox="0 0 50 50" aria-hidden="true" focusable="false">'
                 '<path d="M2.5 30h19.5l-2.3 16.5H4.8Z" fill="#F97316" stroke="#1E293B" stroke-width="2.2" stroke-linejoin="round"/>'
@@ -290,32 +291,10 @@ def _task_icon(task):
             'stroke-linejoin="round"/></svg>')
 
 
-# London along the horizon, for City Run's band and the start of a run:
-# Parliament and Big Ben, the London Eye, St Paul's, the Gherkin, the Shard
-# and Tower Bridge. Solid colours only, so a copy needs no ids of its own.
-SKYLINE = ('<svg viewBox="0 0 480 150" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false">'
-           '<circle cx="418" cy="40" r="17" fill="#FDE68A" opacity=".9"/>'
-           '<g fill="#8B7FD6">'
-           '<path d="M0 150v-40h6l3-7 3 7h6l3-7 3 7h6l3-7 3 7h6l3-7 3 7h4v40Z"/>'
-           '<path d="M62 150V66h16v84Z"/><path d="M59 66V48h22v18Z"/><path d="M59 48l11-28 11 28Z"/>'
-           '<path d="M100 150V100h26v50Z"/>'
-           '<path d="M212 150v-36h56v36Z"/><path d="M220 114a20 24 0 0 1 40 0Z"/><path d="M236 92h8v-12h-8Z"/>'
-           '<path d="M285 150c-9-34-4-62 11-80 15 18 20 46 11 80Z"/>'
-           '<path d="M318 150l17-116 4 8 3-12 15 120Z"/>'
-           '<path d="M380 150V86h18v64ZM440 150V86h18v64Z"/><path d="M378 86l11-18 11 18ZM438 86l11-18 11 18Z"/>'
-           '<path d="M398 92h42v6h-42ZM398 132h42v5h-42Z"/>'
-           '<path d="M466 150v-30h14v30Z"/>'
-           '</g>'
-           '<g fill="none" stroke="#8B7FD6" stroke-width="3">'
-           '<circle cx="160" cy="86" r="44"/><path d="M160 86l-22 64M160 86l22 64"/>'
-           '<path d="M116 86h88M160 42v88M129 55l62 62M191 55l-62 62"/>'
-           '<path d="M380 98c-14 10-22 26-28 52M458 98c14 10 22 26 28 52"/></g>'
-           '<g fill="#FDE68A"><circle cx="70" cy="57" r="4"/><rect x="104" y="108" width="4" height="6"/>'
-           '<rect x="114" y="108" width="4" height="6"/><rect x="386" y="100" width="5" height="7"/>'
-           '<rect x="446" y="100" width="5" height="7"/></g>'
-           '<g fill="#C4B5FD">' + "".join('<circle cx="%.1f" cy="%.1f" r="3.4"/>' % (160 + 44 * __import__("math").cos(a / 8 * 3.14159),
-                                                                                       86 + 44 * __import__("math").sin(a / 8 * 3.14159))
-                                             for a in range(16)) + '</g></svg>')
+# City Run's picture: the robot cat on the tracks of the neon city, for its
+# band in the lobby and the start of a run.
+RUN_ART = ('<img class="st-run-shot" src="/assets/img/city-run.jpg" width="960" height="630" alt="" '
+           'loading="lazy" decoding="async">')
 
 
 def ks3_records():
@@ -342,7 +321,7 @@ def ks3_records():
                               "ten stretch games: a quiz, This or That, Memory Match, Code Word, Link Up, Bug Hunt, "
                               "three brain games and City Run." if st.words else
                               "a quiz challenge, This or That with Pixel the cat, and Memory Match.",
-                              "ten stretch games, from a quiz to City Run, a race across London." if st.words
+                              "ten stretch games, from a quiz to City Run, a neon city race." if st.words
                               else "three stretch games."),
             })
     return out
@@ -629,7 +608,7 @@ def _sheet(r):
         brain_q, brain_k = _sheet_brain(r)
         sort_q, sort_k = sort_q + brain_q, sort_k + brain_k
     if _has_run(r):
-        sort_q += ('<h3>City Run</h3><p class="st-sheet-hint">City Run is a race across London, played on screen. '
+        sort_q += ('<h3>City Run</h3><p class="st-sheet-hint">City Run is a race through a neon cyber city, played on screen. '
                    'It asks %d of the questions above, from the quiz, This or That, Memory Flash and Fact or Fib.</p>'
                    % city_run.QUESTIONS)
     return """<section class="st-sheet" id="st-sheet" aria-labelledby="st-sheet-title">
@@ -822,8 +801,9 @@ def _lobby(r):
                   "%d levels, about 4 minutes" % len(flash_levels)),
         "fib": ("Statements fly in one at a time. Is each one a fact or a fib? Decide fast.",
                 "%d statements, about 3 minutes" % brain_games.FIB_DEAL),
-        "run": ("Race a robot cat across London, from Big Ben to Tower Bridge. Every question is a row of gates "
-                "across the road: run through the lane with the right answer, dodge the traffic and grab diamonds.",
+        "run": ("Race a robot cat through a neon cyber city, from Neon Station to the Hyper Tunnel. Every question "
+                "is a row of neon gates across the tracks: run through the one with the right answer, dodge the "
+                "trains and barriers, and grab diamonds.",
                 "%d questions, about 6 minutes" % city_run.QUESTIONS),
     }
     points = {
@@ -844,8 +824,8 @@ def _lobby(r):
         "flash": ["Three levels: %s cards" % _and(str(n) for n in flash_levels),
                   "Two tries to find each card", "Streaks win bonus points"],
         "fib": ["Swipe, tap or use the arrow keys", "Every fib comes with its fix", "Streaks multiply your points"],
-        "run": ["%d questions from this lesson, in four parts of London" % city_run.QUESTIONS,
-                "Swipe, tap or use the arrow keys", "Dodge buses, cabs and cones, and jump the puddles"],
+        "run": ["%d questions from this lesson, in four parts of the city" % city_run.QUESTIONS,
+                "Swipe, tap or use the arrow keys", "Dodge trains and holograms, and jump crates and cones"],
     }
     tasks = _tasks(r)
 
@@ -882,10 +862,7 @@ def _lobby(r):
     run = teaser = ""
     if any(t == "run" for t, _ in tasks):
         run = """<section class="st-run-band st-task-run" id="st-run" aria-labelledby="st-run-h">
-    <div class="st-run-art" aria-hidden="true">
-      <span class="st-run-sky" data-st-art="run-sky">%s</span>
-      %s
-    </div>
+    <div class="st-run-art" aria-hidden="true">%s</div>
     <div class="st-run-body">
       <h2 class="st-run-tag" id="st-run-h"><span class="st-run-ico" data-st-art="run">%s</span>The final challenge</h2>
       <h3 id="st-t-run">City Run</h3>
@@ -895,10 +872,10 @@ def _lobby(r):
       <p class="st-best" data-st-best="run" hidden></p>
       <button class="st-start" type="button" data-st-start="run">%s Play<span class="sr-only"> City Run</span></button>
     </div>
-  </section>""" % (SKYLINE, robocat.svg("idle", cls="rc st-run-cat"), _task_icon("run"), esc(about["run"][0]),
+  </section>""" % (RUN_ART, _task_icon("run"), esc(about["run"][0]),
                    "".join("<li>%s%s</li>" % (ico("i-check"), esc(t)) for t in points["run"]),
                    ico("i-clock"), about["run"][1], ico("i-play"))
-        teaser = ('\n    <a class="st-run-teaser" href="#st-run">%s<span><b>City Run</b> Race a robot cat across London</span></a>'
+        teaser = ('\n    <a class="st-run-teaser" href="#st-run">%s<span><b>City Run</b> Race a robot cat through a neon city</span></a>'
                   % robocat.head(cls="rc rc-head-only st-run-teaser-cat"))
     return """<section class="st-lobby" id="st-lobby" aria-labelledby="st-title">
   <div class="st-bg" aria-hidden="true">%s</div>
@@ -1008,11 +985,12 @@ GLYPHS = ('<svg class="st-glyphs" width="0" height="0" aria-hidden="true" focusa
           '<path d="M4.8 9.8l4.4 4.4M9.2 9.8l-4.4 4.4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>'
           '<circle cx="17" cy="12" r="6" fill="#16A34A"/><path d="M14.3 12.2l2 2 3.6-3.8" fill="none" stroke="#fff" '
           'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>'
-          '<symbol id="st-g-run" viewBox="0 0 24 24"><path d="M3.6 10.5 3.2 2.6l6.2 4Z" fill="#94A3B8"/>'
-          '<path d="M20.4 10.5l.4-7.9-6.2 4Z" fill="#94A3B8"/><ellipse cx="12" cy="13.4" rx="9.2" ry="8.2" fill="#94A3B8"/>'
-          '<circle cx="8.5" cy="12.8" r="2.6" fill="#1D4ED8"/><circle cx="15.5" cy="12.8" r="2.6" fill="#1D4ED8"/>'
-          '<circle cx="7.9" cy="12.1" r=".9" fill="#fff"/><circle cx="14.9" cy="12.1" r=".9" fill="#fff"/>'
-          '<path d="M10.8 16.6h2.4L12 18Z" fill="#DB2777"/></symbol>'
+          '<symbol id="st-g-run" viewBox="0 0 24 24"><path d="M3.4 10 3 2.4 9 6.2Z" fill="#E2E8F0" stroke="#1E2B4F" '
+          'stroke-width="1"/><path d="M20.6 10l.4-7.6L15 6.2Z" fill="#E2E8F0" stroke="#1E2B4F" stroke-width="1"/>'
+          '<ellipse cx="12" cy="13.6" rx="9.6" ry="8.4" fill="#E2E8F0" stroke="#1E2B4F" stroke-width="1"/>'
+          '<ellipse cx="12" cy="14.4" rx="6.8" ry="5.2" fill="#0B1533"/>'
+          '<circle cx="9.2" cy="14.2" r="2.1" fill="#22D3EE"/><circle cx="14.8" cy="14.2" r="2.1" fill="#22D3EE"/>'
+          '<circle cx="8.7" cy="13.6" r=".7" fill="#fff"/><circle cx="14.3" cy="13.6" r=".7" fill="#fff"/></symbol>'
           '<symbol id="st-gem" viewBox="0 0 24 22">' + GEM_FACETS + '</symbol></svg>')
 
 
@@ -1085,8 +1063,8 @@ def _hub(recs):
                          % (slugify(year), year, "".join(units)))
     tasks = _tasks_of(recs)
     # The lead is too long for a search snippet, so the description says it shorter
-    summary = ("Ten stretch tasks for every Year 7, 8 and 9 lesson, from a quiz to City Run, a robot cat's race "
-               "across London, with diamonds to win." if len(tasks) > 3 else "")
+    summary = ("Ten stretch tasks for every Year 7, 8 and 9 lesson, from a quiz to City Run, a robot cat's neon "
+               "city race, with diamonds to win." if len(tasks) > 3 else "")
     return _hub_page(path=HUB, title="KS3 Computing stretch tasks", h1=HUB_TITLE, summary=summary,
                      lead=HUB_LEAD if len(tasks) > 3 else HUB_LEAD3,
                      trail=[("Home", "/"), ("Key Stage 3", "/ks3/"), (HUB_TITLE, None)],
@@ -1158,7 +1136,7 @@ def _publish(recs, register, add_search):
                        "%s %s, lesson %d" % (r["topic"].spec, r["topic"].title, r["n"]),
                        ("stretch task challenge quiz game this or that pixel cat memory match pairs code word "
                         "link up bug hunt word puzzle brain games odd one out memory flash fact or fib diamonds "
-                        "city run london runner robot cat ks3 %s %s %s" % (r["year"], r["topic"].title, r["title"])).lower())
+                        "city run cyber city neon runner robot cat ks3 %s %s %s" % (r["year"], r["topic"].title, r["title"])).lower())
         else:
             add_search("Stretch tasks: %s" % r["title"], r["url"], "%s %s" % (r["cname"], r["topic"].spec),
                        ("stretch task challenge quiz game this or that pixel cat memory match sort it code word link up "
@@ -1180,7 +1158,7 @@ def build(register, add_search):
                % ("ten" if len(_tasks_of(ks3r)) > 3 else "three"),
                "stretch tasks challenge extension fast finishers quiz game kahoot this or that pixel cat "
                "memory match pairs code word link up bug hunt word puzzle games brain games odd one out "
-               "memory flash fact or fib diamonds city run london runner robot cat ks3 year 7 year 8 year 9 lessons")
+               "memory flash fact or fib diamonds city run cyber city neon runner robot cat ks3 year 7 year 8 year 9 lessons")
     if ks4r:
         for key in dict.fromkeys(r["ckey"] for r in ks4r):
             _publish([r for r in ks4r if r["ckey"] == key], register, add_search)

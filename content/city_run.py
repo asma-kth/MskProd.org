@@ -1,4 +1,4 @@
-"""City Run: a robot cat races across London, and every lane is an answer.
+"""City Run: a robot cat races through a neon cyber city, and every lane is an answer.
 
 Twenty questions a run, all from the lesson's own checked tasks, so each one
 is already correct and on the lesson's topic:
@@ -27,7 +27,7 @@ STAGES = ("ks3",)
 QUESTIONS = 20                               # asked in one run
 MIX = (("c", 6), ("p", 5), ("m", 4))         # the most of each kind a run asks; Fact or Fib fills the rest
 LEAST = {"c": 3, "p": 4, "m": 4, "f": 8}     # each lesson needs at least this many of each kind
-DISTRICTS = ("Westminster", "South Bank", "The City", "Tower Bridge")   # five questions in each
+DISTRICTS = ("Neon Station", "Ramen Row", "Arcade Alley", "Hyper Tunnel")   # five questions in each
 QUESTION_MAX = 150
 OPTION_MAX = 90
 CODE_LINES = 6
