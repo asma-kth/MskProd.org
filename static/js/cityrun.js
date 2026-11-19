@@ -1428,7 +1428,7 @@
       var ph = cat.phase * 0.45;
       var p = run && !air ? Math.sin(ph) : 0, pc = run && !air ? Math.cos(ph) : 0;   // above zero: the right skate pushes
       var bx = -p * 0.045, rot = -p * 0.06;
-      var dip = run && !calm && !air ? Math.abs(p) * 0.025 : 0;
+      var dip = calm || air ? 0 : run ? Math.abs(p) * 0.025 : (1 + Math.sin(T * 2.4)) * 0.006;   // waiting, it breathes
       var u = k * 0.82;
       ctx.save();
       ctx.globalAlpha = 0.35 * Math.max(0.25, 1 - cat.y / 1.4);
