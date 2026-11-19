@@ -244,27 +244,32 @@ def _task_icon(task):
                 '<path d="M31.8 38.7l3 3 5.4-5.8" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" '
                 'stroke-linejoin="round"/></svg>')
     if task == "run":
-        # The robot cat's head at speed, a neon arch behind it.
+        # The silver robot cat's head at speed, a neon arch behind it: tall
+        # ears with panels of cyan lights, and goggles with pixel eyes.
         return ('<svg viewBox="0 0 50 50" aria-hidden="true" focusable="false">'
                 '<path d="M30 48V24a9 9 0 0 1 18 0v24" fill="none" stroke="#E879F9" stroke-width="3"/>'
                 '<path d="M33.5 48V25a5.5 5.5 0 0 1 11 0v23" fill="none" stroke="#22D3EE" stroke-width="2"/>'
-                '<path d="M2.5 22h6M1 29h7M3 36h5" stroke="#22D3EE" stroke-width="2.6" stroke-linecap="round"/>'
-                '<path d="M13.5 22 12.5 5.5 23 13Z" fill="#F8FAFC" stroke="#1E2B4F" stroke-width="2" stroke-linejoin="round"/>'
-                '<path d="M15.2 18.5 14.7 9.8 20.6 14Z" fill="#22D3EE"/>'
-                '<path d="M36.5 22 37.5 5.5 27 13Z" fill="#F8FAFC" stroke="#1E2B4F" stroke-width="2" stroke-linejoin="round"/>'
-                '<path d="M34.8 18.5l.5-8.7-5.9 4.2Z" fill="#22D3EE"/>'
-                '<ellipse cx="25" cy="28" rx="16" ry="14" fill="#F8FAFC" stroke="#1E2B4F" stroke-width="2.2"/>'
-                '<circle cx="9.5" cy="29" r="3.4" fill="#B9C9DE" stroke="#1E2B4F" stroke-width="1.5"/>'
-                '<circle cx="9.5" cy="29" r="1.6" fill="#22D3EE"/>'
-                '<circle cx="40.5" cy="29" r="3.4" fill="#B9C9DE" stroke="#1E2B4F" stroke-width="1.5"/>'
-                '<circle cx="40.5" cy="29" r="1.6" fill="#22D3EE"/>'
-                '<ellipse cx="25" cy="29.5" rx="11" ry="8.5" fill="#0B1533"/>'
-                '<circle cx="20.5" cy="29.5" r="3.6" fill="#22D3EE"/><circle cx="20.5" cy="29.5" r="2" fill="#0E7490"/>'
-                '<circle cx="19.6" cy="28.4" r="1" fill="#fff"/>'
-                '<circle cx="29.5" cy="29.5" r="3.6" fill="#22D3EE"/><circle cx="29.5" cy="29.5" r="2" fill="#0E7490"/>'
-                '<circle cx="28.6" cy="28.4" r="1" fill="#fff"/>'
-                '<path d="M22 17.5h6" stroke="#22D3EE" stroke-width="1.8" stroke-linecap="round"/>'
-                '<path d="M23 34q1 1.2 2 0q1 1.2 2 0" fill="none" stroke="#A5F3FC" stroke-width="1.1" stroke-linecap="round"/>'
+                '<path d="M1.5 22h5M0.5 29h5.5M1.5 36h4.5" stroke="#22D3EE" stroke-width="2.6" stroke-linecap="round"/>'
+                '<path d="M10.5 25 11.8 5Q12.4 3 14.2 4.4L24.5 14Z" fill="#D5D8EA" stroke="#2A2D4A" stroke-width="2" '
+                'stroke-linejoin="round"/>'
+                '<path d="M13.6 20.5 14.3 8.8 20.8 14.6Z" fill="#67E8F9"/>'
+                '<path d="M39.5 25 38.2 5Q37.6 3 35.8 4.4L25.5 14Z" fill="#D5D8EA" stroke="#2A2D4A" stroke-width="2" '
+                'stroke-linejoin="round"/>'
+                '<path d="M36.4 20.5 35.7 8.8 29.2 14.6Z" fill="#67E8F9"/>'
+                '<path d="M14.6 18.6h3M14.6 15.6h4.2M14.8 12.6h3M35.4 18.6h-3M35.4 15.6h-4.2M35.2 12.6h-3" stroke="#0E7490" '
+                'stroke-width=".9" stroke-dasharray="1 1"/>'
+                '<ellipse cx="25" cy="29.5" rx="17" ry="14.5" fill="#CDD0E3" stroke="#2A2D4A" stroke-width="2.2"/>'
+                '<path d="M12.5 22.5Q25 14.5 37.5 22.5" fill="none" stroke="#8A8EAE" stroke-width="1.6"/>'
+                '<ellipse cx="18" cy="19.6" rx="5" ry="2" fill="#F4F5FB" opacity=".8"/>'
+                '<circle cx="18.6" cy="30.5" r="6.4" fill="#5A5F86" stroke="#2A2D4A" stroke-width="1.6"/>'
+                '<circle cx="18.6" cy="30.5" r="4.4" fill="#071420"/>'
+                '<circle cx="31.4" cy="30.5" r="6.4" fill="#5A5F86" stroke="#2A2D4A" stroke-width="1.6"/>'
+                '<circle cx="31.4" cy="30.5" r="4.4" fill="#071420"/>'
+                '<path d="M16.6 28.2v4.6M20.6 28.2v4.6M16.6 30.5h4M29.4 28.2v4.6M33.4 28.2v4.6M29.4 30.5h4" stroke="#67E8F9" '
+                'stroke-width="1.4" stroke-linecap="round"/>'
+                '<path d="M23.6 37.2h2.8L25 38.8Z" fill="#3B3346" stroke="#3B3346" stroke-width="1" stroke-linejoin="round"/>'
+                '<path d="M12.5 37.5 6 36.5M12.5 39.5 6.5 41M37.5 37.5 44 36.5M37.5 39.5 43.5 41" stroke="#7A7E9E" '
+                'stroke-width="1" stroke-linecap="round"/>'
                 '</svg>')
     if task == "sort":
         return ('<svg viewBox="0 0 50 50" aria-hidden="true" focusable="false">'
@@ -291,9 +296,9 @@ def _task_icon(task):
             'stroke-linejoin="round"/></svg>')
 
 
-# City Run's picture: the robot cat on the tracks of the neon city, for its
-# band in the lobby and the start of a run.
-RUN_ART = ('<img class="st-run-shot" src="/assets/img/city-run.jpg" width="960" height="630" alt="" '
+# City Run's picture: the silver robot cat standing, sprinting and skating
+# away on its inline skates, for its band in the lobby and the start of a run.
+RUN_ART = ('<img class="st-run-shot" src="/assets/img/city-run-cat.jpg" width="1144" height="560" alt="" '
            'loading="lazy" decoding="async">')
 
 
@@ -801,9 +806,9 @@ def _lobby(r):
                   "%d levels, about 4 minutes" % len(flash_levels)),
         "fib": ("Statements fly in one at a time. Is each one a fact or a fib? Decide fast.",
                 "%d statements, about 3 minutes" % brain_games.FIB_DEAL),
-        "run": ("Race a robot cat through a neon cyber city, from Neon Station to the Hyper Tunnel. Every question "
-                "is a row of neon gates across the tracks: run through the one with the right answer, dodge the "
-                "trains and barriers, and grab diamonds.",
+        "run": ("Race a robot cat on inline skates through a neon cyber city, from Neon Station to the Hyper "
+                "Tunnel. Every question is a row of neon gates across the tracks: skate through the one with the "
+                "right answer, dodge the trains and barriers, and grab diamonds.",
                 "%d questions, about 6 minutes" % city_run.QUESTIONS),
     }
     points = {
@@ -875,7 +880,7 @@ def _lobby(r):
   </section>""" % (RUN_ART, _task_icon("run"), esc(about["run"][0]),
                    "".join("<li>%s%s</li>" % (ico("i-check"), esc(t)) for t in points["run"]),
                    ico("i-clock"), about["run"][1], ico("i-play"))
-        teaser = ('\n    <a class="st-run-teaser" href="#st-run">%s<span><b>City Run</b> Race a robot cat through a neon city</span></a>'
+        teaser = ('\n    <a class="st-run-teaser" href="#st-run">%s<span><b>City Run</b> Race a skating robot cat through a neon city</span></a>'
                   % robocat.head(cls="rc rc-head-only st-run-teaser-cat"))
     return """<section class="st-lobby" id="st-lobby" aria-labelledby="st-title">
   <div class="st-bg" aria-hidden="true">%s</div>
@@ -985,12 +990,17 @@ GLYPHS = ('<svg class="st-glyphs" width="0" height="0" aria-hidden="true" focusa
           '<path d="M4.8 9.8l4.4 4.4M9.2 9.8l-4.4 4.4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>'
           '<circle cx="17" cy="12" r="6" fill="#16A34A"/><path d="M14.3 12.2l2 2 3.6-3.8" fill="none" stroke="#fff" '
           'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>'
-          '<symbol id="st-g-run" viewBox="0 0 24 24"><path d="M3.4 10 3 2.4 9 6.2Z" fill="#E2E8F0" stroke="#1E2B4F" '
-          'stroke-width="1"/><path d="M20.6 10l.4-7.6L15 6.2Z" fill="#E2E8F0" stroke="#1E2B4F" stroke-width="1"/>'
-          '<ellipse cx="12" cy="13.6" rx="9.6" ry="8.4" fill="#E2E8F0" stroke="#1E2B4F" stroke-width="1"/>'
-          '<ellipse cx="12" cy="14.4" rx="6.8" ry="5.2" fill="#0B1533"/>'
-          '<circle cx="9.2" cy="14.2" r="2.1" fill="#22D3EE"/><circle cx="14.8" cy="14.2" r="2.1" fill="#22D3EE"/>'
-          '<circle cx="8.7" cy="13.6" r=".7" fill="#fff"/><circle cx="14.3" cy="13.6" r=".7" fill="#fff"/></symbol>'
+          '<symbol id="st-g-run" viewBox="0 0 24 24"><path d="M3.3 11.6 3.6 2.6Q3.9 1.6 4.8 2.3L10.6 6.6Z" fill="#D5D8EA" '
+          'stroke="#2A2D4A" stroke-width="1" stroke-linejoin="round"/><path d="M5 9.4 5.2 4.5 8.6 7.2Z" fill="#22D3EE"/>'
+          '<path d="M20.7 11.6 20.4 2.6Q20.1 1.6 19.2 2.3L13.4 6.6Z" fill="#D5D8EA" stroke="#2A2D4A" stroke-width="1" '
+          'stroke-linejoin="round"/><path d="M19 9.4 18.8 4.5 15.4 7.2Z" fill="#22D3EE"/>'
+          '<ellipse cx="12" cy="14" rx="9.4" ry="8.2" fill="#CDD0E3" stroke="#2A2D4A" stroke-width="1"/>'
+          '<circle cx="8.4" cy="14.6" r="3.5" fill="#5A5F86" stroke="#2A2D4A" stroke-width=".8"/>'
+          '<circle cx="8.4" cy="14.6" r="2.4" fill="#071420"/>'
+          '<circle cx="15.6" cy="14.6" r="3.5" fill="#5A5F86" stroke="#2A2D4A" stroke-width=".8"/>'
+          '<circle cx="15.6" cy="14.6" r="2.4" fill="#071420"/>'
+          '<path d="M7.3 13.3v2.6M9.5 13.3v2.6M7.3 14.6h2.2M14.5 13.3v2.6M16.7 13.3v2.6M14.5 14.6h2.2" stroke="#67E8F9" '
+          'stroke-width=".8" stroke-linecap="round"/><path d="M11.3 18.9h1.4l-.7.8Z" fill="#3B3346"/></symbol>'
           '<symbol id="st-gem" viewBox="0 0 24 22">' + GEM_FACETS + '</symbol></svg>')
 
 
@@ -1136,7 +1146,7 @@ def _publish(recs, register, add_search):
                        "%s %s, lesson %d" % (r["topic"].spec, r["topic"].title, r["n"]),
                        ("stretch task challenge quiz game this or that pixel cat memory match pairs code word "
                         "link up bug hunt word puzzle brain games odd one out memory flash fact or fib diamonds "
-                        "city run cyber city neon runner robot cat ks3 %s %s %s" % (r["year"], r["topic"].title, r["title"])).lower())
+                        "city run cyber city neon runner robot cat inline skates ks3 %s %s %s" % (r["year"], r["topic"].title, r["title"])).lower())
         else:
             add_search("Stretch tasks: %s" % r["title"], r["url"], "%s %s" % (r["cname"], r["topic"].spec),
                        ("stretch task challenge quiz game this or that pixel cat memory match sort it code word link up "
@@ -1158,7 +1168,7 @@ def build(register, add_search):
                % ("ten" if len(_tasks_of(ks3r)) > 3 else "three"),
                "stretch tasks challenge extension fast finishers quiz game kahoot this or that pixel cat "
                "memory match pairs code word link up bug hunt word puzzle games brain games odd one out "
-               "memory flash fact or fib diamonds city run cyber city neon runner robot cat ks3 year 7 year 8 year 9 lessons")
+               "memory flash fact or fib diamonds city run cyber city neon runner robot cat inline skates ks3 year 7 year 8 year 9 lessons")
     if ks4r:
         for key in dict.fromkeys(r["ckey"] for r in ks4r):
             _publish([r for r in ks4r if r["ckey"] == key], register, add_search)

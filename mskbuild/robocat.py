@@ -1,38 +1,43 @@
-"""The City Run cat: a white robot cat from a neon cyber city.
+"""The City Run cat: a silver robot cat on inline skates.
 
-A white helmet with tall pointed ears that glow cyan inside, a dark visor
-with two big glowing eyes, lights at the sides of its head, a glowing core
-on its chest, a backpack, and a thin tail with a glowing tip. City Run
-draws the same cat from behind as it runs (static/js/cityrun.js); this
-module draws it from the front, for the start of a run, the results and
-the small icons.
+Weathered silver plates with seams and rivets, tall ears whose insides are
+panels of glowing cyan lights, big round goggle eyes that are little pixel
+screens, a small nose and whiskers, a segmented tail, a backpack with a
+glowing ring, and inline skates with teal wheels. City Run draws the same
+cat from behind as it skates (static/js/cityrun.js); this module draws it
+from the front, for the results and the small icons.
 
 Two drawings share the palette:
 
-  svg()   the whole cat, standing. The class on the <svg> picks its mood:
-          is-happy closes its eyes in a smile and throws its arms out.
+  svg()   the whole cat, standing on its skates. The class on the <svg> picks
+          its mood: is-happy turns its pixel eyes into smiles and throws its
+          arms out.
   head()  just the head, for small icons.
 
-Every gradient id carries a prefix, so the cat can appear more than once on
-a page; the game copies it with fresh ids for the same reason.
+Every gradient and clip id carries a prefix, so the cat can appear more than
+once on a page; the game copies it with fresh ids for the same reason.
 """
 
-WHITE = "#FFFFFF"
-ARMOUR = "#EEF4FB"
-ARMOUR_LO = "#C3D3E8"
-STEEL = "#B9C9DE"
-JOINT = "#2D4A86"
-HAND = "#3B5BA5"
-BOOT = "#2B3F75"
-INK = "#1E2B4F"
-VISOR_HI = "#1C2B5A"
-VISOR = "#0B1533"
+METAL_HI = "#F4F5FB"
+METAL = "#CDD0E3"
+METAL_MID = "#A3A7C3"
+METAL_LO = "#7A7E9E"
+SEAM = "#8A8EAE"
+JOINT = "#2E3150"
+INK = "#2A2D4A"
+RING_HI = "#7C82A6"
+RING_LO = "#3A3E5E"
+SCREEN = "#071420"
+LED = "#67E8F9"
+LED_DIM = "#123E4C"
 GLOW = "#22D3EE"
-GLOW_HI = "#67E8F9"
-GLOW_PALE = "#A5F3FC"
-CORE_DEEP = "#0E7490"
-NOSE = "#F9A8D4"
-BLUSH = "#F472B6"
+WHEEL = "#2DD4BF"
+PACK = "#7F89B2"
+NOSE = "#3B3346"
+
+# The pixel patterns on the eye screens, five by five.
+EYES = {"open": ["X...X", "X...X", "XXXXX", "X...X", "X...X"],
+        "happy": [".....", "..X..", ".X.X.", "X...X", "....."]}
 
 _SEQ = [0]
 
@@ -44,105 +49,148 @@ def _uid(prefix):
 
 def _defs(u):
     return ('<defs>'
-            '<linearGradient id="%(u)s-w" x1="0" y1="0" x2="0" y2="1">'
-            '<stop offset="0" stop-color="%(w)s"/><stop offset=".5" stop-color="%(a)s"/>'
-            '<stop offset="1" stop-color="%(lo)s"/></linearGradient>'
-            '<linearGradient id="%(u)s-v" x1="0" y1="0" x2="0" y2="1">'
-            '<stop offset="0" stop-color="%(vh)s"/><stop offset=".6" stop-color="%(v)s"/>'
-            '<stop offset="1" stop-color="#070D24"/></linearGradient>'
-            '</defs>' % dict(u=u, w=WHITE, a=ARMOUR, lo=ARMOUR_LO, vh=VISOR_HI, v=VISOR))
+            '<radialGradient id="%(u)s-m" cx="38%%" cy="28%%" r="80%%">'
+            '<stop offset="0" stop-color="%(hi)s"/><stop offset=".45" stop-color="%(m)s"/>'
+            '<stop offset=".8" stop-color="%(mid)s"/><stop offset="1" stop-color="%(lo)s"/></radialGradient>'
+            '<linearGradient id="%(u)s-b" x1="0" y1="0" x2="1" y2="1">'
+            '<stop offset="0" stop-color="%(hi)s"/><stop offset=".5" stop-color="%(m)s"/>'
+            '<stop offset="1" stop-color="%(mid)s"/></linearGradient>'
+            '<linearGradient id="%(u)s-r" x1="0" y1="0" x2="0" y2="1">'
+            '<stop offset="0" stop-color="%(rh)s"/><stop offset="1" stop-color="%(rl)s"/></linearGradient>'
+            '<clipPath id="%(u)s-e"><path d="M64.5 66 L65.5 27 L92 47 Z"/></clipPath>'
+            '</defs>' % dict(u=u, hi=METAL_HI, m=METAL, mid=METAL_MID, lo=METAL_LO, rh=RING_HI, rl=RING_LO))
+
+
+def _pixels(cx, cy, pattern, cls):
+    """A five by five screen of lights, lit where the pattern says."""
+    out = []
+    for r, row in enumerate(pattern):
+        for c, ch in enumerate(row):
+            x, y = cx + (c - 2) * 5.2, cy + (r - 2) * 5.2
+            if ch == "X":
+                out.append('<rect x="%.1f" y="%.1f" width="5" height="5" rx="1.2" fill="%s" opacity=".35"/>'
+                           '<rect x="%.1f" y="%.1f" width="3.6" height="3.6" rx=".8" fill="%s"/>'
+                           % (x - 2.5, y - 2.5, GLOW, x - 1.8, y - 1.8, LED))
+            else:
+                out.append('<rect x="%.1f" y="%.1f" width="3.2" height="3.2" rx=".8" fill="%s"/>' % (x - 1.6, y - 1.6, LED_DIM))
+    return '<g class="%s">%s</g>' % (cls, "".join(out))
 
 
 def _head(u):
     """The head in the whole cat's coordinates, centred on x = 110."""
-    w = "url(#%s-w)" % u
-    ear = ('<path d="M60 72 L56 16 Q58 8 66 13 L98 44 Z" fill="%(w)s" stroke="%(ink)s" stroke-width="2.4" '
-           'stroke-linejoin="round"/><path d="M63.5 63 L61.5 26 L90 46 Z" fill="%(g)s" opacity=".35"/>'
-           '<path d="M66.5 57 L65 32 L84 46 Z" fill="%(gh)s"/>' % dict(w=w, ink=INK, g=GLOW, gh=GLOW_HI))
-    ears = ('<g class="rc-ear rc-ear-l">%s</g><g class="rc-ear rc-ear-r" transform="translate(220 0) scale(-1 1)">%s</g>'
+    m = "url(#%s-m)" % u
+    dots = "".join('<rect x="%.1f" y="%.1f" width="2.3" height="2.3" fill="%s"/>' % (x, y, LED)
+                   for y in range(27, 66, 4) for x in range(63, 93, 4))
+    ear = ('<path d="M56 80 L58 18 Q60 9 69 14 L104 46 Z" fill="%(m)s" stroke="%(ink)s" stroke-width="2.4" '
+           'stroke-linejoin="round"/>'
+           '<path d="M64.5 66 L65.5 27 L92 47 Z" fill="%(dim)s"/>'
+           '<g clip-path="url(#%(u)s-e)">%(dots)s</g>'
+           '<path d="M64.5 66 L65.5 27 L92 47 Z" fill="%(g)s" opacity=".3"/>'
+           % dict(m=m, ink=INK, dim="#0E3B46", u=u, dots=dots, g=GLOW))
+    # The right ear is the left one mirrored. The mirror sits on an inner
+    # group, because the page's CSS turns the outer one when the ear twitches.
+    ears = ('<g class="rc-ear rc-ear-l">%s</g><g class="rc-ear rc-ear-r"><g transform="translate(220 0) scale(-1 1)">%s</g></g>'
             % (ear, ear))
-    helmet = ('<path d="M44 100 C44 62 72 40 110 40 C148 40 176 62 176 100 C176 132 150 150 110 150 '
-              'C70 150 44 132 44 100Z" fill="%s" stroke="%s" stroke-width="2.6"/>'
-              '<ellipse cx="90" cy="58" rx="26" ry="9" transform="rotate(-12 90 58)" fill="#fff" opacity=".7"/>'
-              '<path d="M98 52h24" stroke="%s" stroke-width="7" stroke-linecap="round" opacity=".3"/>'
-              '<path d="M98 52h24" stroke="%s" stroke-width="3.2" stroke-linecap="round"/>'
-              % (w, INK, GLOW, GLOW))
-    lights = "".join('<circle cx="%d" cy="104" r="13" fill="%s" stroke="%s" stroke-width="2.2"/>'
-                     '<circle cx="%d" cy="104" r="7.5" fill="%s"/>'
-                     '<circle cx="%d" cy="104" r="7.5" fill="none" stroke="%s" stroke-width="2.4"/>'
-                     % (x, STEEL, INK, x, INK, x, GLOW) for x in (46, 174))
-    visor = ('<path d="M64 98 C64 76 84 66 110 66 C136 66 156 76 156 98 C156 122 138 136 110 136 '
-             'C82 136 64 122 64 98Z" fill="url(#%s-v)" stroke="%s" stroke-width="2"/>'
-             '<path d="M74 88 Q80 75 96 71" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".22"/>'
-             % (u, INK))
+    skull = ('<path d="M46 102 C44 62 74 40 110 40 C146 40 176 62 174 102 C172 134 146 154 110 154 '
+             'C74 154 48 134 46 102Z" fill="%s" stroke="%s" stroke-width="2.6"/>' % (m, INK))
+    seams = ('<path d="M58 80 Q110 56 162 80" fill="none" stroke="%(s)s" stroke-width="3"/>'
+             '<path d="M58 80 Q110 56 162 80" fill="none" stroke="#fff" stroke-width="1" opacity=".5" transform="translate(0 -1.6)"/>'
+             '<path d="M110 41 V64M64 126 Q74 146 96 151M156 126 Q146 146 124 151" fill="none" stroke="%(s)s" '
+             'stroke-width="1.5" stroke-linecap="round"/>'
+             % dict(s=SEAM))
+    rivets = "".join('<circle cx="%g" cy="%g" r="2" fill="%s"/><circle cx="%g" cy="%g" r=".8" fill="#fff" opacity=".7"/>'
+                     % (x, y, SEAM, x - .5, y - .6) for x, y in ((70, 72), (150, 72), (90, 62), (130, 62)))
+    grime = ('<g fill="%s" opacity=".18"><circle cx="78" cy="58" r="3"/><circle cx="142" cy="130" r="4"/>'
+             '<circle cx="60" cy="118" r="2.5"/><circle cx="128" cy="50" r="2"/><circle cx="96" cy="140" r="2.2"/></g>'
+             % METAL_LO)
 
     def eye(x):
-        return ('<circle cx="%(x)g" cy="100" r="18" fill="%(g)s" opacity=".25"/>'
-                '<circle cx="%(x)g" cy="100" r="13" fill="%(g)s"/>'
-                '<circle cx="%(x)g" cy="100" r="8.5" fill="%(d)s"/>'
-                '<circle cx="%(x1)g" cy="96" r="3.6" fill="#fff"/><circle cx="%(x2)g" cy="104" r="1.7" fill="#E0FBFF"/>'
-                % dict(x=x, x1=x - 3.5, x2=x + 4, g=GLOW, d=CORE_DEEP))
-    open_eyes = '<g class="rc-open">%s%s</g>' % (eye(90), eye(130))
-    happy = ('<g class="rc-happy"><path d="M78 105 Q90 88 102 105M118 105 Q130 88 142 105" fill="none" stroke="%(g)s" '
-             'stroke-width="11" stroke-linecap="round" opacity=".3"/><path d="M78 105 Q90 88 102 105M118 105 Q130 88 142 105" '
-             'fill="none" stroke="%(gh)s" stroke-width="5.5" stroke-linecap="round"/>'
-             '<ellipse cx="80" cy="119" rx="7" ry="3.5" fill="%(b)s" opacity=".55"/>'
-             '<ellipse cx="140" cy="119" rx="7" ry="3.5" fill="%(b)s" opacity=".55"/></g>'
-             % dict(g=GLOW, gh=GLOW_HI, b=BLUSH))
-    face = ('<path d="M107 112.5h6l-3 3.2Z" fill="%s"/>'
-            '<path d="M103 119q3.5 4 7 0q3.5 4 7 0" fill="none" stroke="%s" stroke-width="2.4" stroke-linecap="round"/>'
-            % (NOSE, GLOW_PALE))
-    return ('<g class="rc-head">%s%s%s%s%s%s%s</g>'
-            % (ears, helmet, lights, visor, open_eyes, happy, face))
+        return ('<circle cx="%(x)g" cy="106" r="26" fill="url(#%(u)s-r)" stroke="%(ink)s" stroke-width="2.2"/>'
+                '<circle cx="%(x)g" cy="106" r="20.5" fill="#23264A"/>'
+                '<circle cx="%(x)g" cy="106" r="17.5" fill="%(scr)s"/>'
+                % dict(x=x, u=u, ink=INK, scr=SCREEN))
+    glass = ('<path d="M64 96 Q70 84 82 82M120 96 Q126 84 138 82" fill="none" stroke="#fff" stroke-width="3" '
+             'stroke-linecap="round" opacity=".35"/>')
+    screens = (_pixels(84, 106, EYES["open"], "rc-open") + _pixels(136, 106, EYES["open"], "rc-open")
+               + _pixels(84, 106, EYES["happy"], "rc-happy") + _pixels(136, 106, EYES["happy"], "rc-happy"))
+    face = ('<path d="M104.5 125 h11 l-5.5 6.2 Z" fill="%(n)s" stroke="%(n)s" stroke-width="1.5" stroke-linejoin="round"/>'
+            '<path d="M110 131 v3.4 M110 134.4 q-5 5 -10 1.4 M110 134.4 q5 5 10 1.4" fill="none" stroke="%(ink)s" '
+            'stroke-width="1.8" stroke-linecap="round"/>'
+            '<path class="rc-whisk" d="M92 130 L46 122 M92 135 L44 138 M128 130 L174 122 M128 135 L176 138" '
+            'stroke="%(w)s" stroke-width="1.3" stroke-linecap="round"/>'
+            % dict(n=NOSE, ink=INK, w=METAL_LO))
+    return ('<g class="rc-head">%s%s%s%s%s%s%s%s%s%s</g>'
+            % (ears, skull, grime, seams, rivets, eye(84), eye(136), screens, glass, face))
 
 
 def svg(mood="idle", cls="rc", label=None, size=None):
-    """The whole cat, standing, in a 220 by 250 box."""
+    """The whole cat, standing on its skates, in a 220 by 268 box."""
     u = _uid("rc")
-    w = "url(#%s-w)" % u
-    tail = ('<g class="rc-tail"><path d="M84 200 C58 206 40 190 42 166 C44 146 58 136 54 118" fill="none" '
-            'stroke="%(ink)s" stroke-width="10" stroke-linecap="round"/>'
-            '<path d="M84 200 C58 206 40 190 42 166 C44 146 58 136 54 118" fill="none" stroke="%(a)s" '
-            'stroke-width="6" stroke-linecap="round"/>'
-            '<circle cx="54" cy="118" r="10" fill="%(g)s" opacity=".35"/><circle cx="54" cy="118" r="5.5" fill="%(gh)s"/></g>'
-            % dict(ink=INK, a=ARMOUR, g=GLOW, gh=GLOW_HI))
+    m = "url(#%s-m)" % u
+    b = "url(#%s-b)" % u
+    tail = ('<g class="rc-tail"><path d="M84 210 C60 214 44 200 44 180 C44 160 58 150 55 132" fill="none" stroke="%(ink)s" '
+            'stroke-width="12" stroke-linecap="round"/>'
+            '<path d="M84 210 C60 214 44 200 44 180 C44 160 58 150 55 132" fill="none" stroke="%(m)s" '
+            'stroke-width="8.5" stroke-linecap="round"/>'
+            '<path d="M84 210 C60 214 44 200 44 180 C44 160 58 150 55 132" fill="none" stroke="%(j)s" '
+            'stroke-width="9" stroke-dasharray="2.6 9"/>'
+            '<circle cx="55" cy="130" r="6" fill="%(m)s" stroke="%(ink)s" stroke-width="2"/></g>'
+            % dict(ink=INK, m=METAL, j=JOINT))
+    pack = ('<rect x="72" y="150" width="76" height="56" rx="12" fill="%s" stroke="%s" stroke-width="2.2"/>'
+            '<circle cx="146" cy="168" r="7" fill="%s" opacity=".5"/><circle cx="146" cy="168" r="4" fill="%s"/>'
+            % (PACK, INK, GLOW, LED))
 
-    def leg(x):
-        return ('<rect x="%g" y="196" width="18" height="32" rx="8" fill="%s" stroke="%s" stroke-width="2.2"/>'
-                '<circle cx="%g" cy="211" r="5" fill="%s"/>'
-                '<rect x="%g" y="226" width="30" height="13" rx="5" fill="%s" stroke="%s" stroke-width="2.2"/>'
-                '<rect x="%g" y="236.5" width="24" height="2.6" rx="1.3" fill="%s"/>'
-                % (x - 9, w, INK, x, JOINT, x - 15, BOOT, INK, x - 12, GLOW))
-    legs = leg(98) + leg(122)
-    body = ('<path d="M78 162 Q78 148 92 147 H128 Q142 148 142 162 V192 Q142 204 128 205 H92 Q78 204 78 192Z" '
-            'fill="%(w)s" stroke="%(ink)s" stroke-width="2.4"/>'
-            '<path d="M85 150 L92 196M135 150 L128 196" stroke="%(j)s" stroke-width="5" stroke-linecap="round"/>'
-            '<rect x="96" y="157" width="28" height="30" rx="7" fill="#DCE7F5" stroke="#9FB3D1" stroke-width="1.4"/>'
-            '<rect x="98" y="163" width="24" height="20" rx="6" fill="%(g)s" opacity=".35"/>'
-            '<rect x="103" y="166" width="14" height="13" rx="3" fill="%(gh)s"/>'
-            '<rect x="105" y="168" width="6" height="3" rx="1.5" fill="#fff" opacity=".85"/>'
-            '<rect x="79" y="192" width="62" height="7" fill="%(j)s"/>'
-            % dict(w=w, ink=INK, j=JOINT, g=GLOW, gh=GLOW_HI))
+    def leg(x, sd):
+        # hip, thigh, knee, shin, then a skate turned a little outwards
+        w0 = x - 12 + sd * 2
+        wheels = "".join('<circle cx="%.1f" cy="%.1f" r="4.2" fill="%s" stroke="%s" stroke-width="1.6"/>'
+                         '<circle cx="%.1f" cy="%.1f" r="1.4" fill="#E0FBFF"/>'
+                         % (w0 + i * 8 + sd * i * 1.2, 260 - i * 0.6, WHEEL, INK, w0 + i * 8 + sd * i * 1.2, 260 - i * 0.6)
+                         for i in range(4))
+        return ('<circle cx="%(x)g" cy="216" r="7.5" fill="%(j)s"/>'
+                '<rect x="%(x0)g" y="218" width="16" height="16" rx="6" fill="%(b)s" stroke="%(ink)s" stroke-width="2"/>'
+                '<circle cx="%(x)g" cy="236" r="5.5" fill="%(j)s"/>'
+                '<rect x="%(x1)g" y="238" width="14" height="8" rx="3" fill="%(b)s" stroke="%(ink)s" stroke-width="2"/>'
+                '<path d="M%(bx0)g 244 h22 a4 4 0 0 1 4 4 v4 h-30 v-4 a4 4 0 0 1 4 -4Z" fill="%(m)s" stroke="%(ink)s" stroke-width="2"/>'
+                '<rect x="%(bx1)g" y="244.5" width="22" height="3" fill="%(j)s"/>'
+                '<rect x="%(fx)g" y="252" width="32" height="4" rx="1.5" fill="%(rl)s"/>%(wheels)s'
+                % dict(x=x, x0=x - 8, x1=x - 7, bx0=x - 13, bx1=x - 11, fx=x - 16, j=JOINT, b=b, m=m, ink=INK,
+                       rl=RING_LO, wheels=wheels))
+    legs = leg(97, -1) + leg(123, 1)
+    body = ('<path d="M80 172 Q80 156 95 154 H125 Q140 156 140 172 V198 Q140 208 128 209 H92 Q80 208 80 198Z" '
+            'fill="%(m)s" stroke="%(ink)s" stroke-width="2.4"/>'
+            '<path d="M86 160 Q110 152 134 160" fill="none" stroke="#fff" stroke-width="2" opacity=".55"/>'
+            '<circle cx="124" cy="172" r="6.5" fill="%(rl)s" stroke="%(s)s" stroke-width="1.6"/>'
+            '<circle cx="124" cy="172" r="2.8" fill="%(rh)s"/>'
+            '<rect x="96" y="186" width="28" height="15" rx="4" fill="%(s)s" stroke="%(ink)s" stroke-width="1.4"/>'
+            '<path d="M101 190 v7 M106 190 v7 M111 190 v7 M116 190 v7 M120 190 v7" stroke="%(j)s" stroke-width="2"/>'
+            '<rect x="82" y="205" width="56" height="9" rx="3" fill="%(j)s"/>'
+            '<path d="M86 209.5 H134" stroke="#4A4E70" stroke-width="1.4"/>'
+            % dict(m=m, ink=INK, rl=RING_LO, rh=RING_HI, s=SEAM, j=JOINT))
 
-    def arm(x1, y1, x2, y2, cls):
-        mx, my = (x1 + x2) / 2.0, (y1 + y2) / 2.0
-        return ('<g class="%s"><path d="M%g %gL%g %g" stroke="%s" stroke-width="17" stroke-linecap="round"/>'
-                '<path d="M%g %gL%g %g" stroke="%s" stroke-width="12.5" stroke-linecap="round"/>'
-                '<circle cx="%g" cy="%g" r="5" fill="%s"/>'
-                '<circle cx="%g" cy="%g" r="9" fill="%s" stroke="%s" stroke-width="2.2"/></g>'
-                % (cls, x1, y1, x2, y2, INK, x1, y1, x2, y2, ARMOUR, mx, my, JOINT, x2, y2 + 2, HAND, INK))
-    arms = (arm(82, 156, 68, 192, "rc-arm-down") + arm(138, 156, 152, 192, "rc-arm-down")
-            + arm(82, 156, 46, 170, "rc-arm-up") + arm(138, 156, 174, 170, "rc-arm-up"))
-    neck = '<ellipse cx="110" cy="148" rx="18" ry="5" fill="%s"/>' % INK
-    shadow = '<ellipse class="rc-shadow" cx="110" cy="241" rx="60" ry="7" fill="#020617" opacity=".3"/>'
-    size_attr = ' width="%d" height="%d"' % (size, round(size * 250 / 220)) if size else ""
+    def arm(sx, sy, ex, ey, hx, hy, cls):
+        return ('<g class="%(c)s"><circle cx="%(sx)g" cy="%(sy)g" r="9.5" fill="%(m)s" stroke="%(ink)s" stroke-width="2"/>'
+                '<path d="M%(sx)g %(sy)gL%(ex)g %(ey)g" stroke="%(ink)s" stroke-width="15" stroke-linecap="round"/>'
+                '<path d="M%(sx)g %(sy)gL%(ex)g %(ey)g" stroke="%(mc)s" stroke-width="11" stroke-linecap="round"/>'
+                '<circle cx="%(ex)g" cy="%(ey)g" r="5.5" fill="%(j)s"/>'
+                '<path d="M%(ex)g %(ey)gL%(hx)g %(hy)g" stroke="%(ink)s" stroke-width="13" stroke-linecap="round"/>'
+                '<path d="M%(ex)g %(ey)gL%(hx)g %(hy)g" stroke="%(mc)s" stroke-width="9.5" stroke-linecap="round"/>'
+                '<circle cx="%(hx)g" cy="%(hy)g" r="6.5" fill="%(rl)s" stroke="%(ink)s" stroke-width="1.8"/>'
+                '<path d="M%(f1)s" stroke="%(ink)s" stroke-width="2.6" stroke-linecap="round"/></g>'
+                % dict(c=cls, sx=sx, sy=sy, ex=ex, ey=ey, hx=hx, hy=hy, m=m, mc=METAL, ink=INK, j=JOINT, rl=RING_LO,
+                       f1="%g %gl-2 6M%g %gl0 6.5M%g %gl2 6" % (hx - 3, hy + 3, hx, hy + 4, hx + 3, hy + 3)))
+    arms = (arm(80, 162, 72, 186, 68, 206, "rc-arm-down") + arm(140, 162, 148, 186, 152, 206, "rc-arm-down")
+            + arm(80, 162, 58, 156, 42, 142, "rc-arm-up") + arm(140, 162, 162, 156, 178, 142, "rc-arm-up"))
+    neck = '<ellipse cx="110" cy="154" rx="20" ry="6" fill="%s"/>' % JOINT
+    shadow = '<ellipse class="rc-shadow" cx="110" cy="264" rx="58" ry="4.5" fill="#020617" opacity=".3"/>'
+    size_attr = ' width="%d" height="%d"' % (size, round(size * 268 / 220)) if size else ""
     aria = ' role="img" aria-label="%s"' % label if label else ' aria-hidden="true" focusable="false"'
-    return ('<svg class="%s is-%s" viewBox="0 0 220 250"%s%s>%s%s<g class="rc-bob">%s%s%s%s%s%s</g></svg>'
-            % (cls, mood, size_attr, aria, _defs(u), shadow, tail, legs, body, arms, neck, _head(u)))
+    return ('<svg class="%s is-%s" viewBox="0 0 220 268"%s%s>%s%s<g class="rc-bob">%s%s%s%s%s%s%s</g></svg>'
+            % (cls, mood, size_attr, aria, _defs(u), shadow, tail, pack, legs, body, arms, neck, _head(u)))
 
 
 def head(cls="rc rc-head-only", mood="idle"):
     """Just the head, cropped from the whole cat, for small icons."""
     u = _uid("rh")
-    return ('<svg class="%s is-%s" viewBox="34 4 152 152" aria-hidden="true" focusable="false">%s%s</svg>'
+    return ('<svg class="%s is-%s" viewBox="38 6 144 152" aria-hidden="true" focusable="false">%s%s</svg>'
             % (cls, mood, _defs(u), _head(u)))

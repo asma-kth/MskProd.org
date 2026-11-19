@@ -3504,7 +3504,7 @@
     });
   }
   /* ============================================================ CITY RUN */
-  /* A robot cat races along the tracks of a neon cyber city: Neon Station,
+  /* A robot cat skates along the tracks of a neon cyber city: Neon Station,
      Ramen Row, Arcade Alley and the Hyper Tunnel, five questions in each.
      Each question is a row of neon gates across the tracks with an answer
      over each one: steer onto the right track, or tap an answer to sprint
@@ -3618,7 +3618,7 @@
     else { var cat = robocat("idle"); if (cat) hero.appendChild(cat); }
     s.appendChild(hero);
     s.appendChild(el("h2", { tabindex: "-1", text: "City Run" }));
-    var sub = "Race a robot cat through a neon cyber city, from Neon Station to the Hyper Tunnel. " + D.run.n + " questions from this lesson stand across the tracks as gates: run through the one with the right answer." +
+    var sub = "Race a robot cat on inline skates through a neon cyber city, from Neon Station to the Hyper Tunnel. " + D.run.n + " questions from this lesson stand across the tracks as gates: skate through the one with the right answer." +
       (opts.timer ? "" : " The clock is off, so the cat waits at each gate for you.");
     s.appendChild(el("p", { text: sub }));
     var how = el("ul", { class: "st-run-how" });
@@ -3628,7 +3628,7 @@
       how.appendChild(el("li", {}, [el("span", { class: "st-run-how-ico", "aria-hidden": "true", html: r[0] }), el("b", { text: r[1] + ": " }), document.createTextNode(r[2])]));
     });
     s.appendChild(how);
-    if (calm()) s.appendChild(el("p", { class: "st-run-calm", text: "Your device asks for less motion, so the cat runs more gently and nothing shakes." }));
+    if (calm()) s.appendChild(el("p", { class: "st-run-calm", text: "Your device asks for less motion, so the cat skates more gently and nothing shakes." }));
     s.appendChild(el("p", { class: "st-brain-prize", html: '<span class="st-brain-prize-g" aria-hidden="true">' + GEM + GEM + GEM + "</span>Win up to three diamonds" }));
     var go = el("button", { class: "st-go", type: "button", html: ico("i-play") + " Start running" });
     go.addEventListener("click", runStart);

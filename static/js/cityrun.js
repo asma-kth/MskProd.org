@@ -1,7 +1,8 @@
 /* City Run: the tracks, the robot cat and everything on them.
 
-   A white robot cat races along the tracks of a neon cyber city at night:
-   Neon Station, Ramen Row, Arcade Alley and the Hyper Tunnel at the end.
+   A silver robot cat on inline skates races along the tracks of a neon
+   cyber city at night: Neon Station, Ramen Row, Arcade Alley and the Hyper
+   Tunnel at the end.
    The city is a small world projected onto a canvas: x across the tracks,
    y up and s along them. Three tracks run up the middle, a fourth on the
    left carries passing trains, and platforms, shops and neon signs line
@@ -23,7 +24,7 @@
   var SIDE = 3.5;            // the side track for passing trains, on the left
   var TRAIN_X = -(ROAD + SIDE) / 2;
   var WALK_L = 5.1, WALK_R = 3.75;   // where the buildings start, left and right
-  var Z_CAT = 3.4;           // how far in front of the camera the cat runs
+  var Z_CAT = 3.4;           // how far in front of the camera the cat skates
   var Z_NEAR = 0.6, Z_FAR = 118, Z_FADE = 80;
   var GRAV = 26, JUMP_V = 7.9;
   var SPEEDS = [13.5, 14.5, 15.5, 16.5], CALM_SPEED = 11, DASH = 2.5;
@@ -96,7 +97,7 @@
     var W = 0, H = 0, dpr = 1, F = 300, hy = 100, cx = 0, camH = 1.9, camX = 0;
     var T = 0, last = 0, raf = 0, dead = false, paused = false;
     var dist = 0, v = 0, started = false, held = false, finished = false, finishFired = false;
-    var cat = { lane: 1, x: 0, y: 0, vy: 0, phase: 0, lean: 0, squash: 0, hurt: 0, safe: 0, cheer: 0, dust: 0 };
+    var cat = { lane: 1, x: 0, y: 0, vy: 0, phase: 0, lean: 0, squash: 0, hurt: 0, safe: 0, cheer: 0 };
     var objs = [];           // things on the tracks: obstacles, diamonds, gates, drones, trains
     var scen = [];           // buildings, signs, platform props and tunnel frames
     var parts = [];          // particles, in screen space
@@ -348,16 +349,6 @@
       if (cat.safe > 0) cat.safe = Math.max(0, cat.safe - dt);
       if (cat.cheer > 0) cat.cheer = Math.max(0, cat.cheer - dt);
       camX += (cat.x * 0.55 - camX) * Math.min(1, dt * 6);
-      // little puffs of dust from the cat's feet
-      if (!calm && v > 4 && cat.y <= 0.02) {
-        cat.dust -= dt;
-        if (cat.dust <= 0) {
-          cat.dust = 0.11;
-          var k0 = F / Z_CAT;
-          parts.push({ kind: "dust", x: PX(cat.x, Z_CAT) + (rnd() - 0.5) * 0.3 * k0, y: PY(0, Z_CAT) - 2, vx: (rnd() - 0.5) * 30, vy: -12 - rnd() * 12,
-                       g: 0, a: 0, life: 0.55, max: 0.55, r: 0.06 * k0 });
-        }
-      }
 
       // trains on the side track
       objs.forEach(function (o) {
@@ -390,7 +381,7 @@
       });
       scen = scen.filter(function (o) { return zOf(o.s1 || o.s0) > Z_NEAR - 1; });
       parts = parts.filter(function (p) { p.life -= dt; return p.life > 0; });
-      parts.forEach(function (p) { p.vy += (p.g || 0) * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.a += (p.va || 0) * dt; if (p.kind === "dust") p.r += dt * 18; });
+      parts.forEach(function (p) { p.vy += (p.g || 0) * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.a += (p.va || 0) * dt; });
     }
 
     var SOLID = { cone: [0.36, 0.55], barrier: [0.56, 0.62], crate: [0.42, 0.72], puddle: [0.5, 0],
@@ -1292,9 +1283,13 @@
     }
 
     /* ----------------------------------------------------------- the cat
-       Seen from behind as it runs on two legs: a white helmet with pointed
-       ears and side lights, a backpack with a glowing panel, arms and legs
-       swinging, and a thin tail with a glowing tip. */
+       Seen from behind as it skates: a silver robot cat with a big round
+       head, tall ears whose panels of cyan lights glow, goggles peeping out
+       at the sides, a backpack with a light bar and a glowing ring, a
+       segmented tail, and inline skates on teal wheels. It pushes off with
+       one skate and then the other, swaying over the skate that glides,
+       and swings each arm out as the other leg pushes. */
+    var C_INK = "#2A2D4A", C_JOINT = "#2E3150", C_LED = "#67E8F9", C_GLOW = "#22D3EE";
     function capsule(x1, y1, x2, y2, r, fill, ink, lw) {
       ctx.lineCap = "round";
       ctx.strokeStyle = ink; ctx.lineWidth = r * 2 + lw * 2;
@@ -1302,12 +1297,139 @@
       ctx.strokeStyle = fill; ctx.lineWidth = r * 2;
       ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
     }
+    function dot(x, y, r, fill, ink, lw) {
+      ctx.fillStyle = fill; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.3); ctx.fill();
+      if (ink) { ctx.strokeStyle = ink; ctx.lineWidth = lw; ctx.stroke(); }
+    }
+    // One skate, from its back wheel's spot on the ground. roll tips it onto
+    // an edge, and yaw turns its toe out, so the wheels in front show.
+    function catSkate(x, y, roll, yaw, metal, lw, glow) {
+      ctx.save(); ctx.translate(x, y); ctx.rotate(roll);
+      if (glow) glowDotU(yaw * 0.06, -0.05, 0.13, C_GLOW, glow);
+      ctx.strokeStyle = C_JOINT; ctx.lineWidth = 0.036;
+      ctx.beginPath(); ctx.moveTo(0, -0.045); ctx.lineTo(yaw * 0.135, -0.135); ctx.stroke();
+      for (var i = 3; i >= 0; i--) {
+        var s = 1 - 0.07 * i, wx = yaw * 0.045 * i, wy = -0.044 - 0.03 * i;
+        ctx.fillStyle = i ? "#14B8A6" : "#2DD4BF"; ctx.strokeStyle = C_INK; ctx.lineWidth = lw;
+        roundRect(wx - 0.03 * s, wy - 0.044 * s, 0.06 * s, 0.088 * s, 0.026 * s); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = "#CCFBF1"; ctx.fillRect(wx - 0.009 * s, wy - 0.03 * s, 0.018 * s, 0.06 * s);
+      }
+      ctx.fillStyle = metal; ctx.strokeStyle = C_INK; ctx.lineWidth = lw;
+      ctx.beginPath(); ctx.moveTo(-0.072, -0.215); ctx.lineTo(0.072, -0.215); ctx.lineTo(0.068, -0.11);
+      ctx.quadraticCurveTo(0.064, -0.07, 0.024, -0.068); ctx.lineTo(-0.024, -0.068);
+      ctx.quadraticCurveTo(-0.064, -0.07, -0.068, -0.11); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = C_JOINT;
+      roundRect(-0.076, -0.226, 0.152, 0.038, 0.014); ctx.fill();
+      ctx.fillRect(-0.067, -0.147, 0.134, 0.02);
+      ctx.fillStyle = "#6B739A"; ctx.fillRect(-0.02, -0.15, 0.04, 0.026);
+      ctx.fillStyle = "rgba(255,255,255,.55)"; ctx.fillRect(-0.05, -0.118, 0.022, 0.032);
+      ctx.restore();
+    }
+    function catArm(sd, a, up, metal, lw, wave) {
+      var sx = sd * 0.2, sy = -0.76, ex, ey, hx, hy;
+      if (up) { ex = sd * 0.31; ey = -0.89; hx = sd * 0.36; hy = -1.03 + wave; }
+      else if (a >= 0) { ex = sd * (0.255 + 0.06 * a); ey = -0.64 - 0.02 * a; hx = sd * (0.28 + 0.11 * a); hy = -0.52 - 0.05 * a; }
+      else { ex = sd * (0.255 + 0.02 * a); ey = -0.64 + 0.04 * a; hx = sd * (0.28 + 0.13 * a); hy = -0.52 + 0.09 * a; }
+      dot(sx, sy, 0.05, C_JOINT);
+      capsule(sx, sy, ex, ey, 0.046, metal, C_INK, lw);
+      capsule(ex, ey, hx, hy, 0.042, metal, C_INK, lw);
+      dot(ex, ey, 0.037, C_JOINT);
+      // a hand with three fingers, pointing away from the elbow
+      var dx = hx - ex, dy = hy - ey, d = Math.sqrt(dx * dx + dy * dy) || 1;
+      dx /= d; dy /= d;
+      dot(hx + dx * 0.012, hy + dy * 0.012, 0.052, metal, C_INK, lw);
+      ctx.strokeStyle = C_JOINT; ctx.lineWidth = lw * 1.3; ctx.lineCap = "round";
+      [-1, 1].forEach(function (j) {
+        ctx.beginPath();
+        ctx.moveTo(hx + dx * 0.02 - dy * j * 0.016, hy + dy * 0.02 + dx * j * 0.016);
+        ctx.lineTo(hx + dx * 0.058 - dy * j * 0.018, hy + dy * 0.058 + dx * j * 0.018);
+        ctx.stroke();
+      });
+    }
+    function catHead(metal, lw, hb) {
+      ctx.save(); ctx.translate(0, hb);
+      [-1, 1].forEach(function (sd) {
+        // whiskers poking out past the cheeks
+        ctx.strokeStyle = "#8A8EAE"; ctx.lineWidth = lw * 0.9; ctx.lineCap = "round";
+        ctx.beginPath(); ctx.moveTo(sd * 0.22, -0.905); ctx.lineTo(sd * 0.44, -0.935);
+        ctx.moveTo(sd * 0.22, -0.885); ctx.lineTo(sd * 0.43, -0.85); ctx.stroke();
+        // the goggles, peeping out at the sides
+        if (!calm) glowDotU(sd * 0.31, -0.99, 0.11, C_GLOW, 0.32);
+        var gr = ctx.createLinearGradient(0, -1.08, 0, -0.89);
+        gr.addColorStop(0, "#9AA0C2"); gr.addColorStop(1, "#3A3E5E");
+        dot(sd * 0.255, -0.985, 0.088, gr, C_INK, lw);
+        ctx.strokeStyle = C_LED; ctx.lineWidth = lw * 1.6;
+        var a0 = sd > 0 ? 0 : Math.PI;
+        ctx.beginPath(); ctx.arc(sd * 0.255, -0.985, 0.062, a0 - 0.95, a0 + 0.95); ctx.stroke();
+        // a tall ear, and its panel of lights
+        ctx.fillStyle = metal; ctx.strokeStyle = C_INK; ctx.lineWidth = lw; ctx.lineJoin = "round";
+        ctx.beginPath(); ctx.moveTo(sd * 0.05, -1.19); ctx.lineTo(sd * 0.185, -1.4);
+        ctx.quadraticCurveTo(sd * 0.225, -1.445, sd * 0.245, -1.395); ctx.lineTo(sd * 0.275, -1.09);
+        ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.save();
+        ctx.beginPath(); ctx.moveTo(sd * 0.095, -1.19); ctx.lineTo(sd * 0.208, -1.37); ctx.lineTo(sd * 0.245, -1.12); ctx.closePath();
+        ctx.fillStyle = "#0E3B46"; ctx.fill(); ctx.clip();
+        ctx.fillStyle = C_LED;
+        for (var yy = -1.375; yy < -1.1; yy += 0.028) {
+          for (var xx = 0.085; xx < 0.26; xx += 0.028) ctx.fillRect(sd > 0 ? xx : -xx - 0.016, yy, 0.016, 0.016);
+        }
+        ctx.restore();
+        if (!calm) glowDotU(sd * 0.19, -1.24, 0.14, C_GLOW, 0.28 + 0.1 * Math.sin(T * 3 + sd));
+      });
+      var hg = ctx.createRadialGradient(-0.1, -1.15, 0.02, 0, -1.03, 0.36);
+      hg.addColorStop(0, "#F1F2F9"); hg.addColorStop(0.45, "#C9CCE0"); hg.addColorStop(0.8, "#9EA2C0"); hg.addColorStop(1, "#80849F");
+      ctx.fillStyle = hg; ctx.strokeStyle = C_INK; ctx.lineWidth = lw;
+      ctx.beginPath(); ctx.ellipse(0, -1.03, 0.28, 0.236, 0, 0, 6.3); ctx.fill(); ctx.stroke();
+      // seams, rivets and the scuffs of a well used robot
+      ctx.strokeStyle = "#8A8EAE"; ctx.lineWidth = lw * 1.3;
+      ctx.beginPath(); ctx.ellipse(0, -0.97, 0.262, 0.2, 0, Math.PI + 0.32, Math.PI * 2 - 0.32); ctx.stroke();
+      ctx.strokeStyle = "rgba(255,255,255,.6)"; ctx.lineWidth = lw * 0.7;
+      ctx.beginPath(); ctx.ellipse(0, -0.978, 0.262, 0.2, 0, Math.PI + 0.36, Math.PI * 2 - 0.36); ctx.stroke();
+      ctx.strokeStyle = "#8A8EAE"; ctx.lineWidth = lw;
+      ctx.beginPath(); ctx.moveTo(0, -1.165); ctx.lineTo(0, -0.81); ctx.stroke();
+      [[-0.17, -1.07], [0.17, -1.07], [-0.07, -0.9], [0.07, -0.9]].forEach(function (r) {
+        dot(r[0], r[1], 0.011, "#8A8EAE"); dot(r[0] - 0.003, r[1] - 0.004, 0.004, "rgba(255,255,255,.8)");
+      });
+      ctx.fillStyle = "rgba(122,126,158,.22)";
+      [[-0.12, -1.17, 0.014], [0.15, -0.93, 0.018], [0.05, -1.21, 0.01], [-0.19, -0.95, 0.012]].forEach(function (r) {
+        ctx.beginPath(); ctx.arc(r[0], r[1], r[2], 0, 6.3); ctx.fill();
+      });
+      ctx.restore();
+    }
+    function catPack(lw) {
+      var pg = ctx.createLinearGradient(-0.15, -0.87, 0.15, -0.6);
+      pg.addColorStop(0, "#B9C1E0"); pg.addColorStop(1, "#7D86AE");
+      ctx.fillStyle = pg; ctx.strokeStyle = C_INK; ctx.lineWidth = lw;
+      roundRect(-0.152, -0.87, 0.304, 0.27, 0.04); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle = "#5F678E"; ctx.lineWidth = lw * 0.9;
+      ctx.beginPath(); ctx.moveTo(-0.136, -0.832); ctx.lineTo(0.136, -0.832); ctx.stroke();
+      // the light bar and the ring
+      if (!calm) glowDotU(-0.1, -0.74, 0.1, C_GLOW, 0.35 + 0.12 * Math.sin(T * 4));
+      ctx.fillStyle = C_LED; roundRect(-0.113, -0.8, 0.03, 0.12, 0.013); ctx.fill();
+      ctx.fillStyle = "#E0FBFF"; ctx.fillRect(-0.103, -0.79, 0.01, 0.1);
+      dot(0.032, -0.745, 0.06, "#3A3E5E", C_INK, lw);
+      if (!calm) glowDotU(0.032, -0.745, 0.1, C_GLOW, 0.3 + 0.12 * Math.sin(T * 4 + 1));
+      ctx.strokeStyle = C_LED; ctx.lineWidth = 0.016;
+      ctx.beginPath(); ctx.arc(0.032, -0.745, 0.039, 0, 6.3); ctx.stroke();
+      dot(0.032, -0.745, 0.018, "#164E63");
+      // two red buttons and the grille
+      dot(0.118, -0.79, 0.016, "#F87171", C_INK, lw * 0.8);
+      dot(0.118, -0.745, 0.016, "#EF4444", C_INK, lw * 0.8);
+      ctx.fillStyle = C_JOINT; roundRect(-0.085, -0.66, 0.17, 0.042, 0.012); ctx.fill();
+      ctx.strokeStyle = "#7A80A8"; ctx.lineWidth = lw * 0.9;
+      ctx.beginPath();
+      for (var gx2 = -0.06; gx2 < 0.07; gx2 += 0.024) { ctx.moveTo(gx2, -0.652); ctx.lineTo(gx2, -0.626); }
+      ctx.stroke();
+    }
     function drawCat() {
       var k = F / Z_CAT, gx = PX(cat.x, Z_CAT), gy = PY(0, Z_CAT);
       var blink = cat.safe > 0 && !calm && cat.hurt <= 0 && Math.floor(T * 12) % 2 === 0;
-      var run = v > 0.6 && started, air = cat.y > 0.05;
-      var stride = run && !air ? Math.sin(cat.phase) : 0;
-      var bob = run && !calm && !air ? Math.abs(Math.cos(cat.phase)) * 0.05 * k : Math.sin(T * 2.4) * 0.008 * k;
+      var run = v > 0.6 && started, air = cat.y > 0.05, cheer = cat.cheer > 0;
+      var ph = cat.phase * 0.45;
+      var p = run && !air ? Math.sin(ph) : 0, pc = run && !air ? Math.cos(ph) : 0;   // above zero: the right skate pushes
+      var bx = -p * 0.045, rot = -p * 0.06;
+      var dip = run && !calm && !air ? Math.abs(p) * 0.025 : 0;
+      var u = k * 0.82;
       ctx.save();
       ctx.globalAlpha = 0.35 * Math.max(0.25, 1 - cat.y / 1.4);
       ctx.fillStyle = "#020617";
@@ -1315,97 +1437,99 @@
       ctx.restore();
       ctx.save();
       if (blink) ctx.globalAlpha = 0.4;
-      ctx.translate(gx, gy - cat.y * k - bob);
+      ctx.translate(gx, gy - cat.y * k);
       var wob = cat.hurt > 0 && !calm ? Math.sin(T * 40) * 0.18 * cat.hurt : 0;
       ctx.rotate(cat.lean * 0.6 + wob);
       var sq = cat.squash;
       ctx.scale(1 + sq * 0.5, 1 - sq);
-      var u = k * 0.92;
       ctx.scale(u, u);
       ctx.lineJoin = "round"; ctx.lineCap = "round";
       var lw = Math.max(1.2, 0.022 * k) / u;
-      var ink = "#1E2B4F";
-      var white = ctx.createLinearGradient(-0.3, -1.2, 0.3, 0);
-      white.addColorStop(0, "#FFFFFF"); white.addColorStop(0.45, "#EAF2FB"); white.addColorStop(1, "#AFC3DD");
-      var cheer = cat.cheer > 0;
-      // legs: the one kicking back towards us shows its glowing sole
-      [-1, 1].forEach(function (sd, i) {
-        var swing = i ? -stride : stride;             // above zero: this leg reaches forward, away from us
-        var hipX = sd * 0.085, hipY = -0.36;
-        var lift = air ? 0.12 : Math.max(0, -swing) * 0.17;
-        var reach = air ? 0 : Math.max(0, swing) * 0.06;
-        var footX = sd * 0.1, footY = -0.035 - lift - reach;
-        capsule(hipX, hipY, footX, footY, 0.055, white, ink, lw);
-        ctx.fillStyle = "#2D4A86"; ctx.beginPath(); ctx.arc((hipX + footX) / 2, (hipY + footY) / 2, 0.035, 0, 6.3); ctx.fill();
-        ctx.fillStyle = "#2B3F75"; ctx.strokeStyle = ink; ctx.lineWidth = lw;
-        roundRect(footX - 0.07, footY - 0.03, 0.14, 0.075, 0.03); ctx.fill(); ctx.stroke();
-        if (lift > 0.05) {
-          ctx.fillStyle = "rgba(34,211,238,.45)"; ctx.beginPath(); ctx.ellipse(footX, footY + 0.05, 0.09, 0.03, 0, 0, 6.3); ctx.fill();
-          ctx.fillStyle = "#67E8F9"; ctx.fillRect(footX - 0.05, footY + 0.035, 0.1, 0.014);
-        }
+      var metal = ctx.createLinearGradient(-0.3, 0, 0.3, 0);
+      metal.addColorStop(0, "#EEF0F8"); metal.addColorStop(0.45, "#CDD0E3"); metal.addColorStop(1, "#9195B5");
+      var hipY = -0.43 + dip;
+      var legs = [-1, 1].map(function (sd) {
+        var e = air ? 0 : Math.max(0, sd * p);                     // how far this skate has pushed out
+        var lift = air ? 0.09 : Math.max(0, -sd * pc) * e * 0.12;  // it lifts a little on the way back
+        var fx = air ? sd * 0.1 : sd * (0.075 + 0.25 * e) + bx;
+        var hx = bx + sd * 0.09;
+        return { sd: sd, e: e, lift: lift, fx: fx, hx: hx, roll: 0.6 * Math.atan2(hx - fx, 0.43) };
       });
-      // the tail, curling up to one side
-      var sw = calm ? 0.2 : Math.sin(T * (run ? 7 : 2.5)) * (run ? 0.3 : 0.18);
-      var px0 = 0.04, py0 = -0.34, ang = -0.3 + sw * 0.3, seg = 0.075, pts = [[px0, py0]];
-      for (var j = 0; j < 8; j++) { ang -= 0.2 + sw * 0.04; px0 += Math.cos(ang) * seg; py0 += Math.sin(ang) * seg; pts.push([px0, py0]); }
-      ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
-      for (var n = 1; n < pts.length; n++) ctx.lineTo(pts[n][0], pts[n][1]);
-      ctx.strokeStyle = ink; ctx.lineWidth = 0.06 + lw * 2; ctx.stroke();
-      ctx.strokeStyle = "#E2EAF5"; ctx.lineWidth = 0.06; ctx.stroke();
-      var tip = pts[pts.length - 1];
-      glowDotU(tip[0], tip[1], 0.11, "#22D3EE", 0.6);
-      ctx.fillStyle = "#67E8F9"; ctx.beginPath(); ctx.arc(tip[0], tip[1], 0.04, 0, 6.3); ctx.fill();
-      // the body
-      ctx.fillStyle = white; ctx.strokeStyle = ink; ctx.lineWidth = lw;
-      roundRect(-0.17, -0.68, 0.34, 0.38, 0.12); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = "#2D4A86"; ctx.fillRect(-0.165, -0.37, 0.33, 0.045);
-      // arms swing against the legs, or go up for a cheer or a jump
-      [-1, 1].forEach(function (sd, i) {
-        var swing = i ? stride : -stride;
-        var shX = sd * 0.19, shY = -0.62, hx, hyy;
-        if (cheer || air) { hx = sd * 0.3; hyy = -0.95 + (cheer && !calm ? Math.sin(T * 12 + i) * 0.03 : 0); }
-        else { hx = sd * (0.25 + Math.max(0, -swing) * 0.03); hyy = -0.42 - swing * 0.08 - Math.max(0, swing) * 0.05; }
-        capsule(shX, shY, hx, hyy, 0.048, white, ink, lw);
-        ctx.fillStyle = "#2D4A86"; ctx.beginPath(); ctx.arc((shX + hx) / 2, (shY + hyy) / 2, 0.03, 0, 6.3); ctx.fill();
-        ctx.fillStyle = "#3B5BA5"; ctx.strokeStyle = ink; ctx.lineWidth = lw;
-        ctx.beginPath(); ctx.arc(hx, hyy, 0.055, 0, 6.3); ctx.fill(); ctx.stroke();
+      // glowing trails behind the wheels
+      if (run && !calm && !air) {
+        legs.forEach(function (l) {
+          if (l.lift > 0.015) return;
+          var tx = l.fx - l.sd * l.e * 0.12, tg = ctx.createLinearGradient(0, 0, 0, 0.34);
+          tg.addColorStop(0, "rgba(45,212,191,.55)"); tg.addColorStop(1, "rgba(45,212,191,0)");
+          ctx.fillStyle = tg;
+          ctx.beginPath(); ctx.moveTo(l.fx - 0.024, -0.01); ctx.lineTo(l.fx + 0.024, -0.01);
+          ctx.lineTo(tx + 0.006, 0.34); ctx.lineTo(tx - 0.006, 0.34); ctx.closePath(); ctx.fill();
+        });
+      }
+      // the legs: thigh, a dark knee, shin, then the skate
+      legs.forEach(function (l) {
+        var ax = l.fx + 0.2 * Math.sin(l.roll), ay = -l.lift - 0.2 * Math.cos(l.roll);
+        var kx = (l.hx + ax) / 2 + l.sd * (air ? 0.06 : 0.025), ky = (hipY + ay) / 2;
+        capsule(l.hx, hipY, kx, ky, 0.05, metal, C_INK, lw);
+        capsule(kx, ky, ax, ay, 0.044, metal, C_INK, lw);
+        dot(kx, ky, 0.04, C_JOINT);
+        catSkate(l.fx, -l.lift, l.roll, l.sd * (air ? 0.3 : 0.5 + 0.8 * l.e), metal, lw,
+                 run && !calm && l.lift < 0.015 ? 0.28 : 0);
       });
-      // the head: a helmet with ears glowing at the edges and lights at the sides
-      var hb = run && !calm ? Math.sin(cat.phase * 2 + 0.6) * 0.01 : 0;
-      ctx.save(); ctx.translate(0, hb);
-      [-1, 1].forEach(function (sd) {
-        ctx.fillStyle = white; ctx.strokeStyle = ink; ctx.lineWidth = lw;
-        ctx.beginPath(); ctx.moveTo(sd * 0.215, -0.92); ctx.lineTo(sd * 0.2, -1.24); ctx.lineTo(sd * 0.05, -1.04); ctx.closePath(); ctx.fill(); ctx.stroke();
-        ctx.strokeStyle = "#22D3EE"; ctx.lineWidth = lw * 1.6;
-        ctx.beginPath(); ctx.moveTo(sd * 0.19, -0.97); ctx.lineTo(sd * 0.19, -1.17); ctx.stroke();
-      });
-      ctx.fillStyle = white; ctx.strokeStyle = ink; ctx.lineWidth = lw;
-      ctx.beginPath(); ctx.ellipse(0, -0.86, 0.255, 0.225, 0, 0, 6.3); ctx.fill(); ctx.stroke();
-      [-1, 1].forEach(function (sd) {
-        ctx.fillStyle = "#B9C9DE"; ctx.strokeStyle = ink; ctx.lineWidth = lw;
-        ctx.beginPath(); ctx.arc(sd * 0.25, -0.84, 0.07, 0, 6.3); ctx.fill(); ctx.stroke();
-        ctx.strokeStyle = "#22D3EE"; ctx.lineWidth = lw * 1.4;
-        ctx.beginPath(); ctx.arc(sd * 0.25, -0.84, 0.04, 0, 6.3); ctx.stroke();
-      });
-      ctx.strokeStyle = "#B9C9DE"; ctx.lineWidth = lw * 0.9;
-      ctx.beginPath(); ctx.moveTo(0, -1.07); ctx.lineTo(0, -0.66); ctx.stroke();
-      ctx.strokeStyle = "#22D3EE"; ctx.lineWidth = lw * 1.8;
-      ctx.beginPath(); ctx.moveTo(-0.1, -0.73); ctx.quadraticCurveTo(0, -0.7, 0.1, -0.73); ctx.stroke();
+      // everything above the hips sways over the gliding skate
+      ctx.save();
+      ctx.translate(bx, dip - 0.45); ctx.rotate(rot); ctx.translate(0, 0.45);
+      var up = cheer || air, wave = cheer && !calm ? Math.sin(T * 12) * 0.03 : 0;
+      var arms = [-1, 1].map(function (sd) { return { sd: sd, a: up ? 0 : -sd * p }; });
+      arms.forEach(function (r) { if (!up && r.a < 0) catArm(r.sd, r.a, false, metal, lw, 0); });
+      ctx.fillStyle = metal; ctx.strokeStyle = C_INK; ctx.lineWidth = lw;
+      ctx.beginPath(); ctx.moveTo(-0.2, -0.76);
+      ctx.quadraticCurveTo(-0.215, -0.83, -0.12, -0.835); ctx.lineTo(0.12, -0.835);
+      ctx.quadraticCurveTo(0.215, -0.83, 0.2, -0.76);
+      ctx.quadraticCurveTo(0.19, -0.6, 0.155, -0.52); ctx.lineTo(-0.155, -0.52);
+      ctx.quadraticCurveTo(-0.19, -0.6, -0.2, -0.76); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-0.15, -0.51); ctx.lineTo(0.15, -0.51);
+      ctx.quadraticCurveTo(0.165, -0.4, 0.06, -0.385); ctx.lineTo(-0.06, -0.385);
+      ctx.quadraticCurveTo(-0.165, -0.4, -0.15, -0.51); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = C_JOINT; roundRect(-0.168, -0.55, 0.336, 0.055, 0.02); ctx.fill();
+      ctx.strokeStyle = "#4A4E70"; ctx.lineWidth = lw;
+      ctx.beginPath(); ctx.moveTo(-0.155, -0.5225); ctx.lineTo(0.155, -0.5225); ctx.stroke();
+      // the tail: silver segments with dark joints, curling out and up
+      var sw = calm ? 0 : p * 0.14 + Math.sin(T * 2.2) * 0.04;
+      ctx.save(); ctx.translate(0.02, -0.455); ctx.rotate(sw);
+      var tp = [], c0 = [0, 0], c1 = [0.16, 0.06], c2 = [0.4, 0.05], c3 = [0.37, -0.14];
+      for (var n = 0; n <= 8; n++) {
+        var t = n / 8, m1 = 1 - t;
+        tp.push([m1 * m1 * m1 * c0[0] + 3 * m1 * m1 * t * c1[0] + 3 * m1 * t * t * c2[0] + t * t * t * c3[0],
+                 m1 * m1 * m1 * c0[1] + 3 * m1 * m1 * t * c1[1] + 3 * m1 * t * t * c2[1] + t * t * t * c3[1]]);
+      }
+      ctx.beginPath(); ctx.moveTo(tp[0][0], tp[0][1]);
+      tp.forEach(function (q) { ctx.lineTo(q[0], q[1]); });
+      ctx.strokeStyle = C_INK; ctx.lineWidth = 0.064 + lw * 2; ctx.stroke();
+      ctx.strokeStyle = metal; ctx.lineWidth = 0.064; ctx.stroke();
+      ctx.strokeStyle = C_JOINT; ctx.lineWidth = 0.02; ctx.lineCap = "butt";
+      for (n = 1; n < 8; n++) {
+        var ux = tp[n + 1][0] - tp[n - 1][0], uy = tp[n + 1][1] - tp[n - 1][1], ul = Math.sqrt(ux * ux + uy * uy) || 1;
+        ux = ux / ul * 0.034; uy = uy / ul * 0.034;
+        ctx.beginPath(); ctx.moveTo(tp[n][0] - uy, tp[n][1] + ux); ctx.lineTo(tp[n][0] + uy, tp[n][1] - ux); ctx.stroke();
+      }
+      ctx.lineCap = "round";
+      dot(tp[8][0], tp[8][1], 0.04, metal, C_INK, lw);
       ctx.restore();
-      // the backpack and its glowing panel
-      ctx.fillStyle = "#3554A0"; ctx.strokeStyle = ink; ctx.lineWidth = lw;
-      roundRect(-0.12, -0.63, 0.24, 0.22, 0.05); ctx.fill(); ctx.stroke();
-      glowDotU(0, -0.52, 0.16, "#22D3EE", calm ? 0.45 : 0.4 + 0.15 * Math.sin(T * 4));
-      ctx.fillStyle = "#A5F3FC"; roundRect(-0.045, -0.565, 0.09, 0.09, 0.02); ctx.fill();
+      catHead(metal, lw, run && !calm ? Math.sin(ph * 2) * 0.008 : 0);
+      catPack(lw);
+      arms.forEach(function (r) { if (up || r.a >= 0) catArm(r.sd, r.a, up, metal, lw, r.sd * wave); });
+      [-1, 1].forEach(function (sd) { dot(sd * 0.2, -0.76, 0.045, metal, C_INK, lw); });
+      ctx.restore();
       if (cheer && !calm) {
         ctx.fillStyle = "#FDE047";
-        for (var c = 0; c < 4; c++) { var a2 = T * 6 + c * 1.57; ctx.save(); ctx.translate(Math.cos(a2) * 0.42, -0.9 + Math.sin(a2) * 0.18); star4(0, 0, 0.06); ctx.restore(); }
+        for (var c = 0; c < 4; c++) { var a2 = T * 6 + c * 1.57; ctx.save(); ctx.translate(Math.cos(a2) * 0.46, -1.02 + Math.sin(a2) * 0.18); star4(0, 0, 0.06); ctx.restore(); }
       }
       if (cat.hurt > 0) {
         for (var h2 = 0; h2 < 3; h2++) {
           var b2 = T * 7 + h2 * 2.09;
           ctx.fillStyle = h2 === 1 ? "#F0ABFC" : "#67E8F9";
-          ctx.save(); ctx.translate(Math.cos(b2) * 0.3, -1.2 + Math.sin(b2) * 0.07); star4(0, 0, 0.055); ctx.restore();
+          ctx.save(); ctx.translate(Math.cos(b2) * 0.32, -1.5 + Math.sin(b2) * 0.07); star4(0, 0, 0.055); ctx.restore();
         }
       }
       ctx.restore();
@@ -1438,9 +1562,6 @@
           ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a);
           ctx.fillStyle = p.c || "#fff"; ctx.fillRect(-p.r, -p.r * 0.45, p.r * 2, p.r * 0.9);
           ctx.restore();
-        } else if (p.kind === "dust") {
-          ctx.globalAlpha = a * 0.35; ctx.fillStyle = "#C7D2FE";
-          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.3); ctx.fill();
         } else if (p.kind === "sparkle") {
           ctx.fillStyle = "#fff"; star4(p.x, p.y, p.r * 1.6);
         } else {
