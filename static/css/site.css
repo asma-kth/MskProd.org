@@ -838,7 +838,13 @@ pre code { background: none; border: 0; padding: 0; color: inherit; white-space:
 }
 .stretch-cta-go .icon { width: 1em; height: 1em; }
 @keyframes cta-wiggle { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-9deg) scale(1.06); } 60% { transform: rotate(7deg); } }
-@media (max-width: 520px) { .stretch-cta { flex-wrap: wrap; } .stretch-cta-go { margin-left: calc(50px + 1rem); } }
+/* On a phone the words take the whole row beside the picture and Play drops
+   below them: with no width of their own they would shrink to fit Play in. */
+@media (max-width: 520px) {
+  .stretch-cta { flex-wrap: wrap; }
+  .stretch-cta-txt { flex: 1 1 calc(100% - 50px - 1rem); }
+  .stretch-cta-go { margin-left: calc(50px + 1rem); }
+}
 @media print { .stretch-cta { display: none; } }
 
 
