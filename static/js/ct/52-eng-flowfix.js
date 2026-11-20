@@ -86,10 +86,10 @@
       function table(res) {
         return CT.el("table", { class: "cfl-table cfb-tests" }, [
           CT.el("caption", null, "Tests"),
-          CT.el("thead", null, CT.el("tr", null, ["Input", "Expected", "Actual", ""].map(function (h) { return CT.el("th", { scope: "col" }, h); }))),
+          CT.el("thead", null, CT.el("tr", null, ["Input", "Expected", "Actual", CT.el("span", { class: "sr-only" }, "Result")].map(function (h) { return CT.el("th", { scope: "col" }, h); }))),
           CT.el("tbody", null, res.map(function (t, i) {
             return CT.el("tr", { class: t.pass ? "is-pass" : "is-fail" }, [CT.el("td", null, t.inputs.join(", ") || "none"), CT.el("td", null, t.expect.join(", ")),
-              CT.el("td", null, t.got ? t.got.join(", ") || "nothing" : "Error"), CT.el("td", null, [CT.ico(t.pass ? "tick" : "no"),
+              CT.el("td", null, t.got ? t.got.join(", ") || "nothing" : "Error"), CT.el("td", null, [CT.ico(t.pass ? "tick" : "no"), CT.el("span", { class: "sr-only" }, t.pass ? "Pass" : "Fail"),
                 !t.pass ? CT.el("button", { type: "button", class: "ct-btn ct-btn-mini", onclick: function () { path = pathOf(current(), rd.tests[i]); render(); } }, "Show its path") : null])]);
           }))]);
       }

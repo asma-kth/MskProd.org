@@ -383,7 +383,7 @@ h3.sub { font-size: var(--step-1); }
   text-align: left; padding: .68rem .9rem; border-bottom: 1px solid var(--border);
   vertical-align: top; max-width: none;
 }
-.prose thead th {
+.prose thead th, .prose thead td {
   background: var(--surface-2); font-weight: 650; font-size: .86rem;
   letter-spacing: .02em; color: var(--ink-2);
 }
@@ -1429,7 +1429,7 @@ h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
 .ws-fig th, .ws-fig td, .ws-ms-model th, .ws-ms-model td {
   border: 1px solid var(--border-strong); padding: .3rem .8rem; text-align: left;
 }
-.ws-fig th, .ws-ms-model th { background: var(--surface-2); font-weight: 650; }
+.ws-fig th, .ws-ms-model th, .ws-fig thead td, .ws-ms-model thead td { background: var(--surface-2); font-weight: 650; }
 .ws-fig .table-scroll { overflow-x: auto; }
 .ws-fig .code-block, .ws-ms-model .code-block { margin-bottom: .6rem; }
 .ws-foot {
@@ -1555,13 +1555,14 @@ h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
 .xq-matrix th, .xq-matrix td, .xq-grid th, .xq-grid td {
   border: 1px solid var(--border-strong); padding: .45rem .7rem; text-align: left; vertical-align: middle;
 }
-.xq-matrix thead th, .xq-grid thead th { background: var(--surface-2); font-weight: 650; }
-.xq-matrix td { text-align: center; width: 5.5rem; }
+/* The empty corner cell is a td in the head row, styled like the headings beside it. */
+.xq-matrix thead th, .xq-grid thead th, .xq-matrix thead td, .xq-grid thead td { background: var(--surface-2); font-weight: 650; }
+.xq-matrix tbody td { text-align: center; width: 5.5rem; }
 .xq-cell { display: inline-flex; padding: .25rem; cursor: pointer; }
 .xq-cell input { width: 1.1rem; height: 1.1rem; accent-color: var(--accent-strong); }
 .xq-matrix td.is-right { background: var(--ok-bg); }
 .xq-matrix td.is-wrong { background: var(--bad-bg); }
-.xq-grid td { min-width: 4.5rem; }
+.xq-grid tbody td { min-width: 4.5rem; }
 
 .xq-blanks { display: grid; gap: .5rem; margin: .3rem 0 .2rem 2.1rem; }
 .xq-blank-row { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; font-size: .95rem; }
@@ -1618,7 +1619,7 @@ h1, h2, h3, h4, h5 { overflow-wrap: break-word; }
   .xq-opts, .xq-hint, .xq-blanks, .xq-code, .xq-matrix-wrap, .examq .table-wrap, .xq-working-label { margin-left: 0; padding-left: 0; }
   .examq textarea.xq-working { margin-left: 0; width: 100%; }
   .xq-matrix, .xq-grid { font-size: .84rem; }
-  .xq-matrix td { width: auto; min-width: 3.2rem; }
+  .xq-matrix tbody td { width: auto; min-width: 3.2rem; }
 }
 
 /* the paper bar: sticky under the site header, counting down the real time */

@@ -234,6 +234,7 @@
     body.appendChild(status);
 
     var boxWrap = el("div", "tool-scroll");
+    boxWrap.setAttribute("data-scroll-name", "Mailboxes");
     var boxes = el("div", "lmc-boxes");
     var cells = [];
     for (var i = 0; i < 100; i++) {

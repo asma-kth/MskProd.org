@@ -146,6 +146,10 @@
 
   function build(body) {
     body.textContent = "";
+    // Each card is headed one level below the tool's own title, which is an h3
+    // in a lesson and an h2 on the tool's own page.
+    var title = body.parentNode ? body.parentNode.querySelector(".tool-title") : null;
+    var cardLevel = title && /^H[1-5]$/.test(title.tagName) ? Number(title.tagName.charAt(1)) + 1 : 4;
 
     var controls = el("div", "tool-btns");
     var bPlay = el("button", "tool-btn is-primary", "Play");
@@ -185,7 +189,7 @@
     var panels = ALGOS.map(function (algo) {
       var card = el("div", "sv-card");
       var head = el("div", "sv-head");
-      head.appendChild(el("h5", null, algo.name));
+      head.appendChild(el("h" + cardLevel, "sv-name", algo.name));
       var counts = el("span", "sv-counts", "0 comparisons");
       head.appendChild(counts);
       card.appendChild(head);

@@ -193,6 +193,7 @@
     var exprLine = el("p", "tool-status is-good");
     body.appendChild(exprLine);
     var tableWrap = el("div", "tool-scroll");
+    tableWrap.setAttribute("data-scroll-name", "Truth table");
     body.appendChild(tableWrap);
 
     /* ------------------------------------------------------ interaction */

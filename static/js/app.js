@@ -292,26 +292,40 @@
      On a narrow screen a picture, a wide table or a long line of code keeps a
      readable size and scrolls sideways. A region that scrolls has to be
      reachable from the keyboard, so it takes focus only while it actually
-     overflows, and not on a wide screen where it would be one more stop for nothing. */
-  var arts = [].slice.call(document.querySelectorAll(".illus-art, .table-scroll, .code-block > pre"));
-  if (arts.length) {
-    var kindOf = function (a) {
-      return a.classList.contains("table-scroll") ? "Table" : a.tagName === "PRE" ? "Code" : "Picture";
-    };
-    var syncArts = function () {
-      arts.forEach(function (a) {
-        if (a.scrollWidth > a.clientWidth + 1) {
-          a.setAttribute("tabindex", "0");
-          a.setAttribute("role", "group");
-          a.setAttribute("aria-label", kindOf(a) + ", scrolls sideways");
-        } else {
-          a.removeAttribute("tabindex");
-          a.removeAttribute("role");
-          a.removeAttribute("aria-label");
-        }
-      });
-    };
-    syncArts();
-    window.addEventListener("resize", syncArts);
+     overflows, and not on a wide screen where it would be one more stop for nothing.
+     An interactive tool builds its own scrolling box (the LMC mailboxes, a truth
+     table) after this script has run, and rebuilds it as it works, so a page with
+     a tool looks again whenever the tool changes. The tool names the box in
+     data-scroll-name. */
+  var SCROLLERS = ".illus-art, .table-scroll, .code-block > pre, .tool-scroll";
+  var kindOf = function (a) {
+    if (a.classList.contains("tool-scroll")) return a.getAttribute("data-scroll-name") || "Tool output";
+    return a.classList.contains("table-scroll") ? "Table" : a.tagName === "PRE" ? "Code" : "Picture";
+  };
+  var syncArts = function () {
+    [].forEach.call(document.querySelectorAll(SCROLLERS), function (a) {
+      if (a.scrollWidth > a.clientWidth + 1) {
+        a.setAttribute("tabindex", "0");
+        a.setAttribute("role", "group");
+        a.setAttribute("aria-label", kindOf(a) + ", scrolls sideways");
+      } else {
+        a.removeAttribute("tabindex");
+        a.removeAttribute("role");
+        a.removeAttribute("aria-label");
+      }
+    });
+  };
+  syncArts();
+  window.addEventListener("resize", syncArts);
+  window.addEventListener("load", syncArts);
+  var tools = document.querySelectorAll(".tool");
+  if (tools.length && "MutationObserver" in window) {
+    var syncQueued = false;
+    var toolWatch = new MutationObserver(function () {
+      if (syncQueued) return;
+      syncQueued = true;
+      requestAnimationFrame(function () { syncQueued = false; syncArts(); });
+    });
+    [].forEach.call(tools, function (t) { toolWatch.observe(t, { childList: true, subtree: true }); });
   }
 })();

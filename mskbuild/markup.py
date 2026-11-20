@@ -7,7 +7,8 @@ Block syntax
     ### Heading                     -> sub heading, an h3 styled small
     - item                          -> unordered list
     1. item                         -> ordered list
-    | a | b |                       -> table, first row is the header
+    | a | b |                       -> table, first row is the header; an empty header cell
+                                       (the corner of a two way table) is a td, as a th needs text
     ```python  ... ```              -> highlighted code block, with a Run button
     ```pylocal ... ```              -> highlighted Python the browser cannot run (threads, sockets),
                                        labelled as needing your own computer, with no Run button
@@ -312,7 +313,7 @@ def render(src: str) -> str:
                 head = rows[0]
                 body = rows[1:]
                 t = ['<div class="table-scroll"><table><thead><tr>']
-                t += ["<th>%s</th>" % inline(c) for c in head]
+                t += ["<th>%s</th>" % inline(c) if c else "<td></td>" for c in head]
                 t.append("</tr></thead><tbody>")
                 for r in body:
                     t.append("<tr>" + "".join("<td>%s</td>" % inline(c) for c in r) + "</tr>")

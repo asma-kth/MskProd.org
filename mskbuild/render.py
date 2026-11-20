@@ -509,7 +509,8 @@ def _choice_html(q: EQ, qid: str) -> tuple:
 
 
 def _matrix_html(q: EQ, qid: str) -> tuple:
-    head = "<th></th>" + "".join('<th scope="col">%s</th>' % markup.inline(c) for c in q.cols)
+    # The corner above the row labels is a td: a th must have text.
+    head = "<td></td>" + "".join('<th scope="col">%s</th>' % markup.inline(c) for c in q.cols)
     body = []
     for r, row in enumerate(q.rows):
         cells = "".join(
@@ -544,7 +545,8 @@ def _blank_input(b, n: int, qid: str) -> str:
 
 def _blanks_html(q: EQ, qid: str) -> tuple:
     if q.grid:
-        head = ("<thead><tr>%s</tr></thead>" % "".join('<th scope="col">%s</th>' % markup.inline(h) for h in q.grid_head)
+        head = ("<thead><tr>%s</tr></thead>" % "".join('<th scope="col">%s</th>' % markup.inline(h) if h.strip() else "<td></td>"
+                                                       for h in q.grid_head)
                 if q.grid_head else "")
         rows = []
         for row in q.grid:

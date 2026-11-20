@@ -164,6 +164,7 @@
       right.textContent = "";
       cells = [];
       var scroll = el("div", "tool-scroll");
+      scroll.setAttribute("data-scroll-name", "Trace table");
       var table = document.createElement("table");
       var thead = document.createElement("thead");
       var hr = document.createElement("tr");

@@ -10,7 +10,7 @@
   display: flex; justify-content: space-between; align-items: baseline;
   gap: .5rem; flex-wrap: wrap;
 }
-.tool[data-tool="sort-visualiser"] .sv-head h5 {
+.tool[data-tool="sort-visualiser"] .sv-head .sv-name {
   margin: 0; font-size: .88rem; font-weight: 660; color: var(--ink);
 }
 .tool[data-tool="sort-visualiser"] .sv-counts {
