@@ -1272,7 +1272,9 @@
   /* --------------------------------------------------------------- shop */
   var SHOP_TABS = [["potion", "Potions and treats"], ["hat", "Hats"], ["robe", "Robes"], ["wand", "Wands"]];
   function shopScreen(tab) {
-    if (!D.shop[tab]) tab = "potion";
+    /* Only a real stall: the tab comes from the address, and a name such as
+       "constructor" would otherwise find something on every object. */
+    if (!SHOP_TABS.some(function (t) { return t[0] === tab; })) tab = "potion";
     var s = screen("mq-shop", "coast");
     s.appendChild(el("h1", { "class": "mq-h", "data-focus": "1", tabindex: "-1", text: "The Market" }));
     s.appendChild(el("p", { "class": "mq-sub", html: "Spend the coins you win in battle. You have " + ico("coin") + " <b>" + fmt(S.coins) + "</b> coins." }));

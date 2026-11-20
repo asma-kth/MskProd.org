@@ -195,9 +195,11 @@
     mark.style.display = unlocked ? "none" : "";
 
     btn.disabled = !unlocked || !name;
-    if (!unlocked) hint.textContent = "Printing unlocks when every lesson quiz is passed. " + (total - passed) + " to go.";
-    else if (!name) hint.textContent = "Type your name to print your certificate.";
-    else hint.textContent = "Choose A4, landscape, and switch headers and footers off in the print window.";
+    var say = !unlocked ? "Printing unlocks when every lesson quiz is passed. " + (total - passed) + " to go."
+      : !name ? "Type your name to print your certificate."
+      : "Choose A4, landscape, and switch headers and footers off in the print window.";
+    // The hint is read aloud when it changes, so only change it when it is new.
+    if (hint.textContent !== say) hint.textContent = say;
 
     saved.name = inName.value; saved.org = inOrg.value; saved.date = inDate.value;
     saved.theme = theme; saved.avg = inAvg.checked;
@@ -207,6 +209,12 @@
   [inName, inOrg, inDate].forEach(function (n) { n.addEventListener("input", update); });
   inAvg.addEventListener("change", update);
   btn.addEventListener("click", function () { if (!btn.disabled) window.print(); });
+  // On a shared computer the next student would find these filled in.
+  $("cert-forget").addEventListener("click", function () {
+    inName.value = ""; inOrg.value = "";
+    update();
+    hint.textContent = "Your name and school are cleared from this browser.";
+  });
   // Fonts change the width of the name, so fit it again once they have loaded.
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitName);
   update();

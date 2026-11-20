@@ -41,8 +41,34 @@
     } catch (e) { return null; }
   }
 
+  /* Anybody can make a link and write its title and note, so the viewer keeps
+     both short, shows them as plain text and says who wrote them. */
+  var TITLE_MAX = 100, NOTE_MAX = 300, TOPICS_MAX = 500;
+
+  function clip(v, max) {
+    if (typeof v !== "string") return "";
+    var chars = Array.from(v.replace(/\s+/g, " ").trim());   /* whole characters, so an emoji is never cut in half */
+    return chars.length > max ? chars.slice(0, max - 1).join("").trim() + "\u2026" : chars.join("");
+  }
+
+  /* Only the shape the builder makes: topic ids, a title, a note and a date. */
+  function clean(data) {
+    if (!data || !Array.isArray(data.t)) return null;
+    var seen = Object.create(null), t = [];
+    data.t.forEach(function (id) {
+      if (typeof id === "string" && !seen[id] && t.length < TOPICS_MAX) { seen[id] = true; t.push(id); }
+    });
+    if (!t.length) return null;
+    return {
+      t: t,
+      n: clip(data.n, TITLE_MAX),
+      m: clip(data.m, NOTE_MAX),
+      d: typeof data.d === "string" && /^\d{4}-\d{2}-\d{2}$/.test(data.d) ? data.d : ""
+    };
+  }
+
   function topicIndex(manifest) {
-    var map = {};
+    var map = Object.create(null);   /* so an id such as "constructor" finds nothing */
     manifest.courses.forEach(function (c) {
       c.topics.forEach(function (t) { map[t.id] = { course: c, topic: t }; });
     });
@@ -74,6 +100,11 @@
     if (data.d) meta.push("due " + data.d);
     head.appendChild(el("p", "muted", meta.join("  |  ")));
     if (data.m) head.appendChild(el("p", "assign-message", data.m));
+    if (data.n || data.m) {
+      head.appendChild(el("p", "muted assign-from",
+        (data.n && data.m ? "The title and note were" : data.n ? "The title was" : "The note was")
+        + " written by whoever made this link, not by MskProd. MskProd has no logins and never asks for a password."));
+    }
     root.appendChild(head);
 
     var list = el("ol", "dash-list");
@@ -139,6 +170,7 @@
     var nameLab = el("label", null, "Assignment title");
     var nameInp = document.createElement("input");
     nameInp.type = "text";
+    nameInp.maxLength = TITLE_MAX;
     nameInp.placeholder = "For example: Half term revision, paper 1";
     nameInp.id = "assign-name";
     nameLab.setAttribute("for", nameInp.id);
@@ -159,6 +191,7 @@
     var msgLab = el("label", null, "A note for whoever opens the link, optional");
     var msgInp = document.createElement("input");
     msgInp.type = "text";
+    msgInp.maxLength = NOTE_MAX;
     msgInp.placeholder = "For example: do the quizzes first, then the written questions";
     msgInp.id = "assign-msg";
     msgLab.setAttribute("for", msgInp.id);
@@ -271,8 +304,8 @@
     .then(function (r) { return r.json(); })
     .then(function (manifest) {
       var hash = window.location.hash.replace(/^#/, "");
-      var data = hash ? decode(hash) : null;
-      if (data && data.t && data.t.length) renderView(manifest, data);
+      var data = hash ? clean(decode(hash)) : null;
+      if (data) renderView(manifest, data);
       else renderBuilder(manifest);
     })
     .catch(function () {

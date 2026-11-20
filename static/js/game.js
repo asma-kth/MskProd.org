@@ -153,17 +153,23 @@
   }
 
   /* ---------------------------------------------------------------- python */
-  var SOURCES = [
-    "https://cdn.jsdelivr.net/pyodide/v314.0.6/full/pyodide.js",
-    "https://cdn.jsdelivr.net/pyodide/v0.28.3/full/pyodide.js",
-    "https://cdn.jsdelivr.net/npm/pyodide/pyodide.js"
-  ];
+  /* One exact Pyodide release, from two copies on the same CDN: its Pyodide
+     mirror, which also holds extra packages such as sqlite3, then its copy of
+     the npm package. The browser checks pyodide.js against INTEGRITY and
+     refuses it if a single byte differs. A new version needs a new hash: the
+     sha384 of pyodide.js in that version's npm package. */
+  var PYODIDE = "314.0.6";
+  var PACKAGES = "https://cdn.jsdelivr.net/pyodide/v" + PYODIDE + "/full/";
+  var SOURCES = [PACKAGES + "pyodide.js", "https://cdn.jsdelivr.net/npm/pyodide@" + PYODIDE + "/pyodide.js"];
+  var INTEGRITY = "sha384-NV89XnNMjL1QhwMSII1A5nl9HxxqvDhq6dsIoI2bComfFnFR06or2wdEAHhXEgOI";
   var PY = { state: "idle", py: null, p: null };
 
   function loadScript(src) {
     return new Promise(function (resolve, reject) {
       var s = document.createElement("script");
       var timer = setTimeout(function () { s.remove(); reject(new Error("timed out: " + src)); }, 25000);
+      s.crossOrigin = "anonymous";
+      s.integrity = INTEGRITY;
       s.src = src;
       s.onload = function () { clearTimeout(timer); resolve(); };
       s.onerror = function () { clearTimeout(timer); reject(new Error("could not load " + src)); };
@@ -181,7 +187,7 @@
     }, Promise.reject());
     PY.p = first.then(function () {
       return Promise.race([
-        window.loadPyodide(),
+        window.loadPyodide({ packageBaseUrl: PACKAGES }),
         new Promise(function (_, rej) { setTimeout(function () { rej(new Error("python start timed out")); }, 90000); })
       ]);
     }).then(function (py) {

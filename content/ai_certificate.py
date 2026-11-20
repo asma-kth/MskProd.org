@@ -256,8 +256,10 @@ def build(register, add_search):
       <label class="cert-check"><input id="cert-in-avg" type="checkbox"> Show my average quiz score</label>
       <div class="btn-row">
         <button class="btn btn-primary" id="cert-print" type="button" disabled>%s Print or save as PDF</button>
+        <button class="btn btn-secondary" id="cert-forget" type="button">Clear my name and school</button>
       </div>
-      <p class="cert-hint" id="cert-hint"></p>
+      <p class="cert-hint" id="cert-hint" aria-live="polite"></p>
+      <p class="cert-hint">Your name and school are saved only in this browser, so on a shared computer clear them when you have finished.</p>
     </div>
   </div>
 </div>
