@@ -122,7 +122,8 @@ LESSONS = [
                 MP("The hash is encrypted with the sender's private key", ["private key"]),
                 MP("The recipient decrypts it with the sender's public key", ["public key"]),
                 MP("The recipient hashes the message and compares the two hashes",
-                   ["compare", "compares", "compared", "match", "matches"]),
+                   ["compare", "compares", "compared", "match", "matches", "identical", "are the same",
+                    "checks the hashes", "check the hashes"]),
                 MP("A match shows it is unaltered and came from the holder of the private key",
                    ["only the sender", "holder of the private key", "unaltered", "not altered", "authentic", "genuine"]),
             ], "The sender makes a hash of the message and encrypts the hash with their private key, which is the "
@@ -456,8 +457,9 @@ LESSONS = [
             Written("Describe encapsulation as data passes down the TCP/IP stack.", 2, [
                 MP("Each layer adds its own header", ["header", "headers", "adds"]),
                 MP("The matching layer at the receiver removes it on the way up",
-                   ["removed", "removes", "stripped", "taken off", "on the way up", "corresponding layer",
-                    "matching layer"]),
+                   ["removed", "removes", "stripped", "strips", "strip", "taken off", "on the way up",
+                    "corresponding layer", "matching layer", "same layer", "other end", "receiving end",
+                    "receiver"]),
             ], "Each layer adds its own header to the data as it passes down at the sender, and the matching layer at "
                "the receiver removes that header as the data passes back up.",
                command="Describe"),
@@ -486,9 +488,11 @@ LESSONS = [
             Written("Explain how PageRank decides how important a web page is.", 6, [
                 MP("Each link to a page counts as a vote for it", ["vote", "votes"]),
                 MP("Votes from more important pages count for more",
-                   ["more important", "weighted", "weight", "higher rank", "high rank", "important pages count"]),
+                   ["more important", "weighted", "weight", "higher rank", "high rank", "important pages count",
+                    "worth more", "count more", "count for more", "high pagerank", "higher pagerank",
+                    "more valuable"]),
                 MP("A page's vote is divided among its outgoing links",
-                   ["divided", "split", "outgoing", "number of links"]),
+                   ["divided", "divides", "split", "shared", "outgoing", "number of links"]),
                 MP("A damping factor models a user who stops following links", ["damping"]),
                 MP("It is usually 0.85 and keeps the calculation convergent",
                    ["0.85", "converge", "converges", "convergent", "stops following"]),

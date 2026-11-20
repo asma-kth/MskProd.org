@@ -1189,6 +1189,10 @@ html.st-locked, html.st-locked body { overflow: hidden; }
 .st-hub-art svg:nth-child(8) { animation-delay: -.9s; } .st-hub-art svg:nth-child(9) { animation-delay: -2.1s; }
 .st-hub-art svg:nth-child(10) { animation-delay: -3.4s; }
 .st-hub-art svg:nth-child(7) { animation-delay: -2.8s; }
+/* Eleven pictures sit six across, the second row one short. */
+.st-hub-art[data-n="11"] { display: grid; grid-template-columns: repeat(6, auto); gap: .55rem; }
+.st-hub-art[data-n="11"] svg { width: 54px; height: 54px; padding: 7px; border-radius: 16px; }
+.st-hub-art svg:nth-child(11) { animation-delay: -1.5s; }
 .st-hub-jump { display: flex; flex-wrap: wrap; gap: .5rem; margin: var(--sp-4) 0 0; }
 @keyframes st-bob { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-10px) rotate(3deg); } }
 .st-hub-year { padding-top: 0; }
@@ -1238,6 +1242,9 @@ html.st-locked, html.st-locked body { overflow: hidden; }
   .st-hub-art[data-n="6"], .st-hub-art[data-n="7"], .st-hub-art[data-n="9"], .st-hub-art[data-n="10"] { justify-content: start; }
   .st-hub-art[data-n="9"] svg, .st-hub-art[data-n="10"] svg { width: 48px; height: 48px; padding: 6px; border-radius: 14px; }
   .st-hub-art[data-n="9"], .st-hub-art[data-n="10"] { gap: .45rem; }
+  /* Six across still, each picture shrinking to fit the narrowest phone. */
+  .st-hub-art[data-n="11"] { justify-content: start; gap: .4rem; grid-template-columns: repeat(6, minmax(0, 48px)); }
+  .st-hub-art[data-n="11"] svg { width: 100%; height: auto; aspect-ratio: 1; padding: 6px; border-radius: 14px; }
 }
 
 /* ------------------------------------------------------------- the sheet */

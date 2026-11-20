@@ -299,7 +299,8 @@ LESSONS = [
                     "standalone", "stand alone", "no other files", "missing library", "library is missing"]),
                 MP("Later changes to the library cannot break it",
                    ["cannot break", "can't break", "unaffected", "not affected", "will not break", "won't break",
-                    "reliable", "reliability", "changes to the library"]),
+                    "reliable", "reliability", "changes to the library", "library changes", "library is changed",
+                    "library changed", "library is updated", "library updates", "updated library"]),
             ], "With static linking the library code is copied into the executable, so it is self contained and does "
                "not depend on other files. Later changes to the library cannot break it.",
                command="Explain"),
