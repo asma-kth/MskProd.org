@@ -580,7 +580,7 @@ def validate(units, topics):
 
 
 def validate_ks4(lessons, topics):
-    """Key Stage 4, where a lesson is a whole topic and Sort It is required.
+    """Key Stage 4 and A Level, where a lesson is a whole topic and Sort It is required.
 
     lessons: [(course slug, Stretch)]; topics: {(course slug, topic slug): Topic}."""
     problems = []
@@ -593,7 +593,7 @@ def validate_ks4(lessons, topics):
         if (course, st.lesson) not in topics:
             problems.append("%s: no topic of %s has that slug" % (where, course))
         if st.sort is None:
-            problems.append("%s: a Key Stage 4 lesson needs a Sort It task" % where)
+            problems.append("%s: a lesson that is a whole topic needs a Sort It task" % where)
         problems += lesson_problems(where, st)
         if st.words or st.groups or st.bugs:
             topic = topics.get((course, st.lesson))

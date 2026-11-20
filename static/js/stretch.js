@@ -1,23 +1,23 @@
-/* MskProd Computing - stretch tasks, Key Stage 3 and Key Stage 4.
+/* MskProd Computing - stretch tasks, Key Stage 3, Key Stage 4 and A Level.
  *
- * The tasks for one lesson. The Quiz Challenge has three rounds. Quiz Blitz
- * is a quiz show: a clock, four coloured tiles that each carry a shape, points
- * for speed, an answer streak and four computer players to race to the
- * podium. Quick Fire and Big Think are written answers, marked by the keyword
- * marker in quiz.js (window.MskMarker); the mark scheme and a model answer are
- * shown afterwards and the student can change the mark, as on the exam pages.
- * In This or That, Pixel the cat asks questions with two answers and reacts
- * to each choice. Memory Match is a card game: flip two cards at a time to
- * pair each word with its meaning. Key Stage 4 lessons add Sort It: drag each
+ * The tasks for one lesson. The Quiz Challenge has three rounds. Quiz Blitz is
+ * a quiz show: a clock, four coloured tiles that each carry a shape, points for
+ * speed, an answer streak and four computer players to race to the podium.
+ * Quick Fire and Big Think are written answers, marked by the keyword marker in
+ * quiz.js (window.MskMarker); the mark scheme and a model answer are shown
+ * afterwards and the student can change the mark, as on the exam pages. In This
+ * or That, Pixel the cat asks questions with two answers and reacts to each
+ * choice. Memory Match is a card game: flip two cards at a time to pair each
+ * word with its meaning. Key Stage 4 and A Level lessons add Sort It: drag each
  * statement into the right box, tap a box, or press its number. Every lesson
- * adds three games. Code Word: guess a secret word from its clue, and
- * every guess shows which letters are right. Link Up: twelve tiles hide three
- * groups of four. Bug Hunt: two statements are true and one has a mistake to
- * catch. Then three brain games replay the lesson as brain training: Odd One
- * Out (logic), Memory Flash (memory) and Fact or Fib (speed). Every lesson
- * ends with City Run: a robot cat races through a neon cyber city and every
- * lane is an answer; static/js/cityrun.js draws the street. Every result is rated
- * out of three diamonds. Best scores are kept on this device only.
+ * adds three games. Code Word: guess a secret word from its clue, and every
+ * guess shows which letters are right. Link Up: twelve tiles hide three groups
+ * of four. Bug Hunt: two statements are true and one has a mistake to catch.
+ * Then three brain games replay the lesson as brain training: Odd One Out
+ * (logic), Memory Flash (memory) and Fact or Fib (speed). Every lesson ends
+ * with City Run: a robot cat races through a neon cyber city and every lane is
+ * an answer; static/js/cityrun.js draws the street. Every result is rated out
+ * of three diamonds. Best scores are kept on this device only.
  *
  * The hub page uses only the diamond painting near the top of this file.
  */
@@ -514,8 +514,8 @@
       });
     }
   }
-  /* Whether this lesson has a task: Sort It is a Key Stage 4 task, and Code
-     Word, Link Up and Bug Hunt are Key Stage 3 games. */
+  /* Whether this lesson has a task, from the data the page carries: Sort It
+     comes with Key Stage 4 and A Level lessons, which are whole topics. */
   function has(task) {
     return task === "sort" ? !!D.sort : task === "word" ? !!D.words : task === "link" ? !!D.link :
       task === "bug" ? !!D.bugs : BRAIN[task] ? !!(D.odd && D.fib && D.flash && D.link) :

@@ -289,7 +289,8 @@ def mascot() -> str:
 
 
 # Extra links for the footer's Practise list, added while the site is built:
-# the Key Stage 4 stretch tasks appear once a course of them is published.
+# the Key Stage 4 and A Level stretch tasks appear once a course of them is
+# published.
 PRACTISE_LINKS: List[tuple] = []
 
 
@@ -750,7 +751,7 @@ def _stretch_cta(href: str, n: int) -> str:
 
 
 def _topic_stretch(href: str) -> str:
-    """At Key Stage 4 a whole topic is one lesson, so its stretch tasks close the page."""
+    """At Key Stage 4 and A Level a whole topic is one lesson, so its stretch tasks close the page."""
     return ('<h2 id="stretch-tasks">Stretch tasks</h2>'
             '<a class="stretch-cta" href="%s">%s<span class="stretch-cta-txt"><b>Eleven games on this topic</b>'
             '<span>Quiz Challenge, This or That, Memory Match, Sort It, Code Word, Link Up, Bug Hunt, three brain games '

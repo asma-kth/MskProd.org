@@ -105,6 +105,13 @@ AVOID = {
                                              ("tile", "Format", "On the visualisation diagram")],
     "ks4/imedia/interactive-digital-media": [("into", "Interface principles", "Accessibility")],
     "ks4/imedia/reviewing-interactive-media": [("tile", "Reflection on process", "Opinion, not evidence")],
+    # OCR H446 A Level
+    "ks5/ocr/databases": [("into", "Types of key", "SQL keywords")],
+    "ks5/ocr/data-structures": [("tile", "Linked list", "Hash tables")],
+    "ks5/ocr/legal-moral-and-ethical-issues": [("tile", "Access", "Recurring ethical themes")],
+    "ks5/ocr/programming-techniques-and-methods": [("tile", "Backtracking", "Recursion needs")],
+    "ks5/ocr/algorithms-and-complexity": [("into", "Shortest path ideas", "Searches"),
+                                          ("tile", "Breadth first", "Shortest path ideas")],
 }
 
 # Memory Flash shows a few of Memory Match's cards at a time, so a clue must
