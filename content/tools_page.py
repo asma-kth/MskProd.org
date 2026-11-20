@@ -1,4 +1,6 @@
 """The interactive tools hub and one page per tool."""
+import re
+
 from mskbuild import markup
 from mskbuild.tools import TOOLS, ORDER, AI_ORDER
 from mskbuild.render import (layout, crumbs, crumbs_ld, ico, esc, write)
@@ -81,6 +83,12 @@ NOTES = {
 }
 
 
+def _tool_title_h2(html):
+    """On its own page a tool sits straight under the page's h1, so its
+    title is an h2 there, not the h3 it is inside a topic's section."""
+    return re.sub(r'<h3 class="tool-title">(.*?)</h3>', r'<h2 class="tool-title">\1</h2>', html)
+
+
 def _page(path, title, description, trail, body_md):
     body = """<div class="wrap">
   %s
@@ -90,7 +98,7 @@ def _page(path, title, description, trail, body_md):
       %s
     </article>
   </div>
-</div>""" % (crumbs(trail), esc(title), markup.render(body_md))
+</div>""" % (crumbs(trail), esc(title), _tool_title_h2(markup.render(body_md)))
     return path, layout(title=title, description=description, path=path, body=body,
                         active="/tools/",
                         jsonld=[crumbs_ld(trail)])
@@ -108,6 +116,7 @@ def build(register, add_search):
     body = """<div class="wrap">
   %s
   <header class="section-head"><h1>Interactive tools</h1></header>
+  <h2 class="sr-only">Computing tools</h2>
   <div class="grid grid-3">%s</div>
   <header class="section-head" style="margin-top:var(--sp-7)"><h2>AI labs</h2></header>
   <div class="grid grid-3">%s</div>

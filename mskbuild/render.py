@@ -159,7 +159,7 @@ def layout(*, title: str, description: str, path: str, body: str,
         if "/assets/js/pyrun.js" not in scripts:
             scripts.append("/assets/js/pyrun.js")
     ld_html = "".join(
-        '<script type="application/ld+json">%s</script>' % json.dumps(x, separators=(",", ":"))
+        '<script type="application/ld+json">%s</script>' % json.dumps(x, separators=(",", ":")).replace("</", "<\\/")
         for x in ld)
 
     return """<!doctype html>
@@ -304,7 +304,7 @@ def footer(path: str = "") -> str:
         <p>Free computing revision for UK students at Key Stage 3, GCSE and A Level, written board by board for OCR, AQA and Edexcel. No account, no subscription.</p>
       </div>
       <div>
-        <h4>Revise</h4>
+        <h2 class="foot-title">Revise</h2>
         <ul>
           <li><a href="/ks3/">Key Stage 3</a></li>
           <li><a href="/ks4/computer-science/">GCSE Computer Science, OCR</a></li>
@@ -318,7 +318,7 @@ def footer(path: str = "") -> str:
         </ul>
       </div>
       <div>
-        <h4>Practise</h4>
+        <h2 class="foot-title">Practise</h2>
         <ul>
           <li><a href="/exam-papers/">Practice exam papers</a></li>
           <li><a href="/ks3/stretch/">KS3 stretch tasks</a></li>
@@ -330,7 +330,7 @@ def footer(path: str = "") -> str:
         </ul>
       </div>
       <div>
-        <h4>Site</h4>
+        <h2 class="foot-title">Site</h2>
         <ul>
           <li><a href="/about/">About</a></li>
           <li><a href="/teachers/">For teachers</a></li>
@@ -733,7 +733,7 @@ def _unit_exams_aside(topic) -> str:
         '<a class="btn %s" style="width:100%%;justify-content:center;margin-top:.5rem" href="%s">%s %s</a>'
         % ("btn-primary" if i == 0 else "btn-secondary", href, ico("i-clock"), esc(label))
         for i, (label, href, meta) in enumerate(exams))
-    return '<div class="aside-block"><h4>Unit exams</h4>%s</div>' % links
+    return '<div class="aside-block"><h2 class="aside-title">Unit exams</h2>%s</div>' % links
 
 
 STRETCH_SHAPES = ('<svg class="stretch-cta-art" viewBox="0 0 50 50" aria-hidden="true" focusable="false">'
@@ -842,7 +842,7 @@ def topic_page(course: Course, unit: Unit, topic: Topic,
     if stretch_all:
         toc.append(("stretch-tasks", "Stretch tasks"))
 
-    toc_html = '<div class="toc"><h4>On this page</h4><ol>%s</ol></div>' % "".join(
+    toc_html = '<div class="toc"><h2 class="toc-title">On this page</h2><ol>%s</ol></div>' % "".join(
         '<li><a href="#%s">%s</a></li>' % (i, esc(t)) for i, t in toc)
 
     if course.levels:

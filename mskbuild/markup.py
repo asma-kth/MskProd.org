@@ -4,7 +4,7 @@ Block syntax
 ------------
     !photo <slug>                   -> a photograph, if its file is present
     ## Heading                      -> h2 section heading, with an id
-    ### Heading                     -> h4 sub heading
+    ### Heading                     -> sub heading, an h3 styled small
     - item                          -> unordered list
     1. item                         -> ordered list
     | a | b |                       -> table, first row is the header
@@ -215,8 +215,10 @@ def render(src: str) -> str:
             i += 1
             continue
 
+        # A sub heading sits under the section's h2, so it is an h3: an h4
+        # would skip a level, which confuses anyone moving by headings.
         if stripped.startswith("### "):
-            out.append("<h4>%s</h4>" % inline(stripped[4:]))
+            out.append('<h3 class="sub">%s</h3>' % inline(stripped[4:]))
             i += 1
             continue
 
@@ -266,7 +268,7 @@ def render(src: str) -> str:
             out.append(
                 '<div class="tool" data-tool="%s">'
                 '<div class="tool-head"><svg class="icon" aria-hidden="true">'
-                '<use href="#%s"></use></svg><h4>%s</h4></div>'
+                '<use href="#%s"></use></svg><h3 class="tool-title">%s</h3></div>'
                 '<div class="tool-body"><p class="tool-fallback">%s '
                 'This tool needs JavaScript, so turn it on to use it. '
                 'Everything you need to answer the exam question is explained '
